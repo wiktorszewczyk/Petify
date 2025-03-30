@@ -1,13 +1,12 @@
-package org.petify.backend.repository;
+package org.petify.backend.security.repository;
 
-import java.util.Optional;
-
+import org.petify.backend.security.models.ApplicationUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import org.petify.backend.security.models.ApplicationUser;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<ApplicationUser, Integer> {
-    Optional<ApplicationUser> findByUsername(String username);
+	Optional<ApplicationUser> findByUsername(String username);
 }
