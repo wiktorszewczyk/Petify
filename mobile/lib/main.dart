@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'styles/theme.dart';
-import 'views/auth/login_view.dart';
+import 'views/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const PetifyApp());
 }
 
@@ -14,7 +15,7 @@ class PetifyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: appTheme,
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }

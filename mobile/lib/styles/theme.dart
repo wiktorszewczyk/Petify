@@ -4,6 +4,7 @@ import 'colors.dart';
 final ThemeData appTheme = ThemeData(
   primaryColor: AppColors.primaryColor,
   scaffoldBackgroundColor: AppColors.backgroundColor,
+  canvasColor: AppColors.backgroundColor,
   appBarTheme: const AppBarTheme(
     color: AppColors.primaryColor,
     elevation: 0,
@@ -29,4 +30,15 @@ final ThemeData appTheme = ThemeData(
       borderSide: const BorderSide(color: AppColors.primaryColor, width: 2),
     ),
   ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      foregroundColor: Colors.black,
+      backgroundColor: AppColors.primaryColor,
+      textStyle: const TextStyle(fontSize: 18),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+  ),
+
 );
