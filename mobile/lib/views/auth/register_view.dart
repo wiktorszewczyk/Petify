@@ -47,7 +47,6 @@ class _RegisterViewState extends State<RegisterView> {
   void _submit() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-      // Symulacja requestu
       await Future.delayed(const Duration(seconds: 2));
 
       if (!mounted) return;
@@ -64,15 +63,12 @@ class _RegisterViewState extends State<RegisterView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // minimalny odstęp
             const SizedBox(height: 10),
 
-            // Pasek z przyciskiem cofania + tytułem
             _buildHeaderBar().animate().fadeIn(duration: 400.ms, delay: 50.ms),
 
             const SizedBox(height: 25),
 
-            // Główna część (Formularz)
             _buildFormArea(),
           ],
         ),
@@ -80,7 +76,6 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 
-  // Pasek z przyciskiem cofania i tytułem "Rejestracja"
   Widget _buildHeaderBar() {
     return Row(
       children: [
@@ -95,12 +90,11 @@ class _RegisterViewState extends State<RegisterView> {
             style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
           ),
         ),
-        const SizedBox(width: 48), // wyrównuje tytuł, by był wycentrowany
+        const SizedBox(width: 48),
       ],
     );
   }
 
-  // Formularz + walidacja + spinner
   Widget _buildFormArea() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
@@ -109,7 +103,6 @@ class _RegisterViewState extends State<RegisterView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // email
             CustomTextField(
               labelText: 'email',
               controller: _emailController,
@@ -117,7 +110,6 @@ class _RegisterViewState extends State<RegisterView> {
             ).animate().fadeIn(duration: 500.ms),
             const SizedBox(height: 15),
 
-            // hasło
             CustomTextField(
               labelText: 'hasło',
               obscureText: true,
@@ -126,7 +118,6 @@ class _RegisterViewState extends State<RegisterView> {
             ).animate().fadeIn(duration: 500.ms),
             const SizedBox(height: 15),
 
-            // powtórz hasło
             CustomTextField(
               labelText: 'powtórz hasło',
               obscureText: true,

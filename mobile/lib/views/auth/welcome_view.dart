@@ -16,7 +16,7 @@ class WelcomeView extends StatefulWidget {
 }
 
 class _WelcomeViewState extends State<WelcomeView> {
-  bool? showLogin;   // null = ekran powitalny, true=Login, false=Register
+  bool? showLogin;
   bool? oldShowLogin;
 
   @override
@@ -35,31 +35,24 @@ class _WelcomeViewState extends State<WelcomeView> {
       backgroundColor: AppColors.backgroundColor,
       body: Column(
         children: [
-          // Górny obrazek
           const TopHeader(),
-          // Expanded: zapewni całą resztę ekranu
           Expanded(
-            // 1) LayoutBuilder – mierzymy dostępną wysokość
             child: LayoutBuilder(
               builder: (context, constraints) {
-                // 2) Tworzymy SizedBox o stałej wysokości constraints.maxHeight
                 return SizedBox(
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-                  // 3) wewnątrz dopiero PageTransitionSwitcher
                   child: PageTransitionSwitcher(
                     duration: const Duration(milliseconds: 550),
                     reverse: _isReverseAnimation(),
                     transitionBuilder: (child, animation, secondaryAnimation) {
                       if (_goingBetweenWelcomeAndAuth()) {
-                        // horyzontalne przejście
                         return _horizontalSlideTransition(
                           child: child,
                           animation: animation,
                           secondaryAnimation: secondaryAnimation,
                         );
                       } else {
-                        // login <-> register
                         return _fadeSlideTransition(
                           child: child,
                           animation: animation,
@@ -78,21 +71,17 @@ class _WelcomeViewState extends State<WelcomeView> {
     );
   }
 
-  // ------------------ LOGIKA animacji ------------------
 
   bool _isReverseAnimation() {
-    // Gdy wracamy do Welcome => (showLogin==null, oldShowLogin!=null) => reverse
     return (showLogin == null && oldShowLogin != null);
   }
 
   bool _goingBetweenWelcomeAndAuth() {
-    // Welcome <-> Login/Register
     final fromWelcomeToAuth = (oldShowLogin == null && showLogin != null);
     final fromAuthToWelcome = (oldShowLogin != null && showLogin == null);
     return fromWelcomeToAuth || fromAuthToWelcome;
   }
 
-  /// Animacja horyzontalna: wjeżdża z prawej, stary wyjeżdża w lewo (lub odwrotnie)
   Widget _horizontalSlideTransition({
     required Widget child,
     required Animation<double> animation,
@@ -104,7 +93,6 @@ class _WelcomeViewState extends State<WelcomeView> {
         .chain(CurveTween(curve: Curves.easeInOut));
     final offsetAnimation = animation.drive(slideTween);
 
-    // lekki fade
     final fadeTween = Tween<double>(begin: 0.6, end: 1.0)
         .chain(CurveTween(curve: Curves.easeInOut));
     final fadeAnimation = animation.drive(fadeTween);
@@ -123,7 +111,6 @@ class _WelcomeViewState extends State<WelcomeView> {
     );
   }
 
-  /// Animacja fade+slide (pionowa) – Login <-> Register
   Widget _fadeSlideTransition({
     required Widget child,
     required Animation<double> animation,
@@ -159,7 +146,6 @@ class _WelcomeViewState extends State<WelcomeView> {
     );
   }
 
-  // ------------------ BUDOWANIE CHILD ------------------
 
   Widget _buildContent() {
     if (showLogin == true) {
@@ -175,7 +161,6 @@ class _WelcomeViewState extends State<WelcomeView> {
         onBack: backToWelcome,
       );
     } else {
-      // Ekran powitalny
       return _buildWelcome();
     }
   }
@@ -186,7 +171,6 @@ class _WelcomeViewState extends State<WelcomeView> {
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        // Zmniejszamy intensywność SlideEffect do ~0.1
         children: AnimateList(
           interval: 150.ms,
           effects: [

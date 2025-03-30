@@ -40,7 +40,6 @@ class _LoginViewState extends State<LoginView> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      // Symulacja requestu
       await Future.delayed(const Duration(seconds: 2));
 
       if (!mounted) return;
@@ -53,22 +52,14 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      // Używamy SingleChildScrollView, aby w razie potrzeby móc przewinąć treść
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Tu wstawiamy nasz TopHeader, jeśli chcesz go widzieć w tym samym ekranie
-            // Wtedy wystarczy: TopHeader()
-            // ALE jeżeli topHeader jest w "WelcomeView", to pomijamy go tutaj.
-
-            // minimalny odstęp
             const SizedBox(height: 10),
 
-            // 1) Pasek z przyciskiem cofania + tytułem
             _buildHeaderBar(),
 
-            // 2) Formularz: Pola, przycisk Zaloguj się, spinner
             _buildFormArea(),
           ],
         ),
@@ -76,7 +67,6 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  // Pasek z przyciskiem cofania (po lewej) + tytuł (na środku)
   Widget _buildHeaderBar() {
     return Row(
       children: [
@@ -91,12 +81,11 @@ class _LoginViewState extends State<LoginView> {
             style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
           ),
         ),
-        const SizedBox(width: 48), // miejsce na ikonę, by tytuł pozostał wycentrowany
+        const SizedBox(width: 48),
       ],
     ).animate().fadeIn(duration: 400.ms);
   }
 
-  // Główna część: Walidacja, Pola tekstowe, Spinner
   Widget _buildFormArea() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
@@ -105,7 +94,6 @@ class _LoginViewState extends State<LoginView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // E-mail
             CustomTextField(
               labelText: 'email',
               controller: _emailController,
@@ -113,7 +101,6 @@ class _LoginViewState extends State<LoginView> {
             ).animate().fadeIn(duration: 500.ms),
             const SizedBox(height: 15),
 
-            // Hasło
             CustomTextField(
               labelText: 'hasło',
               obscureText: true,
@@ -123,7 +110,6 @@ class _LoginViewState extends State<LoginView> {
 
             const SizedBox(height: 30),
 
-            // Zaloguj się / Spinner
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: _isLoading
@@ -142,7 +128,6 @@ class _LoginViewState extends State<LoginView> {
 
             const SizedBox(height: 15),
 
-            // Link do Rejestracji
             TextButton(
               onPressed: widget.onSwitch,
               child: Text(
