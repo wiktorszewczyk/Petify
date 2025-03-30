@@ -3,14 +3,14 @@ spring:
     name: backend
 
   datasource:
-    url: jdbc:postgresql://postgres-dev:5432/petify
+    url: jdbc:postgresql://localhost:5433/petify
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create-drop # or update
     show-sql: true
     properties:
       hibernate:
