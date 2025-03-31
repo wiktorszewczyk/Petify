@@ -41,6 +41,8 @@ dependencies:
   google_fonts: ^6.1.0
   animations: ^2.0.1
   flutter_animate: ^4.5.2
+  dio: ^5.8.0
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

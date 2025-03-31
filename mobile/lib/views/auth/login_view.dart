@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../styles/colors.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/inputs/custom_textfield.dart';
+import '../../services/user_service.dart';
 
 class LoginView extends StatefulWidget {
   final VoidCallback onSwitch;
@@ -36,15 +37,43 @@ class _LoginViewState extends State<LoginView> {
     return null;
   }
 
-  void _submit() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
-      await Future.delayed(const Duration(seconds: 2));
+    setState(() => _isLoading = true);
 
-      if (!mounted) return;
+    try {
+      final userService = UserService();
+      final response = await userService.login(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+
+      if (!mounted) {
+        return;
+      }
       setState(() => _isLoading = false);
-      // TODO: obsługa odpowiedzi z serwera
+
+      if (response.status == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Zalogowano! ${response.data}')),
+        );
+
+        widget.onBack();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Błąd logowania: ${response.data}')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Wystąpił błąd: $e')),
+        );
+      }
     }
   }
 

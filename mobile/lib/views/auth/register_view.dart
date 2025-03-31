@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../styles/colors.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/inputs/custom_textfield.dart';
+import '../../services/user_service.dart';
 
 class RegisterView extends StatefulWidget {
   final VoidCallback onSwitch;
@@ -44,14 +45,45 @@ class _RegisterViewState extends State<RegisterView> {
     return null;
   }
 
-  void _submit() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      await Future.delayed(const Duration(seconds: 2));
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
-      if (!mounted) return;
+    setState(() => _isLoading = true);
+
+    try {
+      final userService = UserService();
+      final response = await userService.register(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+
+      if (!mounted) {
+        return;
+      }
+
       setState(() => _isLoading = false);
-      // TODO: Obsługa odpowiedzi serwera (np. rejestracja zakończona sukcesem)
+
+      if (response.status == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Rejestracja zakończona sukcesem!')),
+        );
+        widget.onBack();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Błąd: ${response.status}, ${response.data}'),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Wystąpił nieoczekiwany błąd: $e')),
+        );
+      }
     }
   }
 
