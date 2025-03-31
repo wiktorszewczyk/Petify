@@ -1,18 +1,23 @@
-version: '3.8'
-
+name: Petify
 services:
-  postgres-dev:
-    image: postgres:latest
-    container_name: postgres-db-dev
-    restart: always
+  postgresql:
+    container_name: petify
+    image: postgres:17
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
     ports:
       - "5433:5432"
-    environment:
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "admin"
-      POSTGRES_DB: "petify"
-    volumes:
-      - postgres_data_dev:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+networks:
+  microservices-net:
+    driver: bridge
 
 volumes:
-  postgres_data_dev:
+  postgres:
