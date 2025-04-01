@@ -4,6 +4,7 @@ services:
     container_name: petify
     image: postgres:17
     environment:
+      POSTGRES_DB: petify
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       PGDATA: /data/postgres

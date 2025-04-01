@@ -6,10 +6,13 @@ spring:
       discovery:
         locator:
           enabled: true
-          lower-case-service-id: true
       routes:
+        - id: shelter-service
+          uri: lb://SHELTER-SERVICE
+          predicates:
+            - Path=/shelters/**, /shelters
         - id: auth-service
-          uri: lb://auth-service
+          uri: lb://AUTH-SERVICE
           predicates:
             - Path=/oauth2/**
             - Path=/login/**

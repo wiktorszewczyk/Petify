@@ -1,11 +1,9 @@
 spring:
-  config:
-    import: optional:configserver:http://localhost:8888
   application:
     name: gateway-service
+  config:
+    import: optional:configserver:http://localhost:8888
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: gateway,health,info
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
