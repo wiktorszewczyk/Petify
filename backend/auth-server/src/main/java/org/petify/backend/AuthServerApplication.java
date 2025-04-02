@@ -15,22 +15,26 @@ import org.petify.backend.security.repository.RoleRepository;
 import org.petify.backend.security.repository.UserRepository;
 
 @SpringBootApplication
-public class BackendApplication {
+public class AuthServerApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(BackendApplication.class, args);
+		SpringApplication.run(AuthServerApplication.class, args);
 	}
 
 	@Bean
 	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncode){
-		return args ->{
+		return args -> {
 			if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
+
 			Role adminRole = roleRepository.save(new Role("ADMIN"));
 			roleRepository.save(new Role("USER"));
 
 			Set<Role> roles = new HashSet<>();
 			roles.add(adminRole);
 
-			ApplicationUser admin = new ApplicationUser(1, "admin", passwordEncode.encode("admin"), roles);
+			ApplicationUser admin = new ApplicationUser();
+			admin.setUsername("admin");
+			admin.setPassword(passwordEncode.encode("admin"));
+			admin.setAuthorities(roles);
 
 			userRepository.save(admin);
 		};

@@ -1,27 +1,21 @@
+server:
+  port: 9000
+
 spring:
   security:
     oauth2:
       authorization-server:
         issuer-url: http://auth-service:9000
 
-server:
-  port: 9000
-
-# OAuth2 Clients (Example)
-#oauth2:
-#  clients:
-#    petify-web:
-#      client-id: petify-web
-#      client-secret: "{bcrypt}$2a$10$N9qo8uLO..."  # BCrypt-encoded
-#      redirect-uris:
-#        - http://gateway:8080/login/oauth2/code/petify-web
-#      scopes: openid,profile,email
-#      grant-types: authorization_code,refresh_token
-
-# JWT Settings
-jwt:
-  key:
-    public: |
-      -----BEGIN PUBLIC KEY-----
-      MIIBIjANBgkqhkiG9w0BAQEF...
-      -----END PUBLIC KEY-----
+  datasource:
+    url: jdbc:postgresql://localhost:5433/petify
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

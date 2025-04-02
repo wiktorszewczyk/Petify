@@ -13,7 +13,7 @@ import java.util.Set;
 public class ApplicationUser implements UserDetails{
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer userId;
 
 	@Column(unique=true)
@@ -30,7 +30,7 @@ public class ApplicationUser implements UserDetails{
 	private Set<Role> authorities;
 
 	@Version
-	private Integer version;
+	private Integer version = 0;
 
 	public ApplicationUser() {
 		super();
