@@ -1,0 +1,17 @@
+server:
+  port: 8222
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: shelter-service
+          uri: lb://SHELTER-SERVICE
+          predicates:
+            - Path=/shelters/**, /shelters
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/oauth2/**, /auth/**, /admin/**, /user/**
