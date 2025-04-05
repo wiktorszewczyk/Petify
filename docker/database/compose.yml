@@ -1,17 +1,18 @@
 name: Petify
+
 services:
   postgresql:
     container_name: petify
     image: postgres:17
     environment:
-      POSTGRES_DB: petify
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
     ports:
-      - "5433:5432"
+      - "${DB_PORT}:5432"
     networks:
       - microservices-net
     restart: unless-stopped
