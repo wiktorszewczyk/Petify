@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
 
-import '../model/basic_response.dart';
+import '../models/basic_response.dart';
 import 'api/initial_api.dart';
 
 class UserService {
