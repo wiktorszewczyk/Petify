@@ -1,27 +1,42 @@
 package org.petify.backend.security.models;
 
-import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 @Table(name="users")
-public class ApplicationUser implements UserDetails{
+public class ApplicationUser implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
 
-    @Column(unique=true)
+    @Column(unique = true)
     private String username;
 
     private String password;
 
-    @ManyToMany(fetch=FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="user_role_junction",
             joinColumns = {@JoinColumn(name="user_id")},
@@ -45,18 +60,6 @@ public class ApplicationUser implements UserDetails{
         this.authorities = authorities;
     }
 
-    public Integer getUserId() {
-        return this.userId;
-    }
-
-    public void setId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public void setAuthorities(Set<Role> authorities) {
-        this.authorities = authorities;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
@@ -67,17 +70,9 @@ public class ApplicationUser implements UserDetails{
         return this.password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @Override
     public String getUsername() {
         return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     @Override
@@ -98,13 +93,5 @@ public class ApplicationUser implements UserDetails{
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
     }
 }

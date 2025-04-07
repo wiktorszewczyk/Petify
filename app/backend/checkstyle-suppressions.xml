@@ -3,7 +3,9 @@
     "-//Checkstyle//DTD Suppressions 1.2//EN"
     "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+    <suppress checks="DesignForExtension"/>
     <suppress checks="HideUtilityClassConstructor"/>
     <suppress checks="JavadocPackage"/>
+    <suppress checks="JavadocVariable"/>
     <suppress checks="MissingJavadocMethod"/>
 </suppressions>

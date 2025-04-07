@@ -4,9 +4,12 @@ import org.petify.backend.security.models.ApplicationUser;
 import org.petify.backend.security.models.LoginResponseDTO;
 import org.petify.backend.security.models.RegistrationDTO;
 import org.petify.backend.security.services.AuthenticationService;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,4 +28,4 @@ public class AuthenticationController {
     public LoginResponseDTO loginUser(@RequestBody RegistrationDTO body) {
         return authenticationService.loginUser(body.getUsername(), body.getPassword());
     }
-}   
+}
