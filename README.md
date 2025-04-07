@@ -1,4 +1,1 @@
 # Petify
-
-
-# Building the application
