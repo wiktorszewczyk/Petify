@@ -1,1 +1,4 @@
-# ThriftTok
+# Petify
+
+
+# Building the application
