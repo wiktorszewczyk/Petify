@@ -1,5 +1,8 @@
 target/
 
+# Environment variables
+.env
+
 # Compiled class file
 *.class
 
@@ -25,8 +28,38 @@ target/
 hs_err_pid*
 replay_pid*
 
-# Environment variables
-.env
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Miscellaneous
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
 
 ### STS ###
 .apt_generated
