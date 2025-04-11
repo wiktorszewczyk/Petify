@@ -17,6 +17,12 @@ public class JwtSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/shelters/**").permitAll()
+                        .requestMatchers("/pets/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**").permitAll()
                 )
                 .oauth2ResourceServer(AbstractHttpConfigurer::disable);
         return http.build();

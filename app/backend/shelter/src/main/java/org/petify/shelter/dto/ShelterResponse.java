@@ -1,14 +1,15 @@
 package org.petify.shelter.dto;
 
-import org.petify.shelter.model.Shelter;
-
 import java.io.Serializable;
 
 /**
- * DTO for {@link Shelter}
+ * DTO for {@link org.petify.shelter.model.Shelter}
  */
 public record ShelterResponse(
         Long id,
-        String name
-) implements Serializable {
-}
+        Integer ownerId,
+        String name,
+        String description,
+        String address,
+        String phoneNumber
+) implements Serializable {}
