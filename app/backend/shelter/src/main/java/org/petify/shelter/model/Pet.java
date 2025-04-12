@@ -44,7 +44,7 @@ public class Pet {
     private Shelter shelter;
 
     @OneToMany(mappedBy = "pet")
-    private List<AdoptionForm> adoptionForms;
+    private List<Adoption> adoptions;
 
     @Column(name = "image_name")
     private String imageName;

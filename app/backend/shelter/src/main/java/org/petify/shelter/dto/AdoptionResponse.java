@@ -1,13 +1,13 @@
 package org.petify.shelter.dto;
 
-import org.petify.shelter.model.AdoptionStatus;
+import org.petify.shelter.model.Adoption;
 
 import java.io.Serializable;
 
 /**
- * DTO for {@link org.petify.shelter.model.AdoptionForm}
+ * DTO for {@link Adoption}
  */
-public record AdoptionFormResponse(
+public record AdoptionResponse(
         Long id,
         Integer userId,
         Long petId,

@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Setter
 @Entity
 @Table(name = "adoption_forms")
-public class AdoptionForm {
+public class Adoption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -33,7 +33,7 @@ public class AdoptionForm {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (!(o instanceof AdoptionForm that)) return false;
+        if (!(o instanceof Adoption that)) return false;
 
         return new EqualsBuilder().append(getId(), that.getId()).append(getUserId(), that.getUserId()).append(getPet(), that.getPet()).append(getAdoptionStatus(), that.getAdoptionStatus()).isEquals();
     }

@@ -18,6 +18,7 @@ public class JwtSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/shelters/**").permitAll()
                         .requestMatchers("/pets/**").permitAll()
+                        .requestMatchers("/adoptions/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
