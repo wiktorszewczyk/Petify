@@ -12,25 +12,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/pets")
 public class PetController {
-    private PetService petService;
+    private final PetService petService;
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<?> pets() {
         return ResponseEntity.ok(petService.getPets());
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> addPet(@Valid @RequestPart PetRequest pet,
+    @PostMapping()
+    public ResponseEntity<?> addPet(@Valid @RequestPart PetRequest petRequest,
                                     @RequestPart MultipartFile imageFile) {
         // Narazie przykladowo dla jednego wybranego schroniska, pozniej do edycji, by z automatu principal brało id schroniska zalogowanego
-        Long shelterId = 4L;
+        Long shelterId = 1L;
         try {
-            PetResponse pet1 = petService.createPet(pet, shelterId, imageFile);
-            return new ResponseEntity<>(pet1, HttpStatus.CREATED);
+            PetResponse pet = petService.createPet(petRequest, shelterId, imageFile);
+            return new ResponseEntity<>(pet, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -38,13 +40,20 @@ public class PetController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPetById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(petService.getPetById(id));
+        return new ResponseEntity<>(petService.getPetById(id), HttpStatus.FOUND);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePet(@PathVariable("id") Long id,
-                                       @Valid @RequestBody PetRequest input) {
-        return (ResponseEntity<?>) ResponseEntity.ok();
+    public ResponseEntity<PetResponse> updatePet(
+            @PathVariable Long id,
+            @RequestPart("petRequest") PetRequest petRequest,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+
+        // Narazie przykladowo dla jednego wybranego schroniska, pozniej do edycji, by z automatu principal brało id schroniska zalogowanego
+        Long shelterId = 1L;
+
+        PetResponse updatedPet = petService.updatePet(petRequest, id, shelterId, imageFile);
+        return ResponseEntity.ok(updatedPet);
     }
 
     @GetMapping("/{id}/image")
@@ -54,5 +63,17 @@ public class PetController {
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(petImageData.imageType()))
                 .body(petImageData.imageData());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePet(@PathVariable("id") Long id) {
+        petService.deletePet(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("{id}/archive")
+    public ResponseEntity<?> archivePet(@PathVariable("id") Long id) {
+        PetResponse petResponse = petService.archivePet(id);
+        return ResponseEntity.ok(petResponse);
     }
 }

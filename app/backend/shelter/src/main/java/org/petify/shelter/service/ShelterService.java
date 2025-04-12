@@ -1,12 +1,12 @@
 package org.petify.shelter.service;
 
-import org.petify.shelter.dto.ShelterRequest;
-import org.petify.shelter.dto.ShelterResponse;
-import org.petify.shelter.model.Shelter;
-import org.petify.shelter.repository.ShelterRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.petify.shelter.dto.ShelterRequest;
+import org.petify.shelter.dto.ShelterResponse;
+import org.petify.shelter.model.Pet;
+import org.petify.shelter.model.Shelter;
+import org.petify.shelter.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,7 @@ public class ShelterService {
         List<Shelter> shelters = shelterRepository.findAll();
         List<ShelterResponse> shelterResponses = new ArrayList<>();
         for (Shelter shelter : shelters) {
-            shelterResponses.add(new ShelterResponse(shelter.getId(), shelter.getOwnerUsername(), shelter.getName(),
+            shelterResponses.add(new ShelterResponse(shelter.getId(), shelter.getOwnerId(), shelter.getName(),
                     shelter.getDescription(), shelter.getAddress(), shelter.getPhoneNumber()));
         }
 
@@ -31,23 +31,16 @@ public class ShelterService {
 
     public ShelterResponse getShelterById(Long id) {
         return shelterRepository.findById(id)
-                .map(shelter -> new ShelterResponse(shelter.getId(), shelter.getOwnerUsername(), shelter.getName(),
+                .map(shelter -> new ShelterResponse(shelter.getId(), shelter.getOwnerId(), shelter.getName(),
                         shelter.getDescription(), shelter.getAddress(), shelter.getPhoneNumber()))
                 .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + id + " not found"));
     }
 
-    public ShelterResponse getShelterByOwnerUsername(String username) {
-        return shelterRepository.getShelterByOwnerUsername(username)
-                .map(shelter -> new ShelterResponse(shelter.getId(), shelter.getOwnerUsername(), shelter.getName(),
-                        shelter.getDescription(), shelter.getAddress(), shelter.getPhoneNumber()))
-                .orElseThrow(() -> new EntityNotFoundException("No shelter connected to user: " + username + " found!"));
-    }
-
     @Transactional
-    public ShelterResponse createShelter(ShelterRequest input, String username) {
-        Shelter shelter = new Shelter(username, input.name(), input.description(), input.address(), input.phoneNumber());
+    public ShelterResponse createShelter(ShelterRequest input) {
+        Shelter shelter = new Shelter(input.ownerId(), input.name(), input.description(), input.address(), input.phoneNumber());
         Shelter savedShelter = shelterRepository.save(shelter);
-        return new ShelterResponse(savedShelter.getId(), savedShelter.getOwnerUsername(), savedShelter.getName(),
+        return new ShelterResponse(savedShelter.getId(), savedShelter.getOwnerId(), savedShelter.getName(),
                 savedShelter.getDescription(), savedShelter.getAddress(), savedShelter.getPhoneNumber());
     }
 
@@ -56,6 +49,7 @@ public class ShelterService {
         Shelter existingShelter = shelterRepository.findById(shelterId)
                 .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + shelterId + " not found!"));
 
+        existingShelter.setOwnerId(input.ownerId());
         existingShelter.setName(input.name());
         existingShelter.setDescription(input.description());
         existingShelter.setAddress(input.address());
@@ -65,7 +59,7 @@ public class ShelterService {
 
         return new ShelterResponse(
                 updatedShelter.getId(),
-                updatedShelter.getOwnerUsername(),
+                updatedShelter.getOwnerId(),
                 updatedShelter.getName(),
                 updatedShelter.getDescription(),
                 updatedShelter.getAddress(),
