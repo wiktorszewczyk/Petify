@@ -2,11 +2,11 @@ package org.petify.shelter.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.petify.shelter.dto.AdoptionFormResponse;
+import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
-import org.petify.shelter.service.AdoptionFormService;
+import org.petify.shelter.service.AdoptionService;
 import org.petify.shelter.service.PetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/pets")
 public class PetController {
     private final PetService petService;
-    private final AdoptionFormService adoptionFormService;
+    private final AdoptionService adoptionService;
 
     @GetMapping()
     public ResponseEntity<?> pets() {
@@ -50,13 +50,13 @@ public class PetController {
     @PutMapping("/{id}")
     public ResponseEntity<PetResponse> updatePet(
             @PathVariable Long id,
-            @RequestPart("petRequest") PetRequest petRequest,
+            @RequestPart("pet") PetRequest pet,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
 
         // Narazie przykladowo dla jednego wybranego schroniska, pozniej do edycji, by z automatu principal brało id schroniska zalogowanego
-        Long shelterId = 1L;
+        Long shelterId = 4L;
 
-        PetResponse updatedPet = petService.updatePet(petRequest, id, shelterId, imageFile);
+        PetResponse updatedPet = petService.updatePet(pet, id, shelterId, imageFile);
         return ResponseEntity.ok(updatedPet);
     }
 
@@ -75,10 +75,10 @@ public class PetController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/adoption-forms")
-    public ResponseEntity<List<AdoptionFormResponse>> getPetAdoptionForms(@PathVariable Long id) {
+    @GetMapping("/{id}/adoptions")
+    public ResponseEntity<List<AdoptionResponse>> getPetAdoptionForms(@PathVariable Long id) {
 
-        List<AdoptionFormResponse> forms = adoptionFormService.getPetAdoptionForms(id);
+        List<AdoptionResponse> forms = adoptionService.getPetAdoptionForms(id);
         return ResponseEntity.ok(forms);
     }
 
@@ -89,12 +89,12 @@ public class PetController {
     }
 
     @PostMapping("/{id}/adopt")
-    public ResponseEntity<AdoptionFormResponse> adoptPet(@PathVariable("id") Long petId) {
+    public ResponseEntity<AdoptionResponse> adoptPet(@PathVariable("id") Long petId) {
 
         // Przykladowo narazie, do poprawki na branie id z Principal
         Integer userId = 1;
 
-        AdoptionFormResponse adoptionForm = adoptionFormService.createAdoptionForm(petId, userId);
+        AdoptionResponse adoptionForm = adoptionService.createAdoptionForm(petId, userId);
         return new ResponseEntity<>(adoptionForm, HttpStatus.CREATED);
     }
 }

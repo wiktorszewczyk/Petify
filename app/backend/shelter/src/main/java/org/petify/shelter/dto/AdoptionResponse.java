@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public record AdoptionResponse(
         Long id,
-        String username,
+        Integer userId,
         Long petId,
         String adoptionStatus
 ) implements Serializable {}
