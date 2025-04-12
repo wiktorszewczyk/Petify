@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.ShelterRequest;
 import org.petify.shelter.dto.ShelterResponse;
+import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class ShelterService {
-    private ShelterRepository shelterRepository;
+    private final ShelterRepository shelterRepository;
 
     public List<ShelterResponse> getShelters() {
         List<Shelter> shelters = shelterRepository.findAll();
@@ -41,5 +42,36 @@ public class ShelterService {
         Shelter savedShelter = shelterRepository.save(shelter);
         return new ShelterResponse(savedShelter.getId(), savedShelter.getOwnerId(), savedShelter.getName(),
                 savedShelter.getDescription(), savedShelter.getAddress(), savedShelter.getPhoneNumber());
+    }
+
+    @Transactional
+    public ShelterResponse updateShelter(ShelterRequest input, Long shelterId) {
+        Shelter existingShelter = shelterRepository.findById(shelterId)
+                .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + shelterId + " not found!"));
+
+        existingShelter.setOwnerId(input.ownerId());
+        existingShelter.setName(input.name());
+        existingShelter.setDescription(input.description());
+        existingShelter.setAddress(input.address());
+        existingShelter.setPhoneNumber(input.phoneNumber());
+
+        Shelter updatedShelter = shelterRepository.save(existingShelter);
+
+        return new ShelterResponse(
+                updatedShelter.getId(),
+                updatedShelter.getOwnerId(),
+                updatedShelter.getName(),
+                updatedShelter.getDescription(),
+                updatedShelter.getAddress(),
+                updatedShelter.getPhoneNumber()
+        );
+    }
+
+    @Transactional
+    public void deleteShelter(Long id) {
+        Shelter shelter = shelterRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + id + " not found!"));
+
+        shelterRepository.delete(shelter);
     }
 }

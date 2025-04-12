@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Service
 public class AdoptionFormService {
-    private AdoptionFormRepository adoptionFormRepository;
+    private final AdoptionFormRepository adoptionFormRepository;
 
 
 }
