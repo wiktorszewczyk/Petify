@@ -2,9 +2,11 @@ package org.petify.shelter.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.petify.shelter.dto.AdoptionFormResponse;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.service.AdoptionFormService;
 import org.petify.shelter.service.PetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/pets")
 public class PetController {
     private final PetService petService;
+    private final AdoptionFormService adoptionFormService;
 
     @GetMapping()
     public ResponseEntity<?> pets() {
@@ -71,9 +75,25 @@ public class PetController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("{id}/archive")
+    @GetMapping("/{id}/adoption-forms")
+    public ResponseEntity<List<AdoptionFormResponse>> getPetAdoptionForms(@PathVariable Long id) {
+
+        List<AdoptionFormResponse> forms = adoptionFormService.getPetAdoptionForms(id);
+        return ResponseEntity.ok(forms);
+    }
+
+    @PatchMapping("/{id}/archive")
     public ResponseEntity<?> archivePet(@PathVariable("id") Long id) {
         PetResponse petResponse = petService.archivePet(id);
         return ResponseEntity.ok(petResponse);
+    }
+
+    @PostMapping("/{id}/adopt")
+    public ResponseEntity<AdoptionFormResponse> adoptPet(
+            @PathVariable("id") Long petId,
+            @RequestAttribute("userId") Integer userId) {  // Assuming you have user authentication that provides userId
+
+        AdoptionFormResponse adoptionForm = adoptionFormService.createAdoptionForm(petId, userId);
+        return new ResponseEntity<>(adoptionForm, HttpStatus.CREATED);
     }
 }

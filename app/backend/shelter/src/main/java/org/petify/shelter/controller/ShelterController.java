@@ -2,8 +2,10 @@ package org.petify.shelter.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.petify.shelter.dto.AdoptionFormResponse;
 import org.petify.shelter.dto.ShelterRequest;
 import org.petify.shelter.dto.ShelterResponse;
+import org.petify.shelter.service.AdoptionFormService;
 import org.petify.shelter.service.PetService;
 import org.petify.shelter.service.ShelterService;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import java.util.List;
 public class ShelterController {
     private final ShelterService shelterService;
     private final PetService petService;
+    private final AdoptionFormService adoptionFormService;
 
     @GetMapping()
     public ResponseEntity<List<?>> getShelters() {
@@ -51,5 +54,13 @@ public class ShelterController {
     public ResponseEntity<?> deleteShelter(@PathVariable("id") Long id) {
         shelterService.deleteShelter(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/adoption-forms")
+    public ResponseEntity<List<AdoptionFormResponse>> getShelterAdoptionForms(
+            @PathVariable Long id) {
+
+        List<AdoptionFormResponse> forms = adoptionFormService.getShelterAdoptionForms(id);
+        return ResponseEntity.ok(forms);
     }
 }
