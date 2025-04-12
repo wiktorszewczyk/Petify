@@ -46,6 +46,16 @@ public class Pet {
     @OneToMany(mappedBy = "pet")
     private List<AdoptionForm> adoptionForms;
 
+    @Column(name = "image_name")
+    private String imageName;
+
+    @Column(name = "image_extension")
+    private String imageType;
+
+    @Lob
+    @Column(name = "image_data")
+    private byte[] imageData;
+
     public Pet(String name, PetType type, String breed, Integer age, String description, Shelter shelter) {
         this.name = name;
         this.type = type;

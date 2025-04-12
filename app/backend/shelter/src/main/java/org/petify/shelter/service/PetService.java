@@ -2,6 +2,7 @@ package org.petify.shelter.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
 import org.petify.shelter.model.Pet;
@@ -10,10 +11,13 @@ import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -58,13 +62,26 @@ public class PetService {
     }
 
     @Transactional
-    public PetResponse createPet(PetRequest request, Long shelterId) {
+    public PetResponse createPet(PetRequest petRequest, Long shelterId, MultipartFile imageFile) throws IOException {
         Shelter shelter = shelterRepository.findById(shelterId)
                 .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + shelterId + " not found!"));
 
-        Pet pet = new Pet(request.name(), request.type(), request.breed(), request.age(), request.description(), shelter);
+        Pet pet = new Pet(petRequest.name(), petRequest.type(), petRequest.breed(), petRequest.age(), petRequest.description(), shelter);
+        pet.setImageName(imageFile.getOriginalFilename());
+        pet.setImageType(imageFile.getContentType());
+        pet.setImageData(imageFile.getBytes());
+
         Pet savedPet = petRepository.save(pet);
 
         return new PetResponse(savedPet.getId(), savedPet.getName(), savedPet.getType(), savedPet.getBreed(), savedPet.getAge(), savedPet.isArchived(), savedPet.getDescription(), savedPet.getShelter().getId());
+    }
+
+    public PetImageResponse getPetImage(Long id) {
+        Optional<Pet> pet = petRepository.findById(id);
+        if (pet.isPresent()) {
+            return new PetImageResponse(pet.get().getImageName(), pet.get().getImageType(), pet.get().getImageData());
+        } else {
+            throw new EntityNotFoundException("Pet with id " + id + " not found!");
+        }
     }
 }
