@@ -21,18 +21,22 @@ public class AdoptionFormController {
 
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<AdoptionFormResponse> cancelAdoptionForm(
-            @PathVariable Long id,
-            @RequestAttribute("userId") Integer userId) {
+            @PathVariable Long id) {
+
+        // Przykladowo narazie, do poprawki na branie id z Principal
+        Integer userId = 1;
 
         AdoptionFormResponse cancelledForm = adoptionFormService.cancelAdoptionForm(id, userId);
         return ResponseEntity.ok(cancelledForm);
     }
 
-    @PatchMapping("/adoption-forms/{id}/status")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<AdoptionFormResponse> updateAdoptionStatus(
             @PathVariable Long id,
-            @RequestParam AdoptionStatus status,
-            @RequestAttribute("userId") Integer shelterOwnerId) {
+            @RequestParam AdoptionStatus status) {
+
+        // Przykladowo narazie, do poprawki na branie id z Principal
+        Integer shelterOwnerId = 1;
 
         AdoptionFormResponse updatedForm = adoptionFormService.updateAdoptionStatus(id, status, shelterOwnerId);
         return ResponseEntity.ok(updatedForm);

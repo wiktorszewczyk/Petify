@@ -89,9 +89,10 @@ public class PetController {
     }
 
     @PostMapping("/{id}/adopt")
-    public ResponseEntity<AdoptionFormResponse> adoptPet(
-            @PathVariable("id") Long petId,
-            @RequestAttribute("userId") Integer userId) {  // Assuming you have user authentication that provides userId
+    public ResponseEntity<AdoptionFormResponse> adoptPet(@PathVariable("id") Long petId) {
+
+        // Przykladowo narazie, do poprawki na branie id z Principal
+        Integer userId = 1;
 
         AdoptionFormResponse adoptionForm = adoptionFormService.createAdoptionForm(petId, userId);
         return new ResponseEntity<>(adoptionForm, HttpStatus.CREATED);
