@@ -1,5 +1,7 @@
 package org.petify.shelter.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
@@ -7,9 +9,6 @@ import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
-
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +23,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 public class PetService {
-    private final PetRepository petRepository;
-    private final ShelterRepository shelterRepository;
+    private PetRepository petRepository;
+    private ShelterRepository shelterRepository;
 
     public List<PetResponse> getPets() {
         List<Pet> pets = petRepository.findAll();
@@ -74,16 +73,7 @@ public class PetService {
 
         Pet savedPet = petRepository.save(pet);
 
-        return new PetResponse(
-                savedPet.getId(),
-                savedPet.getName(),
-                savedPet.getType(),
-                savedPet.getBreed(),
-                savedPet.getAge(),
-                savedPet.isArchived(),
-                savedPet.getDescription(),
-                savedPet.getShelter().getId()
-        );
+        return new PetResponse(savedPet.getId(), savedPet.getName(), savedPet.getType(), savedPet.getBreed(), savedPet.getAge(), savedPet.isArchived(), savedPet.getDescription(), savedPet.getShelter().getId());
     }
 
     public PetImageResponse getPetImage(Long id) {
@@ -93,68 +83,5 @@ public class PetService {
         } else {
             throw new EntityNotFoundException("Pet with id " + id + " not found!");
         }
-    }
-
-    @Transactional
-    public PetResponse updatePet(PetRequest petRequest, Long petId, Long shelterId, MultipartFile imageFile) throws IOException {
-        Pet existingPet = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found!"));
-
-        Shelter shelter = shelterRepository.findById(shelterId)
-                .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + shelterId + " not found!"));
-
-        existingPet.setName(petRequest.name());
-        existingPet.setType(petRequest.type());
-        existingPet.setBreed(petRequest.breed());
-        existingPet.setAge(petRequest.age());
-        existingPet.setDescription(petRequest.description());
-        existingPet.setShelter(shelter);
-
-        if (imageFile != null && !imageFile.isEmpty()) {
-            existingPet.setImageName(imageFile.getOriginalFilename());
-            existingPet.setImageType(imageFile.getContentType());
-            existingPet.setImageData(imageFile.getBytes());
-        }
-
-        Pet updatedPet = petRepository.save(existingPet);
-
-        return new PetResponse(
-                updatedPet.getId(),
-                updatedPet.getName(),
-                updatedPet.getType(),
-                updatedPet.getBreed(),
-                updatedPet.getAge(),
-                updatedPet.isArchived(),
-                updatedPet.getDescription(),
-                updatedPet.getShelter().getId()
-        );
-    }
-
-    @Transactional
-    public void deletePet(Long petId) {
-        Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found!"));
-
-        petRepository.delete(pet);
-    }
-
-    @Transactional
-    public PetResponse archivePet(Long petId) {
-        Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found!"));
-
-        pet.setArchived(true);
-        Pet savedPet = petRepository.save(pet);
-
-        return new PetResponse(
-                savedPet.getId(),
-                savedPet.getName(),
-                savedPet.getType(),
-                savedPet.getBreed(),
-                savedPet.getAge(),
-                savedPet.isArchived(),
-                savedPet.getDescription(),
-                savedPet.getShelter().getId()
-        );
     }
 }
