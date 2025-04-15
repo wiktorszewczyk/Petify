@@ -6,6 +6,16 @@ spring:
     oauth2:
       authorization-server:
         issuer-url: http://auth-service:9000
+      client:
+        registration:
+          google:
+            client-id: ${google.client.id}
+            client-secret: ${google.client.secret}
+            scope:
+              - email
+              - profile
+            redirect-uri: "http://localhost:9000/login/oauth2/code/google"
+
 
   datasource:
     url: jdbc:postgresql://localhost:5433/petify

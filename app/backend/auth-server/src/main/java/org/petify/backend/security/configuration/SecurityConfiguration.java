@@ -6,7 +6,10 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.petify.backend.security.services.CustomOAuth2UserService;
+import org.petify.backend.security.services.TokenService;
 import org.petify.backend.security.utils.RSAKeyProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +18,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -24,45 +26,76 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 public class SecurityConfiguration {
 
-    private final RSAKeyProperties keys;
+    @Autowired
+    private RSAKeyProperties keys;
 
-    public SecurityConfiguration(RSAKeyProperties keys) {
-        this.keys = keys;
-    }
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authManager(UserDetailsService detailsService) {
+    public AuthenticationManager authManager() {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setUserDetailsService(detailsService);
-        daoProvider.setPasswordEncoder(passwordEncoder());
+        daoProvider.setUserDetailsService(userDetailsService);
+        daoProvider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(daoProvider);
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/oauth2/**").permitAll();
+                    auth.requestMatchers("/login/oauth2/code/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
                     auth.anyRequest().authenticated();
                 });
 
+        // Włączenie uwierzytelniania JWT dla żądań API
         http.oauth2ResourceServer()
                 .jwt()
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
+
+        // Włączenie logowania OAuth2 dla uwierzytelniania przeglądarkowego
+        http.oauth2Login(oauth2 -> oauth2
+                .authorizationEndpoint(endpoint ->
+                        endpoint.baseUri("/oauth2/authorize"))
+                .redirectionEndpoint(endpoint ->
+                        endpoint.baseUri("/login/oauth2/code/*"))
+                .userInfoEndpoint(userInfo ->
+                        userInfo.userService(customOAuth2UserService))
+                .successHandler((request, response, authentication) -> {
+                    // Generowanie tokenu JWT
+                    String token = tokenService.generateJwt(authentication);
+                    // Przekierowanie do URL sukcesu z tokenem
+                    response.sendRedirect("/auth/oauth2/success?token=" + token);
+                })
+                .failureUrl("/auth/oauth2/error")
+        );
+
+        // Zarządzanie sesją - potrzebujemy sesji dla poprawnego działania przepływu OAuth2
         http.sessionManagement(
-                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
         );
 
         return http.build();
@@ -89,5 +122,4 @@ public class SecurityConfiguration {
         jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtConverter;
     }
-
 }
