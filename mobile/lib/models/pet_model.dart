@@ -8,7 +8,7 @@ class PetModel {
   final String description;
   final String imageUrl;
   final List<String> galleryImages;
-  final double distance;
+  final int distance;
   final bool isVaccinated;
   final bool isNeutered;
   final bool isChildFriendly;
@@ -46,7 +46,7 @@ class PetModel {
       description: json['description'] as String,
       imageUrl: json['imageUrl'] as String,
       galleryImages: (json['galleryImages'] as List).map((e) => e as String).toList(),
-      distance: json['distance'] as double,
+      distance: json['distance'] as int,
       isVaccinated: json['isVaccinated'] as bool,
       isNeutered: json['isNeutered'] as bool,
       isChildFriendly: json['isChildFriendly'] as bool,
