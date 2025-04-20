@@ -5,6 +5,7 @@ import '../../styles/colors.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/inputs/custom_textfield.dart';
 import '../../services/user_service.dart';
+import '../home_view.dart';
 
 class LoginView extends StatefulWidget {
   final VoidCallback onSwitch;
@@ -61,10 +62,19 @@ class _LoginViewState extends State<LoginView> {
           SnackBar(content: Text('Zalogowano! ${response.data}')),
         );
 
-        widget.onBack();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeView()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Błąd logowania: ${response.data}')),
+        );
+
+        // do testów: zawsze przechodzimy do HomeView
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeView()),
         );
       }
     } catch (e) {
