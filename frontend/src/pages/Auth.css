@@ -1,10 +1,10 @@
 @keyframes blurZoomIn {
   0% {
-    filter: brightness(50%);
+    filter: brightness(60%);
     transform: scale(1);
   }
   100% {
-    filter: brightness(60%) blur(5px);
+    filter: brightness(60%) blur(5px); 
     transform: scale(1.1);
   }
 }
@@ -45,8 +45,8 @@
   z-index: 0;
 
   /* Początkowy stan */
-  filter: none;
-  transform: scale(1);
+  filter: brightness(60%);
+   transform: scale(1); 
 
   /* Animacja */
   animation: blurZoomIn 1.2s ease-out forwards;

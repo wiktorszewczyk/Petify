@@ -18,9 +18,9 @@ export default function Landing() {
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 500);
-    setTimeout(() => setShowHeader(true), 1700);       // header po 300ms
-  setTimeout(() => setShowHeroContent(true), 2500);
-  setTimeout(() => setShowArrow(true), 5000);
+    setTimeout(() => setShowHeader(true), 1200);       // header po 300ms
+  setTimeout(() => setShowHeroContent(true), 2000);
+  setTimeout(() => setShowArrow(true), 4000);
   const onScroll = () => {
     if (!containerRef.current || !trackRef.current) return;
 
