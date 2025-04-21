@@ -1,10 +1,8 @@
 package org.petify.funding.dto;
 
+import jakarta.validation.constraints.*;
 import lombok.*;
-import org.petify.funding.model.Donation;
-import org.petify.funding.model.MaterialDonation;
-import org.petify.funding.model.MonetaryDonation;
-import org.petify.funding.model.TaxDonation;
+import org.petify.funding.model.*;
 
 import java.math.BigDecimal;
 
@@ -15,57 +13,70 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DonationRequest {
-    private Long shelterId;
-    private Long petId;          // optional
-    private String donorUsername;
-    private String donationType; // "MONEY", "TAX" or "MATERIAL"
 
-    //for MONEY:
+    @NotNull
+    private Long shelterId;
+
+    private Long petId; // optional
+
+    @NotBlank
+    private String donorUsername;
+
+    @NotNull
+    private DonationType donationType;
+
+    // MONEY
+    @DecimalMin("0.01")
     private BigDecimal amount;
+
+    @Size(min = 3, max = 3)
     private String currency;
 
-    //for TAX:
+    // TAX
+    @Min(2000) @Max(2100)
     private Integer taxYear;
+
     private String krsNumber;
+
+    @DecimalMin("0.01")
     private BigDecimal taxAmount;
 
-    //for MATERIAL:
+    // MATERIAL
     private String itemName;
+
     private String itemDescription;
+
+    @Min(1)
     private Integer quantity;
+
     private String unit;
 
     public Donation toEntity() {
-        switch (donationType) {
-            case "MONEY":
-                return MonetaryDonation.builder()
-                        .shelterId(shelterId)
-                        .petId(petId)
-                        .donorUsername(donorUsername)
-                        .amount(amount)
-                        .currency(currency)
-                        .build();
-            case "TAX":
-                return TaxDonation.builder()
-                        .shelterId(shelterId)
-                        .petId(petId)
-                        .donorUsername(donorUsername)
-                        .taxYear(taxYear)
-                        .krsNumber(krsNumber)
-                        .taxAmount(taxAmount)
-                        .build();
-            case "MATERIAL":
-                return MaterialDonation.builder()
-                        .shelterId(shelterId)
-                        .petId(petId)
-                        .donorUsername(donorUsername)
-                        .itemName(itemName)
-                        .itemDescription(itemDescription)
-                        .quantity(quantity)
-                        .unit(unit)
-                        .build();
-            default:
-                throw new IllegalArgumentException("Unknown donationType: " + donationType);
-        }
+        return switch (donationType) {
+            case MONEY -> MonetaryDonation.builder()
+                    .shelterId(shelterId)
+                    .petId(petId)
+                    .donorUsername(donorUsername)
+                    .amount(amount)
+                    .currency(currency)
+                    .build();
+            case TAX -> TaxDonation.builder()
+                    .shelterId(shelterId)
+                    .petId(petId)
+                    .donorUsername(donorUsername)
+                    .taxYear(taxYear)
+                    .krsNumber(krsNumber)
+                    .taxAmount(taxAmount)
+                    .build();
+            case MATERIAL -> MaterialDonation.builder()
+                    .shelterId(shelterId)
+                    .petId(petId)
+                    .donorUsername(donorUsername)
+                    .itemName(itemName)
+                    .itemDescription(itemDescription)
+                    .quantity(quantity)
+                    .unit(unit)
+                    .build();
+        };
     }
 }

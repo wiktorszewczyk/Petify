@@ -1,10 +1,7 @@
 package org.petify.funding.dto;
 
 import lombok.*;
-import org.petify.funding.model.Donation;
-import org.petify.funding.model.MaterialDonation;
-import org.petify.funding.model.MonetaryDonation;
-import org.petify.funding.model.TaxDonation;
+import org.petify.funding.model.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,7 +18,7 @@ public class DonationResponse {
     private Long petId;
     private String donorUsername;
     private Instant donatedAt;
-    private String donationType;
+    private DonationType donationType;
 
     // MONEY
     private BigDecimal amount;
@@ -39,36 +36,26 @@ public class DonationResponse {
     private String unit;
 
     public static DonationResponse fromEntity(Donation d) {
-        var resp = new DonationResponse();
+        DonationResponse resp = new DonationResponse();
         resp.setId(d.getId());
         resp.setShelterId(d.getShelterId());
         resp.setPetId(d.getPetId());
         resp.setDonorUsername(d.getDonorUsername());
         resp.setDonatedAt(d.getDonatedAt());
-        resp.setDonationType(
-                d instanceof MonetaryDonation ? "MONEY" :
-                        d instanceof TaxDonation ? "TAX" :
-                                d instanceof MaterialDonation ? "MATERIAL" :
-                                        "UNKNOWN"
-        );
-        switch (d) {
-            case MonetaryDonation md -> {
-                resp.setAmount(md.getAmount());
-                resp.setCurrency(md.getCurrency());
-            }
-            case TaxDonation td -> {
-                resp.setTaxYear(td.getTaxYear());
-                resp.setKrsNumber(td.getKrsNumber());
-                resp.setTaxAmount(td.getTaxAmount());
-            }
-            case MaterialDonation mat -> {
-                resp.setItemName(mat.getItemName());
-                resp.setItemDescription(mat.getItemDescription());
-                resp.setQuantity(mat.getQuantity());
-                resp.setUnit(mat.getUnit());
-            }
-            default -> {
-            }
+        resp.setDonationType(d.getDonationType());
+
+        if (d instanceof MonetaryDonation md) {
+            resp.setAmount(md.getAmount());
+            resp.setCurrency(md.getCurrency());
+        } else if (d instanceof TaxDonation td) {
+            resp.setTaxYear(td.getTaxYear());
+            resp.setKrsNumber(td.getKrsNumber());
+            resp.setTaxAmount(td.getTaxAmount());
+        } else if (d instanceof MaterialDonation mat) {
+            resp.setItemName(mat.getItemName());
+            resp.setItemDescription(mat.getItemDescription());
+            resp.setQuantity(mat.getQuantity());
+            resp.setUnit(mat.getUnit());
         }
         return resp;
     }

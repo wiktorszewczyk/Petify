@@ -1,14 +1,11 @@
 package org.petify.funding.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
 import java.time.Instant;
 
-/**
- * Base class for all donations.
- */
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,10 +23,6 @@ public abstract class Donation {
     @Column(name = "shelter_id", nullable = false)
     private Long shelterId;
 
-    /**
-     * ID of the pet being sponsored or supported.
-     * This can be null if the donation is not pet-specific.
-     */
     @Column(name = "pet_id", nullable = true)
     private Long petId;
 
@@ -38,6 +31,14 @@ public abstract class Donation {
 
     @Column(name = "donated_at", nullable = false)
     private Instant donatedAt;
+
+    /**
+     * Read-only view of the discriminator column.
+     */
+    @JsonProperty("donationType")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "donation_type", insertable = false, updatable = false)
+    private DonationType donationType;
 
     @PrePersist
     protected void onCreate() {
