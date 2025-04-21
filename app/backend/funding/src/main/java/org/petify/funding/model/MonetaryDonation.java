@@ -2,7 +2,10 @@ package org.petify.funding.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
+import java.time.Instant;
 
 /**
  * Financial donation.
@@ -12,6 +15,7 @@ import java.math.BigDecimal;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class MonetaryDonation extends Donation {
 
     @Column(name = "amount", nullable = false, precision = 15, scale = 2)

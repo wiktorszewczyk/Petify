@@ -2,6 +2,8 @@ package org.petify.funding.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.time.Instant;
 
 /**
@@ -10,6 +12,7 @@ import java.time.Instant;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @Entity
 @Table(name = "donations")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -35,4 +38,11 @@ public abstract class Donation {
 
     @Column(name = "donated_at", nullable = false)
     private Instant donatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (donatedAt == null) {
+            donatedAt = Instant.now();
+        }
+    }
 }

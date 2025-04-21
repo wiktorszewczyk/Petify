@@ -2,6 +2,7 @@ package org.petify.funding.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Material donation - for example, food, toys, etc.
@@ -11,6 +12,7 @@ import lombok.*;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class MaterialDonation extends Donation {
 
     @Column(name = "item_name", nullable = false)

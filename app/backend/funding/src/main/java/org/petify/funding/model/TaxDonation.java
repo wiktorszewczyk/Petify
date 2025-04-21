@@ -2,6 +2,8 @@ package org.petify.funding.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
 
 /**
@@ -12,6 +14,7 @@ import java.math.BigDecimal;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class TaxDonation extends Donation {
 
     @Column(name = "tax_year", nullable = false)
