@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/petify
+    url: jdbc:postgresql://localhost:5433/petify
     username: admin
     password: admin
 
