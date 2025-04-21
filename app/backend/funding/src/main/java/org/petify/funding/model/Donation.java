@@ -23,6 +23,13 @@ public abstract class Donation {
     @Column(name = "shelter_id", nullable = false)
     private Long shelterId;
 
+    /**
+     * ID of the pet being sponsored or supported.
+     * This can be null if the donation is not pet-specific.
+     */
+    @Column(name = "pet_id", nullable = true)
+    private Long petId;
+
     @Column(name = "donor_username", nullable = false)
     private String donorUsername;
 
