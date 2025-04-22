@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Getter
 @Setter
 @Entity
-@Table(name = "adoption_forms")
+@Table(name = "adoptions")
 public class Adoption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
