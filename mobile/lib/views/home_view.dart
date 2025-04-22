@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile/views/support_options_sheet.dart';
 import '../../styles/colors.dart';
 import '../../models/pet_model.dart';
 import '../../widgets/buttons/action_button.dart';
 import '../../widgets/cards/pet_card.dart';
 import '../../services/pet_service.dart';
+import '../views/categories_view.dart';
+import '../views/favorites_view.dart';
+import '../views/messages_view.dart';
+import '../views/profile_view.dart';
+import 'app_settings_view.dart';
+import 'discovery_settings_sheet.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -25,6 +32,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   Offset _dragPosition = Offset.zero;
   SwipeDirection? _swipeDirection;
+
+  // Current tab index for bottom navigation
+  int _selectedTabIndex = 0;
 
   bool _isDragging = false;
 
@@ -206,50 +216,118 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     _finishSwipe(direction);
   }
 
+  void _showSupportOptions() {
+    if (_isLoading || _pets.isEmpty) return;
+
+    final currentPet = _pets[_currentIndex];
+
+    // showModalBottomSheet(
+    //   context: context,
+    //   isScrollControlled: true,
+    //   backgroundColor: Colors.transparent,
+    //   builder: (context) => SupportOptionsSheet(pet: currentPet),
+    // );
+  }
+
+  void _showDiscoverySettings() async {
+    final result = await DiscoverySettingsSheet.show<Map<String, dynamic>>(context);
+
+    if (!mounted) return;
+
+    if (result == 'reset') {
+      // przywróć domyślne filtry
+    } else if (result != null) {
+      // zastosuj filtry z result
+      _loadPets(/* pass filters */);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.pets, color: AppColors.primaryColor, size: 32)
-            ),
+            Icon(Icons.pets, color: AppColors.primaryColor, size: 20),
             const SizedBox(width: 8),
             Text(
               'Petify',
               style: GoogleFonts.poppins(
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textColor,
+                color: AppColors.primaryColor,
               ),
             ),
           ],
         ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite, color: Colors.redAccent),
+            icon: const Icon(Icons.tune, color: Colors.black),
+            onPressed: _showDiscoverySettings,
+            tooltip: 'Ustawienia odkrywania',
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
-              /// TODO: Przejście do ekranu ulubionych zwierząt
+              // Implementacja przejścia do ustawień aplikacji
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const HomeView(),
+                  // const AppSettingsView(),
+                ),
+              );
             },
+            tooltip: 'Ustawienia aplikacji',
           ),
         ],
       ),
       body: _buildBody(),
+      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
   Widget _buildBody() {
+    // Różne widoki w zależności od wybranej zakładki
+    switch (_selectedTabIndex) {
+      case 0:
+        return _buildSwipeView();
+      case 1:
+        return _buildSwipeView();
+        // return const CategoriesView();
+      case 2:
+        return _buildSwipeView();
+        // return const FavoritesView();
+      case 3:
+        return _buildSwipeView();
+        // return const MessagesView();
+      case 4:
+        return _buildSwipeView();
+        // return const ProfileView();
+      default:
+        return _buildSwipeView();
+    }
+  }
+
+  Widget _buildSwipeView() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Wczytywanie zwierzaków...',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -262,19 +340,24 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             const Icon(Icons.error_outline, size: 60, color: Colors.red),
             const SizedBox(height: 16),
             Text(
-              'Ups! Coś poszło nie tak',
+              'Nie udało się załadować danych',
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: _loadPets,
-              child: const Text('Spróbuj ponownie'),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Spróbuj ponownie'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                foregroundColor: Colors.black,
+              ),
             ),
           ],
-        ).animate().fadeIn().slideY(begin: 0.2, curve: Curves.easeOutCubic),
+        ),
       );
     }
 
@@ -283,27 +366,43 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.pets, size: 60, color: AppColors.primaryColor),
+            Image.asset(
+              'assets/images/empty_pets.png',
+              height: 200,
+            ),
             const SizedBox(height: 16),
             Text(
-              'Brak zwierząt do wyświetlenia',
+              'Brak zwierząt w okolicy',
               style: GoogleFonts.poppins(
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Sprawdź ponownie później',
-              style: TextStyle(
+            Text(
+              'Spróbuj zwiększyć zasięg poszukiwań\nlub zmienić filtry',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
                 fontSize: 16,
-                color: Colors.grey,
+                color: Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _showDiscoverySettings,
+              icon: const Icon(Icons.tune),
+              label: const Text('Zmień filtry'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                foregroundColor: Colors.black,
               ),
             ),
           ],
-        ).animate().fadeIn().slideY(begin: 0.2, curve: Curves.easeOutCubic),
+        ),
       );
     }
+
+    final currentPet = _pets[_currentIndex];
 
     return Column(
       children: [
@@ -311,63 +410,107 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
               children: [
+                // Karty zwierząt w tle (jeśli są kolejne)
                 if (_currentIndex < _pets.length - 1)
-                  Positioned(
-                    child: Transform.scale(
-                      scale: 0.9,
-                      child: Opacity(
-                        opacity: 0.7,
-                        child: PetCard(pet: _pets[_currentIndex + 1]),
+                  Positioned.fill(
+                    child: PetCard(
+                      pet: _pets[_currentIndex + 1],
+                    ).animate().scale(
+                      begin: const Offset(0.95, 0.95),
+                      end: const Offset(0.95, 0.95),
+                    ),
+                  ),
+
+                // Aktualna karta zwierzęcia
+                if (_currentIndex < _pets.length)
+                  Positioned.fill(
+                    child: GestureDetector(
+                      onPanUpdate: _onDragUpdate,
+                      onPanEnd: _onDragEnd,
+                      child: AnimatedBuilder(
+                        animation: _swipeController,
+                        builder: (context, child) {
+                          final offset = _isDragging ? _dragPosition : _swipeAnimation.value;
+                          final angle = _isDragging
+                              ? _dragPosition.dx * 0.001
+                              : _rotationAnimation.value;
+
+                          return Transform.translate(
+                            offset: offset,
+                            child: Transform.rotate(
+                              angle: angle,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: PetCard(
+                          pet: currentPet,
+                        ),
                       ),
                     ),
                   ),
 
-                if (_pets.isNotEmpty && _currentIndex < _pets.length)
-                  GestureDetector(
-                    onPanUpdate: _onDragUpdate,
-                    onPanEnd: _onDragEnd,
-                    child: AnimatedBuilder(
-                      animation: _swipeController,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: _isDragging ? _dragPosition : _swipeAnimation.value,
-                          child: Transform.rotate(
-                            angle: _isDragging ? _dragPosition.dx * 0.001 : _rotationAnimation.value,
-                            child: Stack(
-                              children: [
-                                child!,
-                                // Wskaźnik kierunku
-                                if (_swipeDirection != null)
-                                  Positioned(
-                                    top: 20,
-                                    right: _swipeDirection == SwipeDirection.right ? 20 : null,
-                                    left: _swipeDirection == SwipeDirection.left ? 20 : null,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: _swipeDirection == SwipeDirection.right
-                                            ? Colors.green.withOpacity(0.8)
-                                            : Colors.red.withOpacity(0.8),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        _swipeDirection == SwipeDirection.right ? 'LUBIĘ TO!' : 'POMIŃ',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                // Indykatory swipe'a
+                if (_swipeDirection == SwipeDirection.right)
+                  Positioned(
+                    top: 40,
+                    left: 20,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.favorite, color: Colors.white, size: 30),
+                          const SizedBox(width: 8),
+                          Text(
+                            'POLUB',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
                           ),
-                        );
-                      },
-                      child: PetCard(pet: _pets[_currentIndex]),
+                        ],
+                      ),
+                    ).animate().scale(
+                      duration: 200.ms,
+                      curve: Curves.easeOut,
+                    ),
+                  ),
+
+                if (_swipeDirection == SwipeDirection.left)
+                  Positioned(
+                    top: 40,
+                    right: 20,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.close, color: Colors.white, size: 30),
+                          const SizedBox(width: 8),
+                          Text(
+                            'POMIŃ',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).animate().scale(
+                      duration: 200.ms,
+                      curve: Curves.easeOut,
                     ),
                   ),
               ],
@@ -375,8 +518,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ),
         ),
 
+        // Przyciski akcji
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -384,28 +528,83 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                 icon: Icons.close,
                 backgroundColor: Colors.red,
                 onPressed: () => _onActionButtonPressed(SwipeDirection.left),
-              ).animate().scale(delay: 100.ms),
-
+              ),
               ActionButton(
                 icon: Icons.favorite,
                 backgroundColor: Colors.green,
-                onPressed: () => _onActionButtonPressed(SwipeDirection.right),
                 size: 70,
-              ).animate().scale(delay: 200.ms),
-
+                onPressed: () => _onActionButtonPressed(SwipeDirection.right),
+              ),
               ActionButton(
-                icon: Icons.star,
-                backgroundColor: AppColors.primaryColor,
-                onPressed: () {
-                  /// TODO: Logika superpolubienia do implementacji
-                },
-              ).animate().scale(delay: 300.ms),
+                icon: Icons.volunteer_activism,
+                backgroundColor: Colors.blue,
+                onPressed: _showSupportOptions,
+              ),
             ],
           ),
         ),
       ],
     );
   }
+
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavBarItem(0, Icons.home_outlined, Icons.home),
+              _buildNavBarItem(1, Icons.category_outlined, Icons.category),
+              _buildNavBarItem(2, Icons.favorite_outline, Icons.favorite),
+              _buildNavBarItem(3, Icons.message_outlined, Icons.message),
+              _buildNavBarItem(4, Icons.person_outline, Icons.person),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavBarItem(int index, IconData icon, IconData activeIcon) {
+    final isSelected = _selectedTabIndex == index;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedTabIndex = index;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: isSelected
+            ? BoxDecoration(
+          color: AppColors.primaryColor.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(20),
+        )
+            : null,
+        child: Icon(
+          isSelected ? activeIcon : icon,
+          color: isSelected ? AppColors.primaryColor : Colors.grey,
+          size: 28,
+        ),
+      ),
+    );
+  }
 }
 
-enum SwipeDirection { left, right }
+enum SwipeDirection {
+  left,
+  right,
+}
