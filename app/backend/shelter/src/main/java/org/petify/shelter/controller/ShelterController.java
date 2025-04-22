@@ -10,6 +10,8 @@ import org.petify.shelter.service.PetService;
 import org.petify.shelter.service.ShelterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +30,14 @@ public class ShelterController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> addShelter(@Valid @RequestBody ShelterRequest input) {
-        return new ResponseEntity<>(shelterService.createShelter(input), HttpStatus.CREATED);
+    public ResponseEntity<?> addShelter(
+            @Valid @RequestBody ShelterRequest input,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.createShelter(input, username);
+
+        return new ResponseEntity<>(shelter, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -44,21 +52,46 @@ public class ShelterController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShelter(@PathVariable("id") Long id,
-                                           @Valid @RequestBody ShelterRequest input) {
+                                           @Valid @RequestBody ShelterRequest input,
+                                           @AuthenticationPrincipal Jwt jwt) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterById(id);
+
+        if (!shelter.ownerUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         ShelterResponse updatedShelter = shelterService.updateShelter(input, id);
         return ResponseEntity.ok(updatedShelter);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteShelter(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteShelter(@PathVariable("id") Long id,
+                                           @AuthenticationPrincipal Jwt jwt) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterById(id);
+
+        if (!shelter.ownerUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         shelterService.deleteShelter(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/adoptions")
     public ResponseEntity<List<AdoptionResponse>> getShelterAdoptionForms(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterById(id);
+
+        if (!shelter.ownerUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         List<AdoptionResponse> forms = adoptionService.getShelterAdoptionForms(id);
         return ResponseEntity.ok(forms);

@@ -78,7 +78,7 @@ public class AdoptionService {
         Adoption form = adoptionRepository.findById(formId)
                 .orElseThrow(() -> new EntityNotFoundException("Adoption form with id " + formId + " not found!"));
 
-        if (!form.getPet().getShelter().getOwnerId().equals(shelterOwnerId)) {
+        if (!form.getPet().getShelter().getOwnerUsername().equals(shelterOwnerId)) {
             throw new SecurityException("You don't have permission to update this adoption form");
         }
 
