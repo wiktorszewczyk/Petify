@@ -20,8 +20,8 @@ public class Shelter {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "owner_id", nullable = false)
-    private Integer ownerId;
+    @Column(name = "owner_username", nullable = false)
+    private String ownerUsername;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -38,8 +38,8 @@ public class Shelter {
     @OneToMany(mappedBy = "shelter")
     private List<Pet> pets;
 
-    public Shelter(Integer ownerId, String name, String description, String address, String phoneNumber) {
-        this.ownerId = ownerId;
+    public Shelter(String ownerUsername, String name, String description, String address, String phoneNumber) {
+        this.ownerUsername = ownerUsername;
         this.name = name;
         this.description = description;
         this.address = address;
@@ -52,19 +52,19 @@ public class Shelter {
 
         if (!(o instanceof Shelter shelter)) return false;
 
-        return new EqualsBuilder().append(getId(), shelter.getId()).append(getOwnerId(), shelter.getOwnerId()).append(getName(), shelter.getName()).append(getDescription(), shelter.getDescription()).append(getAddress(), shelter.getAddress()).append(getPhoneNumber(), shelter.getPhoneNumber()).isEquals();
+        return new EqualsBuilder().append(getId(), shelter.getId()).append(getOwnerUsername(), shelter.getOwnerUsername()).append(getName(), shelter.getName()).append(getDescription(), shelter.getDescription()).append(getAddress(), shelter.getAddress()).append(getPhoneNumber(), shelter.getPhoneNumber()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getId()).append(getOwnerId()).append(getName()).append(getDescription()).append(getAddress()).append(getPhoneNumber()).toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId()).append(getOwnerUsername()).append(getName()).append(getDescription()).append(getAddress()).append(getPhoneNumber()).toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
-                .append("ownerId", ownerId)
+                .append("ownerId", ownerUsername)
                 .append("name", name)
                 .append("description", description)
                 .append("address", address)

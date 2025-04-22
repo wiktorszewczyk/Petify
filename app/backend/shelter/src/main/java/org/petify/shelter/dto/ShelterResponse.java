@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public record ShelterResponse(
         Long id,
-        Integer ownerId,
+        String ownerUsername,
         String name,
         String description,
         String address,

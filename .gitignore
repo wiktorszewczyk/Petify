@@ -92,3 +92,4 @@ build/
 
 ### Keys ###
 app/backend/secrets.properties
+/app/backend/.env
