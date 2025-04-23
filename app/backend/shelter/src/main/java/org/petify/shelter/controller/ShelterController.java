@@ -53,6 +53,7 @@ public class ShelterController {
         return ResponseEntity.ok(petService.getAllShelterPets(id));
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShelter(@PathVariable("id") Long id,
                                            @Valid @RequestBody ShelterRequest input,
@@ -69,6 +70,7 @@ public class ShelterController {
         return ResponseEntity.ok(updatedShelter);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteShelter(@PathVariable("id") Long id,
                                            @AuthenticationPrincipal Jwt jwt) {
@@ -84,6 +86,7 @@ public class ShelterController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}/adoptions")
     public ResponseEntity<List<AdoptionResponse>> getShelterAdoptionForms(
             @PathVariable Long id,

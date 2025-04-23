@@ -24,7 +24,7 @@ public class AdoptionService {
     private final PetRepository petRepository;
 
     @Transactional
-    public AdoptionResponse createAdoptionForm(Long petId, Integer userId) {
+    public AdoptionResponse createAdoptionForm(Long petId, String username) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found!"));
 
@@ -32,12 +32,12 @@ public class AdoptionService {
             throw new IllegalStateException("Pet is no longer available for adoption");
         }
 
-        if (adoptionRepository.existsByPetIdAndUserId(petId, userId)) {
+        if (adoptionRepository.existsByPetIdAndUsername(petId, username)) {
             throw new IllegalStateException("You already have a pending adoption request for this pet");
         }
 
         Adoption adoption = new Adoption();
-        adoption.setUserId(userId);
+        adoption.setUsername(username);
         adoption.setPet(pet);
         adoption.setAdoptionStatus(AdoptionStatus.PENDING);
 
@@ -46,8 +46,8 @@ public class AdoptionService {
         return mapToResponse(savedForm);
     }
 
-    public List<AdoptionResponse> getUserAdoptionForms(Integer userId) {
-        List<Adoption> adoptions = adoptionRepository.findByUserId(userId);
+    public List<AdoptionResponse> getUserAdoptionForms(String username) {
+        List<Adoption> adoptions = adoptionRepository.findByUsername(username);
         return adoptions.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -74,11 +74,11 @@ public class AdoptionService {
     }
 
     @Transactional
-    public AdoptionResponse updateAdoptionStatus(Long formId, AdoptionStatus newStatus, Integer shelterOwnerId) {
+    public AdoptionResponse updateAdoptionStatus(Long formId, AdoptionStatus newStatus, String username) {
         Adoption form = adoptionRepository.findById(formId)
                 .orElseThrow(() -> new EntityNotFoundException("Adoption form with id " + formId + " not found!"));
 
-        if (!form.getPet().getShelter().getOwnerUsername().equals(shelterOwnerId)) {
+        if (!form.getPet().getShelter().getOwnerUsername().equals(username)) {
             throw new SecurityException("You don't have permission to update this adoption form");
         }
 
@@ -103,11 +103,11 @@ public class AdoptionService {
     }
 
     @Transactional
-    public AdoptionResponse cancelAdoptionForm(Long formId, Integer userId) {
+    public AdoptionResponse cancelAdoptionForm(Long formId, String username) {
         Adoption form = adoptionRepository.findById(formId)
                 .orElseThrow(() -> new EntityNotFoundException("Adoption form with id " + formId + " not found!"));
 
-        if (!form.getUserId().equals(userId)) {
+        if (!form.getUsername().equals(username)) {
             throw new SecurityException("You don't have permission to cancel this adoption form");
         }
 
@@ -131,7 +131,7 @@ public class AdoptionService {
     private AdoptionResponse mapToResponse(Adoption form) {
         return new AdoptionResponse(
                 form.getId(),
-                form.getUserId(),
+                form.getUsername(),
                 form.getPet().getId(),
                 form.getAdoptionStatus().toString()
         );

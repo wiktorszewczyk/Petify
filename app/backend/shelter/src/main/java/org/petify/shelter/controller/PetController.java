@@ -2,15 +2,16 @@ package org.petify.shelter.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.petify.shelter.dto.AdoptionResponse;
-import org.petify.shelter.dto.PetImageResponse;
-import org.petify.shelter.dto.PetRequest;
-import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.dto.*;
 import org.petify.shelter.service.AdoptionService;
 import org.petify.shelter.service.PetService;
+import org.petify.shelter.service.ShelterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,19 +24,28 @@ import java.util.List;
 public class PetController {
     private final PetService petService;
     private final AdoptionService adoptionService;
+    private final ShelterService shelterService;
 
     @GetMapping()
     public ResponseEntity<?> pets() {
         return ResponseEntity.ok(petService.getPets());
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<?> addPet(@Valid @RequestPart PetRequest petRequest,
-                                    @RequestPart MultipartFile imageFile) {
-        // Narazie przykladowo dla jednego wybranego schroniska, pozniej do edycji, by z automatu principal brało id schroniska zalogowanego
-        Long shelterId = 1L;
+                                    @RequestPart MultipartFile imageFile,
+                                    @AuthenticationPrincipal Jwt jwt) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+
+        if (!shelter.ownerUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         try {
-            PetResponse pet = petService.createPet(petRequest, shelterId, imageFile);
+            PetResponse pet = petService.createPet(petRequest, shelter.id(), imageFile);
             return new ResponseEntity<>(pet, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -47,16 +57,22 @@ public class PetController {
         return new ResponseEntity<>(petService.getPetById(id), HttpStatus.FOUND);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PetResponse> updatePet(
             @PathVariable Long id,
             @RequestPart("pet") PetRequest pet,
-            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+            @AuthenticationPrincipal Jwt jwt) throws IOException {
 
-        // Narazie przykladowo dla jednego wybranego schroniska, pozniej do edycji, by z automatu principal brało id schroniska zalogowanego
-        Long shelterId = 4L;
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
 
-        PetResponse updatedPet = petService.updatePet(pet, id, shelterId, imageFile);
+        if (!shelter.ownerUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        PetResponse updatedPet = petService.updatePet(pet, id, shelter.id(), imageFile);
         return ResponseEntity.ok(updatedPet);
     }
 
@@ -69,12 +85,24 @@ public class PetController {
                 .body(petImageData.imageData());
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePet(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deletePet(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+
+        if (!shelter.ownerUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         petService.deletePet(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}/adoptions")
     public ResponseEntity<List<AdoptionResponse>> getPetAdoptionForms(@PathVariable Long id) {
 
@@ -88,13 +116,15 @@ public class PetController {
         return ResponseEntity.ok(petResponse);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/{id}/adopt")
-    public ResponseEntity<AdoptionResponse> adoptPet(@PathVariable("id") Long petId) {
+    public ResponseEntity<AdoptionResponse> adoptPet(
+            @PathVariable("id") Long petId,
+            @AuthenticationPrincipal Jwt jwt) {
 
-        // Przykladowo narazie, do poprawki na branie id z Principal
-        Integer userId = 1;
+        String username = jwt != null ? jwt.getSubject() : null;
 
-        AdoptionResponse adoptionForm = adoptionService.createAdoptionForm(petId, userId);
+        AdoptionResponse adoptionForm = adoptionService.createAdoptionForm(petId, username);
         return new ResponseEntity<>(adoptionForm, HttpStatus.CREATED);
     }
 }
