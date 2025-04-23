@@ -19,7 +19,7 @@ public class Adoption {
     private Long id;
 
     @Column(nullable = false)
-    private Integer userId;
+    private String username;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id", nullable = false)
@@ -33,21 +33,21 @@ public class Adoption {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (!(o instanceof Adoption that)) return false;
+        if (!(o instanceof Adoption adoption)) return false;
 
-        return new EqualsBuilder().append(getId(), that.getId()).append(getUserId(), that.getUserId()).append(getPet(), that.getPet()).append(getAdoptionStatus(), that.getAdoptionStatus()).isEquals();
+        return new EqualsBuilder().append(getId(), adoption.getId()).append(getUsername(), adoption.getUsername()).append(getPet(), adoption.getPet()).append(getAdoptionStatus(), adoption.getAdoptionStatus()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getId()).append(getUserId()).append(getPet()).append(getAdoptionStatus()).toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId()).append(getUsername()).append(getPet()).append(getAdoptionStatus()).toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
-                .append("userId", userId)
+                .append("username", username)
                 .append("pet", pet)
                 .append("adoptionStatus", adoptionStatus)
                 .toString();

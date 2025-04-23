@@ -34,7 +34,7 @@ spring:
         - id: shelter-service
           uri: lb://SHELTER-SERVICE
           predicates:
-            - Path=/shelters/**, /shelters, /pets/**, /pets
+            - Path=/shelters/**, /shelters, /pets/**, /pets, /adoptions/**, /adoptions
           filters:
             - PreserveHostHeader
 

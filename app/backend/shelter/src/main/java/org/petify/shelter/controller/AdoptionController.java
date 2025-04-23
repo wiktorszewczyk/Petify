@@ -5,6 +5,9 @@ import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.model.AdoptionStatus;
 import org.petify.shelter.service.AdoptionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,31 +17,34 @@ public class AdoptionController {
     private final AdoptionService adoptionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdoptionResponse> getAdoptionForm(@PathVariable Long id) {
+    public ResponseEntity<AdoptionResponse> getAdoptionForm(
+            @PathVariable Long id) {
         AdoptionResponse form = adoptionService.getAdoptionFormById(id);
         return ResponseEntity.ok(form);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<AdoptionResponse> cancelAdoptionForm(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            @AuthenticationPrincipal Jwt jwt) {
 
-        // Przykladowo narazie, do poprawki na branie id z Principal
-        Integer userId = 1;
+        String username = jwt != null ? jwt.getSubject() : null;
 
-        AdoptionResponse cancelledForm = adoptionService.cancelAdoptionForm(id, userId);
+        AdoptionResponse cancelledForm = adoptionService.cancelAdoptionForm(id, username);
         return ResponseEntity.ok(cancelledForm);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<AdoptionResponse> updateAdoptionStatus(
             @PathVariable Long id,
-            @RequestParam AdoptionStatus status) {
+            @RequestParam AdoptionStatus status,
+            @AuthenticationPrincipal Jwt jwt) {
 
-        // Przykladowo narazie, do poprawki na branie id z Principal
-        Integer shelterOwnerId = 1;
+        String username = jwt != null ? jwt.getSubject() : null;
 
-        AdoptionResponse updatedForm = adoptionService.updateAdoptionStatus(id, status, shelterOwnerId);
+        AdoptionResponse updatedForm = adoptionService.updateAdoptionStatus(id, status, username);
         return ResponseEntity.ok(updatedForm);
     }
 }

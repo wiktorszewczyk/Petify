@@ -20,7 +20,7 @@ public class Shelter {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "owner_username", nullable = false)
+    @Column(name = "owner_username", unique = true, nullable = false)
     private String ownerUsername;
 
     @Column(name = "name", nullable = false)
