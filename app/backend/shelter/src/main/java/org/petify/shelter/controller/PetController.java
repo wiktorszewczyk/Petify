@@ -61,7 +61,7 @@ public class PetController {
     @PutMapping("/{id}")
     public ResponseEntity<PetResponse> updatePet(
             @PathVariable Long id,
-            @RequestPart("pet") PetRequest pet,
+            @Valid @RequestPart PetRequest petRequest,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
             @AuthenticationPrincipal Jwt jwt) throws IOException {
 
@@ -72,7 +72,7 @@ public class PetController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        PetResponse updatedPet = petService.updatePet(pet, id, shelter.id(), imageFile);
+        PetResponse updatedPet = petService.updatePet(petRequest, id, shelter.id(), imageFile);
         return ResponseEntity.ok(updatedPet);
     }
 
@@ -111,7 +111,17 @@ public class PetController {
     }
 
     @PatchMapping("/{id}/archive")
-    public ResponseEntity<?> archivePet(@PathVariable("id") Long id) {
+    public ResponseEntity<?> archivePet(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+
+        if (!shelter.ownerUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         PetResponse petResponse = petService.archivePet(id);
         return ResponseEntity.ok(petResponse);
     }
