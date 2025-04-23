@@ -110,6 +110,7 @@ public class PetController {
         return ResponseEntity.ok(forms);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PatchMapping("/{id}/archive")
     public ResponseEntity<?> archivePet(
             @PathVariable("id") Long id,
