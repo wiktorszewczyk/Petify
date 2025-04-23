@@ -10,6 +10,7 @@ import org.petify.shelter.service.PetService;
 import org.petify.shelter.service.ShelterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.getShelters());
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<?> addShelter(
             @Valid @RequestBody ShelterRequest input,
@@ -40,6 +42,7 @@ public class ShelterController {
         return new ResponseEntity<>(shelter, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getShelterById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(shelterService.getShelterById(id));
