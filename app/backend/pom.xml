@@ -20,6 +20,7 @@
     <module>discovery</module>
     <module>gateway</module>
     <module>shelter</module>
+    <module>reservations</module>
   </modules>
 
   <distributionManagement>
@@ -75,7 +76,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <!-- Checkstyle -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
