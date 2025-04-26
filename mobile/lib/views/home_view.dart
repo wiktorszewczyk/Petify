@@ -297,8 +297,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         return _buildSwipeView();
         // return const CategoriesView();
       case 2:
-        return _buildSwipeView();
-        // return const FavoritesView();
+        // return _buildSwipeView();
+        return const FavoritesView();
       case 3:
         return _buildSwipeView();
         // return const MessagesView();

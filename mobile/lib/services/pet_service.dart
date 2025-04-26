@@ -144,11 +144,32 @@ class PetService {
     return true;
   }
 
-  Future<List<PetModel>> getLikedPets() async {
-    // Symulacja opóźnienia sieci
-    await Future.delayed(Duration(milliseconds: _simulatedDelayMs));
+  Future<void> unlikePet(String petId) async {
+    /// TODO: Implementacja cofnięcia polubienia zwierzaka w bazie danych
+    try {
+      // Symulacja opóźnienia sieciowego
+      await Future.delayed(const Duration(milliseconds: 300));
 
-    /// TODO: Implementacja pobierania polubionych zwierząt z bazy danych
-    return [];
+      // Pomyślne usunięcie z ulubionych
+      // Kiedy backend będzie gotowy, zastąp to faktycznym wywołaniem API
+      return;
+    } catch (e) {
+      throw Exception('Nie udało się usunąć zwierzaka z ulubionych: $e');
+    }
   }
+
+  // Zaktualizowana metoda w PetService
+  Future<List<PetModel>> getLikedPets() async {
+    /// TODO: Implementacja pobierania polubionych zwierząt z bazy danych
+
+    /// TYMCZASOWA IMPLEMENTACJA:
+    final random = Random();
+    final petCount = random.nextInt(7) + 3;
+
+    final pets = await getPets();
+
+    pets.shuffle();
+    return pets.take(petCount).toList();
+  }
+
 }
