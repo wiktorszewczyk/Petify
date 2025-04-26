@@ -24,8 +24,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     _petService = PetService();
   }
 
-  /* ---------- util ---------- */
-
   List<String> get _allImages => [widget.pet.imageUrl, ...widget.pet.galleryImages];
 
   String _y(int n) => n == 1 ? 'rok' : (n >= 2 && n <= 4 ? 'lata' : 'lat');
@@ -53,7 +51,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   );
 
-  /* ---------- build ---------- */
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +60,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          /* ---------- photo carousel ---------- */
           SliverAppBar(
             backgroundColor: AppColors.primaryColor,
             expandedHeight: 350,
@@ -114,7 +110,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
             ),
           ),
 
-          /* ---------- details ---------- */
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -180,7 +175,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
         ],
       ),
 
-      /* ---------- bottom bar ---------- */
       bottomNavigationBar: SafeArea(
         child: Container(
           decoration: BoxDecoration(
@@ -230,8 +224,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     );
   }
 
-  /* ---------- widgets ---------- */
-
   Widget _circle(Widget child) => Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.white.withOpacity(.8), shape: BoxShape.circle), child: child);
 
   Widget _iconText(IconData icon, String text) => Row(children: [Icon(icon, size: 20, color: Colors.grey[600]), const SizedBox(width: 6), Text(text)]);
@@ -270,8 +262,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
       ),
     ),
   );
-
-  /* ---------- actions ---------- */
 
   Future<void> _contactShelter() async => _soon('Czat ze schroniskiem');
 

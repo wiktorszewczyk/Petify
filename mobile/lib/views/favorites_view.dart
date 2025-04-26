@@ -50,7 +50,7 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
 
   Future<void> _removeFavorite(PetModel pet) async {
     try {
-      // W przyszłości: zaimplementować usuwanie zwierzaka z ulubionych przez API
+      /// TODO: zaimplementować usuwanie zwierzaka z ulubionych przez API
       setState(() {
         _favoritePets!.removeWhere((element) => element.id == pet.id);
       });
@@ -144,7 +144,7 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 0.75, // Proporcja karty
+                      childAspectRatio: 0.75,
                     ),
                     itemCount: _favoritePets!.length,
                     itemBuilder: (context, index) {
@@ -202,7 +202,6 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () {
-              // Przejdź do ekranu głównego (indeks 0)
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
             icon: const Icon(Icons.pets_rounded),
