@@ -44,12 +44,22 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     return t;
   }
 
-  ButtonStyle _btnStyle(Color bg, Color fg) => ElevatedButton.styleFrom(
-    backgroundColor: bg,
-    foregroundColor: fg,
-    padding: const EdgeInsets.symmetric(vertical: 12),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  );
+  ButtonStyle _btnStyle(
+      Color bg,
+      Color fg, {
+        double elevation = 0,
+        Color? borderColor,
+      }) =>
+      ElevatedButton.styleFrom(
+        backgroundColor: bg,
+        foregroundColor: fg,
+        elevation: elevation,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: borderColor != null ? BorderSide(color: borderColor) : BorderSide.none,
+        ),
+      );
 
 
   @override
@@ -175,49 +185,85 @@ class _PetDetailsViewState extends State<PetDetailsView> {
         ],
       ),
 
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: const Offset(0, -2))],
-          ),
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _contactShelter,
-                  icon: const Icon(Icons.message, color: Colors.black),
-                  label: const Text('Kontakt', style: TextStyle(color: Colors.black)),
-                  style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12), side: BorderSide(color: Colors.grey.shade400), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                flex: 2,
-                child: ElevatedButton.icon(
-                  onPressed: _openAdoptionForm,
-                  icon: const Icon(Icons.pets),
-                  label: const Text('Adoptuj'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    elevation: 4,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _contactShelter,
+                    style: _btnStyle(
+                      Colors.white,
+                      Colors.black87,
+                      elevation: 2,
+                      borderColor: Colors.grey.shade300,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.message_outlined, size: 22),
+                        SizedBox(height: 4),
+                        Text('Kontakt', style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => _soon('Wsparcie zwierzaka'),
-                  icon: const Icon(Icons.volunteer_activism, color: Colors.blue),
-                  label: const Text('Wesprzyj', style: TextStyle(color: Colors.blue)),
-                  style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12), side: const BorderSide(color: Colors.blue), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                const SizedBox(width: 12),
+
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton(
+                    onPressed: _openAdoptionForm,
+                    style: _btnStyle(
+                      AppColors.primaryColor,
+                      Colors.white,
+                      elevation: 4,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.pets, size: 20),
+                        SizedBox(width: 8),
+                        Text('ADOPTUJ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => _soon('Wsparcie zwierzaka'),
+                    style: _btnStyle(
+                      Colors.white,
+                      Colors.blue,
+                      elevation: 2,
+                      borderColor: Colors.blue.shade200,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.volunteer_activism, size: 22),
+                        SizedBox(height: 4),
+                        Text('Wesprzyj', style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
