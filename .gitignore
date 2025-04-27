@@ -1,7 +1,7 @@
 target/
 
 # Environment variables
-.env
+docker/database/.env
 
 # Compiled class file
 *.class
@@ -92,3 +92,4 @@ build/
 
 ### Keys ###
 app/backend/secrets.properties
+/app/backend/.env
