@@ -3,16 +3,12 @@ import 'dart:async';
 import '../models/pet_model.dart';
 
 class PetService {
-  // Symulacja opóźnienia sieci
-  final int _simulatedDelayMs = 800;
-
   static final PetService _instance = PetService._internal();
 
   factory PetService() {
     return _instance;
   }
 
-  // Konstruktor prywatny
   PetService._internal();
 
   // Pobieranie listy zwierząt (symulacja API)
@@ -24,25 +20,21 @@ class PetService {
     // Symulacja różnej liczby zwierząt
     final petCount = random.nextInt(5) + 5;
 
-    // Lista przykładowych imion
     final names = [
       'Max', 'Luna', 'Bella', 'Reksio', 'Azor', 'Mruczek', 'Puszek',
       'Figa', 'Kora', 'Milo', 'Burek', 'Filemon', 'Pluto', 'Simba'
     ];
 
-    // Lista przykładowych ras psów
     final dogBreeds = [
       'Labrador', 'Owczarek niemiecki', 'Golden retriever', 'Buldog',
       'Beagle', 'Husky', 'Jamnik', 'Mieszaniec', 'Pudel', 'Dalmatyńczyk'
     ];
 
-    // Lista przykładowych ras kotów
     final catBreeds = [
       'Dachowiec', 'Pers', 'Maine Coon', 'Ragdoll', 'Bengal',
       'Brytyjski krótkowłosy', 'Syberyjski', 'Sfinks', 'Syjamski', 'Norweski leśny'
     ];
 
-    // Lista przykładowych opisów
     final descriptions = [
       'Jestem bardzo przyjaznym zwierzakiem, który uwielbia się przytulać. Szukam domu, w którym będę mógł otrzymać dużo miłości i uwagi.',
       'Energiczny i radosny, uwielbiam zabawy na świeżym powietrzu. Idealnie pasuję do aktywnej rodziny.',
@@ -53,7 +45,6 @@ class PetService {
       'Mam za sobą trudną przeszłość, ale nie straciłem wiary w ludzi. Szukam cierpliwego opiekuna, który pomoże mi odbudować zaufanie.',
     ];
 
-    // Lista przykładowych schronisk
     final shelters = [
       {
         'name': 'Schronisko "Pod Dobrą Łapą"',
@@ -73,7 +64,6 @@ class PetService {
       },
     ];
 
-    // Lista przykładowych zdjęć psów
     final dogImages = [
       'https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg',
       'https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg',
@@ -82,7 +72,6 @@ class PetService {
       'https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg',
     ];
 
-    // Lista przykładowych zdjęć kotów
     final catImages = [
       'https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg',
       'https://images.pexels.com/photos/1056251/pexels-photo-1056251.jpeg',
@@ -137,9 +126,6 @@ class PetService {
 
   // Symulacja polubienia zwierzaka
   Future<bool> likePet(String petId) async {
-    // Symulacja opóźnienia sieci
-    await Future.delayed(Duration(milliseconds: _simulatedDelayMs));
-
     /// TODO: Implementacja polubienia zwierzaka w bazie danych
     return true;
   }
@@ -151,7 +137,7 @@ class PetService {
       await Future.delayed(const Duration(milliseconds: 300));
 
       // Pomyślne usunięcie z ulubionych
-      // Kiedy backend będzie gotowy, zastąp to faktycznym wywołaniem API
+      // Kiedy backend będzie gotowy, zrobić wywołanie API
       return;
     } catch (e) {
       throw Exception('Nie udało się usunąć zwierzaka z ulubionych: $e');
@@ -162,7 +148,7 @@ class PetService {
   Future<List<PetModel>> getLikedPets() async {
     /// TODO: Implementacja pobierania polubionych zwierząt z bazy danych
 
-    /// TYMCZASOWA IMPLEMENTACJA:
+    // TYMCZASOWA IMPLEMENTACJA:
     final random = Random();
     final petCount = random.nextInt(7) + 3;
 
