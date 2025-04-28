@@ -2,6 +2,7 @@ package org.petify.reservations.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.petify.reservations.dto.SlotBatchRequest;
 import org.petify.reservations.dto.SlotRequest;
 import org.petify.reservations.dto.SlotResponse;
 import org.petify.reservations.service.ReservationService;
@@ -83,5 +84,14 @@ public class ReservationController {
         SlotResponse cancelled =
                 reservationService.cancelReservation(slotId, jwt.getSubject(), isAdmin);
         return ResponseEntity.ok(cancelled);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/slots/batch")
+    public ResponseEntity<List<SlotResponse>> createBatch(
+            @Valid @RequestBody SlotBatchRequest req) {
+
+        List<SlotResponse> created = reservationService.createBatchSlots(req);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 }
