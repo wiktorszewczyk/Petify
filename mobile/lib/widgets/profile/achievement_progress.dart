@@ -102,13 +102,7 @@ class AchievementProgress extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Następna nagroda za ${(user.nextLevelPoints ?? 100) - (user.experiencePoints ?? 0)} XP',
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    color: Colors.grey[700],
-                  ),
-                ),
+                const SizedBox(width: 24),
                 Text(
                   '+50 punktów Petify',
                   style: GoogleFonts.poppins(

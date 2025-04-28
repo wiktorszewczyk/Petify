@@ -43,48 +43,57 @@ class _LoginViewState extends State<LoginView> {
       return;
     }
 
-    setState(() => _isLoading = true);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Zalogowano!')),
+    );
 
-    try {
-      final userService = UserService();
-      final response = await userService.login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeView()),
+    );
 
-      if (!mounted) {
-        return;
-      }
-      setState(() => _isLoading = false);
-
-      if (response.status == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Zalogowano! ${response.data}')),
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeView()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Błąd logowania: ${response.data}')),
-        );
-
-        // do testów: zawsze przechodzimy do HomeView
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeView()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Wystąpił błąd: $e')),
-        );
-      }
-    }
+    // setState(() => _isLoading = true);
+    //
+    // try {
+    //   final userService = UserService();
+    //   final response = await userService.login(
+    //     _emailController.text.trim(),
+    //     _passwordController.text.trim(),
+    //   );
+    //
+    //   if (!mounted) {
+    //     return;
+    //   }
+    //   setState(() => _isLoading = false);
+    //
+    //   if (response.status == 200) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content: Text('Zalogowano! ${response.data}')),
+    //     );
+    //
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (_) => const HomeView()),
+    //     );
+    //   } else {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content: Text('Błąd logowania: ${response.data}')),
+    //     );
+    //
+    //     // do testów: zawsze przechodzimy do HomeView
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (_) => const HomeView()),
+    //     );
+    //   }
+    // } catch (e) {
+    //   if (mounted) {
+    //     setState(() => _isLoading = false);
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content: Text('Wystąpił błąd: $e')),
+    //     );
+    //   }
+    // }
   }
 
   @override

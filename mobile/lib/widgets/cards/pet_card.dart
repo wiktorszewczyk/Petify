@@ -15,9 +15,46 @@ class PetCard extends StatefulWidget {
   State<PetCard> createState() => _PetCardState();
 }
 
-class _PetCardState extends State<PetCard> {
+class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   int _currentPhotoIndex = 0;
   final PageController _pageController = PageController();
+
+  // Cache dla załadowanych zdjęć
+  final Map<String, bool> _loadedImages = {};
+
+  @override
+  bool get wantKeepAlive => true; // Zapobiega zniszczeniu stanu widgetu
+
+  @override
+  void initState() {
+    super.initState();
+    // Wstępne załadowanie wszystkich zdjęć
+    _preloadImages();
+  }
+
+  void _preloadImages() {
+    final allImages = _getAllImages();
+    for (final imageUrl in allImages) {
+      if (!_loadedImages.containsKey(imageUrl)) {
+        final imageProvider = NetworkImage(imageUrl);
+        imageProvider.resolve(const ImageConfiguration()).addListener(
+          ImageStreamListener((info, _) {
+            if (mounted) {
+              setState(() {
+                _loadedImages[imageUrl] = true;
+              });
+            }
+          }, onError: (exception, stackTrace) {
+            if (mounted) {
+              setState(() {
+                _loadedImages[imageUrl] = false;
+              });
+            }
+          }),
+        );
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -50,6 +87,8 @@ class _PetCardState extends State<PetCard> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Wymagane dla AutomaticKeepAliveClientMixin
+
     final allImages = _getAllImages();
 
     return Container(
@@ -84,10 +123,13 @@ class _PetCardState extends State<PetCard> {
                   },
                   itemCount: allImages.length,
                   itemBuilder: (context, index) {
+                    final imageUrl = allImages[index];
+                    final isLoaded = _loadedImages[imageUrl] ?? false;
+
                     return Hero(
                       tag: index == 0 ? 'pet_${widget.pet.id}' : 'pet_${widget.pet.id}_$index',
                       child: Image.network(
-                        allImages[index],
+                        imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -98,7 +140,9 @@ class _PetCardState extends State<PetCard> {
                           );
                         },
                         loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
+                          // Jeśli obraz jest już załadowany w cache, pokaż go natychmiast
+                          if (isLoaded || loadingProgress == null) return child;
+
                           return Container(
                             color: Colors.grey[200],
                             child: const Center(
@@ -108,6 +152,8 @@ class _PetCardState extends State<PetCard> {
                             ),
                           );
                         },
+                        // Dodajemy cache dla zdjęć
+                        cacheWidth: MediaQuery.of(context).size.width.round(),
                       ),
                     );
                   },

@@ -19,7 +19,6 @@ class DiscoverySettingsSheet extends StatefulWidget {
 }
 
 class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
-  // ----------- local state -----------
   double _maxDistance = 50;
   final Set<String> _animalTypes = {'Psy'};
   RangeValues _age = const RangeValues(1, 10);
@@ -29,9 +28,7 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
     'Tylko sterylizowane/kastrowane': false,
     'Przyjazne dzieciom': true,
   };
-  // -----------------------------------
 
-  // region – UI helpers
   Widget _section({
     required String title,
     required String subtitle,
@@ -70,8 +67,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
     }),
   );
 
-  // endregion
-
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
@@ -85,7 +80,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
           top: 16,
           left: 20,
           right: 20,
-          // podnieś całość nad klawiaturę jeśli się pokaże
           bottom: mq.viewInsets.bottom + 24,
         ),
         decoration: const BoxDecoration(
@@ -95,7 +89,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
         child: ListView(
           controller: controller,
           children: [
-            // header
             Row(
               children: [
                 Text('Ustawienia odkrywania',
@@ -110,7 +103,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
             ),
             const Divider(height: 30),
 
-            // distance
             _section(
               title: 'Maksymalna odległość',
               subtitle: 'Pokaż zwierzęta w odległości do:',
@@ -127,18 +119,16 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
               ),
             ),
 
-            // animal types
             _section(
               title: 'Typ zwierzęcia',
               subtitle: 'Wybierz jakie zwierzęta chcesz zobaczyć:',
               child: Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: ['Psy', 'Koty', 'Ptaki', 'Inne'].map(_chip).toList(),
+                children: ['Psy', 'Koty', 'Inne'].map(_chip).toList(),
               ),
             ),
 
-            // age
             _section(
               title: 'Wiek',
               subtitle: 'Wybierz przedział wiekowy:',
@@ -155,7 +145,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
               ),
             ),
 
-            // switches
             _section(
               title: 'Dodatkowe filtry',
               subtitle: 'Dostosuj wyszukiwanie:',
@@ -175,7 +164,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
             ),
 
             const SizedBox(height: 12),
-            // buttons
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,
@@ -185,14 +173,13 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onPressed: () {
-                // build filter payload
                 final filters = {
                   'distance': _maxDistance.round(),
                   'types': _animalTypes,
                   'age': {'min': _age.start.round(), 'max': _age.end.round()},
                   ..._switches,
                 };
-                Navigator.pop(context, filters); // -> zwróć do wywołującego
+                Navigator.pop(context, filters);
               },
               child: Text('Zastosuj filtry',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),

@@ -11,6 +11,7 @@ import '../views/categories_view.dart';
 import '../views/favorites_view.dart';
 import '../views/messages_view.dart';
 import '../views/profile_view.dart';
+import '../widgets/profile/notifications_sheet.dart';
 import 'app_settings_view.dart';
 import 'discovery_settings_sheet.dart';
 
@@ -37,6 +38,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   int _selectedTabIndex = 0;
 
   bool _isDragging = false;
+  bool _isAnimating = false;
+
+  // Listę kluczy do unikalnej identyfikacji kart
+  final List<GlobalKey<State<StatefulWidget>>> _cardKeys = [];
 
   @override
   void initState() {
@@ -46,6 +51,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       duration: const Duration(milliseconds: 300),
     );
 
+    _initAnimations();
+
+    _loadPets();
+  }
+
+  void _initAnimations() {
     _swipeAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset.zero,
@@ -61,8 +72,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       parent: _swipeController,
       curve: Curves.easeOutCubic,
     ));
-
-    _loadPets();
   }
 
   @override
@@ -86,6 +95,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           _pets.clear();
           _pets.addAll(petsData);
           _isLoading = false;
+
+          // Generujemy klucze dla każdego zwierzaka
+          _cardKeys.clear();
+          for (int i = 0; i < _pets.length; i++) {
+            _cardKeys.add(GlobalKey<State<StatefulWidget>>());
+          }
         });
       }
     } catch (e) {
@@ -102,8 +117,17 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     }
   }
 
+  void _showNotifications() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => NotificationsSheet(),
+    );
+  }
+
   void _onDragUpdate(DragUpdateDetails details) {
-    if (_isLoading || _pets.isEmpty) return;
+    if (_isLoading || _pets.isEmpty || _isAnimating) return;
 
     setState(() {
       _isDragging = true;
@@ -120,7 +144,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   void _onDragEnd(DragEndDetails details) {
-    if (_isLoading || _pets.isEmpty) return;
+    if (_isLoading || _pets.isEmpty || _isAnimating) return;
 
     final swipedRight = _dragPosition.dx > MediaQuery.of(context).size.width * 0.2;
     final swipedLeft = _dragPosition.dx < -MediaQuery.of(context).size.width * 0.2;
@@ -145,7 +169,26 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     });
   }
 
+  void _completeSwipeReset() {
+    // To jest nowa funkcja, która w pełni resetuje stan przeciągania i animacji
+    if (!mounted) return;
+
+    setState(() {
+      _dragPosition = Offset.zero;
+      _swipeDirection = null;
+      _swipeController.reset();
+      _initAnimations(); // Inicjalizujemy animacje od nowa
+      _isAnimating = false;
+    });
+  }
+
   void _finishSwipe(SwipeDirection direction) {
+    if (_isAnimating) return;
+
+    setState(() {
+      _isAnimating = true;
+    });
+
     final screenWidth = MediaQuery.of(context).size.width;
     final endX = direction == SwipeDirection.right ? screenWidth * 1.5 : -screenWidth * 1.5;
 
@@ -180,11 +223,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         } else {
           _loadPets();
         }
-
-        _dragPosition = Offset.zero;
-        _swipeDirection = null;
-        _swipeController.reset();
       });
+
+      // Kompletny reset stanu przeciągania i animacji po ukończeniu animacji
+      _completeSwipeReset();
     });
   }
 
@@ -212,7 +254,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   void _onActionButtonPressed(SwipeDirection direction) {
-    if (_isLoading || _pets.isEmpty) return;
+    if (_isLoading || _pets.isEmpty || _isAnimating) return;
     _finishSwipe(direction);
   }
 
@@ -254,7 +296,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             const SizedBox(width: 8),
             Text(
               'Petify',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.pacifico(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primaryColor,
@@ -281,6 +323,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             },
             tooltip: 'Ustawienia aplikacji',
           ),
+          IconButton(
+            icon: const Icon(Icons.notifications_outlined, color: Colors.black),
+            onPressed: _showNotifications,
+            tooltip: 'Powiadomienia',
+          ),
         ],
       ),
       body: _buildBody(),
@@ -295,16 +342,16 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         return _buildSwipeView();
       case 1:
         return _buildSwipeView();
-        // return const CategoriesView();
+    // return const CategoriesView();
       case 2:
-        // return _buildSwipeView();
+      // return _buildSwipeView();
         return const FavoritesView();
       case 3:
-        // return _buildSwipeView();
+      // return _buildSwipeView();
         return const MessagesView();
       case 4:
-        return _buildSwipeView();
-        // return const ProfileView();
+      // return _buildSwipeView();
+        return const ProfileView();
       default:
         return _buildSwipeView();
     }
@@ -410,12 +457,26 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Stack(
+              clipBehavior: Clip.none, // Umożliwia wyjście za granice stosu
               children: [
-                // Karty zwierząt w tle (jeśli są kolejne)
+                // Prebuffer karty w tle (więcej niż jedna dla lepszego UX)
+                if (_currentIndex < _pets.length - 2)
+                  Positioned.fill(
+                    child: PetCard(
+                      pet: _pets[_currentIndex + 2],
+                      key: _cardKeys.length > _currentIndex + 2 ? _cardKeys[_currentIndex + 2] : null,
+                    ).animate().scale(
+                      begin: const Offset(0.90, 0.90),
+                      end: const Offset(0.90, 0.90),
+                    ),
+                  ),
+
+                // Karta zwierzęcia w tle (następna karta)
                 if (_currentIndex < _pets.length - 1)
                   Positioned.fill(
                     child: PetCard(
                       pet: _pets[_currentIndex + 1],
+                      key: _cardKeys.length > _currentIndex + 1 ? _cardKeys[_currentIndex + 1] : null,
                     ).animate().scale(
                       begin: const Offset(0.95, 0.95),
                       end: const Offset(0.95, 0.95),
@@ -431,10 +492,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       child: AnimatedBuilder(
                         animation: _swipeController,
                         builder: (context, child) {
-                          final offset = _isDragging ? _dragPosition : _swipeAnimation.value;
-                          final angle = _isDragging
-                              ? _dragPosition.dx * 0.001
-                              : _rotationAnimation.value;
+                          // Używamy tylko jednej zmiennej dla pozycji - albo z animacji albo z przeciągania
+                          final offset = _isAnimating ? _swipeAnimation.value : _dragPosition;
+                          final angle = _isAnimating ? _rotationAnimation.value : _dragPosition.dx * 0.001;
 
                           return Transform.translate(
                             offset: offset,
@@ -446,6 +506,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         },
                         child: PetCard(
                           pet: currentPet,
+                          key: _cardKeys.length > _currentIndex ? _cardKeys[_currentIndex] : null,
                         ),
                       ),
                     ),
