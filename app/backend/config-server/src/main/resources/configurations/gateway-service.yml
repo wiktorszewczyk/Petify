@@ -30,6 +30,13 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: reservations-service
+          uri: lb://RESERVATIONS-SERVICE
+          predicates:
+            - Path=/reservations/**, /reservations
+          filters:
+            - PreserveHostHeader
+
         - id: shelter-service
           uri: lb://SHELTER-SERVICE
           predicates:

@@ -41,6 +41,10 @@ public class ReservationService {
         repo.deleteById(slotId);
     }
 
+    public void deleteAllSlots() {
+        repo.deleteAll();
+    }
+
     public SlotResponse reserveSlot(Long slotId, String username) {
         ReservationSlot slot = repo.findById(slotId)
                 .orElseThrow(() -> new IllegalArgumentException("Slot not found"));
@@ -52,6 +56,13 @@ public class ReservationService {
         slot.setStatus(ReservationStatus.RESERVED);
 
         return mapToResponse(repo.save(slot));
+    }
+
+    public List<SlotResponse> getAllSlots() {
+        return repo.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     /**
