@@ -22,8 +22,6 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    /* ----------  ADMIN CRUD  ---------- */
-
     @PostMapping("/slots")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<SlotResponse> createSlot(@Valid @RequestBody SlotRequest req) {
@@ -38,29 +36,36 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    /* ----------  LISTING  ---------- */
+    @DeleteMapping("/slots")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Void> deleteAllSlots() {
+        reservationService.deleteAllSlots();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/slots")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<List<SlotResponse>> getAllSlots() {
+        return ResponseEntity.ok(reservationService.getAllSlots());
+    }
 
     @GetMapping("/slots/pet/{petId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<SlotResponse>> getSlotsByPet(@PathVariable Long petId) {
         return ResponseEntity.ok(reservationService.getSlotsByPetId(petId));
     }
 
-    /**  ADMIN – podgląd slotów konkretnego usera  */
     @GetMapping("/slots/user/{username}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<SlotResponse>> getSlotsByUser(@PathVariable String username) {
         return ResponseEntity.ok(reservationService.getSlotsByUser(username));
     }
 
-    /**  USER – podgląd własnych rezerwacji  */
     @GetMapping("/my-slots")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<List<SlotResponse>> mySlots(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(reservationService.getSlotsByUser(jwt.getSubject()));
     }
-
-    /* ----------  REZERWACJE (USER + ADMIN)  ---------- */
 
     @PatchMapping("/slots/{slotId}/reserve")
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")

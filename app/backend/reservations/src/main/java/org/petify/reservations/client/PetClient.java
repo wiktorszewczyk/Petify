@@ -11,6 +11,7 @@ import java.util.List;
 )
 public interface PetClient {
 
+
     @GetMapping("/ids")
     List<Long> getAllPetIds();
 }

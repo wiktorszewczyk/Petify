@@ -44,6 +44,14 @@ public class PetService {
                 .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found"));
     }
 
+    //ids
+    public List<Long> getAllPetIds() {
+        return petRepository.findAll()
+                .stream()
+                .map(Pet::getId)
+                .collect(Collectors.toList());
+    }
+
     public List<PetResponse> getAllShelterPets(Long shelterId) {
         return petRepository.findByShelterId(shelterId)
                 .orElse(Collections.emptyList())
