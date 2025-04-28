@@ -32,10 +32,16 @@ public class ReservationSlot {
     @Column(name = "reserved_by")
     private String reservedBy;
 
-    public ReservationSlot(Long petId, LocalDateTime startTime, LocalDateTime endTime) {
+    public ReservationSlot(Long petId,
+                           LocalDateTime startTime,
+                           LocalDateTime endTime,
+                           ReservationStatus status,
+                           String reservedBy) {
         this.petId = petId;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.status = status;
+        this.reservedBy = reservedBy;
     }
 }
 
