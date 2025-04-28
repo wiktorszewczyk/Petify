@@ -30,6 +30,13 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: reservations-service
+          uri: lb://RESERVATIONS-SERVICE
+          predicates:
+            - Path=/reservations/**, /reservations
+          filters:
+            - PreserveHostHeader
+
 # Konfiguracja Eureka
 eureka:
   client:
