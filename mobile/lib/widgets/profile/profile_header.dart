@@ -40,7 +40,7 @@ class ProfileHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.displayName ?? user.username ?? 'Użytkownik',
+                  user.firstName ?? user.username ?? 'Użytkownik',
                   style: GoogleFonts.poppins(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,

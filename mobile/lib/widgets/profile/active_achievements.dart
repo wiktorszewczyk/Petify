@@ -43,19 +43,6 @@ class ActiveAchievements extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/achievements');
-                },
-                child: Text(
-                  'Zobacz wszystkie',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 16),

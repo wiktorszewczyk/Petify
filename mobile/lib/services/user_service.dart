@@ -59,7 +59,8 @@ class UserService {
     return User(
       id: 'u1',
       username: 'john_doe',
-      displayName: 'Jan Kowalski',
+      firstName: 'Jan',
+      lastName: 'Kowalski',
       profileImageUrl: null,
       location: 'Warszawa',
       level: 4,

@@ -3,7 +3,8 @@ class User {
   final String username;
 
   // profil
-  final String? displayName;
+  final String? firstName;
+  final String? lastName;
   final String? profileImageUrl;
   final String? location;
 
@@ -17,13 +18,14 @@ class User {
   final int supportedPetsCount;
   final int achievementsCount;
 
-  // aktywność
+  // aktywność - ostatnie 24h
   final List<Map<String, dynamic>> recentActivities;
 
   const User({
     required this.id,
     required this.username,
-    this.displayName,
+    this.firstName,
+    this.lastName,
     this.profileImageUrl,
     this.location,
     this.level = 1,
@@ -38,7 +40,8 @@ class User {
   factory User.fromJson(Map<String, dynamic> j) => User(
     id: j['id'].toString(),
     username: j['username'],
-    displayName: j['displayName'],
+    firstName: j['firstName'],
+    lastName: j['lastName'],
     profileImageUrl: j['profileImageUrl'],
     location: j['location'],
     level: j['level'] ?? 1,

@@ -24,32 +24,37 @@ class AchievementBadge extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
+          SizedBox(
             width: size,
             height: size,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: achievement.isUnlocked
-                  ? achievement.backgroundColor ?? AppColors.primaryColor.withOpacity(0.2)
-                  : Colors.grey[300],
-              boxShadow: achievement.isUnlocked
-                  ? [
-                BoxShadow(
-                  color: (achievement.iconColor ?? AppColors.primaryColor).withOpacity(0.3),
-                  blurRadius: 8,
-                  spreadRadius: 1,
-                )
-              ]
-                  : null,
-              border: Border.all(
-                color: achievement.isUnlocked
-                    ? (achievement.iconColor ?? AppColors.primaryColor).withOpacity(0.5)
-                    : Colors.grey[400]!,
-                width: 2,
-              ),
-            ),
             child: Stack(
               children: [
+                Container(
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: achievement.isUnlocked
+                        ? achievement.backgroundColor ?? AppColors.primaryColor.withOpacity(0.2)
+                        : Colors.grey[300],
+                    boxShadow: achievement.isUnlocked
+                        ? [
+                      BoxShadow(
+                        color: (achievement.iconColor ?? AppColors.primaryColor).withOpacity(0.3),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      )
+                    ]
+                        : null,
+                    border: Border.all(
+                      color: achievement.isUnlocked
+                          ? (achievement.iconColor ?? AppColors.primaryColor).withOpacity(0.5)
+                          : Colors.grey[400]!,
+                      width: 2,
+                    ),
+                  ),
+                ),
+
                 // Main icon
                 Center(
                   child: Icon(
@@ -61,7 +66,6 @@ class AchievementBadge extends StatelessWidget {
                   ),
                 ),
 
-                // Lock overlay for locked achievements
                 if (!achievement.isUnlocked)
                   Container(
                     width: size,
@@ -79,7 +83,6 @@ class AchievementBadge extends StatelessWidget {
                     ),
                   ),
 
-                // Progress indicator for achievements with progress
                 if (achievement.progressTotal != null &&
                     achievement.progressCurrent != null &&
                     !achievement.isUnlocked)
