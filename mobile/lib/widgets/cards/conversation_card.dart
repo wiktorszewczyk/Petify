@@ -10,38 +10,31 @@ class ConversationCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const ConversationCard({
-    Key? key,
+    super.key,
     required this.conversation,
     required this.onTap,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(conversation.id),
+      direction: DismissDirection.endToStart,
       background: Container(
         color: Colors.red,
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
-        child: const Icon(
-          Icons.delete,
-          color: Colors.white,
-          size: 28,
-        ),
+        child: const Icon(Icons.delete, color: Colors.white, size: 28),
       ),
-      direction: DismissDirection.endToStart,
-      onDismissed: (direction) {
-        onDelete();
-      },
+      onDismissed: (_) => onDelete(),
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Avatar zwierzaka
               Stack(
                 children: [
                   Container(
@@ -49,17 +42,11 @@ class ConversationCard extends StatelessWidget {
                     height: 60,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.primaryColor,
-                        width: 2,
-                      ),
+                      border: Border.all(color: AppColors.primaryColor, width: 2),
                       image: DecorationImage(
                         fit: BoxFit.cover,
                         image: NetworkImage(conversation.petImageUrl),
-                        onError: (exception, stackTrace) {
-                          // Placeholder w przypadku błędu ładowania obrazu
-                          return const AssetImage('assets/images/pet_placeholder.png');
-                        } as ImageErrorListener,
+                        onError: (_, __) => const AssetImage('assets/images/pet_placeholder.png'),
                       ),
                     ),
                   ),
@@ -79,29 +66,40 @@ class ConversationCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(width: 12),
-              // Treść konwersacji
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Text(
-                          conversation.petName,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: conversation.unread ? FontWeight.bold : FontWeight.w500,
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  conversation.petName,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: conversation.unread ? FontWeight.bold : FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  '· ${conversation.shelterName}',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 6),
-                        Text(
-                          '· ${conversation.shelterName}',
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const Spacer(),
                         Text(
                           _formatTimestamp(conversation.lastMessageTime),
                           style: GoogleFonts.poppins(
@@ -137,20 +135,13 @@ class ConversationCard extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
-    final messageDate = DateTime(timestamp.year, timestamp.month, timestamp.day);
+    final dateOnly = DateTime(timestamp.year, timestamp.month, timestamp.day);
 
-    if (messageDate == today) {
-      // Jeśli wiadomość jest z dzisiaj, pokaż tylko godzinę
-      return DateFormat('HH:mm').format(timestamp);
-    } else if (messageDate == yesterday) {
-      // Jeśli wiadomość jest z wczoraj, pokaż "wczoraj"
-      return 'Wczoraj';
-    } else if (now.difference(timestamp).inDays < 7) {
-      // Jeśli wiadomość jest z tego tygodnia, pokaż dzień tygodnia
+    if (dateOnly == today) return DateFormat('HH:mm').format(timestamp);
+    if (dateOnly == yesterday) return 'Wczoraj';
+    if (now.difference(timestamp).inDays < 7) {
       return DateFormat('EEEE', 'pl').format(timestamp);
-    } else {
-      // W przeciwnym razie pokaż datę
-      return DateFormat('dd.MM.yyyy').format(timestamp);
     }
+    return DateFormat('dd.MM.yyyy').format(timestamp);
   }
 }
