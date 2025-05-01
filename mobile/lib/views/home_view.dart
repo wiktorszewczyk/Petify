@@ -7,7 +7,7 @@ import '../../models/pet_model.dart';
 import '../../widgets/buttons/action_button.dart';
 import '../../widgets/cards/pet_card.dart';
 import '../../services/pet_service.dart';
-import '../views/categories_view.dart';
+import '../views/community_support_view.dart';
 import '../views/favorites_view.dart';
 import '../views/messages_view.dart';
 import '../views/profile_view.dart';
@@ -341,8 +341,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       case 0:
         return _buildSwipeView();
       case 1:
-        return _buildSwipeView();
-    // return const CategoriesView();
+        return const CommunitySupportView();
       case 2:
       // return _buildSwipeView();
         return const FavoritesView();
@@ -627,7 +626,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavBarItem(0, Icons.home_outlined, Icons.home),
-              _buildNavBarItem(1, Icons.category_outlined, Icons.category),
+              _buildNavBarItem(1, Icons.diversity_1_outlined, Icons.diversity_1),
               _buildNavBarItem(2, Icons.favorite_outline, Icons.favorite),
               _buildNavBarItem(3, Icons.message_outlined, Icons.message),
               _buildNavBarItem(4, Icons.person_outline, Icons.person),
