@@ -12,7 +12,6 @@ import '../views/favorites_view.dart';
 import '../views/messages_view.dart';
 import '../views/profile_view.dart';
 import '../widgets/profile/notifications_sheet.dart';
-import 'app_settings_view.dart';
 import 'discovery_settings_sheet.dart';
 
 class HomeView extends StatefulWidget {
@@ -263,12 +262,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
     final currentPet = _pets[_currentIndex];
 
-    // showModalBottomSheet(
-    //   context: context,
-    //   isScrollControlled: true,
-    //   backgroundColor: Colors.transparent,
-    //   builder: (context) => SupportOptionsSheet(pet: currentPet),
-    // );
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => SupportOptionsSheet(pet: currentPet),
+    );
   }
 
   void _showDiscoverySettings() async {
