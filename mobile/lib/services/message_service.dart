@@ -192,6 +192,27 @@ class MessageService {
     }
   }
 
+  // Utwórz nową konwersację
+  Future<String> createConversation({
+    required String petId,
+    required String petName,
+    required String shelterId,
+    required String shelterName,
+    required String petImageUrl,
+  }) async {
+    try {
+      // Symulacja tworzenia konwersacji
+      final conversationId = 'conv_${DateTime.now().millisecondsSinceEpoch}';
+
+      // W rzeczywistej implementacji, tutaj byłoby wywołanie API
+      // które tworzyłoby konwersację i zwracało jej ID
+
+      return conversationId;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // Usuń konwersację
   Future<void> deleteConversation(String conversationId) async {
     try {

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile/views/support_options_sheet.dart';
 import '../models/pet_model.dart';
 import '../styles/colors.dart';
 import '../services/pet_service.dart';
+import '../services/message_service.dart';
+import 'chat_view.dart';
 
 class PetDetailsView extends StatefulWidget {
   final PetModel pet;
@@ -14,6 +17,7 @@ class PetDetailsView extends StatefulWidget {
 
 class _PetDetailsViewState extends State<PetDetailsView> {
   late final PetService _petService;
+  late final MessageService _messageService;
   final PageController _pageController = PageController();
   int _currentPhoto = 0;
   bool _busy = false;
@@ -22,6 +26,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
   void initState() {
     super.initState();
     _petService = PetService();
+    _messageService = MessageService();
   }
 
   List<String> get _allImages => [widget.pet.imageUrl, ...widget.pet.galleryImages];
@@ -245,7 +250,12 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _soon('Wsparcie zwierzaka'),
+                    onPressed: () => showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) => SupportOptionsSheet(pet: widget.pet),
+                                    ),
                     style: _btnStyle(
                       Colors.white,
                       Colors.blue,
@@ -309,7 +319,51 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     ),
   );
 
-  Future<void> _contactShelter() async => _soon('Czat ze schroniskiem');
+  Future<void> _contactShelter() async {
+    setState(() => _busy = true);
+
+    try {
+      // Próba znalezienia istniejącej konwersacji dla tego zwierzaka
+      final conversations = await _messageService.getConversations();
+      final existingConversation = conversations.where((conv) => conv.petId == widget.pet.id).toList();
+
+      String conversationId;
+
+      if (existingConversation.isNotEmpty) {
+        // Używamy istniejącej konwersacji
+        conversationId = existingConversation.first.id;
+      } else {
+        // Tworzymy nową konwersację
+        conversationId = await _messageService.createConversation(
+          petId: widget.pet.id,
+          petName: widget.pet.name,
+          shelterId: widget.pet.shelterId,
+          shelterName: widget.pet.shelterName ?? 'Schronisko',
+          petImageUrl: widget.pet.imageUrl,
+        );
+      }
+
+      if (!mounted) return;
+
+      setState(() => _busy = false);
+
+      // Otwieramy widok czatu
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatView(conversationId: conversationId),
+        ),
+      );
+    } catch (e) {
+      setState(() => _busy = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Nie udało się otworzyć czatu: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   Future<void> _openAdoptionForm() async => _soon('Formularz adopcji');
 

@@ -71,15 +71,17 @@ class _ChatViewState extends State<ChatView> {
         });
 
         // Przewiń do najnowszej wiadomości
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (_scrollController.hasClients) {
-            _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          }
-        });
+        if (messages.isNotEmpty) {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (_scrollController.hasClients) {
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            }
+          });
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -155,11 +157,147 @@ class _ChatViewState extends State<ChatView> {
               ))
                   : _errorMessage != null
                   ? _buildErrorState()
+                  : _messages!.isEmpty
+                  ? _buildEmptyChat()
                   : _buildChatMessages(),
             ),
             // Obszar wprowadzania wiadomości
             _buildMessageInput(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyChat() {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (_conversation != null) ...[
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(_conversation!.petImageUrl),
+                    onError: (exception, stackTrace) {
+                      // Placeholder w przypadku błędu ładowania obrazu
+                      return const AssetImage('assets/images/pet_placeholder.png');
+                    } as ImageErrorListener,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Rozpocznij czat o ${_conversation!.petName}',
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _conversation!.shelterName,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            const SizedBox(height: 32),
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.chat_bubble_outline,
+                    size: 48,
+                    color: AppColors.primaryColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Napisz pierwszą wiadomość!',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Zapytaj o zwierzaka, proces adopcji lub umów się na spotkanie.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                _suggestionChip('Dzień dobry! Czy mogę dowiedzieć się więcej o tym zwierzaku?'),
+                _suggestionChip('Kiedy mogę przyjechać na spotkanie?'),
+                _suggestionChip('Jak wygląda proces adopcji?'),
+                _suggestionChip('Czy zwierzak jest przyjazny dla dzieci?'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _suggestionChip(String text) {
+    return InkWell(
+      onTap: () {
+        _messageController.text = text;
+        // Nie wysyłamy automatycznie, aby użytkownik mógł edytować sugestię
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.primaryColor.withOpacity(0.5)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Text(
+          text,
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            color: AppColors.primaryColor,
+          ),
         ),
       ),
     );

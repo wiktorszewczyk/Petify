@@ -115,6 +115,7 @@ class PetService {
           isNeutered: random.nextBool(),
           isChildFriendly: random.nextBool(),
           isUrgent: random.nextInt(10) < 3,
+          shelterId: 'shelter_${DateTime.now().millisecondsSinceEpoch}_$i',
           shelterName: shelter['name']!,
           shelterAddress: shelter['address']!,
         ),
