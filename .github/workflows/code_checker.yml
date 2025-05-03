@@ -17,7 +17,7 @@ env:
   DB_PORT: 5432
 
 jobs:
-  build:
+  checks:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository

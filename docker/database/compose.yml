@@ -1,4 +1,4 @@
-name: Petify
+name: petify-database
 
 services:
   postgresql:
