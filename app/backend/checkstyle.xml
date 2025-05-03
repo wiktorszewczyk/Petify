@@ -19,7 +19,7 @@
 <module name = "Checker">
   <property name="charset" value="UTF-8"/>
 
-  <property name="severity" value="warning"/>
+  <!-- <property name="severity" value="warning"/> -->
 
   <property name="fileExtensions" value="java, properties, xml"/>
   <!-- Excludes all 'module-info.java' files              -->
@@ -29,7 +29,7 @@
   </module>
   <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
   <module name="SuppressionFilter">
-    <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
+    <property name="file" value="checkstyle-suppressions.xml"
            default="checkstyle-suppressions.xml" />
     <property name="optional" value="true"/>
   </module>
@@ -44,6 +44,10 @@
     <property name="fileExtensions" value="java"/>
     <property name="max" value="140"/>
     <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+  </module>
+
+  <module name="NewlineAtEndOfFile">
+    <property name="lineSeparator" value="system"/>
   </module>
 
   <module name="TreeWalker">
@@ -140,6 +144,7 @@
                     STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, VARIABLE_DEF, RECORD_DEF,
                     COMPACT_CTOR_DEF"/>
       <property name="allowNoEmptyLineBetweenFields" value="true"/>
+      <property name="allowMultipleEmptyLines" value="false"/>
     </module>
     <module name="SeparatorWrap">
       <property name="id" value="SeparatorWrapDot"/>
@@ -246,16 +251,16 @@
              value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
     </module>
     <module name="Indentation">
-      <property name="basicOffset" value="2"/>
-      <property name="braceAdjustment" value="2"/>
-      <property name="caseIndent" value="2"/>
-      <property name="throwsIndent" value="4"/>
-      <property name="lineWrappingIndentation" value="4"/>
-      <property name="arrayInitIndent" value="2"/>
+      <property name="basicOffset" value="4"/>
+      <property name="braceAdjustment" value="0"/>
+      <property name="caseIndent" value="4"/>
+      <property name="throwsIndent" value="8"/>
+      <property name="lineWrappingIndentation" value="8"/>
+      <property name="arrayInitIndent" value="4"/>
     </module>
     <module name="AbbreviationAsWordInName">
       <property name="ignoreFinal" value="false"/>
-      <property name="allowedAbbreviationLength" value="0"/>
+      <property name="allowedAbbreviationLength" value="3"/>
       <property name="tokens"
                value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF, ANNOTATION_FIELD_DEF,
                     PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF, PATTERN_VARIABLE_DEF, RECORD_DEF,
@@ -267,9 +272,9 @@
     <module name="CustomImportOrder">
       <property name="sortImportsInGroupAlphabetically" value="true"/>
       <property name="separateLineBetweenGroups" value="true"/>
-      <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
-      <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
+      <property name="customImportOrderRules" value="THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS###STANDARD_JAVA_PACKAGE###STATIC"/>
     </module>
+    <module name="UnusedImports"/>
     <module name="MethodParamPad">
       <property name="tokens"
                value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF,
@@ -356,7 +361,7 @@
     </module>
     <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
     <module name="SuppressionXpathFilter">
-      <property name="file" value="${org.checkstyle.google.suppressionxpathfilter.config}"
+      <property name="file" value="checkstyle-xpath-suppressions.xml"
              default="checkstyle-xpath-suppressions.xml" />
       <property name="optional" value="true"/>
     </module>
