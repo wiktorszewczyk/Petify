@@ -30,7 +30,9 @@ public class OAuth2Provider {
      * przed zapisaniem obiektu OAuth2Provider.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_oauth2provider_user",
+                    foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE"))
     private ApplicationUser user;
 
     @Column

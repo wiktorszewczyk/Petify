@@ -26,7 +26,6 @@ spring:
             jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
             user-name-attribute: email
 
-
   datasource:
     url: jdbc:postgresql://localhost:5433/petify
     username: admin

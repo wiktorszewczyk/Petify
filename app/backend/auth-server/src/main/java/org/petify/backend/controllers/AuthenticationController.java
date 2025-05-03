@@ -110,7 +110,7 @@ public class AuthenticationController {
      *
      * @return Przekierowanie do autoryzacji Google
      */
-    @GetMapping("/oauth2/login/google")
+    @GetMapping("/auth/oauth2/google")
     public String initiateGoogleLogin() {
         return "redirect:/oauth2/authorization/google";
     }
@@ -121,7 +121,7 @@ public class AuthenticationController {
      * @param principal Informacje o zalogowanym użytkowniku OAuth2
      * @return Mapa danych użytkownika
      */
-    @GetMapping("/oauth2/user-info")
+    @GetMapping("/auth/oauth2/user-info")
     public Map<String, Object> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
         Map<String, Object> userInfo = new HashMap<>();
 
@@ -141,8 +141,8 @@ public class AuthenticationController {
      * @param authentication Obiekt uwierzytelnienia
      * @return Mapa zawierająca token JWT lub informację o błędzie
      */
-    @GetMapping("/oauth2/token")
-    public Map<String, String> getToken(Authentication authentication) {
+    @GetMapping("/auth/oauth2/token")
+    public Map<String, String> getOAuth2Token(Authentication authentication) {
         Map<String, String> response = new HashMap<>();
 
         if (authentication != null && authentication.isAuthenticated()) {
@@ -207,13 +207,13 @@ public class AuthenticationController {
     }
 
     /**
-     * Endpoint do pobierania profilu użytkownika
+     * Endpoint do pobierania danych użytkownika
      *
      * @param authentication Obiekt uwierzytelnienia
      * @return Dane użytkownika
      */
-    @GetMapping("/auth/profile")
-    public ResponseEntity<?> getUserProfile(Authentication authentication) {
+    @GetMapping("/auth/user")
+    public ResponseEntity<?> getUserData(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "User not authenticated");
@@ -230,16 +230,12 @@ public class AuthenticationController {
     }
 
     /**
-     * Endpoint do aktualizacji profilu użytkownika
-     *
-     * @param authentication Obiekt uwierzytelnienia
-     * @param userData Dane do aktualizacji
-     * @return Zaktualizowane dane użytkownika
+     * Endpoint do aktualizacji danych użytkownika
      */
-    @PutMapping("/auth/profile")
-    public ResponseEntity<?> updateUserProfile(
+    @PutMapping("/auth/user")
+    public ResponseEntity<?> updateUserData(
             Authentication authentication,
-            @RequestBody Map<String, Object> userData) {
+            @RequestBody ApplicationUser userData) {
 
         if (authentication == null || !authentication.isAuthenticated()) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -247,137 +243,46 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
-        ApplicationUser user = userRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            ApplicationUser updatedUser = authenticationService.updateUserProfile(
+                    authentication.getName(), userData);
 
-        // Update fields that are allowed to be updated
-        // Note: We don't allow username or password to be updated through this endpoint
-        if (userData.containsKey("firstName")) {
-            user.setFirstName((String) userData.get("firstName"));
-        }
-        if (userData.containsKey("lastName")) {
-            user.setLastName((String) userData.get("lastName"));
-        }
-        if (userData.containsKey("phoneNumber")) {
-            user.setPhoneNumber((String) userData.get("phoneNumber"));
-        }
+            // Remove sensitive information
+            updatedUser.setPassword(null);
 
-        ApplicationUser updatedUser = userRepository.save(user);
-        updatedUser.setPassword(null); // Remove sensitive information
-
-        return ResponseEntity.ok(updatedUser);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to update user data: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     /**
-     * Endpoint statusowy dla diagnostyki
-     *
-     * @return Status auth service
+     * Endpoint do usuwania konta użytkownika
      */
-    @GetMapping("/auth/status")
-    public ResponseEntity<Map<String, String>> getStatus() {
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "UP");
-        response.put("service", "auth-service");
-        response.put("timestamp", String.valueOf(System.currentTimeMillis()));
-        return ResponseEntity.ok(response);
-    }
+    @DeleteMapping("/auth/user")
+    public ResponseEntity<?> deleteUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "User not authenticated");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
 
-//    /**
-//     * Endpoint do zmiany hasła
-//     *
-//     * @param authentication Obiekt uwierzytelnienia
-//     * @param passwordData Mapa zawierająca stare i nowe hasło
-//     * @return Status operacji
-//     */
-//    @PostMapping("/auth/change-password")
-//    public ResponseEntity<?> changePassword(
-//            Authentication authentication,
-//            @RequestBody Map<String, String> passwordData) {
-//
-//        if (authentication == null || !authentication.isAuthenticated()) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("error", "User not authenticated");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-//        }
-//
-//        String currentPassword = passwordData.get("currentPassword");
-//        String newPassword = passwordData.get("newPassword");
-//
-//        if (currentPassword == null || newPassword == null) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("error", "Current password and new password are required");
-//            return ResponseEntity.badRequest().body(errorResponse);
-//        }
-//
-//        try {
-//            authenticationService.changePassword(authentication.getName(), currentPassword, newPassword);
-//
-//            Map<String, String> response = new HashMap<>();
-//            response.put("message", "Password successfully changed");
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("error", e.getMessage());
-//            return ResponseEntity.badRequest().body(errorResponse);
-//        }
-//    }
-//
-//    /**
-//     * Endpoint do resetowania hasła - inicjacja procesu
-//     *
-//     * @param requestData Mapa zawierająca email lub telefon użytkownika
-//     * @return Status operacji
-//     */
-//    @PostMapping("/auth/forgot-password")
-//    public ResponseEntity<?> initPasswordReset(@RequestBody Map<String, String> requestData) {
-//        String identifier = requestData.get("loginIdentifier");
-//
-//        if (identifier == null || identifier.isEmpty()) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("error", "Email or phone number is required");
-//            return ResponseEntity.badRequest().body(errorResponse);
-//        }
-//
-//        try {
-//            authenticationService.initiatePasswordReset(identifier);
-//
-//            Map<String, String> response = new HashMap<>();
-//            response.put("message", "Password reset initiated. Check your email or phone for instructions.");
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("error", e.getMessage());
-//            return ResponseEntity.badRequest().body(errorResponse);
-//        }
-//    }
-//
-//    /**
-//     * Endpoint do resetowania hasła - finalizacja procesu
-//     *
-//     * @param resetData Mapa zawierająca token resetujący i nowe hasło
-//     * @return Status operacji
-//     */
-//    @PostMapping("/auth/reset-password")
-//    public ResponseEntity<?> completePasswordReset(@RequestBody Map<String, String> resetData) {
-//        String token = resetData.get("token");
-//        String newPassword = resetData.get("newPassword");
-//
-//        if (token == null || newPassword == null) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("error", "Reset token and new password are required");
-//            return ResponseEntity.badRequest().body(errorResponse);
-//        }
-//
-//        try {
-//            authenticationService.completePasswordReset(token, newPassword);
-//
-//            Map<String, String> response = new HashMap<>();
-//            response.put("message", "Password has been reset successfully");
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("error", e.getMessage());
-//            return ResponseEntity.badRequest().body(errorResponse);
-//        }
-//    }
+        try {
+            authenticationService.deleteUserAccount(authentication.getName());
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "User account successfully deleted");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to delete user account: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
 }

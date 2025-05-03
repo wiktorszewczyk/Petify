@@ -88,7 +88,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers("/.well-known/jwks.json").permitAll();
             auth.requestMatchers("/auth/**").permitAll();
-            auth.requestMatchers("/oauth2/**").permitAll();
+            auth.requestMatchers("/auth/oauth2/**").permitAll();
             auth.requestMatchers("/login/oauth2/code/**").permitAll();
             auth.requestMatchers("/admin/**").hasRole("ADMIN");
             auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
