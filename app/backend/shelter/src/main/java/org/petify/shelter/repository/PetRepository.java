@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
     Optional<List<Pet>> findByShelterId(Long shelterId);
+
     Optional<List<Pet>> findByType(PetType type);
 }

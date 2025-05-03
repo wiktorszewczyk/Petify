@@ -1,8 +1,5 @@
 package org.petify.backend.security.services;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.petify.backend.security.models.ApplicationUser;
 import org.petify.backend.security.models.LoginResponseDTO;
 import org.petify.backend.security.models.Role;
@@ -16,6 +13,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @Transactional

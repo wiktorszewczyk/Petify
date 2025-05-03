@@ -73,7 +73,16 @@ public class PetService {
 
         Pet savedPet = petRepository.save(pet);
 
-        return new PetResponse(savedPet.getId(), savedPet.getName(), savedPet.getType(), savedPet.getBreed(), savedPet.getAge(), savedPet.isArchived(), savedPet.getDescription(), savedPet.getShelter().getId());
+        return new PetResponse(
+                savedPet.getId(),
+                savedPet.getName(),
+                savedPet.getType(),
+                savedPet.getBreed(),
+                savedPet.getAge(),
+                savedPet.isArchived(),
+                savedPet.getDescription(),
+                savedPet.getShelter().getId()
+        );
     }
 
     public PetImageResponse getPetImage(Long id) {
