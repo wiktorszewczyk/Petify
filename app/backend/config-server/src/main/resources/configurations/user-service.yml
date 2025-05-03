@@ -1,5 +1,5 @@
 server:
-  port: 8080  # Ustawiamy zgodnie z działającą konfiguracją
+  port: 8080
 
 spring:
   security:
@@ -8,7 +8,6 @@ spring:
         jwt:
           jwk-set-uri: http://localhost:9000/.well-known/jwks.json
 
-# Konfiguracja Eureka - upewniamy się, że rejestracja działa poprawnie
 eureka:
   client:
     service-url:
