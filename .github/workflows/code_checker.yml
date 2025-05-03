@@ -1,0 +1,41 @@
+name: Code Checker
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, ready_for_review, synchronize]
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_PORT: 5432
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'oracle'
+        cache: maven
+    
+    - name: Setup database
+      run: |
+        docker compose -f docker/database/compose.yml up -d
+
+    - name: Run Static Code Analysis on Backend code
+      run: mvn validate -f app/backend/pom.xml
+
+    - name: Run Unit Tests on Backend code and generate reports
+      run: mvn verify -f app/backend/pom.xml -pl '!:auth-server'
