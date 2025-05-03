@@ -4,6 +4,7 @@ import org.petify.backend.security.models.ApplicationUser;
 import org.petify.backend.security.models.Role;
 import org.petify.backend.security.repository.RoleRepository;
 import org.petify.backend.security.repository.UserRepository;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

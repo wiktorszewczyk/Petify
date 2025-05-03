@@ -1,10 +1,11 @@
 package org.petify.shelter.dto;
 
+import org.petify.shelter.model.PetType;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.hibernate.validator.constraints.Length;
-import org.petify.shelter.model.PetType;
 
 import java.io.Serializable;
 

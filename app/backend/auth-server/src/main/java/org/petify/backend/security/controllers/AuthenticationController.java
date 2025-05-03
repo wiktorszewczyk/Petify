@@ -6,6 +6,7 @@ import org.petify.backend.security.models.RegistrationDTO;
 import org.petify.backend.security.repository.UserRepository;
 import org.petify.backend.security.services.AuthenticationService;
 import org.petify.backend.security.services.TokenService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

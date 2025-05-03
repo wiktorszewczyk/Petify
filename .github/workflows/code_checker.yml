@@ -37,5 +37,11 @@ jobs:
     - name: Run Static Code Analysis on Backend code
       run: mvn validate -f app/backend/pom.xml
 
-    - name: Run Unit Tests on Backend code and generate reports
+    - name: Compile Backend code
+      run: mvn compile -f app/backend/pom.xml
+
+    - name: Run Unit Tests on Backend code
+      run: mvn test -f app/backend/pom.xml -pl '!:auth-server'
+
+    - name: Generate reports for Backend code
       run: mvn verify -f app/backend/pom.xml -pl '!:auth-server'

@@ -2,6 +2,7 @@ package org.petify.shelter.repository;
 
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.PetType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

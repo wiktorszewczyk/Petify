@@ -1,6 +1,5 @@
 package org.petify.shelter.controller;
 
-import jakarta.validation.Valid;
 import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
@@ -9,6 +8,9 @@ import org.petify.shelter.dto.ShelterResponse;
 import org.petify.shelter.service.AdoptionService;
 import org.petify.shelter.service.PetService;
 import org.petify.shelter.service.ShelterService;
+
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

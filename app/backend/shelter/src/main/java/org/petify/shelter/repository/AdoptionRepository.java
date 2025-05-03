@@ -4,6 +4,7 @@ import org.petify.shelter.model.Adoption;
 import org.petify.shelter.model.AdoptionStatus;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

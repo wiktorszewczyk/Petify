@@ -5,6 +5,7 @@ import org.petify.backend.security.models.LoginResponseDTO;
 import org.petify.backend.security.models.Role;
 import org.petify.backend.security.repository.RoleRepository;
 import org.petify.backend.security.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

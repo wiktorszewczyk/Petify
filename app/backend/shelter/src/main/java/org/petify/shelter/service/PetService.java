@@ -1,7 +1,5 @@
 package org.petify.shelter.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
@@ -9,6 +7,9 @@ import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
