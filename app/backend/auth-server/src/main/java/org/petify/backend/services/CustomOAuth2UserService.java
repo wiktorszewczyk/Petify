@@ -1,11 +1,11 @@
-package org.petify.backend.security.services;
+package org.petify.backend.services;
 
-import org.petify.backend.security.models.ApplicationUser;
-import org.petify.backend.security.models.OAuth2Provider;
-import org.petify.backend.security.models.Role;
-import org.petify.backend.security.repository.OAuth2ProviderRepository;
-import org.petify.backend.security.repository.RoleRepository;
-import org.petify.backend.security.repository.UserRepository;
+import org.petify.backend.models.ApplicationUser;
+import org.petify.backend.models.OAuth2Provider;
+import org.petify.backend.models.Role;
+import org.petify.backend.repository.OAuth2ProviderRepository;
+import org.petify.backend.repository.RoleRepository;
+import org.petify.backend.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

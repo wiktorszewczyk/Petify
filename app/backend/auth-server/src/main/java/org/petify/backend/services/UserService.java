@@ -1,6 +1,6 @@
-package org.petify.backend.security.services;
+package org.petify.backend.services;
 
-import org.petify.backend.security.repository.UserRepository;
+import org.petify.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,10 +18,13 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-
+    public UserDetails loadUserByUsername(final String login) throws UsernameNotFoundException {
         System.out.println("In the user details service");
 
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user is not valid"));
+        // Try to find user by username, email, or phone number
+        return userRepository.findByUsername(login)
+                .orElseGet(() -> userRepository.findByEmail(login)
+                        .orElseGet(() -> userRepository.findByPhoneNumber(login)
+                                .orElseThrow(() -> new UsernameNotFoundException("User is not valid"))));
     }
 }

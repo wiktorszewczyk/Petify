@@ -1,5 +1,6 @@
-package org.petify.backend.security.models;
+package org.petify.backend.models;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +37,24 @@ public class ApplicationUser implements UserDetails {
 
     private String password;
 
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber;
+
+    @Column(name = "email", unique = true)
+    private String email;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="user_role_junction",
@@ -52,11 +71,19 @@ public class ApplicationUser implements UserDetails {
         authorities = new HashSet<>();
     }
 
-    public ApplicationUser(Integer userId, String username, String password, Set<Role> authorities) {
+    public ApplicationUser(Integer userId, String username, String password,
+                           String firstName, String lastName, LocalDate birthDate,
+                           String gender, String phoneNumber, String email, Set<Role> authorities) {
         super();
         this.userId = userId;
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
         this.authorities = authorities;
     }
 

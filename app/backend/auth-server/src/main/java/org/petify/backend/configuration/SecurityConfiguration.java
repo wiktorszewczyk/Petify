@@ -1,4 +1,4 @@
-package org.petify.backend.security.configuration;
+package org.petify.backend.configuration;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -6,9 +6,9 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.petify.backend.security.services.CustomOAuth2UserService;
-import org.petify.backend.security.services.TokenService;
-import org.petify.backend.security.utils.RSAKeyProperties;
+import org.petify.backend.services.CustomOAuth2UserService;
+import org.petify.backend.services.TokenService;
+import org.petify.backend.utils.RSAKeyProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

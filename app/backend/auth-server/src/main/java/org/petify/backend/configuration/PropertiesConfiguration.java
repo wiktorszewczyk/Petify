@@ -1,4 +1,4 @@
-package org.petify.backend.security.configuration;
+package org.petify.backend.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

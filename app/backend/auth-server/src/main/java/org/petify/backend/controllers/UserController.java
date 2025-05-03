@@ -1,4 +1,4 @@
-package org.petify.backend.security.controllers;
+package org.petify.backend.controllers;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -6,13 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/user")
 @CrossOrigin("*")
-public class AdminController {
-    
-    @GetMapping("/")
-    public String helloAdminController() {
-        return "Admin level access";
-    }
+public class UserController {
 
+    @GetMapping("/")
+    public String helloUserController() {
+        return "User access level";
+    }
 }

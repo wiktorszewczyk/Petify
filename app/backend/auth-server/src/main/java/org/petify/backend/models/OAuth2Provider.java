@@ -1,4 +1,4 @@
-package org.petify.backend.security.models;
+package org.petify.backend.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;

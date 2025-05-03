@@ -1,6 +1,6 @@
-package org.petify.backend.security.repository;
+package org.petify.backend.repository;
 
-import org.petify.backend.security.models.OAuth2Provider;
+import org.petify.backend.models.OAuth2Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

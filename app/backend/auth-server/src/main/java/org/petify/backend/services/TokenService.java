@@ -1,4 +1,4 @@
-package org.petify.backend.security.services;
+package org.petify.backend.services;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

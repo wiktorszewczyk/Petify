@@ -1,4 +1,4 @@
-package org.petify.backend.security.utils;
+package org.petify.backend.utils;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
