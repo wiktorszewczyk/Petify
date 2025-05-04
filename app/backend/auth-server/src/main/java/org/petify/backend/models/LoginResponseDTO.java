@@ -28,5 +28,4 @@ public class LoginResponseDTO {
     public void setJwt(String jwt) {
         this.jwt = jwt;
     }
-
 }

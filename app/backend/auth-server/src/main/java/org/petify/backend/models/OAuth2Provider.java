@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Klasa reprezentująca połączenie między kontem użytkownika w naszej aplikacji
- * a jego kontem u zewnętrznego dostawcy OAuth2 (np. Google)
+ * Class representing the connection between a user account in our application
+ * and their account with an external OAuth2 provider (e.g., Google)
  */
 @Getter
 @Setter
@@ -19,15 +19,15 @@ public class OAuth2Provider {
     private Long id;
 
     @Column(nullable = false)
-    private String providerId;  // np. "google", "github"
+    private String providerId;  // e.g., "google", "github"
 
     @Column(nullable = false)
-    private String providerUserId;  // ID użytkownika u dostawcy OAuth2
+    private String providerUserId;  // User ID at the provider
 
     /**
-     * Relacja do użytkownika w naszej aplikacji.
-     * Uwaga: user musi być już zapisany w bazie danych (posiadać ID)
-     * przed zapisaniem obiektu OAuth2Provider.
+     * Relation to the user in our application.
+     * Note: user must already be saved in the database (have an ID)
+     * before saving an OAuth2Provider object.
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false,

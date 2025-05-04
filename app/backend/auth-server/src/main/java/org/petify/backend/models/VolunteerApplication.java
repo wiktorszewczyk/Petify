@@ -1,0 +1,49 @@
+package org.petify.backend.models;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "volunteer_applications")
+@Getter
+@Setter
+public class VolunteerApplication {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private ApplicationUser user;
+
+    @Column(name = "experience")
+    private String experience;
+
+    @Column(name = "motivation")
+    private String motivation;
+
+    @Column(name = "availability")
+    private String availability;
+
+    @Column(name = "skills")
+    private String skills;
+
+    @Column(name = "application_date")
+    private LocalDateTime applicationDate;
+
+    @Column(name = "processed_date")
+    private LocalDateTime processedDate;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
+
+    @Column(name = "preferred_shelter_id")
+    private Long preferredShelterId;
+}

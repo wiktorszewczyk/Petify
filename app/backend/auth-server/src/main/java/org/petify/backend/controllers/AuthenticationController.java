@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Kontroler obsługujący wszystkie endpointy związane z autoryzacją i uwierzytelnianiem,
- * zarówno przez formularz logowania jak i przez OAuth2
+ * Controller handling all authentication and authorization related endpoints,
+ * both for form login and OAuth2
  */
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -38,13 +38,27 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
     /**
-     * Standardowe endpointy autoryzacyjne
+     * Standard authorization endpoints
      */
     @PostMapping("/auth/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
         try {
             ApplicationUser user = authenticationService.registerUser(registrationDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+
+            // Remove sensitive information
+            user.setPassword(null);
+
+            // Create response with appropriate message based on volunteer application
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", user);
+
+            if (registrationDTO.isApplyAsVolunteer()) {
+                response.put("message", "User registered successfully and volunteer application submitted");
+            } else {
+                response.put("message", "User registered successfully");
+            }
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
             Map<String, String> response = new HashMap<>();
             response.put("error", e.getMessage());
@@ -70,21 +84,21 @@ public class AuthenticationController {
     }
 
     /**
-     * Endpoint do weryfikacji tokenu JWT
+     * JWT Token validation endpoint
      *
-     * @param authHeader Nagłówek Authorization z tokenem JWT
-     * @return Status weryfikacji tokenu
+     * @param authHeader Authorization header with JWT token
+     * @return Token validation status
      */
     @PostMapping("/auth/token/validate")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authHeader) {
         try {
-            // Wyodrębnij token z nagłówka Bearer
-            String token = authHeader.substring(7); // Usuń "Bearer " z początku
+            // Extract token from Bearer header
+            String token = authHeader.substring(7); // Remove "Bearer " from beginning
 
-            // Sprawdź czy token jest poprawny
+            // Check if token is valid
             var jwt = tokenService.validateJwt(token);
 
-            // Jeśli dotarliśmy tutaj, token jest poprawny
+            // If we get here, token is valid
             Map<String, Object> response = new HashMap<>();
             response.put("valid", true);
             response.put("subject", jwt.getSubject());
@@ -101,14 +115,14 @@ public class AuthenticationController {
     }
 
     /**
-     * Endpointy dla OAuth2
+     * OAuth2 endpoints
      */
 
     /**
-     * Inicjacja procesu logowania przez Google OAuth2
-     * Spring Security obsłuży przekierowanie do strony logowania Google
+     * Initiate Google OAuth2 login process
+     * Spring Security will handle redirecting to Google login page
      *
-     * @return Przekierowanie do autoryzacji Google
+     * @return Redirect to Google authorization
      */
     @GetMapping("/auth/oauth2/google")
     public String initiateGoogleLogin() {
@@ -116,10 +130,10 @@ public class AuthenticationController {
     }
 
     /**
-     * Pobieranie informacji o zalogowanym użytkowniku OAuth2
+     * Get information about logged in OAuth2 user
      *
-     * @param principal Informacje o zalogowanym użytkowniku OAuth2
-     * @return Mapa danych użytkownika
+     * @param principal Information about logged in OAuth2 user
+     * @return Map of user data
      */
     @GetMapping("/auth/oauth2/user-info")
     public Map<String, Object> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
@@ -136,10 +150,10 @@ public class AuthenticationController {
     }
 
     /**
-     * Generowanie tokenu JWT dla zalogowanego użytkownika OAuth2
+     * Generate JWT token for logged in OAuth2 user
      *
-     * @param authentication Obiekt uwierzytelnienia
-     * @return Mapa zawierająca token JWT lub informację o błędzie
+     * @param authentication Authentication object
+     * @return Map containing JWT token or error message
      */
     @GetMapping("/auth/oauth2/token")
     public Map<String, String> getOAuth2Token(Authentication authentication) {
@@ -149,25 +163,25 @@ public class AuthenticationController {
             String token = tokenService.generateJwt(authentication);
             response.put("token", token);
         } else {
-            response.put("error", "Użytkownik nie jest uwierzytelniony");
+            response.put("error", "User is not authenticated");
         }
 
         return response;
     }
 
     /**
-     * Obsługa udanego logowania przez OAuth2 (np. Google)
+     * Handle successful OAuth2 login (e.g., Google)
      *
-     * @param token Token JWT przekazany z handlera sukcesu logowania OAuth2
-     * @param oauth2User Informacje o zalogowanym użytkowniku OAuth2
-     * @return Dane użytkownika i token JWT
+     * @param token JWT Token passed from OAuth2 login success handler
+     * @param oauth2User Information about logged in OAuth2 user
+     * @return User data and JWT token
      */
     @GetMapping("/auth/oauth2/success")
     public ResponseEntity<Map<String, Object>> oauthLoginSuccess(
             @RequestParam(required = false) String token,
             @AuthenticationPrincipal OAuth2User oauth2User) {
 
-        // Jeśli token nie został przekazany, spróbuj pobrać go z uwierzytelnionego użytkownika
+        // If token wasn't passed, try to get it from authenticated user
         if (token == null || token.isEmpty()) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null) {
@@ -175,18 +189,18 @@ public class AuthenticationController {
             }
         }
 
-        // Wyciągnij email, aby znaleźć naszego wewnętrznego użytkownika
+        // Extract email to find our internal user
         String email = oauth2User.getAttribute("email");
         if (email == null) {
             Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Email nie został znaleziony w odpowiedzi od dostawcy OAuth2");
+            errorResponse.put("error", "Email not found in OAuth2 provider response");
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
         ApplicationUser user = userRepository.findByUsername(email)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Utwórz odpowiedź z informacjami o użytkowniku i tokenem
+        // Create response with user information and token
         Map<String, Object> response = new HashMap<>();
         response.put("user", user);
         response.put("jwt", token);
@@ -195,22 +209,22 @@ public class AuthenticationController {
     }
 
     /**
-     * Obsługa błędu logowania przez OAuth2
+     * Handle OAuth2 login error
      *
-     * @return Informacja o błędzie
+     * @return Error information
      */
     @GetMapping("/auth/oauth2/error")
     public ResponseEntity<Map<String, String>> oauthLoginError() {
         Map<String, String> response = new HashMap<>();
-        response.put("error", "Uwierzytelnianie OAuth2 nie powiodło się");
+        response.put("error", "OAuth2 authentication failed");
         return ResponseEntity.badRequest().body(response);
     }
 
     /**
-     * Endpoint do pobierania danych użytkownika
+     * Get user data endpoint
      *
-     * @param authentication Obiekt uwierzytelnienia
-     * @return Dane użytkownika
+     * @param authentication Authentication object
+     * @return User data
      */
     @GetMapping("/auth/user")
     public ResponseEntity<?> getUserData(Authentication authentication) {
@@ -230,7 +244,7 @@ public class AuthenticationController {
     }
 
     /**
-     * Endpoint do aktualizacji danych użytkownika
+     * Update user data endpoint
      */
     @PutMapping("/auth/user")
     public ResponseEntity<?> updateUserData(
@@ -263,7 +277,7 @@ public class AuthenticationController {
     }
 
     /**
-     * Endpoint do usuwania konta użytkownika
+     * Delete user account endpoint
      */
     @DeleteMapping("/auth/user")
     public ResponseEntity<?> deleteUser(Authentication authentication) {
@@ -284,5 +298,19 @@ public class AuthenticationController {
             errorResponse.put("error", "Failed to delete user account: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
+    }
+
+    /**
+     * Status endpoint for diagnostics
+     *
+     * @return Auth service status
+     */
+    @GetMapping("/auth/status")
+    public ResponseEntity<Map<String, String>> getStatus() {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("service", "auth-service");
+        response.put("timestamp", String.valueOf(System.currentTimeMillis()));
+        return ResponseEntity.ok(response);
     }
 }

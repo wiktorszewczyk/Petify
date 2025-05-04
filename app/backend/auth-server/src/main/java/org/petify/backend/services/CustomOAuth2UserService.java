@@ -42,57 +42,68 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        // Pobieranie danych dostawcy OAuth2
+        // Get OAuth2 provider data
         String providerId = userRequest.getClientRegistration().getRegistrationId();
         String providerUserId = oAuth2User.getAttribute("sub");
 
-        // Pobieranie danych użytkownika z odpowiedzi OAuth
+        // Get user data from OAuth response
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
 
-        // Sprawdzanie, czy już wcześniej widzieliśmy tego użytkownika
+        // Check if we've seen this user before
         Optional<OAuth2Provider> existingProvider =
                 oAuth2ProviderRepository.findByProviderIdAndProviderUserId(providerId, providerUserId);
 
         ApplicationUser user;
 
         if (existingProvider.isPresent()) {
-            // Już wcześniej logował się ten użytkownik - pobierz jego dane
+            // User has logged in before - get their data
             user = existingProvider.get().getUser();
 
-            // Aktualizacja danych użytkownika jeśli potrzeba
+            // Update user data if needed
             existingProvider.get().setEmail(email);
             existingProvider.get().setName(name);
             oAuth2ProviderRepository.save(existingProvider.get());
         } else {
-            // To nowy użytkownik OAuth2
+            // This is a new OAuth2 user
 
-            // Generowanie unikalnej nazwy użytkownika na podstawie emaila lub imienia
+            // Generate unique username based on email or name
             String username = (email != null) ? email : name + "_" + UUID.randomUUID().toString().substring(0, 8);
 
-            // Sprawdzenie czy użytkownik o tym emailu już istnieje
+            // Check if user with this email already exists
             Optional<ApplicationUser> existingUser = userRepository.findByUsername(username);
 
             if (existingUser.isPresent()) {
                 user = existingUser.get();
             } else {
-                // Tworzenie nowego użytkownika
+                // Create new user
                 Role userRole = roleRepository.findByAuthority("USER")
-                        .orElseThrow(() -> new RuntimeException("Nie znaleziono roli 'USER'"));
+                        .orElseThrow(() -> new RuntimeException("USER role not found"));
 
                 Set<Role> authorities = new HashSet<>();
                 authorities.add(userRole);
 
                 user = new ApplicationUser();
                 user.setUsername(username);
-                // Dla użytkowników OAuth2 ustawiamy bezpieczne losowe hasło, którego nie będą używać
+                user.setEmail(email);
+
+                // Set name if available (split into first/last name)
+                if (name != null) {
+                    String[] nameParts = name.split(" ", 2);
+                    user.setFirstName(nameParts[0]);
+                    if (nameParts.length > 1) {
+                        user.setLastName(nameParts[1]);
+                    }
+                }
+
+                // For OAuth2 users, set a secure random password they won't use
                 user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
                 user.setAuthorities(authorities);
 
-                // Najpierw zapisujemy użytkownika, aby otrzymał ID
+                // Save user first to get ID
                 user = userRepository.save(user);
 
-                // Teraz tworzymy i zapisujemy wpis OAuth2Provider z zapisanym użytkownikiem (który ma już ID)
+                // Now create and save OAuth2Provider entry with saved user (which now has ID)
                 OAuth2Provider provider = new OAuth2Provider(
                         providerId,
                         providerUserId,
@@ -104,7 +115,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             }
         }
 
-        // Tworzenie obiektu OAuth2User z odpowiednimi uprawnieniami
+        // Create OAuth2User object with appropriate permissions
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getAuthorities().forEach(role ->
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getAuthority())));
@@ -115,7 +126,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new DefaultOAuth2User(
                 authorities,
                 attributes,
-                "email" // Klucz atrybutu nazwy w mapie atrybutów
+                "email" // Name attribute key in attributes map
         );
     }
 }

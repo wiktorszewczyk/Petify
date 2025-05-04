@@ -27,7 +27,7 @@ spring:
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/auth/**, /admin/**, /user/**
+            - Path=/auth/**, /admin/**, /user/**, /volunteer/**
           filters:
             - PreserveHostHeader
 

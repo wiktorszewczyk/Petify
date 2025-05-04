@@ -35,6 +35,10 @@ public class RegistrationDTO {
     @NotBlank(message = "Password is required")
     private String password;
 
+    private Long shelterId;
+
+    private boolean applyAsVolunteer;
+
     public RegistrationDTO() {
         super();
     }

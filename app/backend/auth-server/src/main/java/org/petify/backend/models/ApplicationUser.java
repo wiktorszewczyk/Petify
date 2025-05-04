@@ -55,6 +55,12 @@ public class ApplicationUser implements UserDetails {
     @Column(name = "email", unique = true)
     private String email;
 
+    @Column(name = "shelter_id")
+    private Long shelterId;
+
+    @Column(name = "volunteer_status")
+    private VolunteerStatus volunteerStatus = VolunteerStatus.NONE;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="user_role_junction",

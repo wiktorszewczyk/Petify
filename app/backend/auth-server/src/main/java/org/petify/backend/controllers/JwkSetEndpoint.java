@@ -18,7 +18,7 @@ public class JwkSetEndpoint {
     @GetMapping("/.well-known/jwks.json")
     public Map<String, Object> getJwks() {
         RSAKey key = new RSAKey.Builder(keys.getPublicKey())
-                .keyID("auth-key") // stały keyID dla łatwego odniesienia
+                .keyID("auth-key")
                 .build();
         return new JWKSet(key).toJSONObject();
     }

@@ -8,6 +8,7 @@ import org.petify.backend.models.LoginRequestDTO;
 import org.petify.backend.models.LoginResponseDTO;
 import org.petify.backend.models.RegistrationDTO;
 import org.petify.backend.models.Role;
+import org.petify.backend.models.VolunteerStatus;
 import org.petify.backend.repository.OAuth2ProviderRepository;
 import org.petify.backend.repository.RoleRepository;
 import org.petify.backend.repository.UserRepository;
@@ -47,9 +48,11 @@ public class AuthenticationService {
      */
     public ApplicationUser registerUser(final RegistrationDTO registrationDTO) {
         // Generate a username based on email or phone
-        String username = (registrationDTO.getEmail() != null) ?
-                registrationDTO.getEmail() :
-                registrationDTO.getPhoneNumber();
+        String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty()) ?
+                registrationDTO.getUsername() :
+                (registrationDTO.getEmail() != null) ?
+                        registrationDTO.getEmail() :
+                        registrationDTO.getPhoneNumber();
 
         // Check if user with this email or phone already exists
         if (userRepository.findByEmailOrPhoneNumber(
@@ -78,6 +81,15 @@ public class AuthenticationService {
         newUser.setGender(registrationDTO.getGender());
         newUser.setPhoneNumber(registrationDTO.getPhoneNumber());
         newUser.setEmail(registrationDTO.getEmail());
+        newUser.setShelterId(registrationDTO.getShelterId());
+
+        // Set volunteer status
+        if (registrationDTO.isApplyAsVolunteer()) {
+            newUser.setVolunteerStatus(VolunteerStatus.PENDING);
+        } else {
+            newUser.setVolunteerStatus(VolunteerStatus.NONE);
+        }
+
         newUser.setAuthorities(authorities);
 
         return userRepository.save(newUser);
@@ -161,5 +173,34 @@ public class AuthenticationService {
         // The delete will cascade to related OAuth2Provider entries due to the
         // foreign key relationship with ON DELETE CASCADE
         userRepository.delete(user);
+    }
+
+    /**
+     * Updates a user's volunteer status
+     */
+    public ApplicationUser updateVolunteerStatus(Integer userId, VolunteerStatus status) {
+        ApplicationUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setVolunteerStatus(status);
+        return userRepository.save(user);
+    }
+
+    /**
+     * Assigns roles to a user
+     */
+    public ApplicationUser assignRolesToUser(Integer userId, Set<String> roleNames) {
+        ApplicationUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Set<Role> roles = new HashSet<>();
+        for (String roleName : roleNames) {
+            Role role = roleRepository.findByAuthority(roleName)
+                    .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
+            roles.add(role);
+        }
+
+        user.setAuthorities(roles);
+        return userRepository.save(user);
     }
 }
