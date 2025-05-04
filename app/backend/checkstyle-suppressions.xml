@@ -8,4 +8,6 @@
     <suppress checks="JavadocPackage"/>
     <suppress checks="JavadocVariable"/>
     <suppress checks="MissingJavadocMethod"/>
+    <suppress checks="MissingJavadocType"/>
+    <suppress checks="SummaryJavadoc"/>
 </suppressions>

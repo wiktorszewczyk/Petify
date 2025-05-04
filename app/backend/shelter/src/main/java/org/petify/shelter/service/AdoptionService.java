@@ -1,7 +1,5 @@
 package org.petify.shelter.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.model.Adoption;
 import org.petify.shelter.model.AdoptionStatus;
@@ -10,6 +8,9 @@ import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.AdoptionRepository;
 import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

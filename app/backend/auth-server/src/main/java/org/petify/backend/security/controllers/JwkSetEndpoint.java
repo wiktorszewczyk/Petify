@@ -1,8 +1,9 @@
 package org.petify.backend.security.controllers;
 
+import org.petify.backend.security.utils.RSAKeyProperties;
+
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
-import org.petify.backend.security.utils.RSAKeyProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
