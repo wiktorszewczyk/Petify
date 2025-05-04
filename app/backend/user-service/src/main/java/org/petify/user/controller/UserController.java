@@ -7,7 +7,10 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +42,8 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Sprawdź, czy użytkownik jest uwierzytelniony (nie jest anonimowy)
-        if (authentication == null || !authentication.isAuthenticated() ||
-                authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null || !authentication.isAuthenticated() 
+                || authentication instanceof AnonymousAuthenticationToken) {
             log.warn("Próba dostępu do /users/me bez uwierzytelnienia lub z uwierzytelnieniem anonimowym");
 
             Map<String, Object> errorResponse = new HashMap<>();
@@ -76,8 +79,8 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Sprawdź, czy użytkownik jest uwierzytelniony (nie jest anonimowy)
-        if (authentication == null || !authentication.isAuthenticated() ||
-                authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
             log.warn("Próba dostępu do /users/admin bez uwierzytelnienia");
 
             Map<String, Object> errorResponse = new HashMap<>();
@@ -124,8 +127,8 @@ public class UserController {
         String authHeader = headers.get("authorization");
         if (authHeader != null) {
             log.info("Znaleziono nagłówek Authorization: {}",
-                    authHeader.startsWith("Bearer ") ?
-                            "Bearer " + authHeader.substring(7, Math.min(15, authHeader.length())) + "..." :
+                    authHeader.startsWith("Bearer ")
+                            ? "Bearer " + authHeader.substring(7, Math.min(15, authHeader.length())) + "..." :
                             authHeader);
 
             response.put("authorization_present", true);
@@ -144,8 +147,8 @@ public class UserController {
 
         // Dodaj informacje o bieżącym uwierzytelnieniu
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() &&
-                !(authentication instanceof AnonymousAuthenticationToken)) {
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
             response.put("authenticated", true);
             response.put("auth_name", authentication.getName());
             response.put("auth_type", authentication.getClass().getName());
