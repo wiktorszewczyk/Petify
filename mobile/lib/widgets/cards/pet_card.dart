@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/pet_model.dart';
 import '../../styles/colors.dart';
 import '../../views/chat_view.dart';
 import '../../services/message_service.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PetCard extends StatefulWidget {
   final PetModel pet;
@@ -88,9 +91,192 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     return [widget.pet.imageUrl, ...widget.pet.galleryImages];
   }
 
+  void _shareProfile() {
+    /// TODO: Generować odpowiedni link do profilu zwierzaka, który można udostepnić
+    final placeholderLink = "https://petadopt.example.com/pets/${widget.pet.id}";
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Udostępnij profil ${widget.pet.name}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            _buildShareOption(
+              context,
+              icon: Icons.link,
+              color: Colors.blue,
+              title: 'Skopiuj link',
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: placeholderLink));
+                Navigator.pop(context);
+                _showShareConfirmation(context, 'Link skopiowany do schowka');
+              },
+            ),
+
+            _buildShareOption(
+              context,
+              icon: Icons.facebook,
+              color: Color(0xFF1877F2),
+              title: 'Facebook',
+              onTap: () {
+                _shareToSocialMedia('facebook', placeholderLink);
+                Navigator.pop(context);
+              },
+            ),
+
+            _buildShareOption(
+              context,
+              icon: Icons.camera_alt,
+              color: Color(0xFFE1306C),
+              title: 'Instagram',
+              onTap: () {
+                _shareToSocialMedia('instagram', placeholderLink);
+                Navigator.pop(context);
+              },
+            ),
+
+            _buildShareOption(
+              context,
+              icon: Icons.chat_bubble,
+              color: Color(0xFF25D366),
+              title: 'WhatsApp',
+              onTap: () {
+                _shareToSocialMedia('whatsapp', placeholderLink);
+                Navigator.pop(context);
+              },
+            ),
+
+            _buildShareOption(
+              context,
+              icon: Icons.share,
+              color: Colors.orange,
+              title: 'Inne',
+              onTap: () {
+                Share.share(
+                  'Poznaj ${widget.pet.name}! ${widget.pet.gender == 'male' ? 'Czeka' : 'Czeka'} '
+                      'na adopcję w ${widget.pet.shelterName}. ${placeholderLink}',
+                  subject: 'Zwierzak do adopcji: ${widget.pet.name}',
+                );
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShareOption(
+      BuildContext context, {
+        required IconData icon,
+        required Color color,
+        required String title,
+        required VoidCallback onTap,
+      }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: color,
+                size: 26,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Spacer(),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.grey[400],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showShareConfirmation(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.primaryColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _shareToSocialMedia(String platform, String link) {
+    final text = 'Poznaj ${widget.pet.name}! ${widget.pet.gender == 'male' ? 'Czeka' : 'Czeka'} '
+        'na adopcję w ${widget.pet.shelterName}. $link';
+
+    /// TODO: Użyć realne API do udostępniania dla każdej platformy
+    switch (platform) {
+      case 'facebook':
+        Share.share('$text #adopcjazwierząt');
+        break;
+      case 'instagram':
+        Share.share('$text #adopcjazwierząt #schronisko');
+        break;
+      case 'whatsapp':
+        final whatsappUrl = 'whatsapp://send?text=${Uri.encodeComponent(text)}';
+        launchUrl(Uri.parse(whatsappUrl)).catchError((error) {
+          Share.share(text);
+        });
+        break;
+      default:
+        Share.share(text);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Wymagane dla AutomaticKeepAliveClientMixin
+    super.build(context);
 
     final allImages = _getAllImages();
 
@@ -632,7 +818,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                 OutlinedButton.icon(
                   onPressed: () {
-                    // TODO: Logika udostępniania
+                    _shareProfile();
                   },
                   icon: const Icon(Icons.share),
                   label: const Text('Udostępnij profil'),
