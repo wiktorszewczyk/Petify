@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/pet_model.dart';
 import '../../styles/colors.dart';
+import '../../views/chat_view.dart';
+import '../../services/message_service.dart';
 
 class PetCard extends StatefulWidget {
   final PetModel pet;
@@ -18,6 +20,7 @@ class PetCard extends StatefulWidget {
 class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   int _currentPhotoIndex = 0;
   final PageController _pageController = PageController();
+  final MessageService _messageService = MessageService();
 
   // Cache dla załadowanych zdjęć
   final Map<String, bool> _loadedImages = {};
@@ -487,6 +490,53 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     }
   }
 
+  Future<void> _contactShelter() async {
+    try {
+      final conversations = await _messageService.getConversations();
+      final existingConversation = conversations
+          .where((conv) => conv.petId == widget.pet.id)
+          .toList();
+
+      String conversationId;
+      bool isNewConversation = false;
+
+      if (existingConversation.isNotEmpty) {
+        conversationId = existingConversation.first.id;
+      } else {
+        conversationId = await _messageService.createConversation(
+          petId: widget.pet.id,
+          petName: widget.pet.name,
+          shelterId: widget.pet.shelterId,
+          shelterName: widget.pet.shelterName ?? 'Schronisko',
+          petImageUrl: widget.pet.imageUrl,
+        );
+        isNewConversation = true;
+      }
+
+      if (!mounted) return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatView(
+            conversationId: conversationId,
+            isNewConversation: isNewConversation,
+            pet: widget.pet,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Nie udało się otworzyć czatu: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   void _showDetailsBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -559,7 +609,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                 ElevatedButton(
                   onPressed: () {
-                    /// TODO: Logika kontaktu ze schroniskiem
+                    _contactShelter();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,

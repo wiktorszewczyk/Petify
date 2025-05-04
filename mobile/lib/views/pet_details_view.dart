@@ -323,17 +323,17 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     setState(() => _busy = true);
 
     try {
-      // Próba znalezienia istniejącej konwersacji dla tego zwierzaka
       final conversations = await _messageService.getConversations();
-      final existingConversation = conversations.where((conv) => conv.petId == widget.pet.id).toList();
+      final existingConversation = conversations
+          .where((conv) => conv.petId == widget.pet.id)
+          .toList();
 
       String conversationId;
+      bool isNewConversation = false;
 
       if (existingConversation.isNotEmpty) {
-        // Używamy istniejącej konwersacji
         conversationId = existingConversation.first.id;
       } else {
-        // Tworzymy nową konwersację
         conversationId = await _messageService.createConversation(
           petId: widget.pet.id,
           petName: widget.pet.name,
@@ -341,27 +341,33 @@ class _PetDetailsViewState extends State<PetDetailsView> {
           shelterName: widget.pet.shelterName ?? 'Schronisko',
           petImageUrl: widget.pet.imageUrl,
         );
+        isNewConversation = true;
       }
 
       if (!mounted) return;
 
       setState(() => _busy = false);
 
-      // Otwieramy widok czatu
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ChatView(conversationId: conversationId),
+          builder: (context) => ChatView(
+            conversationId: conversationId,
+            isNewConversation: isNewConversation,
+            pet: widget.pet,
+          ),
         ),
       );
     } catch (e) {
-      setState(() => _busy = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Nie udało się otworzyć czatu: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        setState(() => _busy = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Nie udało się otworzyć czatu: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

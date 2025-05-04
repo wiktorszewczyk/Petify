@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../models/message_model.dart';
+import '../models/pet_model.dart';
 import '../services/message_service.dart';
 import '../styles/colors.dart';
 
 class ChatView extends StatefulWidget {
   final String conversationId;
+  final bool isNewConversation;
+  final PetModel? pet; // Optional pet model for new conversations
 
   const ChatView({
     Key? key,
     required this.conversationId,
+    this.isNewConversation = false,
+    this.pet,
   }) : super(key: key);
 
   @override
@@ -28,12 +33,13 @@ class _ChatViewState extends State<ChatView> {
   final ScrollController _scrollController = ScrollController();
   final String _currentUserId = 'user123'; // W rzeczywistej aplikacji, byłoby pobierane z serwisu autoryzacji
   bool _isSending = false;
+  bool _initialLoadAttempted = false;
 
   @override
   void initState() {
     super.initState();
     _messageService = MessageService();
-    _loadMessages();
+    _loadConversationDetails();
   }
 
   @override
@@ -43,7 +49,7 @@ class _ChatViewState extends State<ChatView> {
     super.dispose();
   }
 
-  Future<void> _loadMessages() async {
+  Future<void> _loadConversationDetails() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -57,40 +63,100 @@ class _ChatViewState extends State<ChatView> {
         orElse: () => throw Exception('Nie znaleziono konwersacji'),
       );
 
-      // Pobierz wiadomości
-      final messages = await _messageService.getMessages(widget.conversationId);
+      setState(() {
+        _conversation = conversation;
+      });
 
-      // Oznacz wiadomości jako przeczytane
-      await _messageService.markMessagesAsRead(widget.conversationId);
-
+      // Po pobraniu konwersacji, załaduj wiadomości
+      await _loadMessages();
+    } catch (e) {
       if (mounted) {
         setState(() {
-          _conversation = conversation;
-          _messages = messages;
-          _isLoading = false;
+          // Jeśli mamy dane zwierzaka, możemy wygenerować konwersację nawet jeśli nie znaleźliśmy jej w API
+          if (widget.pet != null && widget.isNewConversation) {
+            _conversation = ConversationModel(
+              id: widget.conversationId,
+              petId: widget.pet!.id,
+              petName: widget.pet!.name,
+              petImageUrl: widget.pet!.imageUrl,
+              shelterName: widget.pet!.shelterName ?? 'Schronisko',
+              lastMessage: '',
+              lastMessageTime: DateTime.now(),
+              unread: false,
+            );
+            _messages = [];
+            _isLoading = false;
+          } else {
+            _errorMessage = 'Nie udało się załadować konwersacji. Spróbuj ponownie.';
+            _isLoading = false;
+          }
         });
+      }
+    }
+  }
 
-        // Przewiń do najnowszej wiadomości
-        if (messages.isNotEmpty) {
-          Future.delayed(const Duration(milliseconds: 100), () {
-            if (_scrollController.hasClients) {
-              _scrollController.animateTo(
-                _scrollController.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-              );
-            }
+  Future<void> _loadMessages() async {
+    if (_initialLoadAttempted && (_messages?.isNotEmpty ?? false)) {
+      // Jeśli to ponowna próba i mamy już wiadomości, nie ładuj ponownie
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      // Tylko próbuj pobrać wiadomości, jeśli to nie jest nowa konwersacja
+      if (!widget.isNewConversation) {
+        final messages = await _messageService.getMessages(widget.conversationId);
+
+        // Oznacz wiadomości jako przeczytane
+        await _messageService.markMessagesAsRead(widget.conversationId);
+
+        if (mounted) {
+          setState(() {
+            _messages = messages;
+            _isLoading = false;
+            _initialLoadAttempted = true;
+          });
+
+          // Przewiń do najnowszej wiadomości
+          if (messages.isNotEmpty) {
+            _scrollToBottom();
+          }
+        }
+      } else {
+        // Dla nowej konwersacji po prostu inicjalizujemy pustą listę
+        if (mounted) {
+          setState(() {
+            _messages = [];
+            _isLoading = false;
+            _initialLoadAttempted = true;
           });
         }
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Nie udało się załadować wiadomości. Spróbuj ponownie.';
+          _errorMessage = 'Nie udało się załadować wiadomości. Sprawdź połączenie z internetem i spróbuj ponownie.';
           _isLoading = false;
+          _initialLoadAttempted = true;
         });
       }
     }
+  }
+
+  void _scrollToBottom() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   Future<void> _sendMessage() async {
@@ -114,16 +180,7 @@ class _ChatViewState extends State<ChatView> {
         _isSending = false;
       });
 
-      // Przewiń do najnowszej wiadomości
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
-      });
+      _scrollToBottom();
     } catch (e) {
       setState(() {
         _isSending = false;
@@ -372,19 +429,33 @@ class _ChatViewState extends State<ChatView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            _errorMessage!,
-            style: const TextStyle(color: Colors.red),
-            textAlign: TextAlign.center,
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Colors.red[300],
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _loadMessages,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Text(
+              _errorMessage!,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.red[700],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: _loadConversationDetails,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
-              foregroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: const Text('Spróbuj ponownie'),
+            icon: const Icon(Icons.refresh),
+            label: const Text('Spróbuj ponownie'),
           ),
         ],
       ),
