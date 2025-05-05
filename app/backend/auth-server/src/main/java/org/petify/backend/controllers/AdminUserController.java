@@ -37,7 +37,6 @@ public class AdminUserController {
     @GetMapping("/")
     public ResponseEntity<List<ApplicationUser>> getAllUsers() {
         List<ApplicationUser> users = userRepository.findAll();
-        // Clear sensitive data
         users.forEach(user -> user.setPassword(null));
         return ResponseEntity.ok(users);
     }
@@ -75,21 +74,6 @@ public class AdminUserController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    /**
-     * Create a new role
-     */
-    @PostMapping("/roles")
-    public ResponseEntity<?> createRole(@RequestBody String roleName) {
-        if (roleRepository.findByAuthority(roleName).isPresent()) {
-            return ResponseEntity.badRequest().body("Role already exists: " + roleName);
-        }
-
-        Role newRole = new Role(roleName);
-        roleRepository.save(newRole);
-
-        return ResponseEntity.ok("Role created: " + roleName);
     }
 
     /**
@@ -142,5 +126,63 @@ public class AdminUserController {
         List<ApplicationUser> pendingVolunteers = userRepository.findByVolunteerStatus(VolunteerStatus.PENDING);
         pendingVolunteers.forEach(user -> user.setPassword(null));
         return ResponseEntity.ok(pendingVolunteers);
+    }
+
+    /**
+     * Deactivate user account
+     */
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<?> deactivateUser(
+            @PathVariable Integer id,
+            @RequestParam(required = false) String reason) {
+
+        try {
+            ApplicationUser user = authenticationService.deactivateUserAccount(id, reason);
+            user.setPassword(null);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "User account has been deactivated");
+            response.put("userId", user.getUserId());
+            response.put("username", user.getUsername());
+            response.put("active", user.isActive());
+            if (reason != null) {
+                response.put("deactivationReason", user.getDeactivationReason());
+            }
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * Reactivate user account
+     */
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<?> activateUser(@PathVariable Integer id) {
+        try {
+            ApplicationUser user = authenticationService.reactivateUserAccount(id);
+            user.setPassword(null);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "User account has been reactivated");
+            response.put("userId", user.getUserId());
+            response.put("username", user.getUsername());
+            response.put("active", user.isActive());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * Get all inactive users
+     */
+    @GetMapping("/inactive")
+    public ResponseEntity<List<ApplicationUser>> getInactiveUsers() {
+        List<ApplicationUser> inactiveUsers = userRepository.findByActiveIsFalse();
+        inactiveUsers.forEach(user -> user.setPassword(null));
+        return ResponseEntity.ok(inactiveUsers);
     }
 }

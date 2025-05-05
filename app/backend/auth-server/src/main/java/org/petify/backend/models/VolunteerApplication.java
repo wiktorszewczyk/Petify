@@ -43,7 +43,4 @@ public class VolunteerApplication {
 
     @Column(name = "rejection_reason")
     private String rejectionReason;
-
-    @Column(name = "preferred_shelter_id")
-    private Long preferredShelterId;
 }

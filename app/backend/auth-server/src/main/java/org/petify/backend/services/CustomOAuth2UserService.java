@@ -42,41 +42,31 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        // Get OAuth2 provider data
         String providerId = userRequest.getClientRegistration().getRegistrationId();
         String providerUserId = oAuth2User.getAttribute("sub");
 
-        // Get user data from OAuth response
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
 
-        // Check if we've seen this user before
         Optional<OAuth2Provider> existingProvider =
                 oAuth2ProviderRepository.findByProviderIdAndProviderUserId(providerId, providerUserId);
 
         ApplicationUser user;
 
         if (existingProvider.isPresent()) {
-            // User has logged in before - get their data
             user = existingProvider.get().getUser();
 
-            // Update user data if needed
             existingProvider.get().setEmail(email);
             existingProvider.get().setName(name);
             oAuth2ProviderRepository.save(existingProvider.get());
         } else {
-            // This is a new OAuth2 user
-
-            // Generate unique username based on email or name
             String username = (email != null) ? email : name + "_" + UUID.randomUUID().toString().substring(0, 8);
 
-            // Check if user with this email already exists
             Optional<ApplicationUser> existingUser = userRepository.findByUsername(username);
 
             if (existingUser.isPresent()) {
                 user = existingUser.get();
             } else {
-                // Create new user
                 Role userRole = roleRepository.findByAuthority("USER")
                         .orElseThrow(() -> new RuntimeException("USER role not found"));
 
@@ -87,7 +77,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 user.setUsername(username);
                 user.setEmail(email);
 
-                // Set name if available (split into first/last name)
                 if (name != null) {
                     String[] nameParts = name.split(" ", 2);
                     user.setFirstName(nameParts[0]);
@@ -96,14 +85,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     }
                 }
 
-                // For OAuth2 users, set a secure random password they won't use
                 user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
                 user.setAuthorities(authorities);
 
-                // Save user first to get ID
                 user = userRepository.save(user);
 
-                // Now create and save OAuth2Provider entry with saved user (which now has ID)
                 OAuth2Provider provider = new OAuth2Provider(
                         providerId,
                         providerUserId,
@@ -115,7 +101,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             }
         }
 
-        // Create OAuth2User object with appropriate permissions
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getAuthorities().forEach(role ->
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getAuthority())));
@@ -126,7 +111,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new DefaultOAuth2User(
                 authorities,
                 attributes,
-                "email" // Name attribute key in attributes map
+                "email"
         );
     }
 }

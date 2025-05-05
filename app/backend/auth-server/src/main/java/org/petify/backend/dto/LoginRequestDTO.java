@@ -1,4 +1,4 @@
-package org.petify.backend.models;
+package org.petify.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

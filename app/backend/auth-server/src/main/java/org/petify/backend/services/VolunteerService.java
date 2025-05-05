@@ -33,11 +33,9 @@ public class VolunteerService {
             throw new IllegalStateException("User already has a volunteer status: " + user.getVolunteerStatus());
         }
 
-        // Update user status
         user.setVolunteerStatus(VolunteerStatus.PENDING);
         userRepository.save(user);
 
-        // Set application details
         application.setUser(user);
         application.setApplicationDate(LocalDateTime.now());
         application.setStatus("PENDING");
@@ -88,13 +86,6 @@ public class VolunteerService {
         application.setRejectionReason(reason);
         application.setProcessedDate(LocalDateTime.now());
         return volunteerApplicationRepository.save(application);
-    }
-
-    /**
-     * Get applications for a shelter
-     */
-    public List<VolunteerApplication> getApplicationsForShelter(Long shelterId) {
-        return volunteerApplicationRepository.findByPreferredShelterId(shelterId);
     }
 
     /**

@@ -33,12 +33,10 @@ public class TokenService {
         Instant now = Instant.now();
         Instant expiryTime = now.plus(24, ChronoUnit.HOURS);  // Token valid for 24h
 
-        // Collect all user permissions
         String scope = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
-        // Build basic claims for the token
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .issuer("http://localhost:9000")
                 .issuedAt(now)
@@ -46,14 +44,12 @@ public class TokenService {
                 .subject(auth.getName())
                 .claim("roles", scope);
 
-        // Add additional information for OAuth2 users
         if (auth.getPrincipal() instanceof OAuth2User) {
             addOAuth2Claims(claimsBuilder, (OAuth2User) auth.getPrincipal());
         } else {
             claimsBuilder.claim("auth_method", "form");
         }
 
-        // Encode and return the token
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsBuilder.build())).getTokenValue();
     }
 
@@ -66,17 +62,14 @@ public class TokenService {
             claimsBuilder.claim("userId", oauth2User.getAttribute("userId"));
         }
 
-        // Add email if available
         if (oauth2User.getAttribute("email") != null) {
             claimsBuilder.claim("email", oauth2User.getAttribute("email"));
         }
 
-        // Add name if available
         if (oauth2User.getAttribute("name") != null) {
             claimsBuilder.claim("name", oauth2User.getAttribute("name"));
         }
 
-        // Mark authentication method
         claimsBuilder.claim("auth_method", "oauth2");
     }
 

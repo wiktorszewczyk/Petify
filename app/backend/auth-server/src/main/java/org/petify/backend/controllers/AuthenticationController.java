@@ -1,9 +1,9 @@
 package org.petify.backend.controllers;
 
 import org.petify.backend.models.ApplicationUser;
-import org.petify.backend.models.LoginRequestDTO;
-import org.petify.backend.models.LoginResponseDTO;
-import org.petify.backend.models.RegistrationDTO;
+import org.petify.backend.dto.LoginRequestDTO;
+import org.petify.backend.dto.LoginResponseDTO;
+import org.petify.backend.dto.RegistrationDTO;
 import org.petify.backend.repository.UserRepository;
 import org.petify.backend.services.AuthenticationService;
 import org.petify.backend.services.TokenService;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Controller handling all authentication and authorization related endpoints,
+ * Controller handling all authentication, authorization and user management endpoints,
  * both for form login and OAuth2
  */
 @RestController
@@ -38,25 +38,19 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
     /**
-     * Standard authorization endpoints
+     * ===== Authentication Endpoints =====
      */
+
     @PostMapping("/auth/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
         try {
             ApplicationUser user = authenticationService.registerUser(registrationDTO);
 
-            // Remove sensitive information
             user.setPassword(null);
 
-            // Create response with appropriate message based on volunteer application
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);
-
-            if (registrationDTO.isApplyAsVolunteer()) {
-                response.put("message", "User registered successfully and volunteer application submitted");
-            } else {
-                response.put("message", "User registered successfully");
-            }
+            response.put("message", "User registered successfully");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
@@ -115,7 +109,7 @@ public class AuthenticationController {
     }
 
     /**
-     * OAuth2 endpoints
+     * ===== OAuth2 endpoints =====
      */
 
     /**
@@ -181,7 +175,6 @@ public class AuthenticationController {
             @RequestParam(required = false) String token,
             @AuthenticationPrincipal OAuth2User oauth2User) {
 
-        // If token wasn't passed, try to get it from authenticated user
         if (token == null || token.isEmpty()) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null) {
@@ -189,7 +182,6 @@ public class AuthenticationController {
             }
         }
 
-        // Extract email to find our internal user
         String email = oauth2User.getAttribute("email");
         if (email == null) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -200,7 +192,6 @@ public class AuthenticationController {
         ApplicationUser user = userRepository.findByUsername(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Create response with user information and token
         Map<String, Object> response = new HashMap<>();
         response.put("user", user);
         response.put("jwt", token);
@@ -221,12 +212,16 @@ public class AuthenticationController {
     }
 
     /**
+     * ===== User Management Endpoints =====
+     */
+
+    /**
      * Get user data endpoint
      *
      * @param authentication Authentication object
      * @return User data
      */
-    @GetMapping("/auth/user")
+    @GetMapping("/user")
     public ResponseEntity<?> getUserData(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -246,7 +241,7 @@ public class AuthenticationController {
     /**
      * Update user data endpoint
      */
-    @PutMapping("/auth/user")
+    @PutMapping("/user")
     public ResponseEntity<?> updateUserData(
             Authentication authentication,
             @RequestBody ApplicationUser userData) {
@@ -279,7 +274,7 @@ public class AuthenticationController {
     /**
      * Delete user account endpoint
      */
-    @DeleteMapping("/auth/user")
+    @DeleteMapping("/user")
     public ResponseEntity<?> deleteUser(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -301,16 +296,30 @@ public class AuthenticationController {
     }
 
     /**
-     * Status endpoint for diagnostics
-     *
-     * @return Auth service status
+     * Self-deactivate account endpoint
      */
-    @GetMapping("/auth/status")
-    public ResponseEntity<Map<String, String>> getStatus() {
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "UP");
-        response.put("service", "auth-service");
-        response.put("timestamp", String.valueOf(System.currentTimeMillis()));
-        return ResponseEntity.ok(response);
+    @PostMapping("/user/deactivate")
+    public ResponseEntity<?> selfDeactivateAccount(
+            Authentication authentication,
+            @RequestParam(required = false) String reason) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "User not authenticated");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        try {
+            ApplicationUser user = authenticationService.selfDeactivateAccount(
+                    authentication.getName(), reason);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Your account has been deactivated successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to deactivate account: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 }

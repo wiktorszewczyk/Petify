@@ -1,6 +1,7 @@
 package org.petify.backend.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,11 +56,17 @@ public class ApplicationUser implements UserDetails {
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "shelter_id")
-    private Long shelterId;
-
     @Column(name = "volunteer_status")
     private VolunteerStatus volunteerStatus = VolunteerStatus.NONE;
+
+    @Column(name = "active")
+    private boolean active = true;
+
+    @Column(name = "deactivation_reason")
+    private String deactivationReason;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -125,6 +132,6 @@ public class ApplicationUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.active;
     }
 }

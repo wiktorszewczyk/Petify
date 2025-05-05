@@ -105,18 +105,6 @@ public class VolunteerController {
     }
 
     /**
-     * Admin endpoint to get applications for a specific shelter
-     */
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @GetMapping("/applications/shelter/{shelterId}")
-    public ResponseEntity<List<VolunteerApplication>> getShelterApplications(
-            @PathVariable Long shelterId) {
-
-        List<VolunteerApplication> applications = volunteerService.getApplicationsForShelter(shelterId);
-        return ResponseEntity.ok(applications);
-    }
-
-    /**
      * Admin endpoint to get applications by status
      */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

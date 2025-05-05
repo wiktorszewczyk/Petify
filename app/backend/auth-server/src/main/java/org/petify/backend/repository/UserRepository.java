@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Integer> 
     Optional<ApplicationUser> findByEmail(String email);
     Optional<ApplicationUser> findByPhoneNumber(String phoneNumber);
     Optional<ApplicationUser> findByEmailOrPhoneNumber(String email, String phoneNumber);
-    List<ApplicationUser> findByShelterId(Long shelterId);
     List<ApplicationUser> findByVolunteerStatus(VolunteerStatus status);
     List<ApplicationUser> findByVolunteerStatusNot(VolunteerStatus status);
+    List<ApplicationUser> findByActiveIsFalse();
 }

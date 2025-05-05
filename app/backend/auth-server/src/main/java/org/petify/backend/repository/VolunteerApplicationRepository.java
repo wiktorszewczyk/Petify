@@ -11,5 +11,4 @@ import java.util.List;
 public interface VolunteerApplicationRepository extends JpaRepository<VolunteerApplication, Long> {
     List<VolunteerApplication> findByUserOrderByApplicationDateDesc(ApplicationUser user);
     List<VolunteerApplication> findByStatus(String status);
-    List<VolunteerApplication> findByPreferredShelterId(Long shelterId);
 }

@@ -1,12 +1,13 @@
 package org.petify.backend.services;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.petify.backend.models.ApplicationUser;
-import org.petify.backend.models.LoginRequestDTO;
-import org.petify.backend.models.LoginResponseDTO;
-import org.petify.backend.models.RegistrationDTO;
+import org.petify.backend.dto.LoginRequestDTO;
+import org.petify.backend.dto.LoginResponseDTO;
+import org.petify.backend.dto.RegistrationDTO;
 import org.petify.backend.models.Role;
 import org.petify.backend.models.VolunteerStatus;
 import org.petify.backend.repository.OAuth2ProviderRepository;
@@ -14,6 +15,7 @@ import org.petify.backend.repository.RoleRepository;
 import org.petify.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -81,7 +83,8 @@ public class AuthenticationService {
         newUser.setGender(registrationDTO.getGender());
         newUser.setPhoneNumber(registrationDTO.getPhoneNumber());
         newUser.setEmail(registrationDTO.getEmail());
-        newUser.setShelterId(registrationDTO.getShelterId());
+        newUser.setActive(true);
+        newUser.setCreatedAt(LocalDateTime.now());
 
         // Set volunteer status
         if (registrationDTO.isApplyAsVolunteer()) {
@@ -106,6 +109,13 @@ public class AuthenticationService {
                             loginRequest.getLoginIdentifier())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
+            // Check if user account is active
+            if (!user.isActive()) {
+                String deactivationReason = user.getDeactivationReason() != null ?
+                        user.getDeactivationReason() : "Account has been deactivated";
+                throw new DisabledException(deactivationReason);
+            }
+
             // Authenticate with username and password
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), loginRequest.getPassword())
@@ -115,8 +125,10 @@ public class AuthenticationService {
 
             return new LoginResponseDTO(user, token);
 
+        } catch (DisabledException e) {
+            return new LoginResponseDTO(null, "", e.getMessage());
         } catch (AuthenticationException e) {
-            return new LoginResponseDTO(null, "");
+            return new LoginResponseDTO(null, "", "Invalid credentials");
         }
     }
 
@@ -201,6 +213,48 @@ public class AuthenticationService {
         }
 
         user.setAuthorities(roles);
+        return userRepository.save(user);
+    }
+
+    /**
+     * Deactivate user account (by admin)
+     */
+    @Transactional
+    public ApplicationUser deactivateUserAccount(Integer userId, String reason) {
+        ApplicationUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setActive(false);
+        user.setDeactivationReason(reason);
+
+        return userRepository.save(user);
+    }
+
+    /**
+     * Reactivate user account (by admin)
+     */
+    @Transactional
+    public ApplicationUser reactivateUserAccount(Integer userId) {
+        ApplicationUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setActive(true);
+        user.setDeactivationReason(null);
+
+        return userRepository.save(user);
+    }
+
+    /**
+     * Self-deactivate account (by user)
+     */
+    @Transactional
+    public ApplicationUser selfDeactivateAccount(String username, String reason) {
+        ApplicationUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setActive(false);
+        user.setDeactivationReason(reason);
+
         return userRepository.save(user);
     }
 }
