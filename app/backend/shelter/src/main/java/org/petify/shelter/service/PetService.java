@@ -1,7 +1,5 @@
 package org.petify.shelter.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
@@ -14,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,6 +87,11 @@ public class PetService {
         existingPet.setAge(petRequest.age());
         existingPet.setDescription(petRequest.description());
         existingPet.setShelter(shelter);
+        existingPet.setKidFriendly(petRequest.kidFriendly());
+        existingPet.setSterilized(petRequest.sterilized());
+        existingPet.setUrgent(petRequest.urgent());
+        existingPet.setVaccinated(petRequest.vaccinated());
+        existingPet.setGender(petRequest.gender());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             existingPet.setImageName(imageFile.getOriginalFilename());

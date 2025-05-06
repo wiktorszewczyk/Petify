@@ -29,7 +29,7 @@ public class PetController {
     private final PetImageService petImageService;
 
     @GetMapping()
-    public ResponseEntity<?> pets() {
+    public ResponseEntity<?> getAllPets() {
         return ResponseEntity.ok(petService.getPets());
     }
 
@@ -93,6 +93,24 @@ public class PetController {
             @PathVariable("petId") Long petId) {
         List<PetImageResponse> images = petImageService.getImagesByPetId(petId);
         return ResponseEntity.ok(images);
+    }
+
+    @PostMapping("/{petId}/images")
+    public ResponseEntity<?> addPetImages(
+            @PathVariable("petId") Long petId,
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody List<PetImageRequest> petImageRequests) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+
+        if (!shelter.ownerUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        petImageService.addPetImages(petId, petImageRequests);
+
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
