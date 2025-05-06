@@ -1,10 +1,35 @@
 package org.petify.shelter.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
+import org.petify.shelter.dto.PetRequest;
+import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.model.Pet;
+import org.petify.shelter.model.Shelter;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PetMapper {
+    @Mapping(source = "shelter.id", target = "shelterId")
+    PetResponse toDto(Pet pet);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "adoptions", ignore = true)
+    @Mapping(target = "imageData", ignore = true)
+    @Mapping(target = "imageType", ignore = true)
+    @Mapping(target = "imageName", ignore = true)
+    @Mapping(target = "images", ignore = true)
+    @Mapping(target = "favoritePets", ignore = true)
+    @Mapping(target = "archived", ignore = true)
+    @Mapping(target = "shelter", ignore = true)
+    Pet toEntity(PetRequest request, @Context Shelter shelter);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "shelter", ignore = true)
+    @Mapping(target = "adoptions", ignore = true)
+    @Mapping(target = "imageData", ignore = true)
+    @Mapping(target = "imageExtension", ignore = true)
+    @Mapping(target = "imageName", ignore = true)
+    @Mapping(target = "images", ignore = true)
+    @Mapping(target = "favoritePets", ignore = true)
+    void updatePetFromRequest(PetRequest request, @MappingTarget Pet pet);
 }

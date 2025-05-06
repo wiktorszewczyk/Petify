@@ -51,4 +51,33 @@ public class Shelter {
         this.longitude = longitude;
         this.phoneNumber = phoneNumber;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof Shelter shelter)) return false;
+
+        return new EqualsBuilder().append(getId(), shelter.getId()).append(getOwnerUsername(), shelter.getOwnerUsername()).append(getName(), shelter.getName()).append(getDescription(), shelter.getDescription()).append(getAddress(), shelter.getAddress()).append(getLatitude(), shelter.getLatitude()).append(getLongitude(), shelter.getLongitude()).append(getPhoneNumber(), shelter.getPhoneNumber()).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(getId()).append(getOwnerUsername()).append(getName()).append(getDescription()).append(getAddress()).append(getLatitude()).append(getLongitude()).append(getPhoneNumber()).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("ownerUsername", ownerUsername)
+                .append("name", name)
+                .append("description", description)
+                .append("address", address)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
+                .append("phoneNumber", phoneNumber)
+                .append("pets", pets)
+                .toString();
+    }
 }
