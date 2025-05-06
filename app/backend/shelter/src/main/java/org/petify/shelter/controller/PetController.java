@@ -3,9 +3,8 @@ package org.petify.shelter.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.*;
-import org.petify.shelter.service.AdoptionService;
-import org.petify.shelter.service.PetService;
-import org.petify.shelter.service.ShelterService;
+import org.petify.shelter.model.Pet;
+import org.petify.shelter.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +24,8 @@ public class PetController {
     private final PetService petService;
     private final AdoptionService adoptionService;
     private final ShelterService shelterService;
+    private final FavoritePetService favoritePetService;
+    private final PetImageService petImageService;
 
     @GetMapping()
     public ResponseEntity<?> pets() {
@@ -77,12 +78,20 @@ public class PetController {
     }
 
     @GetMapping("/{id}/image")
-    public ResponseEntity<?> getPetImage(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getPetImage(
+            @PathVariable("id") Long id) {
         PetImageResponse petImageData = petService.getPetImage(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(petImageData.imageType()))
                 .body(petImageData.imageData());
+    }
+
+    @GetMapping("/{petId}/images")
+    public ResponseEntity<List<PetImageResponse>> getPetImages(
+            @PathVariable("petId") Long petId) {
+        List<PetImageResponse> images = petImageService.getImagesByPetId(petId);
+        return ResponseEntity.ok(images);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -131,11 +140,50 @@ public class PetController {
     @PostMapping("/{id}/adopt")
     public ResponseEntity<AdoptionResponse> adoptPet(
             @PathVariable("id") Long petId,
+            @Valid @RequestPart AdoptionRequest adoptionRequest,
             @AuthenticationPrincipal Jwt jwt) {
 
         String username = jwt != null ? jwt.getSubject() : null;
 
-        AdoptionResponse adoptionForm = adoptionService.createAdoptionForm(petId, username);
+        AdoptionResponse adoptionForm = adoptionService.createAdoptionForm(petId, username, adoptionRequest);
         return new ResponseEntity<>(adoptionForm, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PostMapping("/{id}/like")
+    public ResponseEntity<?> likePet(
+            @PathVariable("id") Long petId,
+            @AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        if (favoritePetService.save(username, petId)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @DeleteMapping("/{id}/dislike")
+    public ResponseEntity<?> dislikePet(
+            @PathVariable("id") Long petId,
+            @AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        if (favoritePetService.delete(username, petId)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // convert to dto
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/favorites")
+    public ResponseEntity<?> getFavoritePets(@AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        List<Pet> favoritePets = favoritePetService.getFavoritePets(username);
+        return ResponseEntity.ok(favoritePets);
     }
 }

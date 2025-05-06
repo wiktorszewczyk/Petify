@@ -1,4 +1,4 @@
-package org.petify.shelter.model;
+package org.petify.shelter.enums;
 
 public enum AdoptionStatus {
     PENDING,
