@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @AllArgsConstructor
@@ -84,7 +85,7 @@ public class PetController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(petImageData.imageType()))
-                .body(petImageData.imageData());
+                .body(Base64.getEncoder().encodeToString(petImageData.base64Image().getBytes()));
     }
 
     @GetMapping("/{petId}/images")
@@ -177,7 +178,6 @@ public class PetController {
         }
     }
 
-    // convert to dto
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/favorites")
     public ResponseEntity<?> getFavoritePets(@AuthenticationPrincipal Jwt jwt) {

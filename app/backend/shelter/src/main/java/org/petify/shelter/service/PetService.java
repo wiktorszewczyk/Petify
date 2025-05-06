@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.mapper.PetMapper;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.PetRepository;
@@ -14,10 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -25,13 +23,13 @@ import java.util.stream.Collectors;
 public class PetService {
     private final PetRepository petRepository;
     private final ShelterRepository shelterRepository;
+    private final PetMapper petMapper;
 
     public List<PetResponse> getPets() {
         List<Pet> pets = petRepository.findAll();
         List<PetResponse> petsList = new ArrayList<>();
         for (Pet pet : pets) {
-            petsList.add(new PetResponse(pet.getId(), pet.getName(), pet.getType(),
-                    pet.getBreed(), pet.getAge(), pet.isArchived(), pet.getDescription(), pet.getShelter().getId()));
+            petsList.add(petMapper.toDto(pet));
         }
 
         return petsList;
@@ -39,8 +37,7 @@ public class PetService {
 
     public PetResponse getPetById(Long petId) {
         return petRepository.findById(petId)
-                .map(pet -> new PetResponse(pet.getId(), pet.getName(), pet.getType(),
-                        pet.getBreed(), pet.getAge(), pet.isArchived(), pet.getDescription(), pet.getShelter().getId()))
+                .map(petMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found"));
     }
 
@@ -48,16 +45,7 @@ public class PetService {
         return petRepository.findByShelterId(shelterId)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(pet -> new PetResponse(
-                        pet.getId(),
-                        pet.getName(),
-                        pet.getType(),
-                        pet.getBreed(),
-                        pet.getAge(),
-                        pet.isArchived(),
-                        pet.getDescription(),
-                        pet.getShelter().getId()
-                ))
+                .map(petMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -66,20 +54,20 @@ public class PetService {
         Shelter shelter = shelterRepository.findById(shelterId)
                 .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + shelterId + " not found!"));
 
-        Pet pet = new Pet(petRequest.name(), petRequest.type(), petRequest.breed(), petRequest.age(), petRequest.description(), shelter);
+        Pet pet = petMapper.toEntity(petRequest, shelter);
         pet.setImageName(imageFile.getOriginalFilename());
         pet.setImageType(imageFile.getContentType());
         pet.setImageData(imageFile.getBytes());
 
         Pet savedPet = petRepository.save(pet);
 
-        return new PetResponse(savedPet.getId(), savedPet.getName(), savedPet.getType(), savedPet.getBreed(), savedPet.getAge(), savedPet.isArchived(), savedPet.getDescription(), savedPet.getShelter().getId());
+        return petMapper.toDto(savedPet);
     }
 
     public PetImageResponse getPetImage(Long id) {
         Optional<Pet> pet = petRepository.findById(id);
         if (pet.isPresent()) {
-            return new PetImageResponse(pet.get().getImageName(), pet.get().getImageType(), pet.get().getImageData());
+            return new PetImageResponse(pet.get().getImageName(), pet.get().getImageType(), Base64.getEncoder().encodeToString(pet.get().getImageData()));
         } else {
             throw new EntityNotFoundException("Pet with id " + id + " not found!");
         }
@@ -108,16 +96,7 @@ public class PetService {
 
         Pet updatedPet = petRepository.save(existingPet);
 
-        return new PetResponse(
-                updatedPet.getId(),
-                updatedPet.getName(),
-                updatedPet.getType(),
-                updatedPet.getBreed(),
-                updatedPet.getAge(),
-                updatedPet.isArchived(),
-                updatedPet.getDescription(),
-                updatedPet.getShelter().getId()
-        );
+        return petMapper.toDto(updatedPet);
     }
 
     @Transactional
@@ -136,15 +115,6 @@ public class PetService {
         pet.setArchived(true);
         Pet savedPet = petRepository.save(pet);
 
-        return new PetResponse(
-                savedPet.getId(),
-                savedPet.getName(),
-                savedPet.getType(),
-                savedPet.getBreed(),
-                savedPet.getAge(),
-                savedPet.isArchived(),
-                savedPet.getDescription(),
-                savedPet.getShelter().getId()
-        );
+        return petMapper.toDto(savedPet);
     }
 }

@@ -3,6 +3,9 @@ package org.petify.shelter.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.petify.shelter.enums.Gender;
 import org.petify.shelter.enums.PetType;
 
@@ -92,5 +95,38 @@ public class Pet {
         this.breed = breed;
         this.type = type;
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof Pet pet)) return false;
+
+        return new EqualsBuilder().append(isVaccinated(), pet.isVaccinated()).append(isUrgent(), pet.isUrgent()).append(isSterilized(), pet.isSterilized()).append(isKidFriendly(), pet.isKidFriendly()).append(isArchived(), pet.isArchived()).append(getId(), pet.getId()).append(getName(), pet.getName()).append(getType(), pet.getType()).append(getBreed(), pet.getBreed()).append(getAge(), pet.getAge()).append(getGender(), pet.getGender()).append(getDescription(), pet.getDescription()).append(getShelter(), pet.getShelter()).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(getId()).append(getName()).append(getType()).append(getBreed()).append(getAge()).append(getGender()).append(isVaccinated()).append(isUrgent()).append(isSterilized()).append(isKidFriendly()).append(isArchived()).append(getDescription()).append(getShelter()).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("adoptions", adoptions)
+                .append("shelter", shelter)
+                .append("description", description)
+                .append("archived", archived)
+                .append("kidFriendly", kidFriendly)
+                .append("sterilized", sterilized)
+                .append("urgent", urgent)
+                .append("vaccinated", vaccinated)
+                .append("gender", gender)
+                .append("age", age)
+                .append("breed", breed)
+                .append("type", type)
+                .append("name", name)
+                .toString();
     }
 }
