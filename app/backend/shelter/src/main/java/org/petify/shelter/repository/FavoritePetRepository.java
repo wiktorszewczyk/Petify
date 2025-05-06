@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface FavoritePetRepository extends JpaRepository<FavoritePet, Long> {
     List<FavoritePet> findByUsername(String username);
+
     Optional<FavoritePet> findByUsernameAndPet(String username, Pet pet);
 }

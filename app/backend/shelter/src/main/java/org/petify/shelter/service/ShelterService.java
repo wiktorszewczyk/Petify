@@ -1,12 +1,13 @@
 package org.petify.shelter.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.ShelterRequest;
 import org.petify.shelter.dto.ShelterResponse;
 import org.petify.shelter.mapper.ShelterMapper;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.ShelterRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class ShelterService {
     @Transactional
     public ShelterResponse createShelter(ShelterRequest input, String username) {
         Shelter shelter = shelterMapper.toEntity(input);
+        shelter.setOwnerUsername(username);
         Shelter savedShelter = shelterRepository.save(shelter);
         return shelterMapper.toDto(savedShelter);
     }
@@ -57,6 +59,8 @@ public class ShelterService {
         existingShelter.setDescription(input.description());
         existingShelter.setAddress(input.address());
         existingShelter.setPhoneNumber(input.phoneNumber());
+        existingShelter.setLatitude(input.latitude());
+        existingShelter.setLongitude(input.longitude());
 
         Shelter updatedShelter = shelterRepository.save(existingShelter);
 
