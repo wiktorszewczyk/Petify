@@ -45,6 +45,14 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/ws-chat/**, /api/chat/**
+          filters:
+            - PreserveHostHeader
+
+
 # Konfiguracja Eureka
 eureka:
   client:
