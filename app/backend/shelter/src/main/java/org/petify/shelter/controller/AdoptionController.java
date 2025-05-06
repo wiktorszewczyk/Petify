@@ -2,7 +2,7 @@ package org.petify.shelter.controller;
 
 import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.AdoptionResponse;
-import org.petify.shelter.model.AdoptionStatus;
+import org.petify.shelter.enums.AdoptionStatus;
 import org.petify.shelter.service.AdoptionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

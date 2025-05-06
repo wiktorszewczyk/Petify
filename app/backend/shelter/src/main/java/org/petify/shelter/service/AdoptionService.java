@@ -2,14 +2,16 @@ package org.petify.shelter.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.petify.shelter.dto.AdoptionRequest;
 import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.model.Adoption;
-import org.petify.shelter.model.AdoptionStatus;
+import org.petify.shelter.enums.AdoptionStatus;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.AdoptionRepository;
 import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
+import org.petify.shelter.mapper.AdoptionMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +24,10 @@ public class AdoptionService {
     private final AdoptionRepository adoptionRepository;
     private final ShelterRepository shelterRepository;
     private final PetRepository petRepository;
+    private final AdoptionMapper adoptionMapper;
 
     @Transactional
-    public AdoptionResponse createAdoptionForm(Long petId, String username) {
+    public AdoptionResponse createAdoptionForm(Long petId, String username, AdoptionRequest adoptionRequest) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found!"));
 
@@ -36,20 +39,16 @@ public class AdoptionService {
             throw new IllegalStateException("You already have a pending adoption request for this pet");
         }
 
-        Adoption adoption = new Adoption();
-        adoption.setUsername(username);
-        adoption.setPet(pet);
-        adoption.setAdoptionStatus(AdoptionStatus.PENDING);
-
+        Adoption adoption = adoptionMapper.toEntity(adoptionRequest);
         Adoption savedForm = adoptionRepository.save(adoption);
 
-        return mapToResponse(savedForm);
+        return adoptionMapper.toDto(savedForm);
     }
 
     public List<AdoptionResponse> getUserAdoptionForms(String username) {
         List<Adoption> adoptions = adoptionRepository.findByUsername(username);
         return adoptions.stream()
-                .map(this::mapToResponse)
+                .map(adoptionMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +58,7 @@ public class AdoptionService {
 
         List<Adoption> adoptions = adoptionRepository.findByPetShelter(shelter);
         return adoptions.stream()
-                .map(this::mapToResponse)
+                .map(adoptionMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +68,7 @@ public class AdoptionService {
 
         List<Adoption> adoptions = adoptionRepository.findByPet(pet);
         return adoptions.stream()
-                .map(this::mapToResponse)
+                .map(adoptionMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -99,7 +98,7 @@ public class AdoptionService {
         form.setAdoptionStatus(newStatus);
         Adoption updatedForm = adoptionRepository.save(form);
 
-        return mapToResponse(updatedForm);
+        return adoptionMapper.toDto(updatedForm);
     }
 
     @Transactional
@@ -118,22 +117,13 @@ public class AdoptionService {
         form.setAdoptionStatus(AdoptionStatus.CANCELLED);
         Adoption updatedForm = adoptionRepository.save(form);
 
-        return mapToResponse(updatedForm);
+        return adoptionMapper.toDto(updatedForm);
     }
 
     public AdoptionResponse getAdoptionFormById(Long formId) {
         Adoption form = adoptionRepository.findById(formId)
                 .orElseThrow(() -> new EntityNotFoundException("Adoption form with id " + formId + " not found!"));
 
-        return mapToResponse(form);
-    }
-
-    private AdoptionResponse mapToResponse(Adoption form) {
-        return new AdoptionResponse(
-                form.getId(),
-                form.getUsername(),
-                form.getPet().getId(),
-                form.getAdoptionStatus().toString()
-        );
+        return adoptionMapper.toDto(form);
     }
 }

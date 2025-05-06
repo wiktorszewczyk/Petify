@@ -1,6 +1,6 @@
 package org.petify.shelter.dto;
 
-import org.petify.shelter.model.PetType;
+import org.petify.shelter.enums.PetType;
 
 import java.io.Serializable;
 
