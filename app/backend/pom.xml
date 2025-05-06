@@ -21,6 +21,7 @@
     <module>gateway</module>
     <module>shelter</module>
     <module>reservations</module>
+    <module>chat</module>
   </modules>
 
   <distributionManagement>

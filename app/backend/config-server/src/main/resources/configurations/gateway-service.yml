@@ -37,6 +37,14 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/ws-chat/**, /api/chat/**
+          filters:
+            - PreserveHostHeader
+
+
         - id: shelter-service
           uri: lb://SHELTER-SERVICE
           predicates:
