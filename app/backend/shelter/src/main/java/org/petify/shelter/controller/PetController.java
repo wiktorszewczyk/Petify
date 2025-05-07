@@ -159,7 +159,7 @@ public class PetController {
     @PostMapping("/{id}/adopt")
     public ResponseEntity<AdoptionResponse> adoptPet(
             @PathVariable("id") Long petId,
-            @Valid @RequestPart AdoptionRequest adoptionRequest,
+            @Valid @RequestBody AdoptionRequest adoptionRequest,
             @AuthenticationPrincipal Jwt jwt) {
 
         String username = jwt != null ? jwt.getSubject() : null;
@@ -201,7 +201,7 @@ public class PetController {
     public ResponseEntity<?> getFavoritePets(@AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
 
-        List<Pet> favoritePets = favoritePetService.getFavoritePets(username);
+        List<PetResponse> favoritePets = favoritePetService.getFavoritePets(username);
         return ResponseEntity.ok(favoritePets);
     }
 }

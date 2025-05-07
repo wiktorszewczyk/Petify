@@ -1,6 +1,8 @@
 package org.petify.shelter.service;
 
 import lombok.RequiredArgsConstructor;
+import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.mapper.PetMapper;
 import org.petify.shelter.model.FavoritePet;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.repository.FavoritePetRepository;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class FavoritePetService {
     private final FavoritePetRepository favoritePetRepository;
     private final PetRepository petRepository;
+    private final PetMapper petMapper;
 
     public boolean save(String username, Long petId) {
         Optional<Pet> petOpt = petRepository.findById(petId);
@@ -42,10 +45,10 @@ public class FavoritePetService {
         return favoritePet.isPresent();
     }
 
-    public List<Pet> getFavoritePets(String username) {
+    public List<PetResponse> getFavoritePets(String username) {
         return favoritePetRepository.findByUsername(username)
                 .stream()
-                .map(FavoritePet::getPet)
+                .map(FavoritePet::getPet).map(petMapper::toDto)
                 .toList();
     }
 }
