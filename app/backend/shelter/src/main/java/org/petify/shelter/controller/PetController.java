@@ -3,6 +3,7 @@ package org.petify.shelter.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.*;
+import org.petify.shelter.enums.PetType;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.service.*;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,24 @@ public class PetController {
     @GetMapping()
     public ResponseEntity<?> getAllPets() {
         return ResponseEntity.ok(petService.getPets());
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<PetResponse>> getFilteredPets(
+            @RequestParam(required = false) Boolean vaccinated,
+            @RequestParam(required = false) Boolean urgent,
+            @RequestParam(required = false) Boolean sterilized,
+            @RequestParam(required = false) Boolean kidFriendly,
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge,
+            @RequestParam(required = false) PetType type,
+            @RequestParam(required = false) Double userLat,
+            @RequestParam(required = false) Double userLng,
+            @RequestParam(required = false) Double radiusKm
+    ) {
+        return ResponseEntity.ok(
+                petService.getFilteredPets(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge, type, userLat, userLng, radiusKm)
+        );
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
