@@ -11,6 +11,7 @@ public interface PetMapper {
     @Mapping(source = "shelter.id", target = "shelterId")
     PetResponse toDto(Pet pet);
 
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "adoptions", ignore = true)
     @Mapping(target = "imageData", ignore = true)
@@ -22,12 +23,18 @@ public interface PetMapper {
     @Mapping(target = "shelter", ignore = true)
     Pet toEntity(PetRequest request, @Context Shelter shelter);
 
+    default Pet toEntityWithShelter(PetRequest request, Shelter shelter) {
+        Pet pet = toEntity(request, shelter);
+        pet.setShelter(shelter);
+        return pet;
+    }
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "shelter", ignore = true)
     @Mapping(target = "adoptions", ignore = true)
     @Mapping(target = "imageData", ignore = true)
-    @Mapping(target = "imageExtension", ignore = true)
+    @Mapping(target = "imageType", ignore = true)
     @Mapping(target = "imageName", ignore = true)
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "favoritePets", ignore = true)

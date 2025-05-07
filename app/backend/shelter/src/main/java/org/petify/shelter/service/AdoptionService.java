@@ -40,6 +40,8 @@ public class AdoptionService {
         }
 
         Adoption adoption = adoptionMapper.toEntity(adoptionRequest);
+        adoption.setUsername(username);
+        adoption.setPet(pet);
         Adoption savedForm = adoptionRepository.save(adoption);
 
         return adoptionMapper.toDto(savedForm);

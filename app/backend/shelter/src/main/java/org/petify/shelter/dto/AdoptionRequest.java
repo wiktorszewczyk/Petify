@@ -9,7 +9,6 @@ import java.io.Serializable;
  * DTO for {@link Adoption}
  */
 public record AdoptionRequest(
-        @NotBlank String username,
         @NotBlank String motivationText,
         @NotBlank String fullName,
         @NotBlank String phoneNumber,

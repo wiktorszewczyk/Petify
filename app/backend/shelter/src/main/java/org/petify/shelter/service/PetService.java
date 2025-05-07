@@ -54,7 +54,7 @@ public class PetService {
         Shelter shelter = shelterRepository.findById(shelterId)
                 .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + shelterId + " not found!"));
 
-        Pet pet = petMapper.toEntity(petRequest, shelter);
+        Pet pet = petMapper.toEntityWithShelter(petRequest, shelter);
         pet.setImageName(imageFile.getOriginalFilename());
         pet.setImageType(imageFile.getContentType());
         pet.setImageData(imageFile.getBytes());
