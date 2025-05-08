@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.petify.shelter.dto.*;
 import org.petify.shelter.enums.PetType;
-import org.petify.shelter.model.Pet;
 import org.petify.shelter.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -62,7 +62,7 @@ public class PetController {
         ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
 
         if (!shelter.ownerUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("You are not the owner of this shelter");
         }
 
         try {
@@ -90,7 +90,7 @@ public class PetController {
         ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
 
         if (!shelter.ownerUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("You are not the owner of this shelter");
         }
 
         PetResponse updatedPet = petService.updatePet(petRequest, id, shelter.id(), imageFile);
@@ -124,7 +124,7 @@ public class PetController {
         ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
 
         if (!shelter.ownerUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("You are not the owner of this shelter");
         }
 
         petImageService.addPetImages(petId, petImageRequests);
@@ -142,7 +142,7 @@ public class PetController {
         ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
 
         if (!shelter.ownerUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("You are not the owner of this shelter");
         }
 
         petService.deletePet(id);
@@ -167,7 +167,7 @@ public class PetController {
         ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
 
         if (!shelter.ownerUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("You are not the owner of this shelter");
         }
 
         PetResponse petResponse = petService.archivePet(id);

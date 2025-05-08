@@ -18,7 +18,7 @@ public record ShelterRequest(
         @Length(message = "Description maximum size is 150 characters!", max = 150) String description,
         String address,
         @Pattern(regexp = "(?<!\\w)(\\(?(\\+|00)?48\\)?)?[ -]?\\d{3}[ -]?\\d{3}[ -]?\\d{3}(?!\\w)") String phoneNumber,
-        @Range(message = "Latitude has to be between -90 and 90 degrees!") Double latitude,
-        @Range(message = "Longitude has to be between -90 and 90 degrees!") Double longitude
+        @Range(min = -90, max = 90, message = "Latitude has to be between -90 and 90 degrees!") Double latitude,
+        @Range(min = -180, max = 180, message = "Longitude has to be between -180 and 180 degrees!") Double longitude
 ) implements Serializable {
 }

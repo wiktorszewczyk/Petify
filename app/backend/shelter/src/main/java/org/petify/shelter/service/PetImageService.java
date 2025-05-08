@@ -3,6 +3,7 @@ package org.petify.shelter.service;
 import lombok.RequiredArgsConstructor;
 import org.petify.shelter.dto.PetImageRequest;
 import org.petify.shelter.dto.PetImageResponse;
+import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.mapper.PetImageMapper;
 import org.petify.shelter.model.PetImage;
 import org.petify.shelter.repository.PetImageRepository;
@@ -26,16 +27,15 @@ public class PetImageService {
 
     public void addPetImage(Long petId, PetImageRequest input) {
         petRepository.findById(petId)
-                .orElseThrow(() -> new IllegalArgumentException("Pet not found"));
+                .orElseThrow(() -> new PetNotFoundException(petId));
 
         PetImage image = petImageMapper.toEntity(input);
         petImageRepository.save(image);
     }
 
-    public boolean addPetImages(Long petId, List<PetImageRequest> images) {
+    public void addPetImages(Long petId, List<PetImageRequest> images) {
         for (PetImageRequest input : images) {
             addPetImage(petId, input);
         }
-        return true;
     }
 }

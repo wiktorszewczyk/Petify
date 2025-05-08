@@ -10,6 +10,7 @@ import org.petify.shelter.service.PetService;
 import org.petify.shelter.service.ShelterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -42,7 +43,6 @@ public class ShelterController {
         return new ResponseEntity<>(shelter, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getShelterById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(shelterService.getShelterById(id));
@@ -63,7 +63,7 @@ public class ShelterController {
         ShelterResponse shelter = shelterService.getShelterById(id);
 
         if (!shelter.ownerUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("You are not the owner of this shelter");
         }
 
         ShelterResponse updatedShelter = shelterService.updateShelter(input, id);
@@ -79,7 +79,7 @@ public class ShelterController {
         ShelterResponse shelter = shelterService.getShelterById(id);
 
         if (!shelter.ownerUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("You are not the owner of this shelter");
         }
 
         shelterService.deleteShelter(id);
@@ -96,7 +96,7 @@ public class ShelterController {
         ShelterResponse shelter = shelterService.getShelterById(id);
 
         if (!shelter.ownerUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("You are not the owner of this shelter");
         }
 
         List<AdoptionResponse> forms = adoptionService.getShelterAdoptionForms(id);

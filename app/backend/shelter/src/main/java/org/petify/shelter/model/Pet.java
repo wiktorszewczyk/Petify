@@ -63,7 +63,7 @@ public class Pet {
     @JoinColumn(name = "shelter_id", nullable = false)
     private Shelter shelter;
 
-    @OneToMany(mappedBy = "pet")
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Adoption> adoptions;
 
     @Column(name = "image_name")
