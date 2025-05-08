@@ -4,6 +4,8 @@ import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
 import org.petify.shelter.enums.PetType;
+import org.petify.shelter.exception.PetNotFoundException;
+import org.petify.shelter.exception.ShelterNotFoundException;
 import org.petify.shelter.mapper.PetMapper;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
@@ -80,7 +82,7 @@ public class PetService {
     public PetResponse getPetById(Long petId) {
         return petRepository.findById(petId)
                 .map(petMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found"));
+                .orElseThrow(() -> new PetNotFoundException(petId));
     }
 
     public List<PetResponse> getAllShelterPets(Long shelterId) {
@@ -94,7 +96,7 @@ public class PetService {
     @Transactional
     public PetResponse createPet(PetRequest petRequest, Long shelterId, MultipartFile imageFile) throws IOException {
         Shelter shelter = shelterRepository.findById(shelterId)
-                .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + shelterId + " not found!"));
+                .orElseThrow(() -> new ShelterNotFoundException(shelterId));
 
         Pet pet = petMapper.toEntityWithShelter(petRequest, shelter);
         pet.setImageName(imageFile.getOriginalFilename());
@@ -111,17 +113,17 @@ public class PetService {
         if (pet.isPresent()) {
             return new PetImageResponse(pet.get().getImageName(), pet.get().getImageType(), Base64.getEncoder().encodeToString(pet.get().getImageData()));
         } else {
-            throw new EntityNotFoundException("Pet with id " + id + " not found!");
+            throw new PetNotFoundException(id);
         }
     }
 
     @Transactional
     public PetResponse updatePet(PetRequest petRequest, Long petId, Long shelterId, MultipartFile imageFile) throws IOException {
         Pet existingPet = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found!"));
+                .orElseThrow(() -> new PetNotFoundException(petId));
 
         Shelter shelter = shelterRepository.findById(shelterId)
-                .orElseThrow(() -> new EntityNotFoundException("Shelter with id " + shelterId + " not found!"));
+                .orElseThrow(() -> new ShelterNotFoundException(shelterId));
 
         existingPet.setName(petRequest.name());
         existingPet.setType(petRequest.type());
@@ -149,7 +151,7 @@ public class PetService {
     @Transactional
     public void deletePet(Long petId) {
         Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found!"));
+                .orElseThrow(() -> new PetNotFoundException(petId));
 
         petRepository.delete(pet);
     }
@@ -157,7 +159,7 @@ public class PetService {
     @Transactional
     public PetResponse archivePet(Long petId) {
         Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException("Pet with id " + petId + " not found!"));
+                .orElseThrow(() -> new PetNotFoundException(petId));
 
         pet.setArchived(true);
         Pet savedPet = petRepository.save(pet);

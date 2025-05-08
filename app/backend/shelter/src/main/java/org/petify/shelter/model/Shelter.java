@@ -39,7 +39,7 @@ public class Shelter {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "shelter")
+    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets;
 
     public Shelter(String ownerUsername, String name, String description, String address, Double latitude, Double longitude, String phoneNumber) {
