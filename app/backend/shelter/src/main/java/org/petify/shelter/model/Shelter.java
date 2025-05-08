@@ -1,8 +1,20 @@
 package org.petify.shelter.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.apache.commons.lang3.builder.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 
@@ -42,7 +54,8 @@ public class Shelter {
     @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets;
 
-    public Shelter(String ownerUsername, String name, String description, String address, Double latitude, Double longitude, String phoneNumber) {
+    public Shelter(String ownerUsername, String name, String description, String address,
+                   Double latitude, Double longitude, String phoneNumber) {
         this.ownerUsername = ownerUsername;
         this.name = name;
         this.description = description;
@@ -54,16 +67,26 @@ public class Shelter {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof Shelter shelter)) return false;
+        if (!(o instanceof Shelter shelter)) {
+            return false;
+        }
 
-        return new EqualsBuilder().append(getId(), shelter.getId()).append(getOwnerUsername(), shelter.getOwnerUsername()).append(getName(), shelter.getName()).append(getDescription(), shelter.getDescription()).append(getAddress(), shelter.getAddress()).append(getLatitude(), shelter.getLatitude()).append(getLongitude(), shelter.getLongitude()).append(getPhoneNumber(), shelter.getPhoneNumber()).isEquals();
+        return new EqualsBuilder().append(getId(), shelter.getId()).append(getOwnerUsername(),
+                shelter.getOwnerUsername()).append(getName(), shelter.getName()).append(getDescription(),
+                shelter.getDescription()).append(getAddress(), shelter.getAddress()).append(getLatitude(),
+                shelter.getLatitude()).append(getLongitude(), shelter.getLongitude()).append(getPhoneNumber(),
+                shelter.getPhoneNumber()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getId()).append(getOwnerUsername()).append(getName()).append(getDescription()).append(getAddress()).append(getLatitude()).append(getLongitude()).append(getPhoneNumber()).toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId()).append(getOwnerUsername())
+                .append(getName()).append(getDescription()).append(getAddress()).append(getLatitude())
+                .append(getLongitude()).append(getPhoneNumber()).toHashCode();
     }
 
     @Override

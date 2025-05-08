@@ -11,14 +11,18 @@ import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
+
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,18 +51,34 @@ public class PetService {
 
         Stream<Pet> stream = pets.stream();
 
-        if (vaccinated != null) stream = stream.filter(p -> p.isVaccinated() == vaccinated);
-        if (urgent != null) stream = stream.filter(p -> p.isUrgent() == urgent);
-        if (sterilized != null) stream = stream.filter(p -> p.isSterilized() == sterilized);
-        if (kidFriendly != null) stream = stream.filter(p -> p.isKidFriendly() == kidFriendly);
-        if (minAge != null) stream = stream.filter(p -> p.getAge() >= minAge);
-        if (maxAge != null) stream = stream.filter(p -> p.getAge() <= maxAge);
-        if (type != null) stream = stream.filter(p -> p.getType() == type);
+        if (vaccinated != null) {
+            stream = stream.filter(p -> p.isVaccinated() == vaccinated);
+        }
+        if (urgent != null) {
+            stream = stream.filter(p -> p.isUrgent() == urgent);
+        }
+        if (sterilized != null) {
+            stream = stream.filter(p -> p.isSterilized() == sterilized);
+        }
+        if (kidFriendly != null) {
+            stream = stream.filter(p -> p.isKidFriendly() == kidFriendly);
+        }
+        if (minAge != null) {
+            stream = stream.filter(p -> p.getAge() >= minAge);
+        }
+        if (maxAge != null) {
+            stream = stream.filter(p -> p.getAge() <= maxAge);
+        }
+        if (type != null) {
+            stream = stream.filter(p -> p.getType() == type);
+        }
 
         if (userLat != null && userLng != null && radiusKm != null) {
             stream = stream.filter(p -> {
                 Shelter s = p.getShelter();
-                if (s == null || s.getLatitude() == null || s.getLongitude() == null) return false;
+                if (s == null || s.getLatitude() == null || s.getLongitude() == null) {
+                    return false;
+                }
                 return distance(userLat, userLng, s.getLatitude(), s.getLongitude()) <= radiusKm;
             });
         }
@@ -70,11 +90,11 @@ public class PetService {
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
         final int R = 6371; // promień Ziemi w km
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+        double lat = Math.toRadians(lat2 - lat1);
+        double lon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(lat / 2) * Math.sin(lat / 2)
                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                * Math.sin(lon / 2) * Math.sin(lon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
     }
@@ -111,7 +131,8 @@ public class PetService {
     public PetImageResponse getPetImage(Long id) {
         Optional<Pet> pet = petRepository.findById(id);
         if (pet.isPresent()) {
-            return new PetImageResponse(pet.get().getImageName(), pet.get().getImageType(), Base64.getEncoder().encodeToString(pet.get().getImageData()));
+            return new PetImageResponse(pet.get().getImageName(), pet.get().getImageType(),
+                    Base64.getEncoder().encodeToString(pet.get().getImageData()));
         } else {
             throw new PetNotFoundException(id);
         }

@@ -1,8 +1,9 @@
 package org.petify.shelter.dto;
 
+import org.petify.shelter.model.Adoption;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.petify.shelter.model.Adoption;
 
 import java.io.Serializable;
 
@@ -19,5 +20,4 @@ public record AdoptionRequest(
         @NotNull boolean hasYard,
         @NotNull boolean hasOtherPets,
         String description
-) implements Serializable {
-}
+) implements Serializable {}
