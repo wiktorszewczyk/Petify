@@ -1,10 +1,21 @@
 package org.petify.shelter.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @NoArgsConstructor
 @Getter
@@ -31,8 +42,12 @@ public class FavoritePet {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FavoritePet favorite)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FavoritePet favorite)) {
+            return false;
+        }
 
         return new EqualsBuilder()
                 .append(getUsername(), favorite.getUsername())

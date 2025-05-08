@@ -1,6 +1,5 @@
 package org.petify.shelter.service;
 
-import lombok.RequiredArgsConstructor;
 import org.petify.shelter.dto.PetImageRequest;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.exception.PetNotFoundException;
@@ -8,6 +7,8 @@ import org.petify.shelter.mapper.PetImageMapper;
 import org.petify.shelter.model.PetImage;
 import org.petify.shelter.repository.PetImageRepository;
 import org.petify.shelter.repository.PetRepository;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

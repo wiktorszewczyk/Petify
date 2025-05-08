@@ -12,5 +12,4 @@ public record PetImageRequest(
         @NotBlank String imageName,
         @NotBlank String imageType,
         @NotNull byte[] imageData
-) implements Serializable {
-}
+) implements Serializable {}

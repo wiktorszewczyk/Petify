@@ -1,16 +1,23 @@
 package org.petify.shelter.mapper;
 
-import org.mapstruct.*;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PetMapper {
     @Mapping(source = "shelter.id", target = "shelterId")
     PetResponse toDto(Pet pet);
-
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "adoptions", ignore = true)

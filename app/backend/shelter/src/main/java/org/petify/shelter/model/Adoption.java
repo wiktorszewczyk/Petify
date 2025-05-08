@@ -1,11 +1,25 @@
 package org.petify.shelter.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import org.petify.shelter.enums.AdoptionStatus;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.petify.shelter.enums.AdoptionStatus;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -76,16 +90,31 @@ public class Adoption {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof Adoption adoption)) return false;
+        if (!(o instanceof Adoption adoption)) {
+            return false;
+        }
 
-        return new EqualsBuilder().append(isHouseOwner(), adoption.isHouseOwner()).append(isHasYard(), adoption.isHasYard()).append(isHasOtherPets(), adoption.isHasOtherPets()).append(getId(), adoption.getId()).append(getUsername(), adoption.getUsername()).append(getPet(), adoption.getPet()).append(getAdoptionStatus(), adoption.getAdoptionStatus()).append(getMotivationText(), adoption.getMotivationText()).append(getFullName(), adoption.getFullName()).append(getMotivationText(), adoption.getMotivationText()).append(getPhoneNumber(), adoption.getPhoneNumber()).append(getAddress(), adoption.getAddress()).append(getHousingType(), adoption.getHousingType()).append(getDescription(), adoption.getDescription()).isEquals();
+        return new EqualsBuilder().append(isHouseOwner(), adoption.isHouseOwner()).append(isHasYard(),
+                adoption.isHasYard()).append(isHasOtherPets(), adoption.isHasOtherPets()).append(getId(),
+                adoption.getId()).append(getUsername(), adoption.getUsername()).append(getPet(),
+                adoption.getPet()).append(getAdoptionStatus(), adoption.getAdoptionStatus()).append(getMotivationText(),
+                adoption.getMotivationText()).append(getFullName(), adoption.getFullName()).append(getMotivationText(),
+                adoption.getMotivationText()).append(getPhoneNumber(), adoption.getPhoneNumber()).append(getAddress(),
+                adoption.getAddress()).append(getHousingType(), adoption.getHousingType()).append(getDescription(),
+                adoption.getDescription()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getId()).append(getUsername()).append(getPet()).append(getAdoptionStatus()).append(getMotivationText()).append(getFullName()).append(getMotivationText()).append(getPhoneNumber()).append(getAddress()).append(getHousingType()).append(isHouseOwner()).append(isHasYard()).append(isHasOtherPets()).append(getDescription()).toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId()).append(getUsername())
+                .append(getPet()).append(getAdoptionStatus()).append(getMotivationText()).append(getFullName())
+                .append(getMotivationText()).append(getPhoneNumber()).append(getAddress()).append(getHousingType())
+                .append(isHouseOwner()).append(isHasYard()).append(isHasOtherPets())
+                .append(getDescription()).toHashCode();
     }
 
     @Override

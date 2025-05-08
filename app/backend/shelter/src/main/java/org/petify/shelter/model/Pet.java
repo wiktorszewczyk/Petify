@@ -1,13 +1,29 @@
 package org.petify.shelter.model;
 
-import jakarta.persistence.*;
+import org.petify.shelter.enums.Gender;
+import org.petify.shelter.enums.PetType;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.petify.shelter.enums.Gender;
-import org.petify.shelter.enums.PetType;
 
 import java.util.List;
 
@@ -99,16 +115,29 @@ public class Pet {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof Pet pet)) return false;
+        if (!(o instanceof Pet pet)) {
+            return false;
+        }
 
-        return new EqualsBuilder().append(isVaccinated(), pet.isVaccinated()).append(isUrgent(), pet.isUrgent()).append(isSterilized(), pet.isSterilized()).append(isKidFriendly(), pet.isKidFriendly()).append(isArchived(), pet.isArchived()).append(getId(), pet.getId()).append(getName(), pet.getName()).append(getType(), pet.getType()).append(getBreed(), pet.getBreed()).append(getAge(), pet.getAge()).append(getGender(), pet.getGender()).append(getDescription(), pet.getDescription()).append(getShelter(), pet.getShelter()).isEquals();
+        return new EqualsBuilder().append(isVaccinated(), pet.isVaccinated()).append(isUrgent(),
+                pet.isUrgent()).append(isSterilized(), pet.isSterilized()).append(isKidFriendly(),
+                pet.isKidFriendly()).append(isArchived(), pet.isArchived()).append(getId(),
+                pet.getId()).append(getName(), pet.getName()).append(getType(), pet.getType()).append(getBreed(),
+                pet.getBreed()).append(getAge(), pet.getAge()).append(getGender(),
+                pet.getGender()).append(getDescription(), pet.getDescription()).append(getShelter(),
+                pet.getShelter()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getId()).append(getName()).append(getType()).append(getBreed()).append(getAge()).append(getGender()).append(isVaccinated()).append(isUrgent()).append(isSterilized()).append(isKidFriendly()).append(isArchived()).append(getDescription()).append(getShelter()).toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId()).append(getName())
+                .append(getType()).append(getBreed()).append(getAge()).append(getGender()).append(isVaccinated())
+                .append(isUrgent()).append(isSterilized()).append(isKidFriendly()).append(isArchived())
+                .append(getDescription()).append(getShelter()).toHashCode();
     }
 
     @Override

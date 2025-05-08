@@ -1,7 +1,18 @@
 package org.petify.shelter.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -33,16 +44,23 @@ public class PetImage {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof PetImage petImage)) return false;
+        if (!(o instanceof PetImage petImage)) {
+            return false;
+        }
 
-        return new EqualsBuilder().append(getId(), petImage.getId()).append(getImageName(), petImage.getImageName()).append(getImageType(), petImage.getImageType()).append(getPet(), petImage.getPet()).isEquals();
+        return new EqualsBuilder().append(getId(), petImage.getId()).append(getImageName(),
+                petImage.getImageName()).append(getImageType(), petImage.getImageType()).append(getPet(),
+                petImage.getPet()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getId()).append(getImageName()).append(getImageType()).append(getPet()).toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId()).append(getImageName())
+                .append(getImageType()).append(getPet()).toHashCode();
     }
 
     @Override

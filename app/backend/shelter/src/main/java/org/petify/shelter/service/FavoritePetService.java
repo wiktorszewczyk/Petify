@@ -1,12 +1,13 @@
 package org.petify.shelter.service;
 
-import lombok.RequiredArgsConstructor;
 import org.petify.shelter.dto.PetResponse;
 import org.petify.shelter.mapper.PetMapper;
 import org.petify.shelter.model.FavoritePet;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.repository.FavoritePetRepository;
 import org.petify.shelter.repository.PetRepository;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,9 @@ public class FavoritePetService {
 
     public boolean save(String username, Long petId) {
         Optional<Pet> petOpt = petRepository.findById(petId);
-        if (petOpt.isEmpty()) return false;
+        if (petOpt.isEmpty()) {
+            return false;
+        }
 
         FavoritePet favoritePet = new FavoritePet();
         favoritePet.setUsername(username);
@@ -38,7 +41,9 @@ public class FavoritePetService {
 
     public boolean delete(String username, Long petId) {
         Optional<Pet> petOpt = petRepository.findById(petId);
-        if (petOpt.isEmpty()) return false;
+        if (petOpt.isEmpty()) {
+            return false;
+        }
 
         Optional<FavoritePet> favoritePet = favoritePetRepository.findByUsernameAndPet(username, petOpt.get());
         favoritePet.ifPresent(favoritePetRepository::delete);
