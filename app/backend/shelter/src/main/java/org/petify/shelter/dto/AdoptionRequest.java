@@ -1,6 +1,7 @@
 package org.petify.shelter.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.petify.shelter.model.Adoption;
 
 import java.io.Serializable;
@@ -14,9 +15,9 @@ public record AdoptionRequest(
         @NotBlank String phoneNumber,
         @NotBlank String address,
         @NotBlank String housingType,
-        boolean isHouseOwner,
-        boolean hasYard,
-        boolean hasOtherPets,
+        @NotNull boolean isHouseOwner,
+        @NotNull boolean hasYard,
+        @NotNull boolean hasOtherPets,
         String description
 ) implements Serializable {
 }
