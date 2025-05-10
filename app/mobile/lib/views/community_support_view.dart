@@ -6,6 +6,7 @@ import 'package:mobile/views/shelter_support_view.dart';
 import '../../styles/colors.dart';
 import '../../widgets/buttons/action_button.dart';
 import '../../models/shelter_post.dart';
+import 'events_view.dart';
 
 class CommunitySupportView extends StatefulWidget {
   const CommunitySupportView({super.key});
@@ -120,8 +121,9 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   void _navigateToEvents() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Przejście do ekranu wydarzeń')),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const EventsView()),
     );
   }
 
