@@ -68,8 +68,6 @@ class PetService {
       'https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg',
       'https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg',
       'https://images.pexels.com/photos/1346086/pexels-photo-1346086.jpeg',
-      'https://images.pexels.com/photos/2295744/pexels-photo-2295744.jpeg',
-      'https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg',
     ];
 
     final catImages = [
@@ -78,6 +76,7 @@ class PetService {
       'https://images.pexels.com/photos/320014/pexels-photo-320014.jpeg',
       'https://images.pexels.com/photos/730896/pexels-photo-730896.jpeg',
       'https://images.pexels.com/photos/1543793/pexels-photo-1543793.jpeg',
+      'https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg',
     ];
 
     List<PetModel> pets = [];

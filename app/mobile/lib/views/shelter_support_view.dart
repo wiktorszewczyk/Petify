@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile/views/shelter_donation_sheet.dart';
 import 'package:mobile/views/shelter_view.dart';
 import '../models/shelter_model.dart';
 import '../services/shelter_service.dart';
@@ -53,9 +54,173 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
   }
 
   void _supportShelter(ShelterModel shelter) {
-    // TODO: Implementacja wsparcia schroniska
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Przejście do ekranu wsparcia schroniska ${shelter.name}')),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _buildDonationBottomSheet(shelter),
+    );
+  }
+
+  Widget _buildDonationBottomSheet(ShelterModel shelter) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.7,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      builder: (_, controller) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Wesprzyj schronisko',
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          shelter.name,
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primaryColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                    splashRadius: 24,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Wybierz sposób wsparcia:',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: ListView(
+                  controller: controller,
+                  children: [
+                    _buildSupportOption(
+                      icon: Icons.attach_money,
+                      title: 'Wsparcie finansowe',
+                      description: 'Przekaż darowiznę na rzecz schroniska',
+                      onTap: () {
+                        Navigator.pop(context);
+                        ShelterDonationSheet.show(context, shelter);
+                      },
+                    ),
+                    const Divider(height: 32),
+                    _buildSupportOption(
+                      icon: Icons.volunteer_activism,
+                      title: 'Wolontariat',
+                      description: 'Zostań wolontariuszem i pomagaj na miejscu',
+                      onTap: () {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Przejście do formularza wolontariatu dla schroniska ${shelter.name}')),
+                        );
+                      },
+                    ),
+                    const Divider(height: 32),
+                    _buildSupportOption(
+                      icon: Icons.shopping_cart,
+                      title: 'Przekaż dary rzeczowe',
+                      description: 'Sprawdź listę potrzebnych przedmiotów',
+                      onTap: () {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Przejście do listy potrzeb schroniska ${shelter.name}')),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSupportOption({
+    required IconData icon,
+    required String title,
+    required String description,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Row(
+          children: [
+            Container(
+              height: 60,
+              width: 60,
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                icon,
+                size: 30,
+                color: AppColors.primaryColor,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
+      ),
     );
   }
 

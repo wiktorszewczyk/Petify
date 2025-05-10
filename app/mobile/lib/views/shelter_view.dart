@@ -158,18 +158,6 @@ class _ShelterViewState extends State<ShelterView> {
                     ),
                     const Divider(height: 32),
                     _buildSupportOption(
-                      icon: Icons.pets,
-                      title: 'Adopcja zwierzaka',
-                      description: 'Poznaj zwierzęta czekające na nowy dom',
-                      onTap: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Przejście do ekranu adopcji')),
-                        );
-                      },
-                    ),
-                    const Divider(height: 32),
-                    _buildSupportOption(
                       icon: Icons.volunteer_activism,
                       title: 'Wolontariat',
                       description: 'Zostań wolontariuszem i pomagaj na miejscu',
