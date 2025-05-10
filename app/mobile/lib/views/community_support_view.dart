@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile/views/shelter_posts_view.dart';
 import 'package:mobile/views/shelter_support_view.dart';
 import '../../styles/colors.dart';
 import '../../widgets/buttons/action_button.dart';
@@ -112,8 +113,9 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   void _navigateToShelterPosts() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Przejście do ekranu ogłoszeń schronisk')),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ShelterPostsView()),
     );
   }
 
