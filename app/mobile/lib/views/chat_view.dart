@@ -40,13 +40,31 @@ class _ChatViewState extends State<ChatView> {
     super.initState();
     _messageService = MessageService();
     _loadConversationDetails();
+
+    // Dodanie nasłuchiwania na nowe wiadomości
+    _messageService.addMessageListener(widget.conversationId, _onNewMessage);
   }
 
   @override
   void dispose() {
+    // Usunięcie nasłuchiwania przy zniszczeniu widoku
+    _messageService.removeMessageListener(widget.conversationId, _onNewMessage);
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  // Obsługa nowej wiadomości
+  void _onNewMessage(MessageModel message) {
+    // Upewnij się, że nie dodajemy wiadomości wysłanych przez aktualnego użytkownika,
+    // ponieważ te zostały już dodane w _sendMessage
+    if (message.senderId != _currentUserId && mounted) {
+      setState(() {
+        _messages ??= [];
+        _messages!.add(message);
+      });
+      _scrollToBottom();
+    }
   }
 
   Future<void> _loadConversationDetails() async {
@@ -226,6 +244,14 @@ class _ChatViewState extends State<ChatView> {
     );
   }
 
+  ImageProvider _getImageProvider(String path) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return NetworkImage(path);
+    } else {
+      return AssetImage(path);
+    }
+  }
+
   Widget _buildEmptyChat() {
     return Center(
       child: SingleChildScrollView(
@@ -248,9 +274,8 @@ class _ChatViewState extends State<ChatView> {
                   ],
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(_conversation!.petImageUrl),
+                    image: _getImageProvider(_conversation!.petImageUrl),
                     onError: (exception, stackTrace) {
-                      // Placeholder w przypadku błędu ładowania obrazu
                       return const AssetImage('assets/images/pet_placeholder.png');
                     } as ImageErrorListener,
                   ),
@@ -378,9 +403,8 @@ class _ChatViewState extends State<ChatView> {
               shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: NetworkImage(_conversation!.petImageUrl),
+                image: _getImageProvider(_conversation!.petImageUrl),
                 onError: (exception, stackTrace) {
-                  // Placeholder w przypadku błędu ładowania obrazu
                   return const AssetImage('assets/images/pet_placeholder.png');
                 } as ImageErrorListener,
               ),

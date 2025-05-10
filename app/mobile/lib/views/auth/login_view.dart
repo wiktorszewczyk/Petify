@@ -43,9 +43,20 @@ class _LoginViewState extends State<LoginView> {
       return;
     }
 
+    setState(() => _isLoading = true);
+
+    await Future.delayed(const Duration(seconds: 2));
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Zalogowano!')),
+      SnackBar(
+        content: const Text('Zalogowano!'),
+        backgroundColor: Colors.green,
+      ),
     );
+
+    setState(() {
+      _isLoading = false;
+    });
 
     Navigator.pushReplacement(
       context,

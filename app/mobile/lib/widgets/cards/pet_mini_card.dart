@@ -21,6 +21,10 @@ class PetMiniCard extends StatelessWidget {
     return 'lat';
   }
 
+  bool _isLocalImage(String path) {
+    return path.startsWith('assets/') || path.startsWith('images/');
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -48,25 +52,7 @@ class PetMiniCard extends StatelessWidget {
                 children: [
                   Hero(
                     tag: 'pet_mini_${pet.id}',
-                    child: Image.network(
-                      pet.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: Colors.grey[300],
-                        child: const Center(
-                          child: Icon(Icons.error_outline, size: 30),
-                        ),
-                      ),
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            valueColor:
-                            AlwaysStoppedAnimation(AppColors.primaryColor),
-                          ),
-                        );
-                      },
-                    ),
+                    child: _buildPetImage(),
                   ),
                   if (pet.isUrgent)
                     Positioned(
@@ -143,5 +129,39 @@ class PetMiniCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildPetImage() {
+    if (_isLocalImage(pet.imageUrl)) {
+      return Image.asset(
+        pet.imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Container(
+          color: Colors.grey[300],
+          child: const Center(
+            child: Icon(Icons.error_outline, size: 30),
+          ),
+        ),
+      );
+    } else {
+      return Image.network(
+        pet.imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Container(
+          color: Colors.grey[300],
+          child: const Center(
+            child: Icon(Icons.error_outline, size: 30),
+          ),
+        ),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+            ),
+          );
+        },
+      );
+    }
   }
 }

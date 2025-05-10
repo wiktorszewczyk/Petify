@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mobile/views/shelter_donation_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/shelter_model.dart';
@@ -151,9 +152,7 @@ class _ShelterViewState extends State<ShelterView> {
                       description: 'Przekaż darowiznę na rzecz schroniska',
                       onTap: () {
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Przejście do ekranu płatności')),
-                        );
+                        ShelterDonationSheet.show(context, widget.shelter);
                       },
                     ),
                     const Divider(height: 32),

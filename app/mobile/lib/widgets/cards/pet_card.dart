@@ -25,39 +25,56 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   final PageController _pageController = PageController();
   final MessageService _messageService = MessageService();
 
-  // Cache dla załadowanych zdjęć
   final Map<String, bool> _loadedImages = {};
 
   @override
-  bool get wantKeepAlive => true; // Zapobiega zniszczeniu stanu widgetu
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    // Wstępne załadowanie wszystkich zdjęć
     _preloadImages();
   }
 
   void _preloadImages() {
     final allImages = _getAllImages();
-    for (final imageUrl in allImages) {
-      if (!_loadedImages.containsKey(imageUrl)) {
-        final imageProvider = NetworkImage(imageUrl);
-        imageProvider.resolve(const ImageConfiguration()).addListener(
-          ImageStreamListener((info, _) {
-            if (mounted) {
-              setState(() {
-                _loadedImages[imageUrl] = true;
-              });
-            }
-          }, onError: (exception, stackTrace) {
-            if (mounted) {
-              setState(() {
-                _loadedImages[imageUrl] = false;
-              });
-            }
-          }),
-        );
+    for (final imagePath in allImages) {
+      if (!_loadedImages.containsKey(imagePath)) {
+        if (_isNetworkImage(imagePath)) {
+          final imageProvider = NetworkImage(imagePath);
+          imageProvider.resolve(const ImageConfiguration()).addListener(
+            ImageStreamListener((info, _) {
+              if (mounted) {
+                setState(() {
+                  _loadedImages[imagePath] = true;
+                });
+              }
+            }, onError: (exception, stackTrace) {
+              if (mounted) {
+                setState(() {
+                  _loadedImages[imagePath] = false;
+                });
+              }
+            }),
+          );
+        } else {
+          final imageProvider = AssetImage(imagePath);
+          imageProvider.resolve(const ImageConfiguration()).addListener(
+            ImageStreamListener((info, _) {
+              if (mounted) {
+                setState(() {
+                  _loadedImages[imagePath] = true;
+                });
+              }
+            }, onError: (exception, stackTrace) {
+              if (mounted) {
+                setState(() {
+                  _loadedImages[imagePath] = false;
+                });
+              }
+            }),
+          );
+        }
       }
     }
   }
@@ -87,13 +104,79 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   List<String> _getAllImages() {
-    // Łączymy główne zdjęcie z galerią
     return [widget.pet.imageUrl, ...widget.pet.galleryImages];
+  }
+
+  bool _isNetworkImage(String path) {
+    return path.startsWith('http://') || path.startsWith('https://');
+  }
+
+  Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
+    final isNetwork = _isNetworkImage(path);
+    final isLoaded = _loadedImages[path] ?? false;
+
+    Widget imageWidget;
+
+    if (isNetwork) {
+      imageWidget = Image.network(
+        path,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            color: Colors.grey[300],
+            child: const Center(
+              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
+            ),
+          );
+        },
+        loadingBuilder: (context, child, loadingProgress) {
+          if (isLoaded || loadingProgress == null) return child;
+
+          return Container(
+            color: Colors.grey[200],
+            child: const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+              ),
+            ),
+          );
+        },
+        cacheWidth: MediaQuery.of(context).size.width.round(),
+      );
+    } else {
+      imageWidget = Image.asset(
+        path,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            color: Colors.grey[300],
+            child: const Center(
+              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
+            ),
+          );
+        },
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (wasSynchronouslyLoaded || frame != null) {
+            return child;
+          }
+          return Container(
+            color: Colors.grey[200],
+            child: const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    return imageWidget;
   }
 
   void _shareProfile() {
     /// TODO: Generować odpowiedni link do profilu zwierzaka, który można udostepnić
-    final placeholderLink = "https://petadopt.example.com/pets/${widget.pet.id}";
+    final placeholderLink = "https://petadopt.example.com/demo/${widget.pet.id}";
 
     showModalBottomSheet(
       context: context,
@@ -302,9 +385,10 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Karuzela zdjęć
+                // Karuzela zdjęć z wyłączonym przewijaniem przy przeciąganiu
                 PageView.builder(
                   controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(), // To wyłącza przewijanie przez użytkownika
                   onPageChanged: (index) {
                     setState(() {
                       _currentPhotoIndex = index;
@@ -312,59 +396,31 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                   },
                   itemCount: allImages.length,
                   itemBuilder: (context, index) {
-                    final imageUrl = allImages[index];
-                    final isLoaded = _loadedImages[imageUrl] ?? false;
+                    final imagePath = allImages[index];
 
                     return Hero(
                       tag: index == 0 ? 'pet_${widget.pet.id}' : 'pet_${widget.pet.id}_$index',
-                      child: Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
-                            ),
-                          );
-                        },
-                        loadingBuilder: (context, child, loadingProgress) {
-                          // Jeśli obraz jest już załadowany w cache, pokaż go natychmiast
-                          if (isLoaded || loadingProgress == null) return child;
-
-                          return Container(
-                            color: Colors.grey[200],
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-                              ),
-                            ),
-                          );
-                        },
-                        // Dodajemy cache dla zdjęć
-                        cacheWidth: MediaQuery.of(context).size.width.round(),
-                      ),
+                      child: _getImageWidget(imagePath),
                     );
                   },
                 ),
 
-                // Przyciski do nawigacji zdjęć
                 if (allImages.length > 1) ...[
-                  // Przycisk lewo
+                  // Przycisk do przewijania w lewo - na całej lewej stronie zdjęcia
                   Positioned.fill(
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
                         onTap: _currentPhotoIndex > 0 ? _goToPreviousPhoto : null,
                         child: Container(
-                          width: 50,
+                          width: MediaQuery.of(context).size.width * 0.15,
                           height: double.infinity,
                           color: Colors.transparent,
                           child: _currentPhotoIndex > 0
                               ? Container(
                             margin: const EdgeInsets.only(left: 8),
-                            width: 40,
-                            height: 40,
+                            width: 25,
+                            height: 25,
                             decoration: BoxDecoration(
                               color: Colors.black.withOpacity(0.3),
                               shape: BoxShape.circle,
@@ -372,7 +428,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                             child: const Icon(
                               Icons.chevron_left,
                               color: Colors.white,
-                              size: 30,
+                              size: 25,
                             ),
                           )
                               : null,
@@ -381,21 +437,21 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     ),
                   ),
 
-                  // Przycisk prawo
+                  // Przycisk do przewijania w prawo - na całej prawej stronie zdjęcia
                   Positioned.fill(
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: _currentPhotoIndex < allImages.length - 1 ? _goToNextPhoto : null,
                         child: Container(
-                          width: 50,
+                          width: MediaQuery.of(context).size.width * 0.15,
                           height: double.infinity,
                           color: Colors.transparent,
                           child: _currentPhotoIndex < allImages.length - 1
                               ? Container(
                             margin: const EdgeInsets.only(right: 8),
-                            width: 40,
-                            height: 40,
+                            width: 25,
+                            height: 25,
                             decoration: BoxDecoration(
                               color: Colors.black.withOpacity(0.3),
                               shape: BoxShape.circle,
@@ -403,7 +459,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                             child: const Icon(
                               Icons.chevron_right,
                               color: Colors.white,
-                              size: 30,
+                              size: 25,
                             ),
                           )
                               : null,
@@ -413,7 +469,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                   ),
                 ],
 
-                // Wskaźnik aktualnego zdjęcia - dots
                 if (allImages.length > 1)
                   Positioned(
                     bottom: 90,
@@ -438,7 +493,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     ),
                   ),
 
-                // gradient na dole zdjęcia, by tekst był bardziej czytelny
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -750,7 +804,9 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         image: DecorationImage(
-                          image: NetworkImage(widget.pet.imageUrl),
+                          image: _isNetworkImage(widget.pet.imageUrl)
+                              ? NetworkImage(widget.pet.imageUrl) as ImageProvider
+                              : AssetImage(widget.pet.imageUrl),
                           fit: BoxFit.cover,
                         ),
                       ),

@@ -74,15 +74,15 @@ class _EventsViewState extends State<EventsView> {
     });
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
-
       final now = DateTime.now();
-      final tomorrow = now.add(const Duration(days: 1));
-      final nextWeek = now.add(const Duration(days: 7));
-      final twoWeeksLater = now.add(const Duration(days: 14));
-      final nextMonth = now.add(const Duration(days: 30));
+      final today = DateTime(now.year, now.month, now.day);
 
-      // Symulacja danych z backendu
+      final tomorrow = today.add(const Duration(days: 1));
+      final dayAfterTomorrow = today.add(const Duration(days: 2));
+      final nextWeek = today.add(const Duration(days: 7));
+      final twoWeeksLater = today.add(const Duration(days: 14));
+      final nextMonth = today.add(const Duration(days: 30));
+
       final events = [
         Event(
           id: '1',
@@ -90,8 +90,8 @@ class _EventsViewState extends State<EventsView> {
           organizerName: 'Schronisko dla zwierząt "Azyl"',
           description: 'Zapraszamy wszystkich na dzień otwarty w naszym schronisku! Poznaj naszych podopiecznych i dowiedz się jak pomóc. W programie: zwiedzanie schroniska, prezentacja podopiecznych, konsultacje z behawiorystą.',
           imageUrl: _placeholderImages[0],
-          date: tomorrow.add(const Duration(hours: 10)),
-          endDate: tomorrow.add(const Duration(hours: 16)),
+          date: DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 10, 0), // 10:00
+          endDate: DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 16, 0), // 16:00
           location: 'Kraków, ul. Adopcyjna 12',
           eventType: 'Dzień otwarty',
           participantsCount: 35,
@@ -102,8 +102,8 @@ class _EventsViewState extends State<EventsView> {
           organizerName: 'Miejskie Schronisko dla Zwierząt',
           description: 'Zapraszamy wszystkich miłośników psów na sobotnie spacery z naszymi podopiecznymi. To dla nich szansa na chwilę normalności i radości poza boksem.',
           imageUrl: _placeholderImages[1],
-          date: nextWeek.add(const Duration(hours: 10)),
-          endDate: nextWeek.add(const Duration(hours: 13)),
+          date: DateTime(nextWeek.year, nextWeek.month, nextWeek.day, 10, 30), // 10:30
+          endDate: DateTime(nextWeek.year, nextWeek.month, nextWeek.day, 13, 0), // 13:00
           location: 'Łódź, ul. Schroniskowa 45',
           eventType: 'Spacer',
           participantsCount: 18,
@@ -115,8 +115,8 @@ class _EventsViewState extends State<EventsView> {
           organizerName: 'Fundacja "Cztery Łapy"',
           description: 'Organizujemy szkolenie dla osób chcących zostać wolontariuszami w naszym schronisku. W programie: podstawy opieki nad zwierzętami, pierwsza pomoc, techniki pracy z psami lękliwymi.',
           imageUrl: _placeholderImages[2],
-          date: nextWeek.add(const Duration(days: 3, hours: 17)),
-          endDate: nextWeek.add(const Duration(days: 3, hours: 20)),
+          date: DateTime(nextWeek.year, nextWeek.month, nextWeek.day + 3, 17, 0), // 17:00, 3 dni po następnym tygodniu
+          endDate: DateTime(nextWeek.year, nextWeek.month, nextWeek.day + 3, 20, 0), // 20:00
           location: 'Poznań, ul. Wolontariacka 8',
           eventType: 'Warsztaty',
           participantsCount: 15,
@@ -128,8 +128,8 @@ class _EventsViewState extends State<EventsView> {
           organizerName: 'Fundacja "Łapa w Łapę"',
           description: 'Wielki festyn charytatywny na rzecz zwierząt w schroniskach. W programie: licytacje, koncerty, atrakcje dla dzieci, stoiska z rękodziełem, loteria fantowa. Cały dochód zostanie przeznaczony na leczenie i rehabilitację zwierząt.',
           imageUrl: _placeholderImages[4],
-          date: nextMonth.subtract(const Duration(days: 5, hours: 12)),
-          endDate: nextMonth.subtract(const Duration(days: 5, hours: 4)),
+          date: DateTime(nextMonth.year, nextMonth.month, nextMonth.day - 5, 12, 0), // 12:00, 5 dni przed następnym miesiącem
+          endDate: DateTime(nextMonth.year, nextMonth.month, nextMonth.day - 5, 20, 0), // 20:00
           location: 'Warszawa, Park Miejski',
           eventType: 'Festyn',
           participantsCount: 120,
@@ -140,8 +140,8 @@ class _EventsViewState extends State<EventsView> {
           organizerName: 'Schronisko "Psia Łapka"',
           description: 'Zapraszamy na szkolenie z behawiorystą, który opowie o podstawach pracy z psami problemowymi. Dowiesz się, jak pomóc psom lękliwym i reagującym agresywnie.',
           imageUrl: _placeholderImages[5],
-          date: twoWeeksLater.add(const Duration(hours: 18)),
-          endDate: twoWeeksLater.add(const Duration(hours: 20)),
+          date: DateTime(twoWeeksLater.year, twoWeeksLater.month, twoWeeksLater.day, 18, 0), // 18:00
+          endDate: DateTime(twoWeeksLater.year, twoWeeksLater.month, twoWeeksLater.day, 20, 30), // 20:30
           location: 'Warszawa, ul. Zwierzyniecka 5',
           eventType: 'Szkolenie',
           participantsCount: 25,
@@ -153,14 +153,15 @@ class _EventsViewState extends State<EventsView> {
           organizerName: 'Kocia Przystań',
           description: 'Warsztaty fotograficzne, podczas których nauczysz się jak robić atrakcyjne zdjęcia zwierzętom w schronisku. Dobre zdjęcia zwiększają szanse na adopcję!',
           imageUrl: _placeholderImages[3],
-          date: tomorrow.add(const Duration(days: 3, hours: 16)),
-          endDate: tomorrow.add(const Duration(days: 3, hours: 19)),
+          date: DateTime(dayAfterTomorrow.year, dayAfterTomorrow.month, dayAfterTomorrow.day, 16, 30), // 16:30, 3 dni po jutrze
+          endDate: DateTime(dayAfterTomorrow.year, dayAfterTomorrow.month, dayAfterTomorrow.day, 19, 0), // 19:00
           location: 'Gdańsk, ul. Kocia 17',
           eventType: 'Warsztaty',
           participantsCount: 10,
           requiresRegistration: true,
         ),
       ];
+
 
       setState(() {
         _events = events;
@@ -680,17 +681,6 @@ class _EventsViewState extends State<EventsView> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Dodawanie nowego wydarzenia')),
-          );
-        },
-        backgroundColor: AppColors.primaryColor,
-        foregroundColor: Colors.black,
-        elevation: 4,
-        child: const Icon(Icons.add),
       ),
     );
   }

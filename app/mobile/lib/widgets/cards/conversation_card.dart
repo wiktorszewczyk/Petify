@@ -16,6 +16,14 @@ class ConversationCard extends StatelessWidget {
     required this.onDelete,
   });
 
+  ImageProvider _getImageProvider(String path) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return NetworkImage(path);
+    } else {
+      return AssetImage(path);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -45,8 +53,10 @@ class ConversationCard extends StatelessWidget {
                       border: Border.all(color: AppColors.primaryColor, width: 2),
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(conversation.petImageUrl),
-                        onError: (_, __) => const AssetImage('assets/images/pet_placeholder.png'),
+                        image: _getImageProvider(conversation.petImageUrl),
+                        onError: (exception, stackTrace) {
+                          return const AssetImage('assets/images/pet_placeholder.png');
+                        } as ImageErrorListener,
                       ),
                     ),
                   ),

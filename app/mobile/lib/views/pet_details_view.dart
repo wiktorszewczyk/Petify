@@ -66,6 +66,13 @@ class _PetDetailsViewState extends State<PetDetailsView> {
         ),
       );
 
+  Widget _buildImage(String path, {BoxFit fit = BoxFit.cover}) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return Image.network(path, fit: fit);
+    } else {
+      return Image.asset(path, fit: fit);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,8 +99,11 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                     onPageChanged: (i) => setState(() => _currentPhoto = i),
                     itemCount: _allImages.length,
                     itemBuilder: (_, i) => i == 0
-                        ? Hero(tag: 'pet_mini_${widget.pet.id}', child: Image.network(_allImages[i], fit: BoxFit.cover))
-                        : Image.network(_allImages[i], fit: BoxFit.cover),
+                        ? Hero(
+                        tag: 'pet_mini_${widget.pet.id}',
+                        child: _buildImage(_allImages[i])
+                    )
+                        : _buildImage(_allImages[i]),
                   ),
 
                   if (_allImages.length > 1) _navArrow(left: true, enabled: _currentPhoto > 0),
@@ -251,11 +261,11 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.transparent,
-                                      builder: (context) => SupportOptionsSheet(pet: widget.pet),
-                                    ),
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => SupportOptionsSheet(pet: widget.pet),
+                    ),
                     style: _btnStyle(
                       Colors.white,
                       Colors.blue,

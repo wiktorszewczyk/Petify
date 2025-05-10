@@ -217,6 +217,14 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
     );
   }
 
+  ImageProvider _getImageProvider(String path) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return NetworkImage(path);
+    } else {
+      return AssetImage(path);
+    }
+  }
+
   Widget _buildPetDetails() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -228,7 +236,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: NetworkImage(widget.pet.imageUrl),
+                image: _getImageProvider(widget.pet.imageUrl),
                 fit: BoxFit.cover,
               ),
               border: Border.all(color: AppColors.primaryColor, width: 2),
