@@ -1,6 +1,7 @@
 class User {
   final String id;
   final String username;
+  final String role;
 
   // profil
   final String? firstName;
@@ -24,6 +25,7 @@ class User {
   const User({
     required this.id,
     required this.username,
+    required this.role,
     this.firstName,
     this.lastName,
     this.profileImageUrl,
@@ -40,6 +42,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> j) => User(
     id: j['id'].toString(),
     username: j['username'],
+    role: j['role'],
     firstName: j['firstName'],
     lastName: j['lastName'],
     profileImageUrl: j['profileImageUrl'],

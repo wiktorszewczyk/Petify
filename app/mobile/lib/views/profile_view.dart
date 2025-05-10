@@ -16,6 +16,7 @@ import '../widgets/profile/activity_tab.dart';
 import '../widgets/profile/supported_pets_tab.dart';
 import '../widgets/profile/donations_tab.dart';
 import '../widgets/profile/notifications_sheet.dart';
+import '../widgets/profile/volutneer_status_card.dart';
 
 // import 'edit_profile_view.dart';
 
@@ -89,6 +90,14 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
         );
       }
     }
+  }
+
+  void _handleVolunteerSignup() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Wkrótce dostępne: Formularz zapisu dla wolontariuszy')),
+    );
+    // W przyszłości można tutaj dodać nawigację do formularza
+    // Navigator.push(context, MaterialPageRoute(builder: (context) => VolunteerSignupForm()));
   }
 
   @override
@@ -199,6 +208,10 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProfileHeader(user: _user!),
+              VolunteerStatusCard(
+                user: _user!,
+                onVolunteerSignup: _handleVolunteerSignup,
+              ),
               AchievementProgress(user: _user!),
               QuickStats(user: _user!),
               Achievements(

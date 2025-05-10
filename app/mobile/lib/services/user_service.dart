@@ -59,6 +59,7 @@ class UserService {
     return User(
       id: 'u1',
       username: 'john_doe',
+      role: 'user',
       firstName: 'Jan',
       lastName: 'Kowalski',
       profileImageUrl: null,
