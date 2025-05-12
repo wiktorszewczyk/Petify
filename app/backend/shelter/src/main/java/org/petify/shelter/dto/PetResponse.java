@@ -21,4 +21,7 @@ public record PetResponse(
         boolean vaccinated,
         boolean urgent,
         boolean sterilized,
-        boolean kidFriendly) implements Serializable {}
+        boolean kidFriendly,
+        String imageName,
+        String imageType,
+        byte[] imageData) implements Serializable {}

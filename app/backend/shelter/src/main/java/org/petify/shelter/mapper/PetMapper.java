@@ -21,9 +21,6 @@ public interface PetMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "adoptions", ignore = true)
-    @Mapping(target = "imageData", ignore = true)
-    @Mapping(target = "imageType", ignore = true)
-    @Mapping(target = "imageName", ignore = true)
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "favoritePets", ignore = true)
     @Mapping(target = "archived", ignore = true)
