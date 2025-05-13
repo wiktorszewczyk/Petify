@@ -3,16 +3,11 @@ package org.petify.chat.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(of = {"petId", "userName"})
 @ToString
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"pet_id", "userName"})
-})
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"pet_id", "userName"}))
 public class ChatRoom {
 
     @Id
@@ -22,9 +17,16 @@ public class ChatRoom {
     @Column(name = "pet_id", nullable = false)
     private Long petId;
 
-    @Column(name = "userName", nullable = false)
+    @Column(nullable = false)
     private String userName;
 
-    @Column(name = "shelterName", nullable = false)
+    @Column(nullable = false)
     private String shelterName;
+
+    /* -------- widoczność po stronach -------- */
+    @Column(nullable = false)
+    private boolean userVisible    = true;
+
+    @Column(nullable = false)
+    private boolean shelterVisible = true;
 }

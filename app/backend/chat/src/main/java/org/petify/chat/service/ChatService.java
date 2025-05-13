@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,30 +32,23 @@ public class ChatService {
     private final ShelterClient shelterClient;
     private final SimpMessagingTemplate broker;
 
+    /* ======================== SEND / RECEIVE ======================== */
     public void handleIncoming(Long roomId, String content, String login) {
-        // 1) Pobierz pokój po roomId
+
         ChatRoom room = roomRepo.findById(roomId)
-                .orElseThrow(() -> new IllegalStateException("Pokój czatu nie istnieje: " + roomId));
+                .orElseThrow(() -> new IllegalStateException("Pokój nie istnieje: " + roomId));
 
-        // 2) Ustal, czy nadawca to schronisko
+        if (!isParticipant(room, login))
+            throw new AccessDeniedException("Nie jesteś uczestnikiem tego czatu");
+
         boolean fromShelter = login.equals(room.getShelterName());
-        log.info("[CHAT] handleIncoming: sender={} roomId={} fromShelter={} userName={} shelterName={}",
-                login, roomId, fromShelter, room.getUserName(), room.getShelterName());
 
-        // 3) Zapisz wiadomość
         ChatMessage saved = msgRepo.save(
                 new ChatMessage(null, roomId, login, content, LocalDateTime.now())
         );
 
-        // 4) Wyznacz odbiorcę – jeśli pisze shelter, to user; jeśli user, to shelter
-        String recipient = fromShelter
-                ? room.getUserName()
-                : room.getShelterName();
+        String recipient = fromShelter ? room.getUserName() : room.getShelterName();
 
-        log.info("[CHAT] sending to={} destination=/user/{}/queue/chat/{}",
-                recipient, recipient, roomId);
-
-        // 5) Wyślij do subskrybenta pod /user/{recipient}/queue/chat/{roomId}
         broker.convertAndSendToUser(
                 recipient,
                 "/queue/chat/" + roomId,
@@ -62,43 +56,80 @@ public class ChatService {
         );
     }
 
-
+    /* ======================== LIST / HISTORY ======================== */
     @Transactional(readOnly = true)
     public List<ChatRoomDTO> myRooms(String login) {
         return roomRepo.findAllByUserNameOrShelterName(login, login)
                 .stream()
+                .filter(r -> visibleFor(r, login))
                 .map(this::map)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public Page<ChatMessageDTO> history(Long roomId, int page, int size) {
-        return msgRepo.findByRoomIdOrderByTimestampDesc(roomId, PageRequest.of(page, size))
+        return msgRepo.findByRoomIdOrderByTimestampDesc(roomId,
+                        PageRequest.of(page, size))
                 .map(m -> map(m, null));
     }
 
-    @Transactional
-    public ChatRoomDTO createRoom(Long petId, String userName) {
+    /* =====================  USER  -> create/open  ==================== */
+    public ChatRoomDTO openForUser(Long petId, String userLogin) {
+
         String shelterOwner = shelterClient.getShelterOwner(petId);
-        ChatRoom room = new ChatRoom(null, petId, userName, shelterOwner);
-        room = roomRepo.save(room);
-        return new ChatRoomDTO(room.getId(), room.getPetId(), room.getUserName(), room.getShelterName());
+
+        ChatRoom room = roomRepo.findByPetIdAndUserName(petId, userLogin)
+                .orElseGet(() -> new ChatRoom(
+                        null, petId, userLogin, shelterOwner, true, true));
+
+        room.setUserVisible(true);        // przywróć, jeśli było ukryte
+        roomRepo.save(room);
+        return map(room);
     }
 
-    /* ----- mapery ----- */
+    /* =====================  SHELTER -> open by id  =================== */
+    public ChatRoomDTO openById(Long roomId, String login) {
+        ChatRoom room = roomRepo.findById(roomId)
+                .orElseThrow(() -> new IllegalStateException("Pokój nie istnieje"));
+        if (!isParticipant(room, login))
+            throw new AccessDeniedException("To nie Twój pokój");
+        if (login.equals(room.getShelterName())) {
+            room.setShelterVisible(true);
+            roomRepo.save(room);
+        }
+        return map(room);
+    }
 
+    /* =====================  HIDE room (pojedyncza strona)  =========== */
+    public void hideRoom(Long roomId, String login) {
+        ChatRoom room = roomRepo.findById(roomId)
+                .orElseThrow(() -> new IllegalStateException("Pokój nie istnieje"));
+
+        if (!isParticipant(room, login))
+            throw new AccessDeniedException("Nie jesteś uczestnikiem");
+
+        if (login.equals(room.getUserName()))       room.setUserVisible(false);
+        else                                        room.setShelterVisible(false);
+
+        roomRepo.save(room);
+    }
+
+    /* ======================== HELPERS ================================ */
+    private boolean isParticipant(ChatRoom r, String login) {
+        return login.equals(r.getUserName()) || login.equals(r.getShelterName());
+    }
+    private boolean visibleFor(ChatRoom r, String login) {
+        return login.equals(r.getUserName())    ? r.isUserVisible()
+                : login.equals(r.getShelterName()) ? r.isShelterVisible()
+                : false;
+    }
+
+    /* ======================== MAPERY ================================ */
     private ChatRoomDTO map(ChatRoom r) {
         return new ChatRoomDTO(r.getId(), r.getPetId(), r.getUserName(), r.getShelterName());
     }
-
     private ChatMessageDTO map(ChatMessage m, ChatRoom r) {
-        return new ChatMessageDTO(
-                m.getId(),
-                m.getRoomId(),
-                r != null ? r.getPetId() : null,
-                m.getSender(),
-                m.getContent(),
-                m.getTimestamp()
-        );
+        return new ChatMessageDTO(m.getId(), m.getRoomId(),
+                r != null ? r.getPetId() : null, m.getSender(), m.getContent(), m.getTimestamp());
     }
 }
