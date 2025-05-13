@@ -1,4 +1,8 @@
 package org.petify.chat.dto;
 
-public class ChatRoomDTO {
-}
+public record ChatRoomDTO(
+        Long id,
+        Long petId,
+        String userName,
+        String shelterName
+) {}
