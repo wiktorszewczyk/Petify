@@ -125,7 +125,7 @@ public class PetController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(petImageData.imageType()))
-                .body(Base64.getEncoder().encodeToString(petImageData.base64Image().getBytes()));
+                .body(Base64.getEncoder().encodeToString(petImageData.imageData().getBytes()));
     }
 
     @GetMapping("/{petId}/images")

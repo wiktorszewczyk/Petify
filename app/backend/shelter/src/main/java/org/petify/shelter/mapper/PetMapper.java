@@ -40,17 +40,6 @@ public interface PetMapper {
         return pet;
     }
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "shelter", ignore = true)
-    @Mapping(target = "adoptions", ignore = true)
-    @Mapping(target = "imageData", ignore = true)
-    @Mapping(target = "imageType", ignore = true)
-    @Mapping(target = "imageName", ignore = true)
-    @Mapping(target = "images", ignore = true)
-    @Mapping(target = "favoritePets", ignore = true)
-    void updatePetFromRequest(PetRequest request, @MappingTarget Pet pet);
-
     default byte[] map(String imageData) {
         return Base64.getDecoder().decode(imageData);
     }
