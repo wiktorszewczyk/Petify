@@ -4,6 +4,7 @@ import org.petify.shelter.dto.PetImageRequest;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.mapper.PetImageMapper;
+import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.PetImage;
 import org.petify.shelter.repository.PetImageRepository;
 import org.petify.shelter.repository.PetRepository;
@@ -27,10 +28,10 @@ public class PetImageService {
     }
 
     public void addPetImage(Long petId, PetImageRequest input) {
-        petRepository.findById(petId)
+        Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new PetNotFoundException(petId));
 
-        PetImage image = petImageMapper.toEntity(input);
+        PetImage image = petImageMapper.toEntityWithPet(input, pet);
         petImageRepository.save(image);
     }
 

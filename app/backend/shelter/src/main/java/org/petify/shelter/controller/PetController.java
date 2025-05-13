@@ -139,13 +139,13 @@ public class PetController {
     public ResponseEntity<?> addPetImages(
             @PathVariable("petId") Long petId,
             @AuthenticationPrincipal Jwt jwt,
-            @RequestBody List<PetImageRequest> petImageRequests) {
+            @Valid @RequestBody List<PetImageRequest> petImageRequests) {
 
         String username = jwt != null ? jwt.getSubject() : null;
         ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
 
         if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this shelter");
+            throw new AccessDeniedException("You are not the owner of this pet!");
         }
 
         petImageService.addPetImages(petId, petImageRequests);

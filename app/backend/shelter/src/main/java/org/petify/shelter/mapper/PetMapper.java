@@ -2,6 +2,7 @@ package org.petify.shelter.mapper;
 
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.dto.PetResponseWithImages;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 
@@ -14,10 +15,16 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+import java.util.Base64;
+
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = PetImageMapper.class)
 public interface PetMapper {
     @Mapping(source = "shelter.id", target = "shelterId")
     PetResponse toDto(Pet pet);
+
+    @Mapping(source = "shelter.id", target = "shelterId")
+    @Mapping(target = "images", source = "images")
+    PetResponseWithImages toDtoWithImages(Pet pet);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "adoptions", ignore = true)
@@ -43,4 +50,12 @@ public interface PetMapper {
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "favoritePets", ignore = true)
     void updatePetFromRequest(PetRequest request, @MappingTarget Pet pet);
+
+    default byte[] map(String imageData) {
+        return Base64.getDecoder().decode(imageData);
+    }
+
+    default String map(byte[] imageData) {
+        return Base64.getEncoder().encodeToString(imageData);
+    }
 }

@@ -11,5 +11,5 @@ import java.io.Serializable;
 public record PetImageRequest(
         @NotBlank String imageName,
         @NotBlank String imageType,
-        @NotNull byte[] imageData
+        @NotNull String imageData
 ) implements Serializable {}

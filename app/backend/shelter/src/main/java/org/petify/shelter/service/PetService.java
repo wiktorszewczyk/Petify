@@ -3,6 +3,7 @@ package org.petify.shelter.service;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.dto.PetResponseWithImages;
 import org.petify.shelter.enums.PetType;
 import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.exception.ShelterNotFoundException;
@@ -99,9 +100,9 @@ public class PetService {
         return R * c;
     }
 
-    public PetResponse getPetById(Long petId) {
+    public PetResponseWithImages getPetById(Long petId) {
         return petRepository.findById(petId)
-                .map(petMapper::toDto)
+                .map(petMapper::toDtoWithImages)
                 .orElseThrow(() -> new PetNotFoundException(petId));
     }
 

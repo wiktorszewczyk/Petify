@@ -5,5 +5,5 @@ import java.io.Serializable;
 public record PetImageResponse(
         String imageName,
         String imageType,
-        String base64Image
+        String imageData
 ) implements Serializable {}
