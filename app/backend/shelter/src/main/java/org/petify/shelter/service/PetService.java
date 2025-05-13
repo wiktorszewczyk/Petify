@@ -27,6 +27,16 @@ public class PetService {
     private final PetRepository petRepository;
     private final ShelterRepository shelterRepository;
 
+
+    //
+
+    public String getOwnerUsernameByPetId(Long petId) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new EntityNotFoundException("Pet " + petId + " not found"));
+        return pet.getShelter().getOwnerUsername();
+    }
+
+    //
     public List<PetResponse> getPets() {
         List<Pet> pets = petRepository.findAll();
         List<PetResponse> petsList = new ArrayList<>();
