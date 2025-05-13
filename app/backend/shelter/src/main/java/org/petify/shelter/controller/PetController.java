@@ -108,10 +108,11 @@ public class PetController {
             @AuthenticationPrincipal Jwt jwt) throws IOException {
 
         String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+        Long shelterId = petService.getPetById(id).shelterId();
+        ShelterResponse shelter = shelterService.getShelterById(shelterId);
 
         if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this shelter");
+            throw new AccessDeniedException("You are not the owner of this pet!");
         }
 
         PetResponse updatedPet = petService.updatePet(petRequest, id, shelter.id(), imageFile);
@@ -142,7 +143,8 @@ public class PetController {
             @Valid @RequestBody List<PetImageRequest> petImageRequests) {
 
         String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+        Long shelterId = petService.getPetById(petId).shelterId();
+        ShelterResponse shelter = shelterService.getShelterById(shelterId);
 
         if (!shelter.ownerUsername().equals(username)) {
             throw new AccessDeniedException("You are not the owner of this pet!");
@@ -160,10 +162,11 @@ public class PetController {
             @AuthenticationPrincipal Jwt jwt) {
 
         String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+        Long shelterId = petService.getPetById(id).shelterId();
+        ShelterResponse shelter = shelterService.getShelterById(shelterId);
 
         if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this shelter");
+            throw new AccessDeniedException("You are not the owner of this pet!");
         }
 
         petService.deletePet(id);
@@ -185,10 +188,11 @@ public class PetController {
             @AuthenticationPrincipal Jwt jwt) {
 
         String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+        Long shelterId = petService.getPetById(id).shelterId();
+        ShelterResponse shelter = shelterService.getShelterById(shelterId);
 
         if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this shelter");
+            throw new AccessDeniedException("You are not the owner of this pet!");
         }
 
         PetResponse petResponse = petService.archivePet(id);
