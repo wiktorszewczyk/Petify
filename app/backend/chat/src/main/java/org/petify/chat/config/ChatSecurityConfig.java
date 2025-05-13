@@ -40,6 +40,7 @@ public class ChatSecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/ws-chat/**").permitAll()
 
                         // REST-owe API czatu
+                        .requestMatchers(HttpMethod.OPTIONS,"/api/chat/**").permitAll()
                         .requestMatchers("/api/chat/**").authenticated()
 
                         // zabroń wszystkiego innego

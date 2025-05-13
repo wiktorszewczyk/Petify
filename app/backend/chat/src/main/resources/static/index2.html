@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Petify • Chat</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- SockJS & STOMP -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body class="bg-light">
+<main class="container py-4">
+    <h1 class="mb-4">Petify Chat 🐾</h1>
+
+    <!-- JWT + przyciski -->
+    <div class="row g-2 align-items-end mb-4">
+        <div class="col-lg-6">
+            <label class="form-label" for="token">Token JWT</label>
+            <input id="token" class="form-control" placeholder="wklej tutaj twój token"/>
+        </div>
+        <div class="col">
+            <button id="loadPetsBtn"  class="btn btn-primary w-100">Załaduj zwierzęta</button>
+        </div>
+        <div class="col">
+            <button id="loadRoomsBtn" class="btn btn-secondary w-100">Moje pokoje</button>
+        </div>
+    </div>
+
+    <!-- LISTA ZWIERZĄT -->
+    <div id="petsList" class="row g-3"></div>
+    <!-- LISTA POKOI (dla schroniska i usera) -->
+    <div id="roomsList" class="row g-3"></div>
+
+    <!-- PANEL CHATA -->
+    <div id="chatPanel" class="card mt-4" style="display:none;">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span id="chatTitle"></span>
+            <button class="btn btn-sm btn-outline-danger" id="disconnectBtn">Rozłącz</button>
+        </div>
+        <div id="chatLog" class="card-body" style="height:300px; overflow:auto; font-family:monospace;"></div>
+        <div class="card-footer d-flex gap-2">
+            <input id="chatInput" class="form-control" placeholder="Wpisz wiadomość…"/>
+            <button id="sendBtn" class="btn btn-success">Wyślij</button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* ======================= KONFIG ======================= */
+    const API_SHELTERS = 'http://localhost:8010';
+    const API_CHAT     = 'http://localhost:8050';
+    const WS_URL       = 'http://localhost:8050/ws-chat';
+
+    /* ======================= HELPERY  ====================== */
+    const $  = s=>document.querySelector(s);
+    const $$ = s=>document.querySelectorAll(s);
+    const fmtTime = iso => new Date(iso).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
+
+    function token() {
+        const t = $('#token').value.trim();
+        if (!t) throw new Error('Wklej najpierw token!');
+        return t;
+    }
+    function logLine(text, cls='') {
+        const div=document.createElement('div');
+        if(cls) div.className=cls;
+        div.textContent=text;
+        $('#chatLog').append(div);
+        $('#chatLog').scrollTop = $('#chatLog').scrollHeight;
+    }
+
+    /* ======================= FETCHY ======================== */
+    async function fetchJson(url, opt={}) {
+        const res = await fetch(url, opt);
+        if(!res.ok) throw new Error(res.status);
+        return res.json();
+    }
+
+    /* ======================= ŁADOWANIE ZWIERZĄT ============ */
+    async function loadPets() {
+        try{
+            const pets = await fetchJson(`${API_SHELTERS}/pets`,{
+                headers:{Authorization:'Bearer '+token()}
+            });
+            $('#roomsList').innerHTML='';
+            const list=$('#petsList');
+            list.innerHTML='';
+            pets.forEach(p=>{
+                const col=document.createElement('div');
+                col.className='col-md-4 col-lg-3';
+                col.innerHTML=`
+        <div class="card h-100 shadow-sm">
+          <img src="${API_SHELTERS}/pets/${p.id}/image" class="card-img-top" alt="">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">${p.name}</h5>
+            <button class="btn btn-outline-primary mt-auto w-100 petChatBtn" data-id="${p.id}" data-name="${p.name}">
+              Czatuj 🗨️
+            </button>
+          </div>
+        </div>`;
+                list.append(col);
+            });
+        }catch(e){alert('Błąd pets: '+e);}
+    }
+
+    /* ======================= ŁADOWANIE POKOI =============== */
+    async function loadRooms() {
+        try{
+            const rooms=await fetchJson(`${API_CHAT}/api/chat/rooms`,{
+                headers:{Authorization:'Bearer '+token()}
+            });
+            $('#petsList').innerHTML='';
+            const wrap=$('#roomsList');
+            wrap.innerHTML='';
+            rooms.forEach(r=>{
+                const col=document.createElement('div');
+                col.className='col-md-6';
+                col.innerHTML=`
+        <div class="card shadow-sm">
+          <div class="card-body d-flex justify-content-between align-items-center">
+             <span>#${r.id} • petId=${r.petId} • user=${r.userName}</span>
+             <div class="btn-group">
+               <button class="btn btn-sm btn-primary openRoomBtn" data-id="${r.id}" data-title="#${r.id}">${"Otwórz"}</button>
+               <button class="btn btn-sm btn-outline-danger delRoomBtn" data-id="${r.id}">Ukryj</button>
+             </div>
+          </div>
+        </div>`;
+                wrap.append(col);
+            });
+        }catch(e){alert('Błąd rooms: '+e);}
+    }
+
+    /* ======================= WEBSOCKET ===================== */
+    let stomp=null, currentRoom=null;
+    function connectWs(roomId,title) {
+        if(stomp) stomp.disconnect();
+        $('#chatLog').innerHTML='';
+        $('#chatTitle').textContent=title;
+        $('#chatPanel').style.display='';
+        currentRoom=roomId;
+
+        const socket=new SockJS(WS_URL);
+        stomp=Stomp.over(socket);
+        stomp.heartbeat.outgoing=20000;
+        stomp.heartbeat.incoming=20000;
+
+        logLine('⏳ Łączenie...', 'text-secondary');
+        stomp.connect({'Authorization':'Bearer '+token()}, ()=>{
+            logLine('🟢 Połączono','text-success');
+            stomp.subscribe(`/user/queue/chat/${roomId}`, msg=>{
+                // msg.body = JSON.stringify(ChatMessageDTO)
+                const m=JSON.parse(msg.body);
+                logLine(`[${fmtTime(m.timestamp)}] ${m.sender}: ${m.content}`);
+            });
+            // doładowanie historii
+            loadHistory(roomId);
+        },err=>{
+            console.error(err);
+            logLine('❌ Błąd WS: '+JSON.stringify(err),'text-danger');
+        });
+    }
+    async function loadHistory(roomId,page=0){
+        try{
+            const hist=await fetchJson(`${API_CHAT}/api/chat/history/${roomId}?page=${page}`,{
+                headers:{Authorization:'Bearer '+token()}
+            });
+            hist.content.slice().reverse().forEach(m=>{
+                logLine(`[${fmtTime(m.timestamp)}] ${m.sender}: ${m.content}`);
+            });
+        }catch(e){logLine('⚠️ Błąd historii: '+e,'text-warning');}
+    }
+    function sendMsg(){
+        if(!stomp||!stomp.connected)return alert('Brak połączenia');
+        const txt=$('#chatInput').value.trim();
+        if(!txt)return;
+        stomp.send(`/app/chat/${currentRoom}`,{},txt);
+        $('#chatInput').value='';
+        logLine(`[${fmtTime(new Date())}] ✔️ Ty: ${txt}`,'fw-bold');
+    }
+
+    /* ======================= LISTENERY ===================== */
+    document.addEventListener('click',e=>{
+        if(e.target.id==='loadPetsBtn')   loadPets();
+        if(e.target.id==='loadRoomsBtn')  loadRooms();
+        if(e.target.id==='sendBtn')       sendMsg();
+        if(e.target.id==='disconnectBtn'){ if(stomp)stomp.disconnect(); $('#chatPanel').style.display='none'; }
+
+        if(e.target.classList.contains('petChatBtn')){
+            const id=e.target.dataset.id, name=e.target.dataset.name;
+            fetchJson(`${API_CHAT}/api/chat/room/${id}`,{
+                headers:{Authorization:'Bearer '+token()}
+            }).then(r=>connectWs(r.id,`${name} • #${r.id}`))
+                .catch(err=>alert(err));
+        }
+        if(e.target.classList.contains('openRoomBtn')){
+            const id=e.target.dataset.id, title=e.target.dataset.title;
+            fetchJson(`${API_CHAT}/api/chat/rooms/${id}`,{
+                headers:{Authorization:'Bearer '+token()}
+            }).then(r=>connectWs(r.id,`pokój ${title}`))
+                .catch(err=>alert(err));
+        }
+        if(e.target.classList.contains('delRoomBtn')){
+            const id=e.target.dataset.id;
+            fetch(`${API_CHAT}/api/chat/rooms/${id}`,{
+                method:'DELETE',
+                headers:{Authorization:'Bearer '+token()}
+            }).then(()=>loadRooms())
+                .catch(e=>alert(e));
+        }
+    });
+    $('#chatInput').addEventListener('keydown',e=>{ if(e.key==='Enter') sendMsg(); });
+</script>
+</body>
+</html>
