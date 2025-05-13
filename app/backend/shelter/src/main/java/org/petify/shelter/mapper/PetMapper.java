@@ -6,13 +6,10 @@ import org.petify.shelter.dto.PetResponseWithImages;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
 
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.Base64;
