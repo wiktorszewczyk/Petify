@@ -22,16 +22,13 @@ public class AuthServerApplication {
     @Bean
     CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            // Skip if roles already exist
             if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
 
-            // Create roles
             Role adminRole = roleRepository.save(new Role("ADMIN"));
             roleRepository.save(new Role("USER"));
             roleRepository.save(new Role("VOLUNTEER"));
             roleRepository.save(new Role("SHELTER"));
 
-            // Set up admin user
             Set<Role> adminRoles = new HashSet<>();
             adminRoles.add(adminRole);
 

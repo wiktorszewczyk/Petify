@@ -1,7 +1,8 @@
 package org.petify.shelter.dto;
 
-import jakarta.validation.constraints.NotNull;
 import org.petify.shelter.model.Adoption;
+
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
