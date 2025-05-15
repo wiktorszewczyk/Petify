@@ -1,4 +1,4 @@
-package org.petify.backend.models;
+package org.petify.backend  .models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -33,13 +33,13 @@ public class VolunteerApplication {
     private String skills;
 
     @Column(name = "application_date")
-    private LocalDateTime applicationDate;
+    private LocalDateTime applicationDate = LocalDateTime.now();
 
     @Column(name = "processed_date")
     private LocalDateTime processedDate;
 
     @Column(name = "status")
-    private String status;
+    private String status = "PENDING";
 
     @Column(name = "rejection_reason")
     private String rejectionReason;
