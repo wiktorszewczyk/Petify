@@ -1,0 +1,92 @@
+@keyframes blurZoomIn {
+  0% {
+    filter: brightness(60%);
+    transform: scale(1);
+  }
+  100% {
+    filter: brightness(60%) blur(5px); 
+    transform: scale(1.1);
+  }
+}
+
+@keyframes bounceAuth {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  
+}
+
+.auth-hidden {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.auth-bounce-in {
+  animation: bounceAuth 0.8s ease-out forwards;
+  animation-delay: 1s;
+}
+.auth-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('../assets/dogs.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+
+  /* Początkowy stan */
+  filter: brightness(60%);
+   transform: scale(1); 
+
+  /* Animacja */
+  animation: blurZoomIn 1.2s ease-out forwards;
+  animation-delay: 0.3s;
+}
+  
+  .auth-bg {
+    position: relative;
+    overflow: hidden;  
+    min-height: 100vh;
+  }
+  
+
+  .auth-bg > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .bg-opacity-75 {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  .btn-primary {
+    background-color: var(--logo-color) !important;
+    border: 1px solid var(--logo-color) !important;
+    color: #000000 !important;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-success {
+    background-color: var(--logo-color) !important;
+    border: 1px solid var(--logo-color) !important;
+    color: #000000 !important;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
