@@ -1,0 +1,159 @@
+.navbar {
+  background-color: rgba(255, 255, 255, 0.315) !important;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  position: fixed;
+  height: px;
+  top: 0;
+}
+
+.navbar-brand {
+  font-family: 'Pacifico', sans-serif;
+  font-size: 3.5rem !important;
+  color: #ffbf00 !important;
+}
+
+.profile-icon {
+  position: absolute;
+  right: 3rem;
+}
+
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 1.6rem;
+  }
+
+  .profile-icon img {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Panel menu */
+.offcanvas-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 15vw;
+  background-color: #ffd000;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+  padding: 80px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transform: translateX(-140%);
+  transition: transform 0.3s ease;
+  z-index: 2000;
+}
+
+.offcanvas-menu.open {
+  transform: translateX(0%);
+}
+
+.dropdown-item {
+  padding: 14px 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-family: 'Fredoka', sans-serif;
+  transition: background-color 0.2s;
+ 
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+  color: #000;
+  border-radius: 6px;
+}
+
+/* Zakładka otwierająca */
+.menu-tab {
+  position: fixed;
+  top: 40%;
+  left: 0;
+  width: 70px;
+  height: 100px;
+  background-color: #ffd000;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+}
+
+.menu-tab-inside {
+  position: fixed;
+  top: 40%;
+  left: 15vw;
+  width: 70px;
+  height: 100px;
+  background-color: #ffd000;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.menu-tab-inside.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.menu-tab-inside.open {
+  transition: opacity 0.3s ease;
+  animation-delay: 0.5s;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tab-icon {
+  transition: transform 0.3s ease;
+  height: 100px ;
+  width: 45px;
+}
+
+.menu-button {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  color: #333;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  text-align: left;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 1.3rem;
+}
+
+.menu-button:hover {
+  background-color: #ffe680;
+  color: #000;
+}
+
+
+
+.offcanvas-title {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  padding: 0 10px;
+}
