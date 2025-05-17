@@ -5,5 +5,5 @@ spring:
     import: optional:configserver:http://localhost:8888
 
 stripe:
-  api-key: xxx
-  webhook-secret: yyy
+  api-key: sk_test_xxx
+  webhook-secret: xxx
