@@ -1,60 +1,47 @@
 enum DonationType {
   monetary,
   material,
-  tax
-}
-
-enum MaterialDonationCategory {
-  food,
-  accessories,
-  care,
-  hygiene
 }
 
 class MaterialDonationItem {
   final String name;
   final double price;
   final String iconPath;
-  final MaterialDonationCategory category;
 
-  MaterialDonationItem({
+  const MaterialDonationItem({
     required this.name,
     required this.price,
     required this.iconPath,
-    required this.category,
   });
 
+  /// Lista aktualnie "dostępnych" przedmiotów – jeśli w przyszłości
+  /// będziemy pobierać je z backendu, wystarczy podmienić tę metodę.
   static List<MaterialDonationItem> getAvailableItems() {
     return [
       MaterialDonationItem(
         name: 'Smakołyk',
         price: 5.0,
         iconPath: 'assets/icons/pet_snack.png',
-        category: MaterialDonationCategory.food,
       ),
       MaterialDonationItem(
         name: 'Pełna miska',
         price: 10.0,
         iconPath: 'assets/icons/pet_bowl.png',
-        category: MaterialDonationCategory.food,
       ),
       MaterialDonationItem(
         name: 'Zabawka',
         price: 15.0,
         iconPath: 'assets/icons/pet_toy.png',
-        category: MaterialDonationCategory.accessories,
       ),
       MaterialDonationItem(
         name: 'Zapas karmy',
         price: 25.0,
         iconPath: 'assets/icons/pet_food.png',
-        category: MaterialDonationCategory.food,
       ),
       MaterialDonationItem(
         name: 'Legowisko',
         price: 50.0,
         iconPath: 'assets/icons/pet_bed.png',
-        category: MaterialDonationCategory.accessories,
       ),
     ];
   }
@@ -67,11 +54,11 @@ class Donation {
   final String shelterName;
   final String? message;
   final DonationType type;
-  final String? petId; // ID zwierzaka (tylko dla type == material)
-  final MaterialDonationItem? materialItem; // Przedmiot (tylko dla type == material)
-  final int? quantity; // Ilość (tylko dla type == material)
+  final String? petId; // ID zwierzaka (tylko gdy type == material)
+  final MaterialDonationItem? materialItem; // Przedmiot (tylko gdy type == material)
+  final int? quantity; // Ilość (tylko gdy type == material)
 
-  Donation({
+  const Donation({
     required this.id,
     required this.amount,
     required this.date,
@@ -83,19 +70,25 @@ class Donation {
     this.quantity = 1,
   });
 
-  factory Donation.fake(int i) => Donation(
-    id: 'don_$i',
-    amount: 10.0 * (1 + (i % 5)),
-    date: DateTime.now().subtract(Duration(days: i * 3)),
-    shelterName: ['Azyl', 'Szczęśliwy Ogon', 'Miejskie Schronisko'][i % 3],
-    message: i.isEven ? 'Dla futrzaków 🐾' : null,
-    type: DonationType.values[i % 3],
-    petId: i % 3 == 1 ? 'pet_${i * 2}' : null,
-    materialItem: i % 3 == 1 ? MaterialDonationItem.getAvailableItems()[i % 8] : null,
-    quantity: i % 3 == 1 ? (i % 3) + 1 : null,
-  );
+  /// Prosta metoda generująca dane mockowe do widoków list / historii.
+  factory Donation.fake(int i) {
+    final isMaterial = i.isOdd;
+    final item = MaterialDonationItem.getAvailableItems()[i % 5];
+    final qty = (i % 3) + 1;
+    return Donation(
+      id: 'don_$i',
+      amount: isMaterial ? item.price * qty : 10.0 * (1 + (i % 5)),
+      date: DateTime.now().subtract(Duration(days: i * 3)),
+      shelterName: ['Azyl', 'Szczęśliwy Ogon', 'Miejskie Schronisko'][i % 3],
+      message: i.isEven ? 'Dla futrzaków 🐾' : null,
+      type: isMaterial ? DonationType.material : DonationType.monetary,
+      petId: isMaterial ? 'pet_${i * 2}' : null,
+      materialItem: isMaterial ? item : null,
+      quantity: isMaterial ? qty : null,
+    );
+  }
 
-  // Factory constructor for material donation
+  // Factory constructor for a material donation (przekazanie "paczek" dla konkretnego zwierzaka)
   factory Donation.material({
     required String shelterName,
     required String petId,
@@ -116,7 +109,7 @@ class Donation {
     );
   }
 
-  // Factory constructor for monetary donation
+  // Factory constructor for a monetary donation (klasyczne wsparcie schroniska)
   factory Donation.monetary({
     required String shelterName,
     required double amount,
@@ -128,22 +121,6 @@ class Donation {
       date: DateTime.now(),
       shelterName: shelterName,
       type: DonationType.monetary,
-      message: message,
-    );
-  }
-
-  // Factory constructor for tax donation
-  factory Donation.tax({
-    required String shelterName,
-    required double amount,
-    String? message,
-  }) {
-    return Donation(
-      id: 'don_${DateTime.now().millisecondsSinceEpoch}',
-      amount: amount,
-      date: DateTime.now(),
-      shelterName: shelterName,
-      type: DonationType.tax,
       message: message,
     );
   }

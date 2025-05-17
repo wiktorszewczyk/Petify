@@ -11,7 +11,7 @@ class ActiveAchievements extends StatelessWidget {
   Widget build(BuildContext context) {
     final activeChallenges = [
       {
-        'title': 'Wirtualny opiuekun',
+        'title': 'Wirtualny opiekun',
         'description': 'Wspieraj wybranego zwierzaka przez 5 kolejnych dni',
         'progress': 0.4,
         'reward': '+50 XP',

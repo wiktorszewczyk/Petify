@@ -50,38 +50,11 @@ class DonationService {
     return donation;
   }
 
-  // Dodanie donacji podatkowej (dla schroniska)
-  Future<Donation> addTaxDonation({
-    required String shelterName,
-    required double amount,
-    String? message,
-  }) async {
-    // Tutaj w przyszłości będzie integracja z API
-    final donation = Donation.tax(
-      shelterName: shelterName,
-      amount: amount,
-      message: message,
-    );
-
-    // Symulacja odpowiedzi z API
-    await Future.delayed(Duration(milliseconds: 800));
-
-    return donation;
-  }
-
   // Pobranie dostępnych przedmiotów do donacji materialnej
   Future<List<MaterialDonationItem>> getAvailableMaterialItems() async {
     // Symulacja pobierania danych z API
     await Future.delayed(Duration(milliseconds: 500));
 
     return MaterialDonationItem.getAvailableItems();
-  }
-
-  // Filtrowanie przedmiotów po kategorii
-  Future<List<MaterialDonationItem>> getMaterialItemsByCategory(
-      MaterialDonationCategory category
-      ) async {
-    final allItems = await getAvailableMaterialItems();
-    return allItems.where((item) => item.category == category).toList();
   }
 }
