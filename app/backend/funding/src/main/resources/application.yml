@@ -3,3 +3,7 @@ spring:
     name: funding-service
   config:
     import: optional:configserver:http://localhost:8888
+
+stripe:
+  api-key: xxx
+  webhook-secret: yyy
