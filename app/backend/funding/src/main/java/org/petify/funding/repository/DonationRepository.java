@@ -1,13 +1,19 @@
 package org.petify.funding.repository;
 
 import org.petify.funding.model.Donation;
+import org.petify.funding.model.DonationType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface DonationRepository extends JpaRepository<Donation, Long> {
-    List<Donation> findByShelterId(Long shelterId);
-    List<Donation> findByPetId(Long petId);
+
+    Page<Donation> findAllByDonationType(DonationType donationType, Pageable pageable);
+
+    Page<Donation> findByShelterId(Long shelterId, Pageable pageable);
+
+    Page<Donation> findByPetId(Long petId, Pageable pageable);
+
 }

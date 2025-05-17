@@ -2,17 +2,15 @@ package org.petify.funding.dto;
 
 import lombok.*;
 import org.petify.funding.model.*;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 
-/**
- * What we send back to the client.
- */
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DonationResponse {
+
     private Long id;
     private Long shelterId;
     private Long petId;
@@ -20,43 +18,34 @@ public class DonationResponse {
     private Instant donatedAt;
     private DonationType donationType;
 
-    // MONEY
+    // monetary
     private BigDecimal amount;
     private String currency;
 
-    // TAX
-    private Integer taxYear;
-    private String krsNumber;
-    private BigDecimal taxAmount;
-
-    // MATERIAL
+    // material
     private String itemName;
-    private String itemDescription;
+    private BigDecimal unitPrice;
     private Integer quantity;
-    private String unit;
 
     public static DonationResponse fromEntity(Donation d) {
-        DonationResponse resp = new DonationResponse();
-        resp.setId(d.getId());
-        resp.setShelterId(d.getShelterId());
-        resp.setPetId(d.getPetId());
-        resp.setDonorUsername(d.getDonorUsername());
-        resp.setDonatedAt(d.getDonatedAt());
-        resp.setDonationType(d.getDonationType());
+        DonationResponse r = new DonationResponse();
+        r.setId(d.getId());
+        r.setShelterId(d.getShelterId());
+        r.setPetId(d.getPetId());
+        r.setDonorUsername(d.getDonorUsername());
+        r.setDonatedAt(d.getDonatedAt());
+        r.setDonationType(d.getDonationType());
 
-        if (d instanceof MonetaryDonation md) {
-            resp.setAmount(md.getAmount());
-            resp.setCurrency(md.getCurrency());
-        } else if (d instanceof TaxDonation td) {
-            resp.setTaxYear(td.getTaxYear());
-            resp.setKrsNumber(td.getKrsNumber());
-            resp.setTaxAmount(td.getTaxAmount());
-        } else if (d instanceof MaterialDonation mat) {
-            resp.setItemName(mat.getItemName());
-            resp.setItemDescription(mat.getItemDescription());
-            resp.setQuantity(mat.getQuantity());
-            resp.setUnit(mat.getUnit());
+        if (d instanceof MonetaryDonation m) {
+            r.setAmount(m.getAmount());
+            r.setCurrency(m.getCurrency());
+        } else if (d instanceof MaterialDonation m) {
+            r.setItemName(m.getItemName());
+            r.setUnitPrice(m.getUnitPrice());
+            r.setQuantity(m.getQuantity());
+            r.setCurrency(m.getCurrency());
+            r.setAmount(m.getAmount());
         }
-        return resp;
+        return r;
     }
 }

@@ -6,7 +6,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import java.time.Instant;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -23,7 +24,7 @@ public abstract class Donation {
     @Column(name = "shelter_id", nullable = false)
     private Long shelterId;
 
-    @Column(name = "pet_id", nullable = true)
+    @Column(name = "pet_id")
     private Long petId;
 
     @Column(name = "donor_username", nullable = false)
@@ -32,18 +33,19 @@ public abstract class Donation {
     @Column(name = "donated_at", nullable = false)
     private Instant donatedAt;
 
-    /**
-     * Read-only view of the discriminator column.
-     */
     @JsonProperty("donationType")
     @Enumerated(EnumType.STRING)
     @Column(name = "donation_type", insertable = false, updatable = false)
     private DonationType donationType;
 
     @PrePersist
-    protected void onCreate() {
+    @PreUpdate
+    protected void beforeSave() {
         if (donatedAt == null) {
             donatedAt = Instant.now();
+        }
+        if (this instanceof MaterialDonation md) {
+            md.recalculateAmount();
         }
     }
 }

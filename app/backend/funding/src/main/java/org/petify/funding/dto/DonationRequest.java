@@ -3,21 +3,19 @@ package org.petify.funding.dto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.petify.funding.model.*;
-
 import java.math.BigDecimal;
 
-/**
- * Payload coming from the client when creating a donation.
- */
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@DonationRequestValid
 public class DonationRequest {
 
     @NotNull
     private Long shelterId;
 
-    private Long petId; // optional
+    private Long petId;
 
     @NotBlank
     private String donorUsername;
@@ -25,58 +23,42 @@ public class DonationRequest {
     @NotNull
     private DonationType donationType;
 
-    // MONEY
+    // monetary
     @DecimalMin("0.01")
     private BigDecimal amount;
 
-    @Size(min = 3, max = 3)
+    @Pattern(regexp = "[A-Z]{3}")
     private String currency;
 
-    // TAX
-    @Min(2000) @Max(2100)
-    private Integer taxYear;
-
-    private String krsNumber;
-
-    @DecimalMin("0.01")
-    private BigDecimal taxAmount;
-
-    // MATERIAL
+    // material
+    @NotBlank
     private String itemName;
 
-    private String itemDescription;
+    @DecimalMin("0.01")
+    private BigDecimal unitPrice;
 
     @Min(1)
     private Integer quantity;
 
-    private String unit;
-
     public Donation toEntity() {
         return switch (donationType) {
-            case MONEY -> MonetaryDonation.builder()
-                    .shelterId(shelterId)
-                    .petId(petId)
-                    .donorUsername(donorUsername)
-                    .amount(amount)
-                    .currency(currency)
-                    .build();
-            case TAX -> TaxDonation.builder()
-                    .shelterId(shelterId)
-                    .petId(petId)
-                    .donorUsername(donorUsername)
-                    .taxYear(taxYear)
-                    .krsNumber(krsNumber)
-                    .taxAmount(taxAmount)
-                    .build();
-            case MATERIAL -> MaterialDonation.builder()
-                    .shelterId(shelterId)
-                    .petId(petId)
-                    .donorUsername(donorUsername)
-                    .itemName(itemName)
-                    .itemDescription(itemDescription)
-                    .quantity(quantity)
-                    .unit(unit)
-                    .build();
+            case MONEY ->
+                    MonetaryDonation.builder()
+                            .shelterId(shelterId)
+                            .donorUsername(donorUsername)
+                            .amount(amount)
+                            .currency(currency)
+                            .build();
+            case MATERIAL ->
+                    MaterialDonation.builder()
+                            .shelterId(shelterId)
+                            .petId(petId)
+                            .donorUsername(donorUsername)
+                            .itemName(itemName)
+                            .unitPrice(unitPrice)
+                            .quantity(quantity)
+                            .currency(currency)
+                            .build();
         };
     }
 }
