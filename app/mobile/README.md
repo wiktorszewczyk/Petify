@@ -15,3 +15,18 @@ Jak .apk sobie wrzucicie na telefon to chyba będziecie w stanie to uruchomić /
 
 ## Działanie aplikacji
 Na ten moment aplikacja ma symulowane API, generowanie losowych danych lub statycznie wpisane rzeczy. Zalogujecie się dowolnymi danymi (ale walidacje musi przejść więc musi być poprawny format email i hasło minimum 5 znaków).
+=======
+Tinder-like app for exchanging clothes.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

@@ -51,7 +51,7 @@ class UserService {
       }
     }
   }
-
+  
   Future<User> getCurrentUser() async {
     // TODO: podmienić na realne API.
     await Future.delayed(const Duration(milliseconds: 400));
