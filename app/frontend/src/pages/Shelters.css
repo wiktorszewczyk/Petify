@@ -1,0 +1,148 @@
+.shelter-container {
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  color: #333;
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  z-index: 1;
+}
+
+.shelter-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.shelter-header h1 {
+  font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.shelter-header p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.shelter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+
+}
+
+.shelter-card {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0px 40px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  position: relative;
+
+}
+
+.shelter-card:hover {
+  transform: translateY(-4px);
+}
+
+.shelter-card-image {
+  position: relative;
+  height: 80%;
+  width: 94%;
+  overflow: hidden;
+  margin-top: 3%;
+  border-radius: 12px;
+  align-self: center;
+}
+
+.shelter-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shelter-card-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  padding: 15px;
+}
+
+.shelter-card-content h3 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #000000;
+  text-align: left;
+}
+
+.shelter-details {
+  display: flex;
+  font-size: 1.2rem;
+  color: #555;
+  text-align: left;
+}
+
+.detail-icon {
+  margin-right: 4px;
+  opacity: 0.7;
+}
+
+.heart-icon {
+  color: #ff0000;
+  fill: #ff0000;
+  font-size: 1.5rem;
+}
+
+/* Background paw animation */
+
+.paw-wrapper {
+  position: fixed;
+  animation: fadeInOut 25s ease-in-out forwards;
+  animation-iteration-count: infinite;
+  opacity: 0;
+  z-index: -2;
+}
+
+.paw-icon {
+  width: 100%;
+  height: 100%;
+  color: #ffbf00;
+  fill: #ffbf00;
+  z-index: 0;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(var(--rotation));
+  }
+  5% {
+    opacity: 1;
+    transform: scale(1.2) rotate(var(--rotation));
+  }
+  8% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--rotation));
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--rotation));
+  }
+  80% {
+    opacity: 0;
+    transform: scale(0.5) rotate(var(--rotation));
+  }
+}

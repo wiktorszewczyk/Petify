@@ -3,6 +3,9 @@ import 'dart:async';
 import '../models/pet_model.dart';
 
 class PetService {
+  // Symulacja opóźnienia sieci
+  final int _simulatedDelayMs = 800;
+
   static final PetService _instance = PetService._internal();
 
   factory PetService() {
@@ -259,5 +262,4 @@ class PetService {
     // pets.shuffle();
     // return pets.take(petCount).toList();
   }
-
 }
