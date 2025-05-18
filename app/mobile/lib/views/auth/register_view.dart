@@ -5,6 +5,7 @@ import '../../styles/colors.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/inputs/custom_textfield.dart';
 import '../../services/user_service.dart';
+import '../home_view.dart';
 
 class RegisterView extends StatefulWidget {
   final VoidCallback onSwitch;
@@ -46,44 +47,41 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
+    final userService = UserService();
 
     try {
-      final userService = UserService();
-      final response = await userService.register(
+      final regResp = await userService.register(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
-
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       setState(() => _isLoading = false);
-
-      if (response.status == 200) {
+      if (regResp.status == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Rejestracja zakończona sukcesem!')),
+          const SnackBar(
+            content: Text('Zarejestrowano i zalogowano!'),
+            backgroundColor: Colors.green,
+          ),
         );
-        widget.onBack();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeView()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Błąd: ${response.status}, ${response.data}'),
-          ),
+          SnackBar(content: Text('Błąd rejestracji: ${regResp.data}')),
         );
       }
     } catch (e) {
-      if (mounted) {
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Wystąpił nieoczekiwany błąd: $e')),
-        );
-      }
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Wystąpił błąd: $e')),
+      );
     }
   }
 

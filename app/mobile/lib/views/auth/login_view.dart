@@ -39,72 +39,42 @@ class _LoginViewState extends State<LoginView> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
+    final userService = UserService();
 
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final resp = await userService.login(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+      if (!mounted) return;
+      setState(() => _isLoading = false);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Zalogowano!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeView()),
-    );
-
-    // setState(() => _isLoading = true);
-    //
-    // try {
-    //   final userService = UserService();
-    //   final response = await userService.login(
-    //     _emailController.text.trim(),
-    //     _passwordController.text.trim(),
-    //   );
-    //
-    //   if (!mounted) {
-    //     return;
-    //   }
-    //   setState(() => _isLoading = false);
-    //
-    //   if (response.status == 200) {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text('Zalogowano! ${response.data}')),
-    //     );
-    //
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(builder: (_) => const HomeView()),
-    //     );
-    //   } else {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text('Błąd logowania: ${response.data}')),
-    //     );
-    //
-    //     // do testów: zawsze przechodzimy do HomeView
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(builder: (_) => const HomeView()),
-    //     );
-    //   }
-    // } catch (e) {
-    //   if (mounted) {
-    //     setState(() => _isLoading = false);
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text('Wystąpił błąd: $e')),
-    //     );
-    //   }
-    // }
+      if (resp.status == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Zalogowano!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeView()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Błąd logowania: ${resp.data}')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Wystąpił błąd: $e')),
+      );
+    }
   }
 
   @override

@@ -17,6 +17,7 @@ import '../widgets/profile/supported_pets_tab.dart';
 import '../widgets/profile/donations_tab.dart';
 import '../widgets/profile/notifications_sheet.dart';
 import '../widgets/profile/volutneer_status_card.dart';
+import 'auth/welcome_view.dart';
 
 // import 'edit_profile_view.dart';
 
@@ -98,6 +99,16 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
     );
     // W przyszłości można tutaj dodać nawigację do formularza
     // Navigator.push(context, MaterialPageRoute(builder: (context) => VolunteerSignupForm()));
+  }
+
+  Future<void> _onLogout() async {
+    await UserService().logout();
+
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const WelcomeView()),
+          (route) => false,
+    );
   }
 
   @override
@@ -255,6 +266,11 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
             // );
           },
           tooltip: 'Edytuj profil',
+        ),
+        IconButton(
+          icon: const Icon(Icons.logout, color: Colors.black),
+          onPressed: _onLogout,
+          tooltip: 'Wyloguj',
         ),
         const SizedBox(width: 8),
       ],
