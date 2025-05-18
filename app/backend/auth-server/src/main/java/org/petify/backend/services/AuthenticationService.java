@@ -45,35 +45,33 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private AchievementService achievementService;
+
     /**
      * Registers a new user with the provided information
      */
     public ApplicationUser registerUser(final RegistrationDTO registrationDTO) {
-        // Generate a username based on email or phone
         String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty()) ?
                 registrationDTO.getUsername() :
                 (registrationDTO.getEmail() != null) ?
                         registrationDTO.getEmail() :
                         registrationDTO.getPhoneNumber();
 
-        // Check if user with this email or phone already exists
         if (userRepository.findByEmailOrPhoneNumber(
                 registrationDTO.getEmail(),
                 registrationDTO.getPhoneNumber()).isPresent()) {
             throw new IllegalArgumentException("User with this email or phone number already exists");
         }
 
-        // Encode password
         String encodedPassword = passwordEncoder.encode(registrationDTO.getPassword());
 
-        // Retrieve USER role
         Role userRole = roleRepository.findByAuthority("USER")
                 .orElseThrow(() -> new RuntimeException("Default user role not found"));
 
         Set<Role> authorities = new HashSet<>();
         authorities.add(userRole);
 
-        // Create new user
         ApplicationUser newUser = new ApplicationUser();
         newUser.setUsername(username);
         newUser.setPassword(encodedPassword);
@@ -86,7 +84,12 @@ public class AuthenticationService {
         newUser.setActive(true);
         newUser.setCreatedAt(LocalDateTime.now());
 
-        // Set volunteer status
+        newUser.setXpPoints(0);
+        newUser.setLevel(1);
+        newUser.setLikesCount(0);
+        newUser.setSupportCount(0);
+        newUser.setBadgesCount(0);
+
         if (registrationDTO.isApplyAsVolunteer()) {
             newUser.setVolunteerStatus(VolunteerStatus.PENDING);
         } else {
@@ -95,7 +98,11 @@ public class AuthenticationService {
 
         newUser.setAuthorities(authorities);
 
-        return userRepository.save(newUser);
+        ApplicationUser savedUser = userRepository.save(newUser);
+
+        achievementService.initializeUserAchievements(savedUser);
+
+        return savedUser;
     }
 
     /**
@@ -103,20 +110,17 @@ public class AuthenticationService {
      */
     public LoginResponseDTO loginUser(final LoginRequestDTO loginRequest) {
         try {
-            // Find user by email or phone
             ApplicationUser user = userRepository.findByEmailOrPhoneNumber(
                             loginRequest.getLoginIdentifier(),
                             loginRequest.getLoginIdentifier())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Check if user account is active
             if (!user.isActive()) {
                 String deactivationReason = user.getDeactivationReason() != null ?
                         user.getDeactivationReason() : "Account has been deactivated";
                 throw new DisabledException(deactivationReason);
             }
 
-            // Authenticate with username and password
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), loginRequest.getPassword())
             );
@@ -139,7 +143,6 @@ public class AuthenticationService {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Check if email is being changed and if it's already in use
         if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(user.getEmail())) {
             if (userRepository.findByEmail(updatedUser.getEmail()).isPresent()) {
                 throw new IllegalArgumentException("Email is already in use");
@@ -147,7 +150,6 @@ public class AuthenticationService {
             user.setEmail(updatedUser.getEmail());
         }
 
-        // Check if phone number is being changed and if it's already in use
         if (updatedUser.getPhoneNumber() != null && !updatedUser.getPhoneNumber().equals(user.getPhoneNumber())) {
             if (userRepository.findByPhoneNumber(updatedUser.getPhoneNumber()).isPresent()) {
                 throw new IllegalArgumentException("Phone number is already in use");
@@ -155,7 +157,6 @@ public class AuthenticationService {
             user.setPhoneNumber(updatedUser.getPhoneNumber());
         }
 
-        // Update other fields
         if (updatedUser.getFirstName() != null) {
             user.setFirstName(updatedUser.getFirstName());
         }
@@ -182,8 +183,6 @@ public class AuthenticationService {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // The delete will cascade to related OAuth2Provider entries due to the
-        // foreign key relationship with ON DELETE CASCADE
         userRepository.delete(user);
     }
 
