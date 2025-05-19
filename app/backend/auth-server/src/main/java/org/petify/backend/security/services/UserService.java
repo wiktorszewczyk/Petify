@@ -1,6 +1,7 @@
 package org.petify.backend.security.services;
 
 import org.petify.backend.security.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,0 +1,159 @@
+.favorites-container {
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  color: #333;
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.favorites-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.favorites-header h1 {
+  font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.favorites-header p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  
+}
+
+.animal-card-favourites {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0px 40px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  
+}
+
+.animal-card-favourites:hover {
+  transform: translateY(-4px);
+}
+
+.animal-card-image {
+  position: relative;
+  height: 80%;
+  width: 90%;
+  overflow: hidden;
+  margin-top: 5%;
+  border-radius: 12px;
+  align-self: center;
+
+}
+
+.animal-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.animal-heart-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.animal-card-content-favourites {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* ZAMIANA left → flex-start */
+  justify-content: flex-start;
+  text-align: left; /* na wszelki wypadek */
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+
+.animal-card-content-favourites h3 {
+  margin: 0;
+  font-size: 2rem;
+  color: #000000;
+  text-align: left;
+}
+
+.animal-details-favourites {
+  display: flex;
+  font-size: 1.2rem;
+  color: #555;
+    text-align: left;
+}
+
+.detail-icon {
+  margin-right: 4px;
+  opacity: 0.7;
+}
+
+.heart-icon {
+  color: #ff0000;
+  fill: #ff0000;
+  font-size: 1.5rem;
+}
+
+/*Tło animacji łapki*/
+
+.paw-wrapper {
+  position: fixed;
+  animation: fadeInOut 25s ease-in-out forwards;
+  animation-iteration-count: infinite;
+  opacity: 0;
+  z-index: -1;
+}
+
+.paw-icon {
+  width: 100%;
+  height: 100%;
+  color: #ffbf00;
+  fill: #ffbf00;
+  z-index: 0;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(var(--rotation));
+  }
+  5% {
+    opacity: 1;
+    transform: scale(1.2) rotate(var(--rotation));
+  }
+  8% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--rotation));
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--rotation));
+  }
+  80% {
+    opacity: 0;
+    transform: scale(0.5) rotate(var(--rotation));
+  }
+}

@@ -1,11 +1,14 @@
 server:
   port: 9000
+  servlet:
+    context-path: /
+    session:
+      cookie:
+        name: PETIFY_SESSION
 
 spring:
   security:
     oauth2:
-      authorization-server:
-        issuer-url: http://auth-service:9000
       client:
         registration:
           google:
@@ -15,6 +18,13 @@ spring:
               - email
               - profile
             redirect-uri: "http://localhost:9000/login/oauth2/code/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+            user-name-attribute: email
 
 
   datasource:
@@ -29,3 +39,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# Konfiguracja Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.uuid}

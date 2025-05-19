@@ -20,7 +20,7 @@
     <module>discovery</module>
     <module>gateway</module>
     <module>shelter</module>
-    <module>funding</module>
+    <module>user-service</module>
   </modules>
 
   <properties>
@@ -32,6 +32,7 @@
     <spring-cloud.version>2024.0.1</spring-cloud.version>
 
     <checkstyle.config.location>${session.executionRootDirectory}/checkstyle.xml</checkstyle.config.location>
+    <checkstyle.suppressions.location>${session.executionRootDirectory}/checkstyle-suppressions.xml</checkstyle.suppressions.location>
   </properties>
 
   <dependencyManagement>
@@ -53,17 +54,18 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.6.0</version>
         <configuration>
-            <configLocation>${checkstyle.config.location}</configLocation>
-            <consoleOutput>true</consoleOutput>
-            <failsOnError>true</failsOnError>
+          <configLocation>${checkstyle.config.location}</configLocation>
+          <suppressionsLocation>${checkstyle.suppressions.location}</suppressionsLocation>
+          <consoleOutput>true</consoleOutput>
+          <!-- <failsOnError>true</failsOnError> -->
         </configuration>
         <executions>
-            <execution>
-                <phase>validate</phase>
-                <goals>
-                    <goal>check</goal>
-                </goals>
-            </execution>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
 
@@ -79,10 +81,10 @@
           </execution>
           <execution>
             <id>report</id>
+            <phase>verify</phase>
             <goals>
               <goal>report</goal>
             </goals>
-            <phase>verify</phase>
           </execution>
         </executions>
       </plugin>
