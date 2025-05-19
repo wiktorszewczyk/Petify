@@ -1,8 +1,20 @@
 package org.petify.funding.dto;
 
-import jakarta.validation.constraints.*;
-import lombok.*;
-import org.petify.funding.model.*;
+import org.petify.funding.model.Donation;
+import org.petify.funding.model.DonationType;
+import org.petify.funding.model.MaterialDonation;
+import org.petify.funding.model.MonetaryDonation;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
 @Getter
@@ -42,23 +54,22 @@ public class DonationRequest {
 
     public Donation toEntity() {
         return switch (donationType) {
-            case MONEY ->
-                    MonetaryDonation.builder()
-                            .shelterId(shelterId)
-                            .donorUsername(donorUsername)
-                            .amount(amount)
-                            .currency(currency)
-                            .build();
-            case MATERIAL ->
-                    MaterialDonation.builder()
-                            .shelterId(shelterId)
-                            .petId(petId)
-                            .donorUsername(donorUsername)
-                            .itemName(itemName)
-                            .unitPrice(unitPrice)
-                            .quantity(quantity)
-                            .currency(currency)
-                            .build();
+            case MONEY -> MonetaryDonation.builder()
+                    .shelterId(shelterId)
+                    .donorUsername(donorUsername)
+                    .amount(amount)
+                    .currency(currency)
+                    .build();
+            case MATERIAL -> MaterialDonation.builder()
+                    .shelterId(shelterId)
+                    .petId(petId)
+                    .donorUsername(donorUsername)
+                    .itemName(itemName)
+                    .unitPrice(unitPrice)
+                    .quantity(quantity)
+                    .currency(currency)
+                    .build();
+            default -> throw new IllegalStateException("Unexpected donationType: " + donationType);
         };
     }
 }

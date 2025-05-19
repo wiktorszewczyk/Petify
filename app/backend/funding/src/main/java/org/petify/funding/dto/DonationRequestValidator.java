@@ -3,7 +3,8 @@ package org.petify.funding.dto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class DonationRequestValidator implements ConstraintValidator<DonationRequestValid, DonationRequest> {
+public class DonationRequestValidator
+        implements ConstraintValidator<DonationRequestValid, DonationRequest> {
 
     @Override
     public boolean isValid(DonationRequest dto, ConstraintValidatorContext ctx) {
@@ -53,6 +54,9 @@ public class DonationRequestValidator implements ConstraintValidator<DonationReq
                     ctx.buildConstraintViolationWithTemplate("currency is required for MATERIAL")
                             .addPropertyNode("currency").addConstraintViolation();
                 }
+            }
+            default -> {
+                // no additional checks
             }
         }
 

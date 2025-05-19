@@ -1,7 +1,15 @@
 package org.petify.funding.dto;
 
-import lombok.*;
-import org.petify.funding.model.*;
+import org.petify.funding.model.Donation;
+import org.petify.funding.model.DonationType;
+import org.petify.funding.model.MaterialDonation;
+import org.petify.funding.model.MonetaryDonation;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -18,11 +26,9 @@ public class DonationResponse {
     private Instant donatedAt;
     private DonationType donationType;
 
-    // monetary
     private BigDecimal amount;
     private String currency;
 
-    // material
     private String itemName;
     private BigDecimal unitPrice;
     private Integer quantity;

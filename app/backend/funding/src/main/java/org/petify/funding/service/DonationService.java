@@ -1,8 +1,5 @@
 package org.petify.funding.service;
 
-import feign.FeignException;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.petify.funding.client.ShelterClient;
 import org.petify.funding.dto.DonationRequest;
 import org.petify.funding.dto.DonationResponse;
@@ -10,6 +7,10 @@ import org.petify.funding.exception.ResourceNotFoundException;
 import org.petify.funding.model.Donation;
 import org.petify.funding.model.DonationType;
 import org.petify.funding.repository.DonationRepository;
+
+import feign.FeignException;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,10 @@ public class DonationService {
     private final ShelterClient shelterClient;
 
     @Transactional(readOnly = true)
-    public Page<DonationResponse> getAll(Pageable pageable, DonationType type) {
+    public Page<DonationResponse> getAll(
+            Pageable pageable,
+            DonationType type
+    ) {
         Page<Donation> page = (type == null)
                 ? donationRepository.findAll(pageable)
                 : donationRepository.findAllByDonationType(type, pageable);
@@ -34,39 +38,58 @@ public class DonationService {
     @Transactional(readOnly = true)
     public DonationResponse get(Long id) {
         Donation d = donationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Donation not found: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Donation not found: " + id)
+                );
         return DonationResponse.fromEntity(d);
     }
 
     @Transactional(readOnly = true)
-    public Page<DonationResponse> getForShelter(Long shelterId, Pageable pageable) {
-        Page<Donation> page = donationRepository.findByShelterId(shelterId, pageable);
+    public Page<DonationResponse> getForShelter(
+            Long shelterId,
+            Pageable pageable
+    ) {
+        Page<Donation> page =
+                donationRepository.findByShelterId(shelterId, pageable);
         return page.map(DonationResponse::fromEntity);
     }
 
     @Transactional(readOnly = true)
-    public Page<DonationResponse> getForPet(Long petId, Pageable pageable) {
-        Page<Donation> page = donationRepository.findByPetId(petId, pageable);
+    public Page<DonationResponse> getForPet(
+            Long petId,
+            Pageable pageable
+    ) {
+        Page<Donation> page =
+                donationRepository.findByPetId(petId, pageable);
         return page.map(DonationResponse::fromEntity);
     }
 
     @Transactional
-    public DonationResponse create(@Valid DonationRequest req) {
+    public DonationResponse create(
+            @Valid DonationRequest req
+    ) {
         Donation donation = req.toEntity();
 
         try {
             shelterClient.checkShelterExists(donation.getShelterId());
         } catch (FeignException.NotFound ex) {
-            throw new ResourceNotFoundException("Shelter not found: " + donation.getShelterId());
+            throw new ResourceNotFoundException(
+                    "Shelter not found: " + donation.getShelterId()
+            );
         }
 
         if (donation.getPetId() != null) {
             try {
-                shelterClient.checkPetExists(donation.getShelterId(), donation.getPetId());
+                shelterClient.checkPetExists(
+                        donation.getShelterId(),
+                        donation.getPetId()
+                );
             } catch (FeignException.NotFound ex) {
                 throw new ResourceNotFoundException(
-                        "Pet not found: " + donation.getPetId() +
-                                " in shelter: " + donation.getShelterId()
+                        "Pet not found: "
+                                + donation.getPetId()
+                                + " in shelter: "
+                                + donation.getShelterId()
                 );
             }
         }
