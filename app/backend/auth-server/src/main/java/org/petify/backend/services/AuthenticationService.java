@@ -3,11 +3,10 @@ package org.petify.backend.services;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.dto.LoginRequestDTO;
 import org.petify.backend.dto.LoginResponseDTO;
 import org.petify.backend.dto.RegistrationDTO;
+import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.models.Role;
 import org.petify.backend.models.VolunteerStatus;
 import org.petify.backend.repository.OAuth2ProviderRepository;

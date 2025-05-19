@@ -1,10 +1,14 @@
 package org.petify.backend.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.petify.backend.models.ApplicationUser;
+import jakarta.validation.Valid;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.petify.backend.dto.LoginRequestDTO;
 import org.petify.backend.dto.LoginResponseDTO;
 import org.petify.backend.dto.RegistrationDTO;
+import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.repository.UserRepository;
 import org.petify.backend.services.AuthenticationService;
 import org.petify.backend.services.TokenService;
@@ -13,15 +17,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller handling all authentication, authorization and user management endpoints,
@@ -41,7 +46,7 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
     /**
-     * ===== Authentication Endpoints =====
+     * Authentication Endpoints
      */
 
     @PostMapping("/auth/register")
@@ -112,17 +117,18 @@ public class AuthenticationController {
     }
 
     /**
-     * ===== OAuth2 endpoints =====
+     * OAuth2 endpoints
      */
 
     /**
      * Initiate Google OAuth2 login process
      * Spring Security will handle redirecting to Google login page
      *
-     * @return Redirect to Google authorization
+     * @param response HTTP response to redirect
+     * @throws IOException if redirection fails
      */
     @GetMapping("/auth/oauth2/google")
-    public void initiateGoogleLogin(HttpServletResponse response) throws IOException, IOException {
+    public void initiateGoogleLogin(HttpServletResponse response) throws IOException {
         response.sendRedirect("/oauth2/authorization/google");
     }
 
@@ -202,7 +208,7 @@ public class AuthenticationController {
     }
 
     /**
-     * ===== User Management Endpoints =====
+     * User Management Endpoints
      */
 
     /**
@@ -230,6 +236,10 @@ public class AuthenticationController {
 
     /**
      * Update user data endpoint
+     *
+     * @param authentication Authentication object
+     * @param userData Updated user data
+     * @return Updated user data
      */
     @PutMapping("/user")
     public ResponseEntity<?> updateUserData(
@@ -263,6 +273,9 @@ public class AuthenticationController {
 
     /**
      * Delete user account endpoint
+     *
+     * @param authentication Authentication object
+     * @return Success/failure message
      */
     @DeleteMapping("/user")
     public ResponseEntity<?> deleteUser(Authentication authentication) {
@@ -287,6 +300,10 @@ public class AuthenticationController {
 
     /**
      * Self-deactivate account endpoint
+     *
+     * @param authentication Authentication object
+     * @param reason Optional reason for deactivation
+     * @return Success/failure message
      */
     @PostMapping("/user/deactivate")
     public ResponseEntity<?> selfDeactivateAccount(

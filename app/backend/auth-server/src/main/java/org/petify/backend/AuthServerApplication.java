@@ -2,7 +2,6 @@ package org.petify.backend;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.petify.backend.models.Achievement;
 import org.petify.backend.models.AchievementCategory;
 import org.petify.backend.models.ApplicationUser;
@@ -33,7 +32,7 @@ public class AuthServerApplication {
         return args -> {
             boolean needToInitRoles = !roleRepository.findByAuthority("ADMIN").isPresent();
 
-            if(needToInitRoles) {
+            if (needToInitRoles) {
                 System.out.println("Inicjalizacja ról...");
                 Role adminRole = roleRepository.save(new Role("ADMIN"));
                 roleRepository.save(new Role("USER"));

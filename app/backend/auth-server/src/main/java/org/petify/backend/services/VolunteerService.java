@@ -1,5 +1,7 @@
 package org.petify.backend.services;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.models.VolunteerApplication;
 import org.petify.backend.models.VolunteerStatus;
@@ -8,9 +10,6 @@ import org.petify.backend.repository.VolunteerApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class VolunteerService {

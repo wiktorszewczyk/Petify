@@ -4,10 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -57,9 +56,9 @@ public class RegistrationDTO {
 
     @Override
     public String toString() {
-        return "Registration info: firstName: " + this.firstName +
-                ", lastName: " + this.lastName +
-                ", email: " + this.email +
-                ", phoneNumber: " + this.phoneNumber;
+        return "Registration info: firstName: " + this.firstName
+                + ", lastName: " + this.lastName
+                + ", email: " + this.email
+                + ", phoneNumber: " + this.phoneNumber;
     }
 }

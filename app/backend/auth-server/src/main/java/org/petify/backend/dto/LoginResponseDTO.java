@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.petify.backend.models.ApplicationUser;
 
+
 @Getter
 @Setter
 public class LoginResponseDTO {

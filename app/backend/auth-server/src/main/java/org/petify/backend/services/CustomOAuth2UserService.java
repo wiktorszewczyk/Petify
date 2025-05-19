@@ -1,5 +1,13 @@
 package org.petify.backend.services;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.models.OAuth2Provider;
 import org.petify.backend.models.Role;
@@ -15,8 +23,6 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
