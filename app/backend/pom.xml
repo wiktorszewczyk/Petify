@@ -21,6 +21,7 @@
     <module>gateway</module>
     <module>shelter</module>
     <module>user-service</module>
+    <module>funding</module>
   </modules>
 
   <properties>
