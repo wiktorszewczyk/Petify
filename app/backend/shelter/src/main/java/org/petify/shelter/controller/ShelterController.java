@@ -1,5 +1,6 @@
 package org.petify.shelter.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.dto.ShelterRequest;
 import org.petify.shelter.dto.ShelterResponse;
@@ -109,5 +110,22 @@ public class ShelterController {
 
         List<AdoptionResponse> forms = adoptionService.getShelterAdoptionForms(id);
         return ResponseEntity.ok(forms);
+    }
+
+    @GetMapping("/{shelterId}/pets/{petId}")
+    public ResponseEntity<Void> checkPetInShelter(
+            @PathVariable Long shelterId,
+            @PathVariable Long petId) {
+
+        try {
+            var pet = petService.getPetById(petId);
+            if (!pet.shelterId().equals(shelterId)) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().build();
+
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

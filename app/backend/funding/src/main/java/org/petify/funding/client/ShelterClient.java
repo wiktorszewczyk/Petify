@@ -15,9 +15,6 @@ public interface ShelterClient {
     @GetMapping("/{shelterId}")
     void checkShelterExists(@PathVariable("shelterId") Long shelterId);
 
-    /**
-     * TODO: Add a method to check if a pet exists in a shelter (shelter-service or pet-service, depending on the architecture).
-     */
     @GetMapping("/{shelterId}/pets/{petId}")
     void checkPetExists(@PathVariable("shelterId") Long shelterId,
                         @PathVariable("petId") Long petId);
