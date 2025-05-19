@@ -1,5 +1,6 @@
 package org.petify.backend.controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.dto.LoginRequestDTO;
 import org.petify.backend.dto.LoginResponseDTO;
@@ -17,6 +18,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,8 +122,8 @@ public class AuthenticationController {
      * @return Redirect to Google authorization
      */
     @GetMapping("/auth/oauth2/google")
-    public String initiateGoogleLogin() {
-        return "redirect:/oauth2/authorization/google";
+    public void initiateGoogleLogin(HttpServletResponse response) throws IOException, IOException {
+        response.sendRedirect("/oauth2/authorization/google");
     }
 
     /**
@@ -172,23 +175,10 @@ public class AuthenticationController {
      */
     @GetMapping("/auth/oauth2/success")
     public ResponseEntity<Map<String, Object>> oauthLoginSuccess(
-            @RequestParam(required = false) String token,
+            @RequestParam String token,
             @AuthenticationPrincipal OAuth2User oauth2User) {
 
-        if (token == null || token.isEmpty()) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null) {
-                token = tokenService.generateJwt(auth);
-            }
-        }
-
         String email = oauth2User.getAttribute("email");
-        if (email == null) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Email not found in OAuth2 provider response");
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
-
         ApplicationUser user = userRepository.findByUsername(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -79,51 +80,25 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Całkowicie wyłącz CSRF
-        http.csrf(AbstractHttpConfigurer::disable);
-
-        // Konfiguracja CORS
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-
-        // Konfiguracja ścieżek dostępu
-        http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/.well-known/jwks.json").permitAll();
-            auth.requestMatchers("/auth/**").permitAll();
-            auth.requestMatchers("/oauth2/**").permitAll();
-            auth.requestMatchers("/login/oauth2/code/**").permitAll();
-            auth.requestMatchers("/admin/**").hasRole("ADMIN");
-            auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
-            auth.anyRequest().authenticated();
-        });
-
-        // Włączenie uwierzytelniania JWT dla żądań API
-        http.oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                )
-        );
-
-        // Włączenie logowania OAuth2 dla uwierzytelniania przeglądarkowego
-        http.oauth2Login(oauth2 -> oauth2
-                .authorizationEndpoint(endpoint ->
-                        endpoint.baseUri("/oauth2/authorize"))
-                .redirectionEndpoint(endpoint ->
-                        endpoint.baseUri("/login/oauth2/code/*"))
-                .userInfoEndpoint(userInfo ->
-                        userInfo.userService(customOAuth2UserService))
-                .successHandler((request, response, authentication) -> {
-                    // Generowanie tokenu JWT
-                    String token = tokenService.generateJwt(authentication);
-                    // Przekierowanie do URL sukcesu z tokenem
-                    response.sendRedirect("/auth/oauth2/success?token=" + token);
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/.well-known/jwks.json", "/auth/**", "/login/**", "/oauth2/**").permitAll();
+                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
+                    auth.anyRequest().authenticated();
                 })
-                .failureUrl("/auth/oauth2/error")
-        );
-
-        // Zarządzanie sesją - potrzebujemy sesji dla poprawnego działania przepływu OAuth2
-        http.sessionManagement(
-                session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-        );
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler((request, response, authentication) -> {
+                            String token = tokenService.generateJwt(authentication);
+                            response.sendRedirect("/auth/oauth2/success?token=" + token);
+                        })
+                );
 
         return http.build();
     }

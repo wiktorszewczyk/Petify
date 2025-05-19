@@ -23,6 +23,13 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: auth-service-oauth
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/oauth2/**, /login/oauth2/code/**
+          filters:
+            - PreserveHostHeader
+
 # Konfiguracja Eureka
 eureka:
   client:
