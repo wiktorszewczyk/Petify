@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../styles/colors.dart';
 import '../../widgets/top_header.dart';
 import 'login_view.dart';
+import 'oauth2_signin_page.dart';
 import 'register_view.dart';
 import '../../widgets/buttons/primary_button.dart';
 
@@ -253,7 +254,11 @@ class _WelcomeViewState extends State<WelcomeView> {
                   side: const BorderSide(color: Colors.grey),
                 ),
               ),
-              onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const OAuth2SignInPage()),
+                  );
+                },
             ).animate().fade(delay: 600.ms).slideY(begin: 0.1),
           ],
         ),

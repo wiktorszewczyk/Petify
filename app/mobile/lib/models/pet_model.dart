@@ -8,11 +8,12 @@ class PetModel {
   final String description;
   final String imageUrl;
   final List<String> galleryImages;
-  final double distance;
+  final int distance;
   final bool isVaccinated;
   final bool isNeutered;
   final bool isChildFriendly;
   final bool isUrgent;
+  final String shelterId;
   final String shelterName;
   final String shelterAddress;
 
@@ -31,6 +32,7 @@ class PetModel {
     required this.isNeutered,
     required this.isChildFriendly,
     required this.isUrgent,
+    required this.shelterId,
     required this.shelterName,
     required this.shelterAddress,
   });
@@ -46,11 +48,12 @@ class PetModel {
       description: json['description'] as String,
       imageUrl: json['imageUrl'] as String,
       galleryImages: (json['galleryImages'] as List).map((e) => e as String).toList(),
-      distance: json['distance'] as double,
+      distance: json['distance'] as int,
       isVaccinated: json['isVaccinated'] as bool,
       isNeutered: json['isNeutered'] as bool,
       isChildFriendly: json['isChildFriendly'] as bool,
       isUrgent: json['isUrgent'] as bool,
+      shelterId: json['shelterId'] as String,
       shelterName: json['shelterName'] as String,
       shelterAddress: json['shelterAddress'] as String,
     );
@@ -72,6 +75,7 @@ class PetModel {
       'isNeutered': isNeutered,
       'isChildFriendly': isChildFriendly,
       'isUrgent': isUrgent,
+      'shelterId': shelterId,
       'shelterName': shelterName,
       'shelterAddress': shelterAddress,
     };
