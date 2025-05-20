@@ -35,7 +35,7 @@ jobs:
       run: docker compose -f docker/database/compose.yml up -d
 
     - name: Generate reports
-      run: mvn verify site site:stage -f app/backend/pom.xml -pl '!:auth-server'
+      run: mvn verify site site:stage -f app/backend/pom.xml
 
     - name: Upload reports
       id: deployment
