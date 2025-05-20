@@ -1,4 +1,4 @@
-name: Code Checks
+name: Backend Code Quality Checks
 
 on:
   push:
@@ -19,6 +19,7 @@ env:
 jobs:
   checks:
     runs-on: ubuntu-latest
+    name: Backend Code Quality Checks
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -42,5 +43,5 @@ jobs:
     - name: Test Stage
       run: mvn test -f app/backend/pom.xml -pl '!:auth-server'
 
-    - name: Verify Stage (PMD, SpotBug, JaCoCo)
+    - name: Verify Stage (PMD, SpotBugs, JaCoCo)
       run: mvn verify -f app/backend/pom.xml -pl '!:auth-server'

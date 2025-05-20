@@ -6,8 +6,8 @@ concurrency:
 
 on:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
   workflow_dispatch:
 
 env:
@@ -19,6 +19,7 @@ env:
 jobs:
   generate:
     runs-on: ubuntu-latest
+    name: Generate Reports
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -45,6 +46,7 @@ jobs:
   deploy:
     needs: generate
     runs-on: ubuntu-latest
+    name: Deploy to GitHub Pages
     permissions:
       pages: write
       id-token: write
