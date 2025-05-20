@@ -17,7 +17,7 @@ spring:
             scope:
               - email
               - profile
-            redirect-uri: "http://localhost:9000/login/oauth2/code/google"
+            redirect-uri: "http://localhost:8222/login/oauth2/code/google"
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
@@ -25,7 +25,6 @@ spring:
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
             user-name-attribute: email
-
 
   datasource:
     url: jdbc:postgresql://localhost:5433/petify
