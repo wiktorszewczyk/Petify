@@ -1,6 +1,7 @@
 package org.petify.shelter.service;
 
 import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.mapper.PetMapper;
 import org.petify.shelter.model.FavoritePet;
 import org.petify.shelter.model.Pet;
@@ -22,14 +23,16 @@ public class FavoritePetService {
     private final PetMapper petMapper;
 
     public boolean save(String username, Long petId) {
-        Optional<Pet> petOpt = petRepository.findById(petId);
-        if (petOpt.isEmpty()) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new PetNotFoundException(petId));
+
+        if (pet.isArchived()) {
             return false;
         }
 
         FavoritePet favoritePet = new FavoritePet();
         favoritePet.setUsername(username);
-        favoritePet.setPet(petOpt.get());
+        favoritePet.setPet(pet);
 
         try {
             favoritePetRepository.save(favoritePet);
@@ -40,12 +43,10 @@ public class FavoritePetService {
     }
 
     public boolean delete(String username, Long petId) {
-        Optional<Pet> petOpt = petRepository.findById(petId);
-        if (petOpt.isEmpty()) {
-            return false;
-        }
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new PetNotFoundException(petId));
 
-        Optional<FavoritePet> favoritePet = favoritePetRepository.findByUsernameAndPet(username, petOpt.get());
+        Optional<FavoritePet> favoritePet = favoritePetRepository.findByUsernameAndPet(username, pet);
         favoritePet.ifPresent(favoritePetRepository::delete);
         return favoritePet.isPresent();
     }
@@ -53,7 +54,9 @@ public class FavoritePetService {
     public List<PetResponse> getFavoritePets(String username) {
         return favoritePetRepository.findByUsername(username)
                 .stream()
-                .map(FavoritePet::getPet).map(petMapper::toDto)
+                .map(FavoritePet::getPet)
+                .filter(pet -> !pet.isArchived())
+                .map(petMapper::toDto)
                 .toList();
     }
 }

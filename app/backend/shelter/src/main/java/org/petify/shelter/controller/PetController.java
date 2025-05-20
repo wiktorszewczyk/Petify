@@ -2,7 +2,6 @@ package org.petify.shelter.controller;
 
 import org.petify.shelter.dto.AdoptionRequest;
 import org.petify.shelter.dto.AdoptionResponse;
-import org.petify.shelter.dto.PetImageRequest;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
@@ -107,15 +106,11 @@ public class PetController {
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
             @AuthenticationPrincipal Jwt jwt) throws IOException {
 
-        String username = jwt != null ? jwt.getSubject() : null;
+        verifyPetOwnership(id, jwt);
+
         Long shelterId = petService.getPetById(id).shelterId();
-        ShelterResponse shelter = shelterService.getShelterById(shelterId);
 
-        if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this pet!");
-        }
-
-        PetResponse updatedPet = petService.updatePet(petRequest, id, shelter.id(), imageFile);
+        PetResponse updatedPet = petService.updatePet(petRequest, id, shelterId, imageFile);
         return ResponseEntity.ok(updatedPet);
     }
 
@@ -137,22 +132,33 @@ public class PetController {
     }
 
     @PostMapping("/{petId}/images")
-    public ResponseEntity<?> addPetImages(
+    public ResponseEntity<?> uploadMultiplePetImages(
             @PathVariable("petId") Long petId,
             @AuthenticationPrincipal Jwt jwt,
-            @Valid @RequestBody List<PetImageRequest> petImageRequests) {
+            @RequestParam("images") List<MultipartFile> files) throws IOException {
 
-        String username = jwt != null ? jwt.getSubject() : null;
-        Long shelterId = petService.getPetById(petId).shelterId();
-        ShelterResponse shelter = shelterService.getShelterById(shelterId);
+        verifyPetOwnership(petId, jwt);
 
-        if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this pet!");
+        if (!files.isEmpty()) {
+            return new ResponseEntity<>("No files send.", HttpStatus.BAD_REQUEST);
         }
 
-        petImageService.addPetImages(petId, petImageRequests);
+        petImageService.addPetImages(petId, files);
 
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/{petId}/images/{imageId}")
+    public ResponseEntity<?> deletePetImage(
+            @PathVariable("petId") Long petId,
+            @PathVariable("imageId") Long imageId,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        verifyPetOwnership(petId, jwt);
+
+        petImageService.deletePetImage(imageId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -161,16 +167,10 @@ public class PetController {
             @PathVariable("id") Long id,
             @AuthenticationPrincipal Jwt jwt) {
 
-        String username = jwt != null ? jwt.getSubject() : null;
-        Long shelterId = petService.getPetById(id).shelterId();
-        ShelterResponse shelter = shelterService.getShelterById(shelterId);
-
-        if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this pet!");
-        }
+        verifyPetOwnership(id, jwt);
 
         petService.deletePet(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -178,7 +178,7 @@ public class PetController {
     public ResponseEntity<List<AdoptionResponse>> getPetAdoptionForms(@PathVariable Long id) {
 
         List<AdoptionResponse> forms = adoptionService.getPetAdoptionForms(id);
-        return ResponseEntity.ok(forms);
+        return new ResponseEntity<>(forms, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -187,16 +187,10 @@ public class PetController {
             @PathVariable("id") Long id,
             @AuthenticationPrincipal Jwt jwt) {
 
-        String username = jwt != null ? jwt.getSubject() : null;
-        Long shelterId = petService.getPetById(id).shelterId();
-        ShelterResponse shelter = shelterService.getShelterById(shelterId);
-
-        if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this pet!");
-        }
+        verifyPetOwnership(id, jwt);
 
         PetResponse petResponse = petService.archivePet(id);
-        return ResponseEntity.ok(petResponse);
+        return new ResponseEntity<>(petResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
@@ -247,5 +241,15 @@ public class PetController {
 
         List<PetResponse> favoritePets = favoritePetService.getFavoritePets(username);
         return ResponseEntity.ok(favoritePets);
+    }
+
+    private void verifyPetOwnership(Long petId, @AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+        Long shelterId = petService.getPetById(petId).shelterId();
+        ShelterResponse shelter = shelterService.getShelterById(shelterId);
+
+        if (!shelter.ownerUsername().equals(username)) {
+            throw new AccessDeniedException("You are not the owner of this pet!");
+        }
     }
 }

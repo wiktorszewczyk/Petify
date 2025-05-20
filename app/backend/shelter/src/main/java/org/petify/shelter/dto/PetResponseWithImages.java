@@ -25,5 +25,5 @@ public record PetResponseWithImages(
         boolean kidFriendly,
         String imageName,
         String imageType,
-        byte[] imageData,
+        String imageData,
         List<PetImageResponse> images) implements Serializable {}

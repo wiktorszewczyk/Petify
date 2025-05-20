@@ -67,12 +67,7 @@ public class ShelterController {
                                            @Valid @RequestBody ShelterRequest input,
                                            @AuthenticationPrincipal Jwt jwt) {
 
-        String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.getShelterById(id);
-
-        if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this shelter");
-        }
+        verifyShelterOwnership(id, jwt);
 
         ShelterResponse updatedShelter = shelterService.updateShelter(input, id);
         return ResponseEntity.ok(updatedShelter);
@@ -83,15 +78,10 @@ public class ShelterController {
     public ResponseEntity<?> deleteShelter(@PathVariable("id") Long id,
                                            @AuthenticationPrincipal Jwt jwt) {
 
-        String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.getShelterById(id);
-
-        if (!shelter.ownerUsername().equals(username)) {
-            throw new AccessDeniedException("You are not the owner of this shelter");
-        }
+        verifyShelterOwnership(id, jwt);
 
         shelterService.deleteShelter(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -100,14 +90,32 @@ public class ShelterController {
             @PathVariable Long id,
             @AuthenticationPrincipal Jwt jwt) {
 
+        verifyShelterOwnership(id, jwt);
+
+        List<AdoptionResponse> forms = adoptionService.getShelterAdoptionForms(id);
+        return ResponseEntity.ok(forms);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/{shelterId}/activate")
+    public ResponseEntity<?> activateShelter(@PathVariable Long shelterId) {
+        shelterService.activateShelter(shelterId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/{shelterId}/deactivate")
+    public ResponseEntity<?> deactivateShelter(@PathVariable Long shelterId) {
+        shelterService.deactivateShelter(shelterId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void verifyShelterOwnership(Long shelterId, Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.getShelterById(id);
+        ShelterResponse shelter = shelterService.getShelterById(shelterId);
 
         if (!shelter.ownerUsername().equals(username)) {
             throw new AccessDeniedException("You are not the owner of this shelter");
         }
-
-        List<AdoptionResponse> forms = adoptionService.getShelterAdoptionForms(id);
-        return ResponseEntity.ok(forms);
     }
 }

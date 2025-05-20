@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -24,18 +24,14 @@ public class ShelterService {
 
     public List<ShelterResponse> getShelters() {
         List<Shelter> shelters = shelterRepository.findAll();
-        List<ShelterResponse> shelterResponses = new ArrayList<>();
-        for (Shelter shelter : shelters) {
-            shelterResponses.add(shelterMapper.toDto(shelter));
-        }
 
-        return shelterResponses;
+        return shelters.stream().map(shelterMapper::toDto).collect(Collectors.toList());
     }
 
-    public ShelterResponse getShelterById(Long id) {
-        return shelterRepository.findById(id)
+    public ShelterResponse getShelterById(Long shelterId) {
+        return shelterRepository.findById(shelterId)
                 .map(shelterMapper::toDto)
-                .orElseThrow(() -> new ShelterNotFoundException(id));
+                .orElseThrow(() -> new ShelterNotFoundException(shelterId));
     }
 
     public ShelterResponse getShelterByOwnerUsername(String username) {
@@ -74,10 +70,26 @@ public class ShelterService {
     }
 
     @Transactional
-    public void deleteShelter(Long id) {
-        Shelter shelter = shelterRepository.findById(id)
-                .orElseThrow(() -> new ShelterNotFoundException(id));
+    public void deleteShelter(Long shelterId) {
+        Shelter shelter = shelterRepository.findById(shelterId)
+                .orElseThrow(() -> new ShelterNotFoundException(shelterId));
 
         shelterRepository.delete(shelter);
+    }
+
+    public void activateShelter(Long shelterId) {
+        Shelter existingShelter = shelterRepository.findById(shelterId)
+                .orElseThrow(() -> new ShelterNotFoundException(shelterId));
+
+        existingShelter.setIsActive(true);
+        shelterRepository.save(existingShelter);
+    }
+
+    public void deactivateShelter(Long shelterId) {
+        Shelter existingShelter = shelterRepository.findById(shelterId)
+                .orElseThrow(() -> new ShelterNotFoundException(shelterId));
+
+        existingShelter.setIsActive(false);
+        shelterRepository.save(existingShelter);
     }
 }
