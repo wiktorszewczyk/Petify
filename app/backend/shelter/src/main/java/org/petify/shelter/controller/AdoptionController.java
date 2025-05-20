@@ -29,7 +29,7 @@ public class AdoptionController {
         return ResponseEntity.ok(form);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<AdoptionResponse> cancelAdoptionForm(
             @PathVariable Long id,
@@ -41,7 +41,7 @@ public class AdoptionController {
         return ResponseEntity.ok(cancelledForm);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<AdoptionResponse> updateAdoptionStatus(
             @PathVariable Long id,

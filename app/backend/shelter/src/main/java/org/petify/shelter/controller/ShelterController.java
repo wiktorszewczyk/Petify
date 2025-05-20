@@ -39,7 +39,7 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.getShelters());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PostMapping()
     public ResponseEntity<?> addShelter(
             @Valid @RequestBody ShelterRequest input,
@@ -61,7 +61,7 @@ public class ShelterController {
         return ResponseEntity.ok(petService.getAllShelterPets(id));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShelter(@PathVariable("id") Long id,
                                            @Valid @RequestBody ShelterRequest input,
@@ -73,7 +73,7 @@ public class ShelterController {
         return ResponseEntity.ok(updatedShelter);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteShelter(@PathVariable("id") Long id,
                                            @AuthenticationPrincipal Jwt jwt) {
@@ -84,7 +84,7 @@ public class ShelterController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @GetMapping("/{id}/adoptions")
     public ResponseEntity<List<AdoptionResponse>> getShelterAdoptionForms(
             @PathVariable Long id,
@@ -96,14 +96,14 @@ public class ShelterController {
         return ResponseEntity.ok(forms);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{shelterId}/activate")
     public ResponseEntity<?> activateShelter(@PathVariable Long shelterId) {
         shelterService.activateShelter(shelterId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{shelterId}/deactivate")
     public ResponseEntity<?> deactivateShelter(@PathVariable Long shelterId) {
         shelterService.deactivateShelter(shelterId);
