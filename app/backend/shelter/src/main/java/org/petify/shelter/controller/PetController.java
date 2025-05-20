@@ -139,7 +139,7 @@ public class PetController {
 
         verifyPetOwnership(petId, jwt);
 
-        if (!files.isEmpty()) {
+        if (files.isEmpty()) {
             return new ResponseEntity<>("No files send.", HttpStatus.BAD_REQUEST);
         }
 
@@ -150,7 +150,7 @@ public class PetController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{petId}/images/{imageId}")
-    public ResponseEntity<?> deletePetImage(
+    public ResponseEntity<?> deleteImage(
             @PathVariable("petId") Long petId,
             @PathVariable("imageId") Long imageId,
             @AuthenticationPrincipal Jwt jwt

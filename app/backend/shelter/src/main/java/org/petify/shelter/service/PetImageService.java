@@ -1,6 +1,7 @@
 package org.petify.shelter.service;
 
 import org.petify.shelter.dto.PetImageResponse;
+import org.petify.shelter.exception.PetImageNotFoundException;
 import org.petify.shelter.exception.PetMaxImagesReachedException;
 import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.mapper.PetImageMapper;
@@ -11,6 +12,7 @@ import org.petify.shelter.repository.PetRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -53,7 +55,15 @@ public class PetImageService {
         petImageRepository.save(petImage);
     }
 
+    @Transactional
     public void deletePetImage(Long imageId) {
-        petImageRepository.deleteById(imageId);
+        PetImage image = petImageRepository.findById(imageId)
+                        .orElseThrow(() -> new PetImageNotFoundException(imageId));
+
+        Pet pet = image.getPet();
+
+        pet.getImages().remove(image);
+
+        petRepository.save(pet);
     }
 }

@@ -119,4 +119,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }
+
+    @ExceptionHandler(PetImageNotFoundException.class)
+    ProblemDetail handlePetImageNotFound(PetImageNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problemDetail.setTitle("Pet Image Not Found");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
 }

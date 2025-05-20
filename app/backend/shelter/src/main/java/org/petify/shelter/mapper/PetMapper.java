@@ -36,12 +36,4 @@ public interface PetMapper {
         pet.setShelter(shelter);
         return pet;
     }
-
-    default byte[] map(String imageData) {
-        return Base64.getDecoder().decode(imageData);
-    }
-
-    default String map(byte[] imageData) {
-        return Base64.getEncoder().encodeToString(imageData);
-    }
 }
