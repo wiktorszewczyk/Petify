@@ -315,8 +315,7 @@ public class AuthenticationController {
         }
 
         try {
-            ApplicationUser user = authenticationService.selfDeactivateAccount(
-                    authentication.getName(), reason);
+            authenticationService.selfDeactivateAccount(authentication.getName(), reason);
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Your account has been deactivated successfully");
