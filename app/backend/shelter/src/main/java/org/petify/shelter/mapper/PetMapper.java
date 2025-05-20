@@ -12,8 +12,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.Base64;
-
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = PetImageMapper.class)
 public interface PetMapper {
     @Mapping(source = "shelter.id", target = "shelterId")
