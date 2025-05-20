@@ -12,6 +12,7 @@
   <groupId>org.petify</groupId>
   <artifactId>discovery</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
   <name>discovery</name>
 
   <dependencyManagement>
@@ -25,7 +26,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
@@ -51,5 +51,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

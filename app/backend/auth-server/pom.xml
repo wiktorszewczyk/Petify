@@ -12,6 +12,7 @@
   <groupId>org.petify</groupId>
   <artifactId>auth-server</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
   <name>auth-service</name>
 
   <dependencyManagement>
@@ -25,7 +26,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -119,5 +119,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

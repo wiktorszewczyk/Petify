@@ -1,4 +1,4 @@
-name: Code Checker
+name: Checks and Reporting
 
 on:
   push:
@@ -31,17 +31,16 @@ jobs:
         cache: maven
     
     - name: Setup database
-      run: |
-        docker compose -f docker/database/compose.yml up -d
+      run: docker compose -f docker/database/compose.yml up -d
 
-    - name: Run Static Code Analysis on Backend code
+    - name: Validate Stage (POM formatting, Checkstyle)
       run: mvn validate -f app/backend/pom.xml
 
-    - name: Compile Backend code
+    - name: Compile Stage
       run: mvn compile -f app/backend/pom.xml
 
-    - name: Run Unit Tests on Backend code
+    - name: Test Stage
       run: mvn test -f app/backend/pom.xml -pl '!:auth-server'
 
-    - name: Generate reports for Backend code
+    - name: Verify Stage (PMD, SpotBug, JaCoCo)
       run: mvn verify -f app/backend/pom.xml -pl '!:auth-server'

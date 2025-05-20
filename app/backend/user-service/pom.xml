@@ -12,6 +12,7 @@
     <groupId>org.petify</groupId>
     <artifactId>user-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>user-service</name>
     <description>User Service dla testowania autentykacji i autoryzacji</description>
 
@@ -26,7 +27,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -83,5 +83,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
