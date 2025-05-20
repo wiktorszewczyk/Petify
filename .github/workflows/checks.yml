@@ -1,4 +1,4 @@
-name: Checks and Reporting
+name: Code Checks
 
 on:
   push:
