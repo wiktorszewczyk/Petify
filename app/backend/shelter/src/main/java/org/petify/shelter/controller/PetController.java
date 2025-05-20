@@ -14,7 +14,7 @@ import org.petify.shelter.service.PetService;
 import org.petify.shelter.service.ShelterService;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +36,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/pets")
 public class PetController {
@@ -121,7 +122,7 @@ public class PetController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(petImageData.imageType()))
-                .body(Base64.getEncoder().encodeToString(petImageData.imageData().getBytes()));
+                .body(Base64.getEncoder().encodeToString(petImageData.imageData().getBytes(StandardCharsets.UTF_8)));
     }
 
     @GetMapping("/{petId}/images")

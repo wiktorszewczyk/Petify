@@ -40,13 +40,6 @@ public class ShelterService {
                 .orElseThrow(() -> new ShelterByOwnerNotFoundException(username));
     }
 
-    public ShelterResponse getShelterByOwnerUsername(String username) {
-        return shelterRepository.getShelterByOwnerUsername(username)
-                .map(shelter -> new ShelterResponse(shelter.getId(), shelter.getOwnerUsername(), shelter.getName(),
-                        shelter.getDescription(), shelter.getAddress(), shelter.getPhoneNumber()))
-                .orElseThrow(() -> new EntityNotFoundException("No shelter connected to user: " + username + " found!"));
-    }
-
     @Transactional
     public ShelterResponse createShelter(ShelterRequest input, String username) {
         if (shelterRepository.getShelterByOwnerUsername(username).isPresent()) {
