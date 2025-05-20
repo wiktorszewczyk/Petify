@@ -1,5 +1,12 @@
 # Petify
 
+## CI Status
+[![Backend Code Quality Checks](https://github.com/wiktorszewczyk/Petify/actions/workflows/code_checker.yml/badge.svg)](https://github.com/wiktorszewczyk/Petify/actions/workflows/checks.yml)
+[![Publish Reports to GitHub Pages](https://github.com/wiktorszewczyk/Petify/actions/workflows/reporting.yml/badge.svg)](https://github.com/wiktorszewczyk/Petify/actions/workflows/reporting.yml)
+
+## Documentation
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-222222?style=for-the-badge&logo=GitHub%20Pages&logoColor=white)](https://wiktorszewczyk.github.io/Petify/)
+
 ## Setup
 
 ### Backend
