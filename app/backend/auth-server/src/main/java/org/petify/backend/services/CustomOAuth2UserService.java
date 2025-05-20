@@ -1,19 +1,12 @@
 package org.petify.backend.services;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.models.OAuth2Provider;
 import org.petify.backend.models.Role;
 import org.petify.backend.repository.OAuth2ProviderRepository;
 import org.petify.backend.repository.RoleRepository;
 import org.petify.backend.repository.UserRepository;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -24,38 +17,47 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final OAuth2ProviderRepository oAuth2ProviderRepository;
+    private final OAuth2ProviderRepository oauth2ProviderRepository;
     private final PasswordEncoder passwordEncoder;
 
     public CustomOAuth2UserService(
             UserRepository userRepository,
             RoleRepository roleRepository,
-            OAuth2ProviderRepository oAuth2ProviderRepository,
+            OAuth2ProviderRepository oauth2ProviderRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.oAuth2ProviderRepository = oAuth2ProviderRepository;
+        this.oauth2ProviderRepository = oauth2ProviderRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+        OAuth2User oauth2User = super.loadUser(userRequest);
 
         String providerId = userRequest.getClientRegistration().getRegistrationId();
-        String providerUserId = oAuth2User.getAttribute("sub");
+        String providerUserId = oauth2User.getAttribute("sub");
 
-        String email = oAuth2User.getAttribute("email");
-        String name = oAuth2User.getAttribute("name");
+        String email = oauth2User.getAttribute("email");
+        String name = oauth2User.getAttribute("name");
 
         Optional<OAuth2Provider> existingProvider =
-                oAuth2ProviderRepository.findByProviderIdAndProviderUserId(providerId, providerUserId);
+                oauth2ProviderRepository.findByProviderIdAndProviderUserId(providerId, providerUserId);
 
         ApplicationUser user;
 
@@ -64,7 +66,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             existingProvider.get().setEmail(email);
             existingProvider.get().setName(name);
-            oAuth2ProviderRepository.save(existingProvider.get());
+            oauth2ProviderRepository.save(existingProvider.get());
         } else {
             String username = (email != null) ? email : name + "_" + UUID.randomUUID().toString().substring(0, 8);
 
@@ -103,7 +105,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         email,
                         name
                 );
-                oAuth2ProviderRepository.save(provider);
+                oauth2ProviderRepository.save(provider);
             }
         }
 
@@ -111,7 +113,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.getAuthorities().forEach(role ->
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getAuthority())));
 
-        Map<String, Object> attributes = new HashMap<>(oAuth2User.getAttributes());
+        Map<String, Object> attributes = new HashMap<>(oauth2User.getAttributes());
         attributes.put("userId", user.getUserId());
 
         return new DefaultOAuth2User(

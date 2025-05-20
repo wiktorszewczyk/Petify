@@ -1,9 +1,5 @@
 package org.petify.backend.services;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.petify.backend.models.Achievement;
 import org.petify.backend.models.AchievementCategory;
 import org.petify.backend.models.ApplicationUser;
@@ -11,9 +7,15 @@ import org.petify.backend.models.UserAchievement;
 import org.petify.backend.repository.AchievementRepository;
 import org.petify.backend.repository.UserAchievementRepository;
 import org.petify.backend.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class AchievementService {
@@ -85,6 +87,8 @@ public class AchievementService {
                 break;
             case BADGE:
                 user.setBadgesCount(user.getBadgesCount() + 1);
+                break;
+            default:
                 break;
         }
     }

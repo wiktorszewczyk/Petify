@@ -1,9 +1,9 @@
 package org.petify.backend.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.petify.backend.models.ApplicationUser;
 
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

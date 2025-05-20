@@ -1,10 +1,5 @@
 package org.petify.backend.controllers;
 
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.petify.backend.dto.LoginRequestDTO;
 import org.petify.backend.dto.LoginResponseDTO;
 import org.petify.backend.dto.RegistrationDTO;
@@ -12,6 +7,9 @@ import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.repository.UserRepository;
 import org.petify.backend.services.AuthenticationService;
 import org.petify.backend.services.TokenService;
+
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +25,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controller handling all authentication, authorization and user management endpoints,
@@ -116,9 +118,7 @@ public class AuthenticationController {
         }
     }
 
-    /**
-     * OAuth2 endpoints
-     */
+    // OAuth2 endpoints
 
     /**
      * Initiate Google OAuth2 login process
@@ -207,9 +207,7 @@ public class AuthenticationController {
         return ResponseEntity.badRequest().body(response);
     }
 
-    /**
-     * User Management Endpoints
-     */
+    // User Management Endpoints
 
     /**
      * Get user data endpoint

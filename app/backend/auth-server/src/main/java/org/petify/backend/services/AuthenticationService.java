@@ -1,17 +1,14 @@
 package org.petify.backend.services;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import org.petify.backend.dto.LoginRequestDTO;
 import org.petify.backend.dto.LoginResponseDTO;
 import org.petify.backend.dto.RegistrationDTO;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.models.Role;
 import org.petify.backend.models.VolunteerStatus;
-import org.petify.backend.repository.OAuth2ProviderRepository;
 import org.petify.backend.repository.RoleRepository;
 import org.petify.backend.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
@@ -22,6 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 @Transactional
 public class AuthenticationService {
@@ -31,9 +32,6 @@ public class AuthenticationService {
 
     @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
-    private OAuth2ProviderRepository oAuth2ProviderRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -51,11 +49,11 @@ public class AuthenticationService {
      * Registers a new user with the provided information
      */
     public ApplicationUser registerUser(final RegistrationDTO registrationDTO) {
-        String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty()) ?
-                registrationDTO.getUsername() :
-                (registrationDTO.getEmail() != null) ?
-                        registrationDTO.getEmail() :
-                        registrationDTO.getPhoneNumber();
+        String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty())
+                ? registrationDTO.getUsername()
+                : (registrationDTO.getEmail() != null)
+                ? registrationDTO.getEmail()
+                : registrationDTO.getPhoneNumber();
 
         if (userRepository.findByEmailOrPhoneNumber(
                 registrationDTO.getEmail(),
@@ -115,8 +113,8 @@ public class AuthenticationService {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             if (!user.isActive()) {
-                String deactivationReason = user.getDeactivationReason() != null ?
-                        user.getDeactivationReason() : "Account has been deactivated";
+                String deactivationReason = user.getDeactivationReason() != null
+                        ? user.getDeactivationReason() : "Account has been deactivated";
                 throw new DisabledException(deactivationReason);
             }
 
