@@ -3,10 +3,7 @@ package org.petify.shelter.service;
 import org.petify.shelter.dto.AdoptionRequest;
 import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.enums.AdoptionStatus;
-import org.petify.shelter.exception.AdoptionAlreadyExistsException;
-import org.petify.shelter.exception.AdoptionFormNotFoundException;
-import org.petify.shelter.exception.PetNotFoundException;
-import org.petify.shelter.exception.ShelterNotFoundException;
+import org.petify.shelter.exception.*;
 import org.petify.shelter.mapper.AdoptionMapper;
 import org.petify.shelter.model.Adoption;
 import org.petify.shelter.model.Pet;
@@ -37,7 +34,7 @@ public class AdoptionService {
                 .orElseThrow(() -> new PetNotFoundException(petId));
 
         if (pet.isArchived()) {
-            throw new IllegalStateException("Pet is no longer available for adoption");
+            throw new PetIsArchivedException(petId);
         }
 
         if (adoptionRepository.existsByPetIdAndUsername(petId, username)) {
@@ -88,7 +85,7 @@ public class AdoptionService {
             throw new AccessDeniedException("You are not allowed to update this adoption form");
         }
 
-        if (newStatus == AdoptionStatus.APPROVED) {
+        if (newStatus == AdoptionStatus.ACCEPTED) {
             List<Adoption> otherPendingForms = adoptionRepository
                     .findByPetAndAdoptionStatusAndIdNot(form.getPet(), AdoptionStatus.PENDING, formId);
 

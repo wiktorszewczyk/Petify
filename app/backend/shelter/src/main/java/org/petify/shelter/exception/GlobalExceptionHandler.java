@@ -20,7 +20,7 @@ import java.util.Map;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
-    ProblemDetail handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+    ProblemDetail handleAccessDeniedException(WebRequest request) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
         problemDetail.setTitle("Access Denied");
         problemDetail.setDetail(request.getDescription(false));
@@ -49,9 +49,72 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ShelterAlreadyExistsException.class)
-    ProblemDetail handleShelterAlreadyExists(ShelterAlreadyExistsException ex, WebRequest request) {
+    ProblemDetail handleShelterAlreadyExists(ShelterAlreadyExistsException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
         problemDetail.setTitle("Shelter Already Exists");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(ShelterNotFoundException.class)
+    ProblemDetail handleShelterNotFound(ShelterNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problemDetail.setTitle("Shelter Not Found");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(ShelterByOwnerNotFoundException.class)
+    ProblemDetail handleShelterByOwnerNotFound(ShelterByOwnerNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problemDetail.setTitle("Shelter Not Found");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(PetIsArchivedException.class)
+    ProblemDetail handlePetIsArchived(PetIsArchivedException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problemDetail.setTitle("Pet is archived and not available for action.");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(PetMaxImagesReachedException.class)
+    ProblemDetail handlePetMaxImagesReached(PetMaxImagesReachedException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Pet max images reached");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(PetNotFoundException.class)
+    ProblemDetail handlePetNotFound(PetNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problemDetail.setTitle("Pet not found");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(AdoptionAlreadyExistsException.class)
+    ProblemDetail handleAdoptionAlreadyExists(AdoptionAlreadyExistsException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problemDetail.setTitle("Adoption Already Exists");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(AdoptionFormNotFoundException.class)
+    ProblemDetail handleAdoptionFormNotFound(AdoptionFormNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Adoption Form Not Found");
         problemDetail.setDetail(ex.getMessage());
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;

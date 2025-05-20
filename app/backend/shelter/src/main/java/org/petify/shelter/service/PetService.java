@@ -85,6 +85,7 @@ public class PetService {
         }
 
         return stream
+                .filter(pet -> !pet.isArchived()) // zwracamy tylko te nie zarchiwizowane
                 .map(petMapper::toDto)
                 .collect(Collectors.toList());
     }

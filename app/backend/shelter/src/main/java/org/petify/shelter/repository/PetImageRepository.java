@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface PetImageRepository extends JpaRepository<PetImage, Long> {
     List<PetImage> findAllByPetId(Long petId);
+    int countByPetId(Long petId);
 }

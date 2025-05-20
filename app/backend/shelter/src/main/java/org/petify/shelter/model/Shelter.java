@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,6 +52,9 @@ public class Shelter {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
     @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets;
 
@@ -63,30 +67,34 @@ public class Shelter {
         this.latitude = latitude;
         this.longitude = longitude;
         this.phoneNumber = phoneNumber;
+        this.isActive = false; // w ramach testow mozna zmienic na true
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (isActive == null) {
+            isActive = false;
+        }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
+        if (this == o) return true;
 
-        if (!(o instanceof Shelter shelter)) {
-            return false;
-        }
+        if (!(o instanceof Shelter shelter)) return false;
 
         return new EqualsBuilder().append(getId(), shelter.getId()).append(getOwnerUsername(),
                 shelter.getOwnerUsername()).append(getName(), shelter.getName()).append(getDescription(),
                 shelter.getDescription()).append(getAddress(), shelter.getAddress()).append(getLatitude(),
                 shelter.getLatitude()).append(getLongitude(), shelter.getLongitude()).append(getPhoneNumber(),
-                shelter.getPhoneNumber()).isEquals();
+                shelter.getPhoneNumber()).append(getIsActive(), shelter.getIsActive()).isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(getId()).append(getOwnerUsername())
                 .append(getName()).append(getDescription()).append(getAddress()).append(getLatitude())
-                .append(getLongitude()).append(getPhoneNumber()).toHashCode();
+                .append(getLongitude()).append(getPhoneNumber()).append(getIsActive()).toHashCode();
     }
 
     @Override
@@ -100,7 +108,7 @@ public class Shelter {
                 .append("latitude", latitude)
                 .append("longitude", longitude)
                 .append("phoneNumber", phoneNumber)
-                .append("pets", pets)
+                .append("isActive", isActive)
                 .toString();
     }
 }
