@@ -16,25 +16,17 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: user-service-route
-          uri: lb://user-service
-          predicates:
-            - Path=/users/**
-          filters:
-            - PreserveHostHeader
-            - AddRequestHeader=X-Forwarded-Prefix, /users
-
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/oauth2/**, /auth/**, /admin/**, /user/**
+            - Path=/auth/**, /admin/**, /user/**, /volunteer/**
           filters:
             - PreserveHostHeader
 
-        - id: shelter-service
-          uri: lb://SHELTER-SERVICE
+        - id: auth-service-oauth
+          uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/shelters/**, /shelters, /pets/**, /pets, /adoptions/**, /adoptions
+            - Path=/oauth2/**, /login/oauth2/code/**
           filters:
             - PreserveHostHeader
 
