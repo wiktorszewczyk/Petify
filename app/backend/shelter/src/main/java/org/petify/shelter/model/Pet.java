@@ -1,6 +1,7 @@
 package org.petify.shelter.model;
 
 import org.petify.shelter.enums.Gender;
+import org.petify.shelter.enums.PetSize;
 import org.petify.shelter.enums.PetType;
 
 import jakarta.persistence.CascadeType;
@@ -75,6 +76,10 @@ public class Pet {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "size", nullable = false)
+    private PetSize size;
+
     @ManyToOne
     @JoinColumn(name = "shelter_id", nullable = false)
     private Shelter shelter;
@@ -99,7 +104,8 @@ public class Pet {
     private List<FavoritePet> favoritePets;
 
     public Pet(Shelter shelter, String description, boolean kidFriendly, boolean sterilized,
-               boolean urgent, boolean vaccinated, Gender gender, Integer age, String breed, PetType type, String name) {
+               boolean urgent, boolean vaccinated, Gender gender, Integer age, String breed,
+               PetType type, PetSize size, String name) {
         this.shelter = shelter;
         this.description = description;
         this.kidFriendly = kidFriendly;
@@ -110,6 +116,7 @@ public class Pet {
         this.age = age;
         this.breed = breed;
         this.type = type;
+        this.size = size;
         this.name = name;
     }
 
