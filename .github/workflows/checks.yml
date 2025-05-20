@@ -41,7 +41,7 @@ jobs:
       run: mvn compile -f app/backend/pom.xml
 
     - name: Test Stage
-      run: mvn test -f app/backend/pom.xml -pl
+      run: mvn test -f app/backend/pom.xml
 
     - name: Verify Stage (PMD, SpotBugs, JaCoCo)
       run: mvn verify -f app/backend/pom.xml
