@@ -45,7 +45,7 @@ public class UserAchievement {
     @Transient
     public Integer getProgressPercentage() {
         if (achievement != null && achievement.getRequiredActions() > 0) {
-            return (int) (((double) currentProgress / achievement.getRequiredActions()) * 100);
+            return (int) ((double) currentProgress / achievement.getRequiredActions() * 100);
         }
         return 0;
     }
