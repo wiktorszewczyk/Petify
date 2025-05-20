@@ -27,8 +27,8 @@ mvn validate -f app/backend/pom.xml
 mvn compile -f app/backend/pom.xml
 
 # Test Stage
-mvn test -f app/backend/pom.xml -pl '!:auth-server'
+mvn test -f app/backend/pom.xml
 
 # Verify Stage (PMD, SpotBug, JaCoCo)
-mvn verify -f app/backend/pom.xml -pl '!:auth-server'
+mvn verify -f app/backend/pom.xml
 ```
