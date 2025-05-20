@@ -1,6 +1,7 @@
 package org.petify.chat.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -12,10 +13,9 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
@@ -23,30 +23,22 @@ import lombok.extern.slf4j.Slf4j;
 public class StompAuthChannelInterceptor implements WebSocketMessageBrokerConfigurer {
 
     private final JwtDecoder jwtDecoder;
+    private final JwtGrantedAuthoritiesConverter authoritiesConverter;
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
-            private final JwtGrantedAuthoritiesConverter authConverter = new JwtGrantedAuthoritiesConverter();
-            {
-                authConverter.setAuthorityPrefix("ROLE_");
-                authConverter.setAuthoritiesClaimName("roles");
-            }
-
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor = MessageHeaderAccessor
-                        .getAccessor(message, StompHeaderAccessor.class);
+                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
                 if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    // **LOG na przyjęcie STOMP CONNECT**
                     log.info("[STOMP] CONNECT headers: {}", accessor.toNativeHeaderMap());
 
                     String auth = accessor.getFirstNativeHeader("Authorization");
                     if (auth != null && auth.startsWith("Bearer ")) {
                         Jwt jwt = jwtDecoder.decode(auth.substring(7));
-                        var authorities = authConverter.convert(jwt);
-                        Authentication user = new JwtAuthenticationToken(jwt, authorities);
+                        Authentication user = new JwtAuthenticationToken(jwt, authoritiesConverter.convert(jwt));
                         accessor.setUser(user);
                     }
                 }
@@ -55,4 +47,3 @@ public class StompAuthChannelInterceptor implements WebSocketMessageBrokerConfig
         });
     }
 }
-

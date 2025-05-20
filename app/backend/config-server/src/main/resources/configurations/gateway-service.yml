@@ -40,7 +40,7 @@ spring:
         - id: chat-service
           uri: lb://CHAT-SERVICE
           predicates:
-            - Path=/ws-chat/**, /api/chat/**
+            - Path=/ws-chat/**, /chat/**
           filters:
             - PreserveHostHeader
 
