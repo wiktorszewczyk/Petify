@@ -66,7 +66,8 @@ class ShelterServiceTest {
                 "Address",
                 "123456789",
                 52.2297,
-                21.0122
+                21.0122,
+                true
         );
     }
 

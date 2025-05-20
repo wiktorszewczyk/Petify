@@ -79,9 +79,13 @@ public class Shelter {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof Shelter shelter)) return false;
+        if (!(o instanceof Shelter shelter)) {
+            return false;
+        }
 
         return new EqualsBuilder().append(getId(), shelter.getId()).append(getOwnerUsername(),
                 shelter.getOwnerUsername()).append(getName(), shelter.getName()).append(getDescription(),

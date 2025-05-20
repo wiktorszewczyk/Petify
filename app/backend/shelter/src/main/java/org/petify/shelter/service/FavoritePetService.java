@@ -26,7 +26,7 @@ public class FavoritePetService {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new PetNotFoundException(petId));
 
-        if (pet.isArchived()) {
+        if (pet.isArchived() || !pet.getShelter().getIsActive()) {
             return false;
         }
 
@@ -56,6 +56,7 @@ public class FavoritePetService {
                 .stream()
                 .map(FavoritePet::getPet)
                 .filter(pet -> !pet.isArchived())
+                .filter(pet -> pet.getShelter().getIsActive())
                 .map(petMapper::toDto)
                 .toList();
     }

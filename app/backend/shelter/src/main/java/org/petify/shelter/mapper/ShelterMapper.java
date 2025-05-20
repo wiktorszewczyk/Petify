@@ -16,5 +16,6 @@ public interface ShelterMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "ownerUsername", ignore = true)
     @Mapping(target = "pets", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
     Shelter toEntity(ShelterRequest request);
 }

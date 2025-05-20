@@ -85,7 +85,8 @@ public class PetService {
         }
 
         return stream
-                .filter(pet -> !pet.isArchived()) // zwracamy tylko te nie zarchiwizowane
+                .filter(pet -> !pet.isArchived())   // zwracamy tylko te, które nie sa zarchiwizowane
+                .filter(pet -> pet.getShelter().getIsActive())  // zwracamy tylko te, ktorych schronisko jest aktywowane
                 .map(petMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -159,6 +160,7 @@ public class PetService {
         existingPet.setUrgent(petRequest.urgent());
         existingPet.setVaccinated(petRequest.vaccinated());
         existingPet.setGender(petRequest.gender());
+        existingPet.setSize(petRequest.size());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             existingPet.setImageName(imageFile.getOriginalFilename());

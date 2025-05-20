@@ -1,6 +1,7 @@
 package org.petify.shelter.dto;
 
 import org.petify.shelter.enums.Gender;
+import org.petify.shelter.enums.PetSize;
 import org.petify.shelter.enums.PetType;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ public record PetResponse(
         String description,
         Long shelterId,
         Gender gender,
+        PetSize size,
         boolean vaccinated,
         boolean urgent,
         boolean sterilized,
