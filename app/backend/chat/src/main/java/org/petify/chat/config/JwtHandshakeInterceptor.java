@@ -9,8 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
@@ -23,20 +23,19 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     private final JwtDecoder jwtDecoder;
-    private final JwtGrantedAuthoritiesConverter authConverter = new JwtGrantedAuthoritiesConverter();
+    private final JwtGrantedAuthoritiesConverter authoritiesConverter;
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request,
                                    ServerHttpResponse response,
                                    WebSocketHandler wsHandler,
                                    Map<String, Object> attributes) {
-        // **LOG na start handshaku**
         log.info("[HS] Handshake headers: {}", request.getHeaders());
 
         String auth = request.getHeaders().getFirst("Authorization");
         if (auth != null && auth.startsWith("Bearer ")) {
             Jwt jwt = jwtDecoder.decode(auth.substring(7));
-            Collection<GrantedAuthority> authorities = authConverter.convert(jwt);
+            Collection<GrantedAuthority> authorities = authoritiesConverter.convert(jwt);
             Authentication authentication = new JwtAuthenticationToken(jwt, authorities);
             SecurityContextHolder.clearContext();
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -46,9 +45,9 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         return true;
     }
 
-    @Override public void afterHandshake(ServerHttpRequest req,
-                                         ServerHttpResponse res,
-                                         WebSocketHandler wsHandler,
-                                         Exception exception) { /* no-op */ }
+    @Override
+    public void afterHandshake(ServerHttpRequest req,
+                               ServerHttpResponse res,
+                               WebSocketHandler wsHandler,
+                               Exception exception) { }
 }
-

@@ -110,7 +110,7 @@
     /* ======================= ŁADOWANIE POKOI =============== */
     async function loadRooms() {
         try{
-            const rooms=await fetchJson(`${API_CHAT}/api/chat/rooms`,{
+            const rooms=await fetchJson(`${API_CHAT}/chat/rooms`,{
                 headers:{Authorization:'Bearer '+token()}
             });
             $('#petsList').innerHTML='';
@@ -165,7 +165,7 @@
     }
     async function loadHistory(roomId,page=0){
         try{
-            const hist=await fetchJson(`${API_CHAT}/api/chat/history/${roomId}?page=${page}`,{
+            const hist=await fetchJson(`${API_CHAT}/chat/history/${roomId}?page=${page}`,{
                 headers:{Authorization:'Bearer '+token()}
             });
             hist.content.slice().reverse().forEach(m=>{
@@ -191,21 +191,21 @@
 
         if(e.target.classList.contains('petChatBtn')){
             const id=e.target.dataset.id, name=e.target.dataset.name;
-            fetchJson(`${API_CHAT}/api/chat/room/${id}`,{
+            fetchJson(`${API_CHAT}/chat/room/${id}`,{
                 headers:{Authorization:'Bearer '+token()}
             }).then(r=>connectWs(r.id,`${name} • #${r.id}`))
                 .catch(err=>alert(err));
         }
         if(e.target.classList.contains('openRoomBtn')){
             const id=e.target.dataset.id, title=e.target.dataset.title;
-            fetchJson(`${API_CHAT}/api/chat/rooms/${id}`,{
+            fetchJson(`${API_CHAT}/chat/rooms/${id}`,{
                 headers:{Authorization:'Bearer '+token()}
             }).then(r=>connectWs(r.id,`pokój ${title}`))
                 .catch(err=>alert(err));
         }
         if(e.target.classList.contains('delRoomBtn')){
             const id=e.target.dataset.id;
-            fetch(`${API_CHAT}/api/chat/rooms/${id}`,{
+            fetch(`${API_CHAT}/chat/rooms/${id}`,{
                 method:'DELETE',
                 headers:{Authorization:'Bearer '+token()}
             }).then(()=>loadRooms())
