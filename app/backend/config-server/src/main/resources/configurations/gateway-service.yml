@@ -30,6 +30,13 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: shelter-service
+          uri: lb://SHELTER-SERVICE
+          predicates:
+            - Path=/shelters/**, /shelters, /pets/**, /pets, /adoptions/**, /adoptions
+          filters:
+            - PreserveHostHeader
+
 # Konfiguracja Eureka
 eureka:
   client:

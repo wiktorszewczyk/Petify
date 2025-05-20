@@ -73,7 +73,7 @@ public class PetController {
         );
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PostMapping()
     public ResponseEntity<?> addPet(@Valid @RequestPart PetRequest petRequest,
                                     @RequestPart MultipartFile imageFile,
@@ -99,7 +99,7 @@ public class PetController {
         return new ResponseEntity<>(petService.getPetById(id), HttpStatus.FOUND);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PutMapping("/{id}")
     public ResponseEntity<PetResponse> updatePet(
             @PathVariable Long id,
@@ -149,7 +149,7 @@ public class PetController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @DeleteMapping("/{petId}/images/{imageId}")
     public ResponseEntity<?> deleteImage(
             @PathVariable("petId") Long petId,
@@ -162,7 +162,7 @@ public class PetController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePet(
             @PathVariable("id") Long id,
@@ -174,7 +174,7 @@ public class PetController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @GetMapping("/{id}/adoptions")
     public ResponseEntity<List<AdoptionResponse>> getPetAdoptionForms(@PathVariable Long id) {
 
@@ -182,7 +182,7 @@ public class PetController {
         return new ResponseEntity<>(forms, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PatchMapping("/{id}/archive")
     public ResponseEntity<?> archivePet(
             @PathVariable("id") Long id,
@@ -194,7 +194,7 @@ public class PetController {
         return new ResponseEntity<>(petResponse, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @PostMapping("/{id}/adopt")
     public ResponseEntity<AdoptionResponse> adoptPet(
             @PathVariable("id") Long petId,
@@ -207,7 +207,7 @@ public class PetController {
         return new ResponseEntity<>(adoptionForm, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @PostMapping("/{id}/like")
     public ResponseEntity<?> likePet(
             @PathVariable("id") Long petId,
@@ -221,7 +221,7 @@ public class PetController {
         }
     }
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @DeleteMapping("/{id}/dislike")
     public ResponseEntity<?> dislikePet(
             @PathVariable("id") Long petId,
@@ -235,7 +235,7 @@ public class PetController {
         }
     }
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @GetMapping("/favorites")
     public ResponseEntity<?> getFavoritePets(@AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
