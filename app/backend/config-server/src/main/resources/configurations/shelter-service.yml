@@ -6,11 +6,16 @@ spring:
     url: jdbc:postgresql://localhost:5433/petify
     username: admin
     password: admin
+    hikari:
+      auto-commit: false
   jpa:
     hibernate:
       ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mvc:
+    problemdetails:
+      enabled: true
   security:
     oauth2:
       resourceserver:
