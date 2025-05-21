@@ -25,8 +25,11 @@ public class SchemaInitializer {
         boolean hasShelterVisible    = columnExists("chat_room", "shelter_visible");
         boolean hasUserHiddenAt      = columnExists("chat_room", "user_hidden_at");
         boolean hasShelterHiddenAt   = columnExists("chat_room", "shelter_hidden_at");
+        boolean hasUserLastRead      = columnExists("chat_room", "user_last_read_at");
+        boolean hasShelterLastRead   = columnExists("chat_room", "shelter_last_read_at");
 
-        if (hasUserVisible && hasShelterVisible && hasUserHiddenAt && hasShelterHiddenAt) {
+        if (hasUserVisible && hasShelterVisible && hasUserHiddenAt && hasShelterHiddenAt
+                && hasUserLastRead && hasShelterLastRead) {
             log.info("[SchemaInit] Columns already exist – nothing to do.");
             return;
         }
@@ -41,6 +44,10 @@ public class SchemaInitializer {
             alter.append("ADD COLUMN user_hidden_at TIMESTAMP, ");
         if (!hasShelterHiddenAt)
             alter.append("ADD COLUMN shelter_hidden_at TIMESTAMP, ");
+        if (!hasUserLastRead)
+            alter.append("ADD COLUMN user_last_read_at TIMESTAMP, ");
+        if (!hasShelterLastRead)
+            alter.append("ADD COLUMN shelter_last_read_at TIMESTAMP, ");
 
         alter.setLength(alter.length() - 2);
         alter.append(";");
