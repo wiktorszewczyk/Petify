@@ -38,16 +38,12 @@ public class PetService {
     private final FavoritePetRepository favoritePetRepository;
     private final PetMapper petMapper;
 
-
-    //
-
     public String getOwnerUsernameByPetId(Long petId) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new EntityNotFoundException("Pet " + petId + " not found"));
         return pet.getShelter().getOwnerUsername();
     }
 
-    //
     public List<PetResponse> getPets() {
         List<Pet> pets = petRepository.findAll();
         List<PetResponse> petsList = new ArrayList<>();
@@ -113,7 +109,6 @@ public class PetService {
                 .orElseThrow(() -> new PetNotFoundException(petId));
     }
 
-    //ids
     public List<Long> getAllPetIds() {
         return petRepository.findAll()
                 .stream()

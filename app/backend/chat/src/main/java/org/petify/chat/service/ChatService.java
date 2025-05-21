@@ -12,6 +12,8 @@ import org.petify.chat.repository.ChatRoomRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,17 +45,13 @@ public class ChatService {
         ChatRoom room = roomRepo.findById(roomId)
                 .orElseThrow(() -> new NotFoundException("Chat room does not exist: " + roomId));
 
-        if (!isParticipant(room, login))
-            throw new ForbiddenOperationException("You are not a participant of this chat");
+        checkParticipantOrAdmin(room, login);
 
         boolean fromShelter = login.equals(room.getShelterName());
 
-        if (fromShelter && !room.isUserVisible()) {
-            room.setUserVisible(true);
-        }
-        if (!fromShelter && !room.isShelterVisible()) {
-            room.setShelterVisible(true);
-        }
+        /* odkrywanie, gdy druga strona miała ukryte */
+        if (fromShelter && !room.isUserVisible()) room.setUserVisible(true);
+        if (!fromShelter && !room.isShelterVisible()) room.setShelterVisible(true);
         roomRepo.save(room);
 
         ChatMessage saved = msgRepo.save(
@@ -62,15 +60,15 @@ public class ChatService {
 
         String recipient = fromShelter ? room.getUserName() : room.getShelterName();
 
-        if (Objects.equals(recipient, login)) {
+        if (Objects.equals(recipient, login))
             throw new ConflictException("Cannot send messages to yourself");
-        }
 
-        broker.convertAndSendToUser(
-                recipient,
+        broker.convertAndSendToUser(recipient,
                 "/queue/chat/" + roomId,
-                map(saved, room)
-        );
+                map(saved, room));
+
+        long totalUnread = totalUnreadFor(recipient);
+        broker.convertAndSendToUser(recipient, "/queue/unread", totalUnread);
     }
 
     @Transactional(readOnly = true)
@@ -78,7 +76,7 @@ public class ChatService {
         return roomRepo.findAllByUserNameOrShelterName(login, login)
                 .stream()
                 .filter(r -> visibleFor(r, login))
-                .map(this::map)
+                .map(r -> map(r, login))      // DTO zawiera unreadCount
                 .toList();
     }
 
@@ -94,19 +92,20 @@ public class ChatService {
         ChatRoom room = roomRepo.findById(roomId)
                 .orElseThrow(() -> new NotFoundException("Chat room does not exist"));
 
-        if (!isParticipant(room, login))
-            throw new ForbiddenOperationException("You are not a participant of this chat");
+        checkParticipantOrAdmin(room, login);
 
-        LocalDateTime after = login.equals(room.getUserName())
+        LocalDateTime afterHidden = login.equals(room.getUserName())
                 ? room.getUserHiddenAt()
                 : room.getShelterHiddenAt();
 
         PageRequest pr = PageRequest.of(page, size);
-
-        return (after == null
+        Page<ChatMessageDTO> result = (afterHidden == null
                 ? msgRepo.findByRoomIdOrderByTimestampDesc(roomId, pr)
-                : msgRepo.findByRoomIdAndTimestampAfterOrderByTimestampDesc(roomId, after, pr))
+                : msgRepo.findByRoomIdAndTimestampAfterOrderByTimestampDesc(roomId, afterHidden, pr))
                 .map(m -> map(m, room));
+
+        markAsRead(room, login);
+        return result;
     }
 
     public ChatRoomDTO openForUser(Long petId, String userLogin) {
@@ -122,11 +121,14 @@ public class ChatService {
 
         ChatRoom room = roomRepo.findByPetIdAndUserName(petId, userLogin)
                 .orElseGet(() -> new ChatRoom(
-                        null, petId, userLogin, shelterOwner, true, true, null, null));
+                        null, petId, userLogin, shelterOwner,
+                        true, true, null, null,
+                        LocalDateTime.now(),
+                        null));
 
         room.setUserVisible(true);
         roomRepo.save(room);
-        return map(room);
+        return map(room, userLogin);
     }
 
     public ChatRoomDTO openById(Long roomId, String login) {
@@ -136,14 +138,15 @@ public class ChatService {
         ChatRoom room = roomRepo.findById(roomId)
                 .orElseThrow(() -> new NotFoundException("Chat room does not exist"));
 
-        if (!isParticipant(room, login))
-            throw new ForbiddenOperationException("This is not your room");
+        checkParticipantOrAdmin(room, login);
 
         if (login.equals(room.getShelterName())) {
             room.setShelterVisible(true);
-            roomRepo.save(room);
         }
-        return map(room);
+        roomRepo.save(room);
+
+        markAsRead(room, login);
+        return map(room, login);
     }
 
     public void hideRoom(Long roomId, String login) {
@@ -153,8 +156,7 @@ public class ChatService {
         ChatRoom room = roomRepo.findById(roomId)
                 .orElseThrow(() -> new NotFoundException("Chat room does not exist"));
 
-        if (!isParticipant(room, login))
-            throw new ForbiddenOperationException("You are not a participant of this chat");
+        checkParticipantOrAdmin(room, login);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -172,21 +174,66 @@ public class ChatService {
         roomRepo.save(room);
     }
 
+    private void checkParticipantOrAdmin(ChatRoom r, String login) {
+        if (!isParticipant(r, login) && !isAdmin())
+            throw new ForbiddenOperationException("You do not have access to this chat room");
+    }
+
     private boolean isParticipant(ChatRoom r, String login) {
         return login.equals(r.getUserName()) || login.equals(r.getShelterName());
     }
-    private boolean visibleFor(ChatRoom r, String login) {
-        return login.equals(r.getUserName())      ? r.isUserVisible()
-                : login.equals(r.getShelterName())   ? r.isShelterVisible()
-                : false;
+
+    private boolean isAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 
-    private ChatRoomDTO map(ChatRoom r) {
-        return new ChatRoomDTO(r.getId(), r.getPetId(), r.getUserName(), r.getShelterName());
+    private ChatRoomDTO map(ChatRoom r, String login) {
+        return new ChatRoomDTO(
+                r.getId(),
+                r.getPetId(),
+                r.getUserName(),
+                r.getShelterName(),
+                unreadFor(r, login));
     }
+
     private ChatMessageDTO map(ChatMessage m, ChatRoom r) {
         return new ChatMessageDTO(m.getId(), m.getRoomId(),
                 r != null ? r.getPetId() : null,
                 m.getSender(), m.getContent(), m.getTimestamp());
+    }
+
+    private long unreadFor(ChatRoom r, String login) {
+        LocalDateTime after = login.equals(r.getUserName())
+                ? r.getUserLastReadAt()
+                : r.getShelterLastReadAt();
+
+        return (after == null)
+                ? msgRepo.countByRoomIdAndSenderNot(r.getId(), login)
+                : msgRepo.countByRoomIdAndTimestampAfterAndSenderNot(r.getId(), after, login);
+    }
+
+    private void markAsRead(ChatRoom room, String login) {
+        LocalDateTime now = LocalDateTime.now();
+        if (login.equals(room.getUserName())) {
+            room.setUserLastReadAt(now);
+        } else if (login.equals(room.getShelterName())) {
+            room.setShelterLastReadAt(now);
+        }
+        roomRepo.save(room);
+    }
+
+    public long totalUnreadFor(String login) {
+        return roomRepo.findAllByUserNameOrShelterName(login, login).stream()
+                .filter(r -> visibleFor(r, login))
+                .mapToLong(r -> unreadFor(r, login))
+                .sum();
+    }
+
+    private boolean visibleFor(ChatRoom r, String login) {
+        return login.equals(r.getUserName())      ? r.isUserVisible()
+                : login.equals(r.getShelterName())   ? r.isShelterVisible()
+                : false;
     }
 }

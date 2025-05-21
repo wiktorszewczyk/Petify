@@ -4,5 +4,6 @@ public record ChatRoomDTO(
         Long id,
         Long petId,
         String userName,
-        String shelterName
+        String shelterName,
+        long unreadCount
 ) {}

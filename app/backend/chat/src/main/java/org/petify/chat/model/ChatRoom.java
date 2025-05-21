@@ -39,4 +39,10 @@ public class ChatRoom {
 
     @Column(name = "shelter_hidden_at")
     private LocalDateTime shelterHiddenAt;
+
+    @Column(name = "user_last_read_at")
+    private LocalDateTime userLastReadAt;
+
+    @Column(name = "shelter_last_read_at")
+    private LocalDateTime shelterLastReadAt;
 }

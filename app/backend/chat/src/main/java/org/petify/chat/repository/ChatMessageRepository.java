@@ -16,5 +16,12 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     Page<ChatMessage> findByRoomIdAndTimestampAfterOrderByTimestampDesc(
             Long roomId, LocalDateTime after, Pageable pageable);
 
+    long countByRoomIdAndTimestampAfterAndSenderNot(
+            Long roomId,
+            LocalDateTime after,
+            String senderToExclude);
+
+    long countByRoomIdAndSenderNot(Long roomId, String senderToExclude);
+
     void deleteByRoomId(Long roomId);
 }

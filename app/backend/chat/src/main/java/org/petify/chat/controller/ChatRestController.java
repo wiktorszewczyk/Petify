@@ -6,45 +6,64 @@ import org.petify.chat.dto.ChatRoomDTO;
 import org.petify.chat.service.ChatService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/chat")
+@RequiredArgsConstructor
 public class ChatRestController {
 
     private final ChatService chatService;
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
     @GetMapping("/rooms")
-    public List<ChatRoomDTO> rooms(Principal p) {
-        return chatService.myRooms(p.getName());
+    public List<ChatRoomDTO> rooms(@AuthenticationPrincipal Jwt jwt) {
+        return chatService.myRooms(jwt.getSubject());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
     @GetMapping("/history/{roomId}")
     public Page<ChatMessageDTO> history(@PathVariable Long roomId,
-                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "0")  int page,
                                         @RequestParam(defaultValue = "40") int size,
-                                        Principal principal) {
+                                        @AuthenticationPrincipal Jwt jwt) {
 
-        return chatService.history(roomId, principal.getName(), page, size);
+        return chatService.history(roomId, jwt.getSubject(), page, size);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/room/{petId}")
-    public ChatRoomDTO openRoomForUser(@PathVariable Long petId, Principal principal) {
-        return chatService.openForUser(petId, principal.getName());
+    public ChatRoomDTO openRoomForUser(@PathVariable Long petId,
+                                       @AuthenticationPrincipal Jwt jwt) {
+
+        return chatService.openForUser(petId, jwt.getSubject());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
     @GetMapping("/rooms/{roomId}")
-    public ChatRoomDTO openRoomById(@PathVariable Long roomId, Principal p) {
-        return chatService.openById(roomId, p.getName());
+    public ChatRoomDTO openRoomById(@PathVariable Long roomId,
+                                    @AuthenticationPrincipal Jwt jwt) {
+
+        return chatService.openById(roomId, jwt.getSubject());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
     @DeleteMapping("/rooms/{roomId}")
-    public ResponseEntity<Void> hideRoom(@PathVariable Long roomId, Principal p) {
-        chatService.hideRoom(roomId, p.getName());
+    public ResponseEntity<Void> hideRoom(@PathVariable Long roomId,
+                                         @AuthenticationPrincipal Jwt jwt) {
+
+        chatService.hideRoom(roomId, jwt.getSubject());
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
+    @GetMapping("/unread/count")
+    public long totalUnread(@AuthenticationPrincipal Jwt jwt) {
+        return chatService.totalUnreadFor(jwt.getSubject());
     }
 }
