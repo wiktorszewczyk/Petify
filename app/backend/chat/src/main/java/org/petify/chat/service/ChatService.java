@@ -76,7 +76,7 @@ public class ChatService {
         return roomRepo.findAllByUserNameOrShelterName(login, login)
                 .stream()
                 .filter(r -> visibleFor(r, login))
-                .map(r -> map(r, login))      // DTO zawiera unreadCount
+                .map(r -> map(r, login))
                 .toList();
     }
 
