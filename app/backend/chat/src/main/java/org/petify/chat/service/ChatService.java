@@ -165,14 +165,21 @@ public class ChatService {
                 throw new ConflictException("Room is already hidden for the user");
             room.setUserVisible(false);
             room.setUserHiddenAt(now);
-        } else {
+        } else if (login.equals(room.getShelterName())) {
             if (!room.isShelterVisible())
                 throw new ConflictException("Room is already hidden for the shelter");
             room.setShelterVisible(false);
             room.setShelterHiddenAt(now);
         }
+
         roomRepo.save(room);
+
+        if (!room.isUserVisible() && !room.isShelterVisible()) {
+            msgRepo.deleteByRoomId(room.getId());
+            roomRepo.delete(room);
+        }
     }
+
 
     private void checkParticipantOrAdmin(ChatRoom r, String login) {
         if (!isParticipant(r, login) && !isAdmin())

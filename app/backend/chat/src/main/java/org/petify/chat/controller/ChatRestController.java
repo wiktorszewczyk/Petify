@@ -1,6 +1,7 @@
 package org.petify.chat.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.petify.chat.client.ShelterClient;
 import org.petify.chat.dto.ChatMessageDTO;
 import org.petify.chat.dto.ChatRoomDTO;
 import org.petify.chat.service.ChatService;
