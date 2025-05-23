@@ -103,19 +103,15 @@ public class ReservationService {
                 .toList();
     }
 
-    public SlotResponse cancelReservation(Long slotId, String username) {
+    public SlotResponse cancelReservation(Long slotId, String username, List<String> roles) {
         validateSlotId(slotId);
         validateUsername(username);
 
         ReservationSlot slot = repo.findById(slotId)
                 .orElseThrow(() -> new SlotNotFoundException("Slot with ID " + slotId + " not found"));
 
-        // Check if user has permission to cancel the reservation
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdminOrShelter = auth.getAuthorities().stream()
-                .anyMatch(grantedAuthority ->
-                        grantedAuthority.getAuthority().equals("ROLE_ADMIN") ||
-                                grantedAuthority.getAuthority().equals("ROLE_SHELTER"));
+        boolean isAdminOrShelter = roles.stream()
+                .anyMatch(r -> r.equals("ROLE_ADMIN") || r.equals("ROLE_SHELTER"));
 
         boolean isOwner = username.equals(slot.getReservedBy());
 

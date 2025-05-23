@@ -1,7 +1,6 @@
 package org.petify.chat.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.petify.chat.client.ShelterClient;
 import org.petify.chat.dto.ChatMessageDTO;
 import org.petify.chat.dto.ChatRoomDTO;
 import org.petify.chat.service.ChatService;
@@ -21,13 +20,13 @@ public class ChatRestController {
 
     private final ChatService chatService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER','VOLUNTEER')")
     @GetMapping("/rooms")
     public List<ChatRoomDTO> rooms(@AuthenticationPrincipal Jwt jwt) {
         return chatService.myRooms(jwt.getSubject());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER','VOLUNTEER')")
     @GetMapping("/history/{roomId}")
     public Page<ChatMessageDTO> history(@PathVariable Long roomId,
                                         @RequestParam(defaultValue = "0")  int page,
@@ -37,7 +36,7 @@ public class ChatRestController {
         return chatService.history(roomId, jwt.getSubject(), page, size);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','VOLUNTEER')")
     @GetMapping("/room/{petId}")
     public ChatRoomDTO openRoomForUser(@PathVariable Long petId,
                                        @AuthenticationPrincipal Jwt jwt) {
@@ -45,7 +44,7 @@ public class ChatRestController {
         return chatService.openForUser(petId, jwt.getSubject());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER','VOLUNTEER')")
     @GetMapping("/rooms/{roomId}")
     public ChatRoomDTO openRoomById(@PathVariable Long roomId,
                                     @AuthenticationPrincipal Jwt jwt) {
@@ -53,7 +52,7 @@ public class ChatRestController {
         return chatService.openById(roomId, jwt.getSubject());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER','VOLUNTEER')")
     @DeleteMapping("/rooms/{roomId}")
     public ResponseEntity<Void> hideRoom(@PathVariable Long roomId,
                                          @AuthenticationPrincipal Jwt jwt) {
@@ -62,7 +61,7 @@ public class ChatRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SHELTER','VOLUNTEER')")
     @GetMapping("/unread/count")
     public long totalUnread(@AuthenticationPrincipal Jwt jwt) {
         return chatService.totalUnreadFor(jwt.getSubject());
