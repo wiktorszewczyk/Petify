@@ -23,52 +23,65 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping("/slots")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     public ResponseEntity<SlotResponse> createSlot(@Valid @RequestBody SlotRequest req) {
         SlotResponse created = reservationService.createSlot(req);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
+    @PostMapping("/slots/batch")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
+    public ResponseEntity<List<SlotResponse>> createBatch(@Valid @RequestBody SlotBatchRequest req) {
+        List<SlotResponse> created = reservationService.createBatchSlots(req);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
     @DeleteMapping("/slots/{slotId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     public ResponseEntity<Void> deleteSlot(@PathVariable Long slotId) {
         reservationService.deleteSlot(slotId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/slots")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     public ResponseEntity<Void> deleteAllSlots() {
         reservationService.deleteAllSlots();
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/slots")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     public ResponseEntity<List<SlotResponse>> getAllSlots() {
         return ResponseEntity.ok(reservationService.getAllSlots());
     }
 
+    @GetMapping("/slots/available")
+    @PreAuthorize("hasRole('VOLUNTEER')")
+    public ResponseEntity<List<SlotResponse>> getAvailableSlots() {
+        return ResponseEntity.ok(reservationService.getAvailableSlots());
+    }
+
     @GetMapping("/slots/pet/{petId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     public ResponseEntity<List<SlotResponse>> getSlotsByPet(@PathVariable Long petId) {
         return ResponseEntity.ok(reservationService.getSlotsByPetId(petId));
     }
 
     @GetMapping("/slots/user/{username}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     public ResponseEntity<List<SlotResponse>> getSlotsByUser(@PathVariable String username) {
         return ResponseEntity.ok(reservationService.getSlotsByUser(username));
     }
 
     @GetMapping("/my-slots")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasRole('VOLUNTEER')")
     public ResponseEntity<List<SlotResponse>> mySlots(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(reservationService.getSlotsByUser(jwt.getSubject()));
     }
 
     @PatchMapping("/slots/{slotId}/reserve")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasRole('VOLUNTEER')")
     public ResponseEntity<SlotResponse> reserveSlot(
             @PathVariable Long slotId,
             @AuthenticationPrincipal Jwt jwt) {
@@ -78,25 +91,12 @@ public class ReservationController {
     }
 
     @PatchMapping("/slots/{slotId}/cancel")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('VOLUNTEER', 'ADMIN', 'SHELTER')")
     public ResponseEntity<SlotResponse> cancelReservation(
             @PathVariable Long slotId,
             @AuthenticationPrincipal Jwt jwt) {
 
-        boolean isAdmin = jwt.getClaimAsStringList("roles")
-                .contains("ROLE_ADMIN");
-
-        SlotResponse cancelled =
-                reservationService.cancelReservation(slotId, jwt.getSubject(), isAdmin);
+        SlotResponse cancelled = reservationService.cancelReservation(slotId, jwt.getSubject());
         return ResponseEntity.ok(cancelled);
-    }
-
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/slots/batch")
-    public ResponseEntity<List<SlotResponse>> createBatch(
-            @Valid @RequestBody SlotBatchRequest req) {
-
-        List<SlotResponse> created = reservationService.createBatchSlots(req);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 }
