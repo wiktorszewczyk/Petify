@@ -1,6 +1,7 @@
 package org.petify.chat.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.petify.chat.client.ShelterClient;
 import org.petify.chat.dto.ChatMessageDTO;
 import org.petify.chat.dto.ChatRoomDTO;
@@ -21,13 +22,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ChatService {
 
     private static final int MAX_MESSAGE_LENGTH = 1000;
-    private static final int MAX_PAGE_SIZE      = 100;
+    private static final int MAX_PAGE_SIZE = 100;
+    private static final int MIN_PAGE_SIZE = 1;
 
     private final ChatRoomRepository roomRepo;
     private final ChatMessageRepository msgRepo;
@@ -35,33 +38,30 @@ public class ChatService {
     private final SimpMessagingTemplate broker;
 
     public void handleIncoming(Long roomId, String content, String login) {
-        if (roomId == null || roomId <= 0)
-            throw new BadRequestException("Room ID must be positive");
-        if (content == null || content.isBlank())
-            throw new BadRequestException("Message content is empty");
-        if (content.length() > MAX_MESSAGE_LENGTH)
-            throw new BadRequestException("Message exceeds max length of " + MAX_MESSAGE_LENGTH + " chars");
+        validateRoomId(roomId);
+        validateMessageContent(content);
+        validateLogin(login);
 
         ChatRoom room = roomRepo.findById(roomId)
-                .orElseThrow(() -> new NotFoundException("Chat room does not exist: " + roomId));
+                .orElseThrow(() -> new ChatNotFoundException("Chat room with ID " + roomId + " not found"));
 
         checkParticipantOrAdmin(room, login);
 
         boolean fromShelter = login.equals(room.getShelterName());
 
-        /* odkrywanie, gdy druga strona miała ukryte */
         if (fromShelter && !room.isUserVisible()) room.setUserVisible(true);
         if (!fromShelter && !room.isShelterVisible()) room.setShelterVisible(true);
         roomRepo.save(room);
 
         ChatMessage saved = msgRepo.save(
-                new ChatMessage(null, roomId, login, content, LocalDateTime.now())
+                new ChatMessage(null, roomId, login, content.trim(), LocalDateTime.now())
         );
 
         String recipient = fromShelter ? room.getUserName() : room.getShelterName();
 
-        if (Objects.equals(recipient, login))
-            throw new ConflictException("Cannot send messages to yourself");
+        if (Objects.equals(recipient, login)) {
+            throw new InvalidRoomStateException("Cannot send messages to yourself");
+        }
 
         broker.convertAndSendToUser(recipient,
                 "/queue/chat/" + roomId,
@@ -69,10 +69,14 @@ public class ChatService {
 
         long totalUnread = totalUnreadFor(recipient);
         broker.convertAndSendToUser(recipient, "/queue/unread", totalUnread);
+
+        log.info("Message sent from {} to {} in room {}", login, recipient, roomId);
     }
 
     @Transactional(readOnly = true)
     public List<ChatRoomDTO> myRooms(String login) {
+        validateLogin(login);
+
         return roomRepo.findAllByUserNameOrShelterName(login, login)
                 .stream()
                 .filter(r -> visibleFor(r, login))
@@ -82,15 +86,12 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public Page<ChatMessageDTO> history(Long roomId, String login, int page, int size) {
-        if (roomId == null || roomId <= 0)
-            throw new BadRequestException("Room ID must be positive");
-        if (page < 0)
-            throw new BadRequestException("Page index cannot be negative");
-        if (size <= 0 || size > MAX_PAGE_SIZE)
-            throw new BadRequestException("Page size must be within 1-" + MAX_PAGE_SIZE);
+        validateRoomId(roomId);
+        validateLogin(login);
+        validatePaginationParams(page, size);
 
         ChatRoom room = roomRepo.findById(roomId)
-                .orElseThrow(() -> new NotFoundException("Chat room does not exist"));
+                .orElseThrow(() -> new ChatNotFoundException("Chat room with ID " + roomId + " not found"));
 
         checkParticipantOrAdmin(room, login);
 
@@ -109,15 +110,24 @@ public class ChatService {
     }
 
     public ChatRoomDTO openForUser(Long petId, String userLogin) {
-        if (petId == null || petId <= 0)
-            throw new BadRequestException("petId must be positive");
+        validatePetId(petId);
+        validateLogin(userLogin);
 
-        String shelterOwner = shelterClient.getShelterOwner(petId);
-        if (shelterOwner == null || shelterOwner.isBlank())
-            throw new ConflictException("Shelter owner not found for petId=" + petId);
+        String shelterOwner;
+        try {
+            shelterOwner = shelterClient.getShelterOwner(petId);
+        } catch (Exception e) {
+            log.error("Failed to get shelter owner for pet {}", petId, e);
+            throw new ShelterServiceUnavailableException("Unable to fetch pet information. Please try again later.");
+        }
 
-        if (userLogin.equals(shelterOwner))
-            throw new ForbiddenOperationException("You cannot chat with your own pet");
+        if (shelterOwner == null || shelterOwner.isBlank()) {
+            throw new ChatNotFoundException("Shelter owner not found for pet with ID " + petId);
+        }
+
+        if (userLogin.equals(shelterOwner)) {
+            throw new ChatAccessDeniedException("You cannot chat with your own pet");
+        }
 
         ChatRoom room = roomRepo.findByPetIdAndUserName(petId, userLogin)
                 .orElseGet(() -> new ChatRoom(
@@ -128,15 +138,17 @@ public class ChatService {
 
         room.setUserVisible(true);
         roomRepo.save(room);
+
+        log.info("Opened chat room for user {} and pet {}", userLogin, petId);
         return map(room, userLogin);
     }
 
     public ChatRoomDTO openById(Long roomId, String login) {
-        if (roomId == null || roomId <= 0)
-            throw new BadRequestException("Room ID must be positive");
+        validateRoomId(roomId);
+        validateLogin(login);
 
         ChatRoom room = roomRepo.findById(roomId)
-                .orElseThrow(() -> new NotFoundException("Chat room does not exist"));
+                .orElseThrow(() -> new ChatNotFoundException("Chat room with ID " + roomId + " not found"));
 
         checkParticipantOrAdmin(room, login);
 
@@ -150,24 +162,26 @@ public class ChatService {
     }
 
     public void hideRoom(Long roomId, String login) {
-        if (roomId == null || roomId <= 0)
-            throw new BadRequestException("Room ID must be positive");
+        validateRoomId(roomId);
+        validateLogin(login);
 
         ChatRoom room = roomRepo.findById(roomId)
-                .orElseThrow(() -> new NotFoundException("Chat room does not exist"));
+                .orElseThrow(() -> new ChatNotFoundException("Chat room with ID " + roomId + " not found"));
 
         checkParticipantOrAdmin(room, login);
 
         LocalDateTime now = LocalDateTime.now();
 
         if (login.equals(room.getUserName())) {
-            if (!room.isUserVisible())
-                throw new ConflictException("Room is already hidden for the user");
+            if (!room.isUserVisible()) {
+                throw new InvalidRoomStateException("Room is already hidden for the user");
+            }
             room.setUserVisible(false);
             room.setUserHiddenAt(now);
         } else if (login.equals(room.getShelterName())) {
-            if (!room.isShelterVisible())
-                throw new ConflictException("Room is already hidden for the shelter");
+            if (!room.isShelterVisible()) {
+                throw new InvalidRoomStateException("Room is already hidden for the shelter");
+            }
             room.setShelterVisible(false);
             room.setShelterHiddenAt(now);
         }
@@ -177,13 +191,61 @@ public class ChatService {
         if (!room.isUserVisible() && !room.isShelterVisible()) {
             msgRepo.deleteByRoomId(room.getId());
             roomRepo.delete(room);
+            log.info("Deleted chat room {} as it was hidden by both parties", roomId);
+        } else {
+            log.info("Room {} hidden by {}", roomId, login);
         }
     }
 
+    public long totalUnreadFor(String login) {
+        validateLogin(login);
+
+        return roomRepo.findAllByUserNameOrShelterName(login, login).stream()
+                .filter(r -> visibleFor(r, login))
+                .mapToLong(r -> unreadFor(r, login))
+                .sum();
+    }
+
+    private void validateRoomId(Long roomId) {
+        if (roomId == null || roomId <= 0) {
+            throw new InvalidChatParameterException("Room ID must be a positive number");
+        }
+    }
+
+    private void validatePetId(Long petId) {
+        if (petId == null || petId <= 0) {
+            throw new InvalidChatParameterException("Pet ID must be a positive number");
+        }
+    }
+
+    private void validateLogin(String login) {
+        if (login == null || login.trim().isEmpty()) {
+            throw new InvalidChatParameterException("User login cannot be null or empty");
+        }
+    }
+
+    private void validateMessageContent(String content) {
+        if (content == null || content.trim().isEmpty()) {
+            throw new InvalidMessageException("Message content cannot be empty");
+        }
+        if (content.length() > MAX_MESSAGE_LENGTH) {
+            throw new InvalidMessageException("Message exceeds maximum length of " + MAX_MESSAGE_LENGTH + " characters");
+        }
+    }
+
+    private void validatePaginationParams(int page, int size) {
+        if (page < 0) {
+            throw new InvalidChatParameterException("Page index cannot be negative");
+        }
+        if (size < MIN_PAGE_SIZE || size > MAX_PAGE_SIZE) {
+            throw new InvalidChatParameterException("Page size must be between " + MIN_PAGE_SIZE + " and " + MAX_PAGE_SIZE);
+        }
+    }
 
     private void checkParticipantOrAdmin(ChatRoom r, String login) {
-        if (!isParticipant(r, login) && !isAdmin())
-            throw new ForbiddenOperationException("You do not have access to this chat room");
+        if (!isParticipant(r, login) && !isAdmin()) {
+            throw new ChatAccessDeniedException("You do not have access to this chat room");
+        }
     }
 
     private boolean isParticipant(ChatRoom r, String login) {
@@ -231,16 +293,9 @@ public class ChatService {
         roomRepo.save(room);
     }
 
-    public long totalUnreadFor(String login) {
-        return roomRepo.findAllByUserNameOrShelterName(login, login).stream()
-                .filter(r -> visibleFor(r, login))
-                .mapToLong(r -> unreadFor(r, login))
-                .sum();
-    }
-
     private boolean visibleFor(ChatRoom r, String login) {
-        return login.equals(r.getUserName())      ? r.isUserVisible()
-                : login.equals(r.getShelterName())   ? r.isShelterVisible()
+        return login.equals(r.getUserName()) ? r.isUserVisible()
+                : login.equals(r.getShelterName()) ? r.isShelterVisible()
                 : false;
     }
 }

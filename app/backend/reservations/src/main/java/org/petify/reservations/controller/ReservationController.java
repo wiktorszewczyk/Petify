@@ -96,7 +96,7 @@ public class ReservationController {
             @PathVariable Long slotId,
             @AuthenticationPrincipal Jwt jwt) {
 
-        SlotResponse cancelled = reservationService.cancelReservation(slotId, jwt.getSubject());
+        SlotResponse cancelled = reservationService.cancelReservation(slotId, jwt.getSubject(), jwt.getClaimAsStringList("roles"));
         return ResponseEntity.ok(cancelled);
     }
 }
