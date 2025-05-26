@@ -122,6 +122,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "flutter_stripe",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_stripe-11.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///C:/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -132,6 +138,12 @@
       "rootUri": "file:///C:/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.7"
+    },
+    {
+      "name": "freezed_annotation",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/freezed_annotation-2.4.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "google_fonts",
@@ -154,6 +166,12 @@
     {
       "name": "intl",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.19.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "json_annotation",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -356,6 +374,24 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "stripe_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/stripe_android-11.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "stripe_ios",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/stripe_ios-11.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "stripe_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/stripe_platform_interface-11.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "term_glyph",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/term_glyph-1.2.2",
       "packageUri": "lib/",
@@ -488,7 +524,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-05-18T21:33:48.141279Z",
+  "generated": "2025-05-26T16:13:46.762300Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///C:/flutter",

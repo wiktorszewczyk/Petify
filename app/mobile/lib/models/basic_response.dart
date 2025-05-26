@@ -4,6 +4,8 @@ class BasicResponse {
 
   BasicResponse(this.status, this.data);
 
+  get statusCode => status;
+
   @override
   String toString() => "BasicResponse(status: $status, data: $data)";
 }

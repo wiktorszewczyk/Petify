@@ -1,9 +1,12 @@
+import 'dart:developer' as dev;
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/api/initial_api.dart';
 import '../services/token_repository.dart';
+import '../services/user_service.dart';
 import '../styles/colors.dart';
 import 'auth/welcome_view.dart';
 import 'home_view.dart';
@@ -42,6 +45,8 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
       if (resp.statusCode == 200 && resp.data['valid'] == true) {
+        final profileResp = await UserService().fetchProfile();
+        dev.log('PROFILE DATA: ${profileResp.data}');
         _goToHome();
       } else {
         await TokenRepository().removeToken();

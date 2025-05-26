@@ -15,26 +15,55 @@ class UserService {
 
   UserService._();
 
-  Future<BasicResponse> register(String username, String password) async {
+  Future<BasicResponse> register({
+    required String firstName,
+    required String lastName,
+    required String birthDate,
+    required String gender,
+    String? email,
+    String? phoneNumber,
+    required String password,
+    int? shelterId,
+    required bool applyAsVolunteer,
+  }) async {
     try {
+      String username;
+      if (email != null && email.isNotEmpty) {
+        username = email;
+      } else if (phoneNumber != null && phoneNumber.isNotEmpty) {
+        username = phoneNumber;
+      } else {
+        throw Exception('Either email or phone number must be provided');
+      }
+
       final resp = await _api.post('/auth/register', data: {
         'username': username,
+        'firstName': firstName,
+        'lastName': lastName,
+        'birthDate': birthDate,
+        'gender': gender,
+        'email': email,
+        'phoneNumber': phoneNumber,
         'password': password,
       });
-      // jeśli rejestracja się udała – automatycznie robimy login:
+
       if (resp.statusCode == 200) {
         await login(username, password);
       }
+
       return BasicResponse(resp.statusCode ?? 0, resp.data);
     } on DioException catch (e) {
-      return BasicResponse(e.response?.statusCode ?? 0, e.response?.data ?? {'error': e.message});
+      return BasicResponse(
+          e.response?.statusCode ?? 0,
+          e.response?.data ?? {'error': e.message}
+      );
     }
   }
 
   Future<BasicResponse> login(String username, String password) async {
     try {
       final resp = await _api.post('/auth/login', data: {
-        'username': username,
+        'loginIdentifier': username,
         'password': password,
       });
       if (resp.statusCode == 200 && resp.data is Map<String, dynamic>) {
@@ -50,6 +79,10 @@ class UserService {
 
   Future<void> logout() async {
     await _tokens.removeToken();
+  }
+
+  Future<Response> fetchProfile() {
+    return _api.get('/user');
   }
 
   Future<User> getCurrentUser() async {
