@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import '../../models/user.dart';
 import '../../styles/colors.dart';
 
 class AchievementProgress extends StatelessWidget {
-  final User user;
+  final int level;
+  final int xpPoints;
+  final int xpToNextLevel;
 
   const AchievementProgress({
     Key? key,
-    required this.user,
+    required this.level,
+    required this.xpPoints,
+    required this.xpToNextLevel,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final progressPercent = (user.experiencePoints ?? 0) /
-        ((user.nextLevelPoints ?? 100) * 1.0);
+    final double progressPercent = xpPoints / xpToNextLevel;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
@@ -33,7 +35,6 @@ class AchievementProgress extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
-              spreadRadius: 0,
               offset: const Offset(0, 4),
             ),
           ],
@@ -41,11 +42,12 @@ class AchievementProgress extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Nagłówek z poziomem i XP
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Poziom ${user.level ?? 1}',
+                  'Poziom $level',
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -58,7 +60,7 @@ class AchievementProgress extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${user.experiencePoints ?? 0} XP',
+                    '$xpPoints XP',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -68,17 +70,23 @@ class AchievementProgress extends StatelessWidget {
                 ),
               ],
             ),
+
             const SizedBox(height: 12),
+
+            // Tu używamy LinearPercentIndicator
             LinearPercentIndicator(
               animation: true,
-              animationDuration: 1000,
+              animationDuration: 800,
               lineHeight: 12,
               percent: progressPercent.clamp(0.0, 1.0),
               barRadius: const Radius.circular(8),
               progressColor: AppColors.primaryColor,
-              backgroundColor: Colors.grey[300],
+              backgroundColor: Colors.grey[300]!,
             ),
+
             const SizedBox(height: 8),
+
+            // Opis postępu
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -90,7 +98,7 @@ class AchievementProgress extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${(user.nextLevelPoints ?? 100) - user.experiencePoints} XP do następnego poziomu',
+                  '${xpToNextLevel - xpPoints} XP do następnego poziomu',
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,

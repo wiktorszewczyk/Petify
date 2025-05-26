@@ -12,14 +12,12 @@ import '../widgets/profile/achievement_progress.dart';
 import '../widgets/profile/quick_stats.dart';
 import '../widgets/profile/achievements.dart';
 import '../widgets/profile/active_achievements.dart';
-import '../widgets/profile/activity_tab.dart';
 import '../widgets/profile/supported_pets_tab.dart';
 import '../widgets/profile/donations_tab.dart';
+import '../widgets/profile/activity_tab.dart';
 import '../widgets/profile/notifications_sheet.dart';
 import '../widgets/profile/volutneer_status_card.dart';
 import 'auth/welcome_view.dart';
-
-// import 'edit_profile_view.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -28,10 +26,11 @@ class ProfileView extends StatefulWidget {
   State<ProfileView> createState() => _ProfileViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStateMixin {
+class _ProfileViewState extends State<ProfileView>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   User? _user;
-  List<Achievement> _achievements = [];
+  List<Achievement> _recentAchievements = [];
   bool _isLoading = true;
   bool _isError = false;
   late final ScrollController _scrollCtrl = ScrollController();
@@ -41,14 +40,12 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-
     _scrollCtrl.addListener(() {
       final shouldShow = _scrollCtrl.offset > 300;
       if (shouldShow != _showToTop) {
         setState(() => _showToTop = shouldShow);
       }
     });
-
     _loadUserProfile();
   }
 
@@ -66,44 +63,44 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
     });
 
     try {
-      final userService = UserService();
-      final achievementService = AchievementService();
+      final userData = await UserService().getCurrentUser();
+      final allAchievements =
+      await AchievementService().getUserAchievements();
 
-      final userData = await userService.getCurrentUser();
-      final achievements = await achievementService.getUserAchievements();
-
-      if (mounted) {
-        setState(() {
-          _user = userData;
-          _achievements = achievements.take(3).toList();
-          _isLoading = false;
-        });
-      }
+      if (!mounted) return;
+      setState(() {
+        _user = userData;
+        // tylko 3 ostatnie odblokowane
+        _recentAchievements = allAchievements
+            .where((a) => a.isUnlocked)
+            .toList()
+          ..sort((a, b) =>
+              b.dateAchieved!.compareTo(a.dateAchieved!));
+        _recentAchievements = _recentAchievements.take(3).toList();
+        _isLoading = false;
+      });
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _isError = true;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Nie udało się załadować profilu: $e')),
-        );
-      }
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _isError = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Nie udało się załadować profilu: $e')),
+      );
     }
   }
 
   void _handleVolunteerSignup() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Wkrótce dostępne: Formularz zapisu dla wolontariuszy')),
+      const SnackBar(
+          content:
+          Text('Wkrótce dostępne: Formularz zapisu dla wolontariuszy')),
     );
-    // W przyszłości można tutaj dodać nawigację do formularza
-    // Navigator.push(context, MaterialPageRoute(builder: (context) => VolunteerSignupForm()));
   }
 
   Future<void> _onLogout() async {
     await UserService().logout();
-
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const WelcomeView()),
@@ -148,10 +145,7 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
           const SizedBox(height: 16),
           Text(
             'Wczytywanie profilu...',
-            style: TextStyle(
-              color: Colors.grey[700],
-              fontSize: 16,
-            ),
+            style: TextStyle(color: Colors.grey[700], fontSize: 16),
           ),
         ],
       ),
@@ -163,26 +157,17 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            color: Colors.red[400],
-            size: 60,
-          ),
+          Icon(Icons.error_outline, color: Colors.red[400], size: 60),
           const SizedBox(height: 16),
           const Text(
             'Nie udało się załadować profilu',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
             'Sprawdź połączenie z internetem i spróbuj ponownie',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey,
-            ),
+            style: TextStyle(color: Colors.grey),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
@@ -190,13 +175,10 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+                  borderRadius: BorderRadius.circular(12)),
             ),
             child: const Text('Spróbuj ponownie'),
           ),
@@ -206,10 +188,7 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
   }
 
   Widget _buildProfileContent() {
-    if (_user == null) {
-      return _buildLoadingView();
-    }
-
+    final user = _user!;
     return CustomScrollView(
       controller: _scrollCtrl,
       slivers: [
@@ -218,22 +197,21 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ProfileHeader(user: _user!),
+              ProfileHeader(user: user),
               VolunteerStatusCard(
-                user: _user!,
-                onVolunteerSignup: _handleVolunteerSignup,
+                  user: user, onVolunteerSignup: _handleVolunteerSignup),
+              // Dostosowane AchievementProgress
+              AchievementProgress(
+                level: user.level,
+                xpPoints: user.xpPoints,
+                xpToNextLevel: user.xpToNextLevel,
               ),
-              AchievementProgress(user: _user!),
-              QuickStats(user: _user!),
-              Achievements(
-                achievements: _achievements,
-              ),
-              ActiveAchievements(),
-              _buildTabBar(),
+              QuickStats(user: user),
+              Achievements(achievements: _recentAchievements),
+              ActiveAchievements(user: user),
             ],
           ),
         ),
-        _buildTabContent(),
       ],
     );
   }
@@ -250,21 +228,13 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
         title: const Text(
           'Twój profil',
           style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
       actions: [
         IconButton(
           icon: const Icon(Icons.edit, color: Colors.black),
-          onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const EditProfileView()),
-            // );
-          },
+          onPressed: () {/* TODO: Edycja profilu */},
           tooltip: 'Edytuj profil',
         ),
         IconButton(
@@ -274,59 +244,6 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
         ),
         const SizedBox(width: 8),
       ],
-    );
-  }
-
-  Widget _buildTabBar() {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade300,
-            width: 1,
-          ),
-        ),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        labelColor: AppColors.primaryColor,
-        unselectedLabelColor: Colors.grey,
-        indicatorColor: AppColors.primaryColor,
-        indicatorWeight: 3,
-        labelStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-        tabs: const [
-          Tab(text: 'Aktywność'),
-          Tab(text: 'Wsparcia'),
-          Tab(text: 'Wpłaty'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTabContent() {
-    if (_user == null) return const SliverToBoxAdapter(child: SizedBox.shrink());
-
-    final maxHeight = math.max(
-      320.0,
-      MediaQuery.of(context).size.height * .66,
-    );
-
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        height: maxHeight,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            ActivityTab(user: _user!),
-            SupportedPetsTab(user: _user!),
-            DonationsTab(user: _user!),
-          ],
-        ),
-      ),
     );
   }
 }

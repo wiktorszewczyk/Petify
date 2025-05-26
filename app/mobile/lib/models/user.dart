@@ -1,60 +1,46 @@
+import 'achievement.dart';
+
 class User {
   final String id;
   final String username;
   final String role;
-
-  // profil
   final String? firstName;
   final String? lastName;
-  final String? profileImageUrl;
-  final String? location;
-
-  // gamifikacja
+  final DateTime? birthDate;
+  final String? gender;
+  final String? phoneNumber;
+  final String? email;
+  final String volunteerStatus;
+  final bool active;
+  final DateTime createdAt;
+  final int xpPoints;
   final int level;
-  final int experiencePoints;
-  final int nextLevelPoints;
+  final int xpToNextLevel;
+  final int likesCount;
+  final int supportCount;
+  final int badgesCount;
+  final List<Achievement> achievements;
 
-  // statystyki
-  final int likedPetsCount;
-  final int supportedPetsCount;
-  final int achievementsCount;
-
-  // aktywność - ostatnie 24h
-  final List<Map<String, dynamic>> recentActivities;
-
-  const User({
-    required this.id,
-    required this.username,
-    required this.role,
-    this.firstName,
-    this.lastName,
-    this.profileImageUrl,
-    this.location,
-    this.level = 1,
-    this.experiencePoints = 0,
-    this.nextLevelPoints = 100,
-    this.likedPetsCount = 0,
-    this.supportedPetsCount = 0,
-    this.achievementsCount = 0,
-    this.recentActivities = const [],
-  });
-
-  factory User.fromJson(Map<String, dynamic> j) => User(
-    id: j['id'].toString(),
-    username: j['username'],
-    role: j['role'],
-    firstName: j['firstName'],
-    lastName: j['lastName'],
-    profileImageUrl: j['profileImageUrl'],
-    location: j['location'],
-    level: j['level'] ?? 1,
-    experiencePoints: j['xp'] ?? 0,
-    nextLevelPoints: j['nextXp'] ?? 100,
-    likedPetsCount: j['liked'] ?? 0,
-    supportedPetsCount: j['supported'] ?? 0,
-    achievementsCount: j['achievements'] ?? 0,
-    recentActivities:
-    (j['recentActivities'] as List?)?.cast<Map<String, dynamic>>() ??
-        const [],
-  );
+  User.fromJson(Map<String, dynamic> j)
+      : id = j['userId'].toString(),
+        username = j['username'].toString(),
+        role = (j['authorities'] as List).first['authority'],
+        firstName = j['firstName'],
+        lastName = j['lastName'],
+        birthDate = j['birthDate'] != null ? DateTime.parse(j['birthDate']) : null,
+        gender = j['gender'],
+        phoneNumber = j['phoneNumber']?.toString(),
+        email = j['email'],
+        volunteerStatus = j['volunteerStatus'],
+        active = j['active'] as bool,
+        createdAt = DateTime.parse(j['createdAt']),
+        xpPoints = j['xpPoints'] as int,
+        level = j['level'] as int,
+        xpToNextLevel = j['xpToNextLevel'] as int,
+        likesCount = j['likesCount'] as int,
+        supportCount = j['supportCount'] as int,
+        badgesCount = j['badgesCount'] as int,
+        achievements = (j['achievements'] as List)
+            .map((a) => Achievement.fromJson(a as Map<String, dynamic>))
+            .toList();
 }

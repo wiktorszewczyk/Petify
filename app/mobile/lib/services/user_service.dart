@@ -81,36 +81,17 @@ class UserService {
     await _tokens.removeToken();
   }
 
-  Future<Response> fetchProfile() {
-    return _api.get('/user');
-  }
-
   Future<User> getCurrentUser() async {
-    // TODO: podmienić na realne API.
-    await Future.delayed(const Duration(milliseconds: 400));
-    final rnd = Random();
-    return User(
-      id: 'u1',
-      username: 'john_doe',
-      role: 'user',
-      firstName: 'Jan',
-      lastName: 'Kowalski',
-      profileImageUrl: null,
-      location: 'Warszawa',
-      level: 4,
-      experiencePoints: 230,
-      nextLevelPoints: 400,
-      likedPetsCount: 17,
-      supportedPetsCount: 3,
-      achievementsCount: 12,
-      recentActivities: List.generate(5, (i) => _fakeActivity(i, rnd)),
-    );
+    try {
+      final resp = await _api.get('/user');
+      if (resp.statusCode == 200 && resp.data is Map<String, dynamic>) {
+        return User.fromJson(resp.data as Map<String, dynamic>);
+      }
+      throw Exception('Nieoczekiwana odpowiedź serwera: ${resp.statusCode}');
+    } on DioException catch (e) {
+      // możesz dodatkowo sprawdzić e.response?.statusCode == 401 -> wymuś logout/redirect
+      throw Exception('Błąd podczas pobierania profilu: ${e.message}');
+    }
   }
 
-  Map<String, dynamic> _fakeActivity(int i, Random r) => {
-    'type': ['like', 'donation', 'achievement', 'share', 'visit'][i % 5],
-    'timestamp': '${i + 1} h temu',
-    'petName': 'Burek',
-    'points': i.isEven ? 20 : null,
-  };
 }

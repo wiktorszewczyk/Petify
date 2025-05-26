@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../models/user.dart';
 import '../../widgets/cards/stats_card.dart';
+import '../../styles/colors.dart';
 
 class QuickStats extends StatelessWidget {
   final User user;
@@ -22,7 +23,8 @@ class QuickStats extends StatelessWidget {
               icon: Icons.favorite,
               iconColor: Colors.red,
               title: 'Polubione',
-              value: '${user.likedPetsCount ?? 0}',
+              // teraz z user.likesCount
+              value: user.likesCount.toString(),
             ),
           ),
           const SizedBox(width: 12),
@@ -31,7 +33,8 @@ class QuickStats extends StatelessWidget {
               icon: Icons.volunteer_activism,
               iconColor: Colors.blue,
               title: 'Wsparcia',
-              value: '${user.supportedPetsCount ?? 0}',
+              // teraz z user.supportCount
+              value: user.supportCount.toString(),
             ),
           ),
           const SizedBox(width: 12),
@@ -40,7 +43,8 @@ class QuickStats extends StatelessWidget {
               icon: Icons.emoji_events,
               iconColor: Colors.amber,
               title: 'Odznaki',
-              value: '${user.achievementsCount ?? 0}',
+              // teraz z user.badgesCount
+              value: user.badgesCount.toString(),
             ),
           ),
         ],

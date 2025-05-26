@@ -45,8 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
       if (resp.statusCode == 200 && resp.data['valid'] == true) {
-        final profileResp = await UserService().fetchProfile();
-        dev.log('PROFILE DATA: ${profileResp.data}');
+        // final profileResp = await UserService().getCurrentUser();
         _goToHome();
       } else {
         await TokenRepository().removeToken();
