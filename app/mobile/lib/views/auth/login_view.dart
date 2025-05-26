@@ -5,6 +5,7 @@ import '../../styles/colors.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/inputs/custom_textfield.dart';
 import '../../services/user_service.dart';
+import '../home_view.dart';
 
 class LoginView extends StatefulWidget {
   final VoidCallback onSwitch;
@@ -38,42 +39,41 @@ class _LoginViewState extends State<LoginView> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
+    final userService = UserService();
 
     try {
-      final userService = UserService();
-      final response = await userService.login(
+      final resp = await userService.login(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
-
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       setState(() => _isLoading = false);
 
-      if (response.status == 200) {
+      if (resp.status == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Zalogowano! ${response.data}')),
+          const SnackBar(
+            content: Text('Zalogowano!'),
+            backgroundColor: Colors.green,
+          ),
         );
-
-        widget.onBack();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeView()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Błąd logowania: ${response.data}')),
+          SnackBar(content: Text('Błąd logowania: ${resp.data}')),
         );
       }
     } catch (e) {
-      if (mounted) {
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Wystąpił błąd: $e')),
-        );
-      }
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Wystąpił błąd: $e')),
+      );
     }
   }
 

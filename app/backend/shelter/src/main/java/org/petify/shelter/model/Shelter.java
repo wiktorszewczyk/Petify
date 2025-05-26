@@ -1,11 +1,13 @@
 package org.petify.shelter.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,18 +43,38 @@ public class Shelter {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "shelter")
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets;
 
-    public Shelter(String ownerUsername, String name, String description, String address, String phoneNumber) {
+    public Shelter(String ownerUsername, String name, String description, String address,
+                   Double latitude, Double longitude, String phoneNumber) {
         this.ownerUsername = ownerUsername;
         this.name = name;
         this.description = description;
         this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.phoneNumber = phoneNumber;
+        this.isActive = false; // w ramach testow mozna zmienic na true
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (isActive == null) {
+            isActive = false;
+        }
     }
 
     @Override
@@ -65,37 +87,32 @@ public class Shelter {
             return false;
         }
 
-        return new EqualsBuilder()
-                .append(getId(), shelter.getId())
-                .append(getOwnerUsername(), shelter.getOwnerUsername())
-                .append(getName(), shelter.getName())
-                .append(getDescription(), shelter.getDescription())
-                .append(getAddress(), shelter.getAddress())
-                .append(getPhoneNumber(), shelter.getPhoneNumber())
-                .isEquals();
+        return new EqualsBuilder().append(getId(), shelter.getId()).append(getOwnerUsername(),
+                shelter.getOwnerUsername()).append(getName(), shelter.getName()).append(getDescription(),
+                shelter.getDescription()).append(getAddress(), shelter.getAddress()).append(getLatitude(),
+                shelter.getLatitude()).append(getLongitude(), shelter.getLongitude()).append(getPhoneNumber(),
+                shelter.getPhoneNumber()).append(getIsActive(), shelter.getIsActive()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(getId())
-                .append(getOwnerUsername())
-                .append(getName())
-                .append(getDescription())
-                .append(getAddress())
-                .append(getPhoneNumber())
-                .toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId()).append(getOwnerUsername())
+                .append(getName()).append(getDescription()).append(getAddress()).append(getLatitude())
+                .append(getLongitude()).append(getPhoneNumber()).append(getIsActive()).toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
-                .append("ownerId", ownerUsername)
+                .append("ownerUsername", ownerUsername)
                 .append("name", name)
                 .append("description", description)
                 .append("address", address)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
                 .append("phoneNumber", phoneNumber)
+                .append("isActive", isActive)
                 .toString();
     }
 }
