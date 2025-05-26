@@ -1,0 +1,47 @@
+name: Backend Code Quality Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, ready_for_review, synchronize]
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_PORT: 5432
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    name: Backend Code Quality Checks
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'oracle'
+        cache: maven
+    
+    - name: Setup database
+      run: docker compose -f docker/database/compose.yml up -d
+
+    - name: Validate Stage (POM formatting, Checkstyle)
+      run: mvn validate -f app/backend/pom.xml
+
+    - name: Compile Stage
+      run: mvn compile -f app/backend/pom.xml
+
+    - name: Test Stage
+      run: mvn test -f app/backend/pom.xml
+
+    - name: Verify Stage (PMD, SpotBugs, JaCoCo)
+      run: mvn verify -f app/backend/pom.xml

@@ -1,5 +1,10 @@
 package org.petify.shelter.model;
 
+import org.petify.shelter.enums.Gender;
+import org.petify.shelter.enums.PetSize;
+import org.petify.shelter.enums.PetType;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +17,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,8 +50,25 @@ public class Pet {
     @Column(name = "breed")
     private String breed;
 
-    @Column(name = "age")
+    @PositiveOrZero(message = "Age cannot be negative!")
+    @Column(name = "age", nullable = false)
     private Integer age;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
+
+    @Column(name = "is_vaccinated", nullable = false)
+    private boolean vaccinated;
+
+    @Column(name = "is_urgent", nullable = false)
+    private boolean urgent;
+
+    @Column(name = "is_sterilized", nullable = false)
+    private boolean sterilized;
+
+    @Column(name = "is_kid_friendly", nullable = false)
+    private boolean kidFriendly;
 
     @Column(name = "is_archived")
     private boolean archived = false;
@@ -53,11 +76,15 @@ public class Pet {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "size", nullable = false)
+    private PetSize size;
+
     @ManyToOne
     @JoinColumn(name = "shelter_id", nullable = false)
     private Shelter shelter;
 
-    @OneToMany(mappedBy = "pet")
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Adoption> adoptions;
 
     @Column(name = "image_name")
@@ -70,13 +97,27 @@ public class Pet {
     @Column(name = "image_data")
     private byte[] imageData;
 
-    public Pet(String name, PetType type, String breed, Integer age, String description, Shelter shelter) {
-        this.name = name;
-        this.type = type;
-        this.breed = breed;
-        this.age = age;
-        this.description = description;
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PetImage> images;
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FavoritePet> favoritePets;
+
+    public Pet(Shelter shelter, String description, boolean kidFriendly, boolean sterilized,
+               boolean urgent, boolean vaccinated, Gender gender, Integer age, String breed,
+               PetType type, PetSize size, String name) {
         this.shelter = shelter;
+        this.description = description;
+        this.kidFriendly = kidFriendly;
+        this.sterilized = sterilized;
+        this.urgent = urgent;
+        this.vaccinated = vaccinated;
+        this.gender = gender;
+        this.age = age;
+        this.breed = breed;
+        this.type = type;
+        this.size = size;
+        this.name = name;
     }
 
     @Override
@@ -89,40 +130,39 @@ public class Pet {
             return false;
         }
 
-        return new EqualsBuilder()
-                .append(isArchived(), pet.isArchived())
-                .append(getId(), pet.getId())
-                .append(getName(), pet.getName())
-                .append(getType(), pet.getType())
-                .append(getBreed(), pet.getBreed())
-                .append(getAge(), pet.getAge())
-                .append(getDescription(), pet.getDescription())
-                .isEquals();
+        return new EqualsBuilder().append(isVaccinated(), pet.isVaccinated()).append(isUrgent(),
+                pet.isUrgent()).append(isSterilized(), pet.isSterilized()).append(isKidFriendly(),
+                pet.isKidFriendly()).append(isArchived(), pet.isArchived()).append(getId(),
+                pet.getId()).append(getName(), pet.getName()).append(getType(), pet.getType()).append(getBreed(),
+                pet.getBreed()).append(getAge(), pet.getAge()).append(getGender(),
+                pet.getGender()).append(getDescription(), pet.getDescription()).append(getShelter(),
+                pet.getShelter()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(getId())
-                .append(getName())
-                .append(getType())
-                .append(getBreed())
-                .append(getAge())
-                .append(isArchived())
-                .append(getDescription())
-                .toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId()).append(getName())
+                .append(getType()).append(getBreed()).append(getAge()).append(getGender()).append(isVaccinated())
+                .append(isUrgent()).append(isSterilized()).append(isKidFriendly()).append(isArchived())
+                .append(getDescription()).append(getShelter()).toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .append("adoptions", adoptions)
+                .append("shelter", shelter)
                 .append("description", description)
                 .append("archived", archived)
+                .append("kidFriendly", kidFriendly)
+                .append("sterilized", sterilized)
+                .append("urgent", urgent)
+                .append("vaccinated", vaccinated)
+                .append("gender", gender)
                 .append("age", age)
                 .append("breed", breed)
                 .append("type", type)
                 .append("name", name)
-                .append("id", id)
                 .toString();
     }
 }

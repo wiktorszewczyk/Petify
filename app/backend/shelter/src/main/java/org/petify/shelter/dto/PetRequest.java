@@ -1,6 +1,8 @@
 package org.petify.shelter.dto;
 
-import org.petify.shelter.model.PetType;
+import org.petify.shelter.enums.Gender;
+import org.petify.shelter.enums.PetSize;
+import org.petify.shelter.enums.PetType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,9 +25,22 @@ public record PetRequest(
 
         String breed,
 
-        @PositiveOrZero
+        @PositiveOrZero(message = "Age of pet cannot be negative!")
         Integer age,
-
         @Length(message = "Description must be a string between 3 and 50 characters long!", min = 3, max = 20)
-        String description
+        String description,
+
+        @NotNull
+        Gender gender,
+
+        @NotNull
+        PetSize size,
+
+        boolean vaccinated,
+
+        boolean urgent,
+
+        boolean sterilized,
+
+        boolean kidFriendly
 ) implements Serializable {}
