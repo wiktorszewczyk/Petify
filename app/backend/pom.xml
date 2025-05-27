@@ -20,7 +20,6 @@
     <module>discovery</module>
     <module>gateway</module>
     <module>shelter</module>
-    <module>user-service</module>
     <module>funding</module>
   </modules>
 

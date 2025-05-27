@@ -6,6 +6,7 @@ import org.petify.backend.dto.RegistrationDTO;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.repository.UserRepository;
 import org.petify.backend.services.AuthenticationService;
+import org.petify.backend.services.OAuth2TokenService;
 import org.petify.backend.services.TokenService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +44,9 @@ public class AuthenticationController {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private OAuth2TokenService oAuth2TokenService;
 
     @Autowired
     private UserRepository userRepository;
@@ -205,6 +209,35 @@ public class AuthenticationController {
         Map<String, String> response = new HashMap<>();
         response.put("error", "OAuth2 authentication failed");
         return ResponseEntity.badRequest().body(response);
+    }
+
+    /**
+     * Exchange Google access token for JWT token (for mobile apps)
+     */
+    @PostMapping("/auth/oauth2/exchange")
+    public ResponseEntity<?> exchangeOAuth2Token(@RequestBody Map<String, String> request) {
+        String provider = request.get("provider");
+        String accessToken = request.get("access_token");
+
+        if (!"google".equals(provider)) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Unsupported provider: " + provider);
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        if (accessToken == null || accessToken.trim().isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Access token is required");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        LoginResponseDTO response = oAuth2TokenService.exchangeGoogleToken(accessToken);
+        if (response.getUser() == null) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid Google access token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+        return ResponseEntity.ok(response);
     }
 
     // User Management Endpoints
