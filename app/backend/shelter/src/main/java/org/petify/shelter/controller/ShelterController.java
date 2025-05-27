@@ -3,13 +3,18 @@ package org.petify.shelter.controller;
 import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.dto.ShelterRequest;
 import org.petify.shelter.dto.ShelterResponse;
+import org.petify.shelter.exception.RoutingException;
 import org.petify.shelter.service.AdoptionService;
 import org.petify.shelter.service.PetService;
 import org.petify.shelter.service.ShelterService;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,9 +27,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -108,6 +116,41 @@ public class ShelterController {
     public ResponseEntity<?> deactivateShelter(@PathVariable Long shelterId) {
         shelterService.deactivateShelter(shelterId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{shelterId}/route")
+    public ResponseEntity<?> shelterRoute(
+            @PathVariable Long shelterId,
+            @RequestParam(required = true) @Min(-90) @Max(90) Double latitude,
+            @RequestParam(required = true) @Min(-180) @Max(180) Double longitude) {
+
+        try {
+            ShelterResponse shelter = shelterService.getShelterById(shelterId);
+
+            if (shelter == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            if (shelter.latitude() == null || shelter.longitude() == null) {
+                return ResponseEntity.badRequest().body(
+                        Map.of("error", "Shelter has invalid coordinates"));
+            }
+
+            String routeJson = shelterService.getRouteToShelter(latitude, longitude, shelter);
+
+            new ObjectMapper().readTree(routeJson);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(routeJson);
+
+        } catch (IOException | InterruptedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Routing service unavailable"));
+        } catch (RoutingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void verifyShelterOwnership(Long shelterId, Jwt jwt) {

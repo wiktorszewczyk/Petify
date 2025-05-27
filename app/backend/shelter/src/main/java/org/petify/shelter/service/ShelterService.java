@@ -2,6 +2,7 @@ package org.petify.shelter.service;
 
 import org.petify.shelter.dto.ShelterRequest;
 import org.petify.shelter.dto.ShelterResponse;
+import org.petify.shelter.exception.RoutingException;
 import org.petify.shelter.exception.ShelterAlreadyExistsException;
 import org.petify.shelter.exception.ShelterByOwnerNotFoundException;
 import org.petify.shelter.exception.ShelterNotFoundException;
@@ -13,7 +14,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
+import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -91,5 +100,49 @@ public class ShelterService {
 
         existingShelter.setIsActive(false);
         shelterRepository.save(existingShelter);
+    }
+
+    public String getRouteToShelter(double fromLat, double fromLon, ShelterResponse shelter)
+            throws IOException, InterruptedException, RoutingException {
+
+        double toLat = shelter.latitude();
+        double toLon = shelter.longitude();
+
+        String osrmUrl = String.format(
+                Locale.US,
+                "https://router.project-osrm.org/route/v1/driving/%.6f,%.6f;%.6f,%.6f?overview=full&geometries=geojson",
+                fromLon, fromLat,
+                toLon, toLat
+        );
+
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(5))
+                .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(osrmUrl))
+                .timeout(Duration.ofSeconds(10))
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                String errorBody = response.body();
+                System.err.println("OSRM Error Response: " + errorBody);
+                throw new RoutingException(
+                        "OSRM request failed with status: " + response.statusCode()
+                                + ", response: " + errorBody
+                );
+            }
+
+            return response.body();
+        } catch (HttpTimeoutException e) {
+            throw new RoutingException("OSRM request timed out", e);
+        } catch (IOException e) {
+            throw new RoutingException("Network error while contacting OSRM", e);
+        }
     }
 }
