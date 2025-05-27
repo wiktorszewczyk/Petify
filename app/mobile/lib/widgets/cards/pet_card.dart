@@ -176,7 +176,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _shareProfile() {
     /// TODO: Generować odpowiedni link do profilu zwierzaka, który można udostepnić
-    final placeholderLink = "https://petadopt.example.com/demo/${widget.pet.id}";
+    final placeholderLink = "https://petadopt.petify.com/demo/${widget.pet.id}";
 
     showModalBottomSheet(
       context: context,

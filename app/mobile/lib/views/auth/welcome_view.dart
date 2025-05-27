@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../services/google_auth_service.dart';
 import '../../styles/colors.dart';
 import '../../widgets/top_header.dart';
+import '../home_view.dart';
 import 'login_view.dart';
 import 'register_view.dart';
 import '../../widgets/buttons/primary_button.dart';
@@ -258,7 +259,10 @@ class _WelcomeViewState extends State<WelcomeView> {
                 final resp = await GoogleAuthService().signInWithGoogle();
 
                 if (resp.statusCode >= 200 && resp.statusCode < 300) {
-                  Navigator.pushReplacementNamed(context, '/home');
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const HomeView()),
+                  );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Logowanie nie powiodło się: ${resp.data}')),
