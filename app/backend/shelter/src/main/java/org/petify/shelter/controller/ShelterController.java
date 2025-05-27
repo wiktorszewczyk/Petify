@@ -43,12 +43,6 @@ public class ShelterController {
     private final PetService petService;
     private final AdoptionService adoptionService;
 
-    @GetMapping("/{id}/owner")
-    @PreAuthorize("hasAnyRole('USER', 'SHELTER', 'ADMIN')")
-    public ResponseEntity<String> owner(@PathVariable Long id) {
-        return ResponseEntity.ok(petService.getOwnerUsernameByPetId(id));
-    }
-
     @GetMapping()
     public ResponseEntity<List<?>> getShelters() {
         return ResponseEntity.ok(shelterService.getShelters());

@@ -99,12 +99,6 @@ public class PetController {
         }
     }
 
-    @GetMapping("/ids")
-    public ResponseEntity<List<Long>> getAllPetIds() {
-        List<Long> petIds = petService.getAllPetIds();
-        return ResponseEntity.ok(petIds);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getPetById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(petService.getPetById(id), HttpStatus.FOUND);
