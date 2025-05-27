@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../styles/colors.dart';
-import '../../models/pet_model.dart';
+import '../../models/pet.dart';
 import '../../models/donation.dart';
 import '../../services/donation_service.dart';
 
 class SupportOptionsSheet extends StatefulWidget {
-  final PetModel pet;
+  final Pet pet;
 
   const SupportOptionsSheet({
     Key? key,
     required this.pet,
   }) : super(key: key);
 
-  static Future<void> show(BuildContext context, PetModel pet) {
+  static Future<void> show(BuildContext context, Pet pet) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,

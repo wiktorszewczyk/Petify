@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/shelter_donation_sheet.dart';
 import 'package:mobile/views/shelter_view.dart';
-import '../models/shelter_model.dart';
+import '../models/shelter.dart';
 import '../services/shelter_service.dart';
 import '../styles/colors.dart';
 
@@ -17,7 +17,7 @@ class ShelterSupportView extends StatefulWidget {
 class _ShelterSupportViewState extends State<ShelterSupportView> {
   final ShelterService _shelterService = ShelterService();
   bool _isLoading = true;
-  List<ShelterModel> _shelters = [];
+  List<Shelter> _shelters = [];
   String? _errorMessage;
 
   @override
@@ -46,14 +46,14 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
     }
   }
 
-  void _navigateToShelterDetails(ShelterModel shelter) {
+  void _navigateToShelterDetails(Shelter shelter) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ShelterView(shelter: shelter)),
     );
   }
 
-  void _supportShelter(ShelterModel shelter) {
+  void _supportShelter(Shelter shelter) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -62,7 +62,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
     );
   }
 
-  Widget _buildDonationBottomSheet(ShelterModel shelter) {
+  Widget _buildDonationBottomSheet(Shelter shelter) {
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       minChildSize: 0.5,
@@ -373,7 +373,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
     );
   }
 
-  Widget _buildShelterCard(ShelterModel shelter, int index) {
+  Widget _buildShelterCard(Shelter shelter, int index) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,

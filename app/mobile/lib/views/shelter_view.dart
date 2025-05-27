@@ -4,11 +4,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mobile/views/shelter_donation_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
-import '../models/shelter_model.dart';
+import '../models/shelter.dart';
 import '../styles/colors.dart';
 
 class ShelterView extends StatefulWidget {
-  final ShelterModel shelter;
+  final Shelter shelter;
 
   const ShelterView({
     Key? key,

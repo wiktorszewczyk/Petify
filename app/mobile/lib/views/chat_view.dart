@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../models/message_model.dart';
-import '../models/pet_model.dart';
+import '../models/pet.dart';
 import '../services/message_service.dart';
 import '../styles/colors.dart';
 
 class ChatView extends StatefulWidget {
   final String conversationId;
   final bool isNewConversation;
-  final PetModel? pet; // Optional pet model for new conversations
+  final Pet? pet; // Optional pet model for new conversations
 
   const ChatView({
     Key? key,

@@ -3,19 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../styles/colors.dart';
-import '../../models/shelter_model.dart';
+import '../../models/shelter.dart';
 import '../../models/donation.dart';
 import '../../services/donation_service.dart';
 
 class ShelterDonationSheet extends StatefulWidget {
-  final ShelterModel shelter;
+  final Shelter shelter;
 
   const ShelterDonationSheet({
     Key? key,
     required this.shelter,
   }) : super(key: key);
 
-  static Future<void> show(BuildContext context, ShelterModel shelter) {
+  static Future<void> show(BuildContext context, Shelter shelter) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,

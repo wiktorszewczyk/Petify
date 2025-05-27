@@ -259,6 +259,12 @@ class _WelcomeViewState extends State<WelcomeView> {
                 final resp = await GoogleAuthService().signInWithGoogle();
 
                 if (resp.statusCode >= 200 && resp.statusCode < 300) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Zalogowano!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => const HomeView()),

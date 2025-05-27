@@ -1,4 +1,4 @@
-class PetModel {
+class Pet {
   final String id;
   final String name;
   final int age;
@@ -17,7 +17,7 @@ class PetModel {
   final String shelterName;
   final String shelterAddress;
 
-  PetModel({
+  Pet({
     required this.id,
     required this.name,
     required this.age,
@@ -37,8 +37,8 @@ class PetModel {
     required this.shelterAddress,
   });
 
-  factory PetModel.fromJson(Map<String, dynamic> json) {
-    return PetModel(
+  factory Pet.fromJson(Map<String, dynamic> json) {
+    return Pet(
       id: json['id'] as String,
       name: json['name'] as String,
       age: json['age'] as int,

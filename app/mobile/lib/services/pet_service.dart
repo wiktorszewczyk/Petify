@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'dart:async';
-import '../models/pet_model.dart';
+import '../models/pet.dart';
 
 class PetService {
   // Symulacja opóźnienia sieci
@@ -16,8 +16,8 @@ class PetService {
 
   final Set<String> _likedPetIds = {};
 
-  final List<PetModel> _demoPets = [
-    PetModel(
+  final List<Pet> _demoPets = [
+    Pet(
       id: 'pet1',
       name: 'Wawel',
       age: 4,
@@ -38,7 +38,7 @@ class PetService {
       shelterName: 'Łódzkie Schronisko',
       shelterAddress: 'ul. Piotrkowska 120, Łódź',
     ),
-    PetModel(
+    Pet(
       id: 'pet2',
       name: 'Misia',
       age: 1,
@@ -60,7 +60,7 @@ class PetService {
       shelterName: 'Azyl Pod Sercem',
       shelterAddress: 'ul. Narutowicza 45, Łódź',
     ),
-    PetModel(
+    Pet(
       id: 'pet3',
       name: 'Blanka',
       age: 3,
@@ -81,7 +81,7 @@ class PetService {
       shelterName: 'Fundacja Puszek',
       shelterAddress: 'ul. Kilińskiego 18, Łódź',
     ),
-    PetModel(
+    Pet(
       id: 'pet4',
       name: 'Samba',
       age: 4,
@@ -100,7 +100,7 @@ class PetService {
       shelterName: 'Dom Zwierzaka',
       shelterAddress: 'ul. Wólczańska 66, Łódź',
     ),
-    PetModel(
+    Pet(
       id: 'pet5',
       name: 'Pchełka',
       age: 1,
@@ -125,7 +125,7 @@ class PetService {
 
   // Pobieranie listy zwierząt (symulacja API)
   /// TODO: Implementacja API do pobierania zwierząt dla użytkownika
-  Future<List<PetModel>> getPets() async {
+  Future<List<Pet>> getPets() async {
     // // Losowy generator - symulacja różnych wyników z API
     // final random = Random();
     //
@@ -249,7 +249,7 @@ class PetService {
   }
 
   // Zaktualizowana metoda w PetService
-  Future<List<PetModel>> getLikedPets() async {
+  Future<List<Pet>> getLikedPets() async {
     /// TODO: Implementacja pobierania polubionych zwierząt z bazy danych
     return _demoPets.where((p) => _likedPetIds.contains(p.id)).toList();
     //

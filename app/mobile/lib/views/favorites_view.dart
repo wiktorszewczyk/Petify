@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/pet_model.dart';
+import '../models/pet.dart';
 import '../widgets/cards/pet_mini_card.dart';
 import '../styles/colors.dart';
 import '../services/pet_service.dart';
@@ -14,7 +14,7 @@ class FavoritesView extends StatefulWidget {
 
 class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveClientMixin {
   late final PetService _petService;
-  List<PetModel>? _favoritePets;
+  List<Pet>? _favoritePets;
   bool _isLoading = true;
   String? _errorMessage;
 
@@ -48,7 +48,7 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
     }
   }
 
-  Future<void> _removeFavorite(PetModel pet) async {
+  Future<void> _removeFavorite(Pet pet) async {
     try {
       /// TODO: zaimplementować usuwanie zwierzaka z ulubionych przez API
       setState(() {

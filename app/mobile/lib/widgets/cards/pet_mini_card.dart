@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../models/pet_model.dart';
+import '../../models/pet.dart';
 import '../../styles/colors.dart';
 
 class PetMiniCard extends StatelessWidget {
-  final PetModel pet;
+  final Pet pet;
   final VoidCallback? onTap;
   final VoidCallback? onRemove;
 

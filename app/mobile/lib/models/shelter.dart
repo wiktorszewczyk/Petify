@@ -1,4 +1,4 @@
-class ShelterModel {
+class Shelter {
   final String id;
   final String name;
   final String address;
@@ -15,7 +15,7 @@ class ShelterModel {
   final double donationCurrent;
   final String city;
 
-  ShelterModel({
+  Shelter({
     required this.id,
     required this.name,
     required this.address,
@@ -36,8 +36,8 @@ class ShelterModel {
   double get donationPercentage =>
       donationGoal > 0 ? (donationCurrent / donationGoal * 100).clamp(0, 100) : 0;
 
-  factory ShelterModel.fromMap(Map<String, dynamic> map) {
-    return ShelterModel(
+  factory Shelter.fromMap(Map<String, dynamic> map) {
+    return Shelter(
       id: map['id'] ?? '',
       name: map['name'] ?? '',
       address: map['address'] ?? '',

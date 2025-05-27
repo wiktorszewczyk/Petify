@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/support_options_sheet.dart';
-import '../models/pet_model.dart';
+import '../models/pet.dart';
 import '../styles/colors.dart';
 import '../services/pet_service.dart';
 import '../services/message_service.dart';
 import 'chat_view.dart';
 
 class PetDetailsView extends StatefulWidget {
-  final PetModel pet;
+  final Pet pet;
   const PetDetailsView({Key? key, required this.pet}) : super(key: key);
 
   @override

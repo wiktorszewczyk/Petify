@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'dart:async';
-import '../models/shelter_model.dart';
+import '../models/shelter.dart';
 
 class ShelterService {
   static final ShelterService _instance = ShelterService._internal();
@@ -13,7 +13,7 @@ class ShelterService {
 
   // Pobieranie listy schronisk (symulacja API)
   /// TODO: Implementacja API do pobierania schronisk
-  Future<List<ShelterModel>> getShelters() async {
+  Future<List<Shelter>> getShelters() async {
     final random = Random();
 
     final shelterCount = random.nextInt(4) + 6; // 6-10 schronisk
@@ -75,7 +75,7 @@ class ShelterService {
       'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg',
     ];
 
-    List<ShelterModel> shelters = [];
+    List<Shelter> shelters = [];
 
     List<String> usedNames = [];
 
@@ -107,7 +107,7 @@ class ShelterService {
       final isUrgent = random.nextInt(10) < 3; // 30% szans
 
       shelters.add(
-        ShelterModel(
+        Shelter(
           id: 'shelter_${DateTime.now().millisecondsSinceEpoch}_$i',
           name: shelterName,
           address: address,

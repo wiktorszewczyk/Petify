@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/message_model.dart';
-import '../models/pet_model.dart';
+import '../models/pet.dart';
 import '../services/message_service.dart';
 import '../styles/colors.dart';
 import '../widgets/cards/conversation_card.dart';

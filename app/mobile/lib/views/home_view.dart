@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/support_options_sheet.dart';
 import '../../styles/colors.dart';
-import '../../models/pet_model.dart';
+import '../../models/pet.dart';
 import '../../widgets/buttons/action_button.dart';
 import '../../widgets/cards/pet_card.dart';
 import '../../services/pet_service.dart';
@@ -22,7 +22,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin {
-  final List<PetModel> _pets = [];
+  final List<Pet> _pets = [];
   bool _isLoading = true;
   bool _isError = false;
   int _currentIndex = 0;
@@ -229,7 +229,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     });
   }
 
-  void _likePet(PetModel pet) async {
+  void _likePet(Pet pet) async {
     try {
       final petService = PetService();
       await petService.likePet(pet.id);

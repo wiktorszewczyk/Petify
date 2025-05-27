@@ -43,6 +43,8 @@ class GoogleAuthService {
         final jwt = data['jwt'] as String?;
         if (jwt != null) {
           await _tokens.saveToken(jwt);
+          final stored = await _tokens.getToken();
+          print('Zapisany token w repo: $stored');
         } else {
           dev.log('Brak pola jwt w response', error: resp.data);
           return BasicResponse(500, {'error': 'Brak JWT w odpowiedzi serwera'});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../models/pet_model.dart';
+import '../../models/pet.dart';
 import '../../styles/colors.dart';
 import '../../views/chat_view.dart';
 import '../../services/message_service.dart';
@@ -9,7 +9,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PetCard extends StatefulWidget {
-  final PetModel pet;
+  final Pet pet;
 
   const PetCard({
     super.key,
