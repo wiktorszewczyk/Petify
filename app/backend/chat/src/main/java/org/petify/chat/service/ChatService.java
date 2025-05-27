@@ -132,7 +132,7 @@ public class ChatService {
         ChatRoom room = roomRepo.findByPetIdAndUserName(petId, userLogin)
                 .orElseGet(() -> new ChatRoom(
                         null, petId, userLogin, shelterOwner,
-                        true, true, null, null,
+                        true, false, null, null,
                         LocalDateTime.now(),
                         null));
 
@@ -149,6 +149,9 @@ public class ChatService {
 
         ChatRoom room = roomRepo.findById(roomId)
                 .orElseThrow(() -> new ChatNotFoundException("Chat room with ID " + roomId + " not found"));
+        if (!visibleFor(room, login)) {
+            throw new ChatAccessDeniedException("You do not have access to this chat room");
+        }
 
         checkParticipantOrAdmin(room, login);
 

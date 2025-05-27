@@ -81,7 +81,7 @@ public class ReservationController {
     }
 
     @PatchMapping("/slots/{slotId}/reserve")
-    @PreAuthorize("hasRole('VOLUNTEER')")
+    @PreAuthorize("hasAnyRole('VOLUNTEER', 'ADMIN', 'SHELTER')")
     public ResponseEntity<SlotResponse> reserveSlot(
             @PathVariable Long slotId,
             @AuthenticationPrincipal Jwt jwt) {
