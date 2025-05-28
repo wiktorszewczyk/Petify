@@ -58,12 +58,8 @@ public class ShelterService {
 
         Shelter shelter = shelterMapper.toEntity(input);
         shelter.setOwnerUsername(username);
-        shelter.setImageName(file.getOriginalFilename());
-        shelter.setImageType(file.getContentType());
-        shelter.setImageData(file.getBytes());
 
-        Shelter savedShelter = shelterRepository.save(shelter);
-        return shelterMapper.toDto(savedShelter);
+        return setIfImageIncluded(file, shelter);
     }
 
     @Transactional
@@ -77,9 +73,16 @@ public class ShelterService {
         existingShelter.setPhoneNumber(input.phoneNumber());
         existingShelter.setLatitude(input.latitude());
         existingShelter.setLongitude(input.longitude());
-        existingShelter.setImageName(file.getOriginalFilename());
-        existingShelter.setImageType(file.getContentType());
-        existingShelter.setImageData(file.getBytes());
+
+        return setIfImageIncluded(file, existingShelter);
+    }
+
+    private ShelterResponse setIfImageIncluded(MultipartFile file, Shelter existingShelter) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            existingShelter.setImageName(file.getOriginalFilename());
+            existingShelter.setImageType(file.getContentType());
+            existingShelter.setImageData(file.getBytes());
+        }
 
         Shelter updatedShelter = shelterRepository.save(existingShelter);
 

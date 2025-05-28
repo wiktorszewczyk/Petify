@@ -51,12 +51,12 @@ public class ShelterController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PostMapping()
     public ResponseEntity<?> addShelter(
-            @Valid @RequestPart ShelterRequest input,
-            @RequestPart MultipartFile imageFile,
+            @Valid @RequestPart ShelterRequest shelterRequest,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
             @AuthenticationPrincipal Jwt jwt) throws IOException {
 
         String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.createShelter(input, imageFile, username);
+        ShelterResponse shelter = shelterService.createShelter(shelterRequest, imageFile, username);
 
         return new ResponseEntity<>(shelter, HttpStatus.CREATED);
     }
@@ -74,13 +74,13 @@ public class ShelterController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShelter(@PathVariable("id") Long id,
-                                           @Valid @RequestPart ShelterRequest input,
-                                           @RequestPart MultipartFile imageFile,
+                                           @Valid @RequestPart ShelterRequest shelterRequest,
+                                           @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
                                            @AuthenticationPrincipal Jwt jwt) throws IOException {
 
         verifyShelterOwnership(id, jwt);
 
-        ShelterResponse updatedShelter = shelterService.updateShelter(input, imageFile, id);
+        ShelterResponse updatedShelter = shelterService.updateShelter(shelterRequest, imageFile, id);
         return ResponseEntity.ok(updatedShelter);
     }
 
