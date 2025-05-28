@@ -13,4 +13,5 @@ public interface PetClient {
 
     @GetMapping("/ids")
     List<Long> getAllPetIds();
+
 }

@@ -57,7 +57,7 @@ public class ReservationController {
     }
 
     @GetMapping("/slots/available")
-    @PreAuthorize("hasRole('VOLUNTEER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VOLUNTEER')")
     public ResponseEntity<List<SlotResponse>> getAvailableSlots() {
         return ResponseEntity.ok(reservationService.getAvailableSlots());
     }
@@ -98,5 +98,15 @@ public class ReservationController {
 
         SlotResponse cancelled = reservationService.cancelReservation(slotId, jwt.getSubject(), jwt.getClaimAsStringList("roles"));
         return ResponseEntity.ok(cancelled);
+    }
+
+    @PatchMapping("/{slotId}/reactivate")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
+    public ResponseEntity<SlotResponse> reactivateSlot(
+            @PathVariable Long slotId,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        SlotResponse response = reservationService.reactivateCancelledSlot(slotId, jwt.getClaimAsStringList("roles"));
+        return ResponseEntity.ok(response);
     }
 }

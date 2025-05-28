@@ -40,7 +40,7 @@ public class PetService {
 
     public String getOwnerUsernameByPetId(Long petId) {
         Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException("Pet " + petId + " not found"));
+                .orElseThrow(() -> new PetNotFoundException(petId));
         return pet.getShelter().getOwnerUsername();
     }
 

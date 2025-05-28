@@ -108,4 +108,14 @@ public class GlobalExceptionHandler {
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }
+
+    @ExceptionHandler(PetNotFoundException.class)
+    public ProblemDetail handlePetNotFound(PetNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Pet Not Found");
+        problemDetail.setType(URI.create("https://petify.org/problems/pet-not-found"));
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
 }

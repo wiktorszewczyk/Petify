@@ -104,6 +104,12 @@ public class PetController {
         return new ResponseEntity<>(petService.getPetById(id), HttpStatus.FOUND);
     }
 
+    @GetMapping("/ids")
+    public ResponseEntity<List<Long>> getAllPetIds() {
+        List<Long> petIds = petService.getAllPetIds();
+        return ResponseEntity.ok(petIds);
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PutMapping("/{id}")
     public ResponseEntity<PetResponse> updatePet(

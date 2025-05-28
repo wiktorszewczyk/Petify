@@ -11,8 +11,6 @@ import org.petify.reservations.exception.*;
 import org.petify.reservations.model.ReservationSlot;
 import org.petify.reservations.model.ReservationStatus;
 import org.petify.reservations.repository.SlotRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +31,7 @@ public class ReservationService {
 
     public SlotResponse createSlot(SlotRequest r) {
         validateSlotRequest(r);
+        validatePetExistence(r.petId());
 
         if (repo.existsByPetIdAndStartTimeAndEndTime(r.petId(), r.startTime(), r.endTime())) {
             throw new SlotAlreadyExistsException(
@@ -111,7 +110,7 @@ public class ReservationService {
                 .orElseThrow(() -> new SlotNotFoundException("Slot with ID " + slotId + " not found"));
 
         boolean isAdminOrShelter = roles.stream()
-                .anyMatch(r -> r.equals("ROLE_ADMIN") || r.equals("ROLE_SHELTER"));
+                .anyMatch(r -> r.equals("ADMIN") || r.equals("SHELTER"));
 
         boolean isOwner = username.equals(slot.getReservedBy());
 
@@ -124,7 +123,7 @@ public class ReservationService {
         }
 
         slot.setReservedBy(null);
-        slot.setStatus(ReservationStatus.AVAILABLE);
+        slot.setStatus(ReservationStatus.CANCELLED);
 
         log.info("Reservation for slot {} cancelled by {}", slotId, username);
         return mapToResponse(repo.save(slot));
@@ -163,6 +162,15 @@ public class ReservationService {
             throw new InvalidTimeRangeException("No valid pet IDs found for slot creation");
         }
 
+        if (!r.allPets()) {
+            List<Long> existingPetIds = petClient.getAllPetIds();
+            for (Long petId : r.petIds()) {
+                if (!existingPetIds.contains(petId)) {
+                    throw new PetNotFoundException("Pet with ID " + petId + " not found");
+                }
+            }
+        }
+
         List<ReservationSlot> slotsToSave = new ArrayList<>();
         int skippedCount = 0;
 
@@ -187,6 +195,28 @@ public class ReservationService {
         return repo.saveAll(slotsToSave).stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+    public SlotResponse reactivateCancelledSlot(Long slotId, List<String> roles) {
+        validateSlotId(slotId);
+
+        ReservationSlot slot = repo.findById(slotId)
+                .orElseThrow(() -> new SlotNotFoundException("Slot with ID " + slotId + " not found"));
+
+        boolean isAdminOrShelter = roles.stream()
+                .anyMatch(r -> r.equals("ADMIN") || r.equals("SHELTER"));
+
+        if (!isAdminOrShelter) {
+            throw new UnauthorizedOperationException("You are not authorized to reactivate this slot");
+        }
+
+        if (slot.getStatus() != ReservationStatus.CANCELLED) {
+            throw new SlotNotAvailableException("Slot is not currently cancelled");
+        }
+
+        slot.setStatus(ReservationStatus.AVAILABLE);
+        slot.setReservedBy(null);
+        return mapToResponse(repo.save(slot));
     }
 
     private void validateSlotRequest(SlotRequest r) {
@@ -226,6 +256,14 @@ public class ReservationService {
             throw new IllegalArgumentException("Pet ID must be a positive number");
         }
     }
+
+    private void validatePetExistence(Long petId) {
+        List<Long> existingPetIds = petClient.getAllPetIds();
+        if (!existingPetIds.contains(petId)) {
+            throw new PetNotFoundException("Pet with ID " + petId + " not found");
+        }
+    }
+
 
     private void validateUsername(String username) {
         if (username == null || username.trim().isEmpty()) {
