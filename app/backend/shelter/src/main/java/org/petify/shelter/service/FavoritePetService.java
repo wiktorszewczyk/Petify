@@ -11,6 +11,7 @@ import org.petify.shelter.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ public class FavoritePetService {
     private final PetRepository petRepository;
     private final PetMapper petMapper;
 
+    @Transactional
     public boolean save(String username, Long petId) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new PetNotFoundException(petId));
@@ -42,6 +44,7 @@ public class FavoritePetService {
         }
     }
 
+    @Transactional
     public boolean delete(String username, Long petId) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new PetNotFoundException(petId));
@@ -51,6 +54,7 @@ public class FavoritePetService {
         return favoritePet.isPresent();
     }
 
+    @Transactional
     public List<PetResponse> getFavoritePets(String username) {
         return favoritePetRepository.findByUsername(username)
                 .stream()

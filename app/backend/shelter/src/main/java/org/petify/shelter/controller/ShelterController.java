@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,10 +53,11 @@ public class ShelterController {
     @PostMapping()
     public ResponseEntity<?> addShelter(
             @Valid @RequestBody ShelterRequest input,
-            @AuthenticationPrincipal Jwt jwt) {
+            @RequestPart MultipartFile imageFile,
+            @AuthenticationPrincipal Jwt jwt) throws IOException {
 
         String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.createShelter(input, username);
+        ShelterResponse shelter = shelterService.createShelter(input, imageFile, username);
 
         return new ResponseEntity<>(shelter, HttpStatus.CREATED);
     }
@@ -73,11 +76,12 @@ public class ShelterController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShelter(@PathVariable("id") Long id,
                                            @Valid @RequestBody ShelterRequest input,
-                                           @AuthenticationPrincipal Jwt jwt) {
+                                           @RequestPart MultipartFile imageFile,
+                                           @AuthenticationPrincipal Jwt jwt) throws IOException {
 
         verifyShelterOwnership(id, jwt);
 
-        ShelterResponse updatedShelter = shelterService.updateShelter(input, id);
+        ShelterResponse updatedShelter = shelterService.updateShelter(input, imageFile, id);
         return ResponseEntity.ok(updatedShelter);
     }
 

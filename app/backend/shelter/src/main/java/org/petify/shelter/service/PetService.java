@@ -131,6 +131,7 @@ public class PetService {
         return petMapper.toDto(savedPet);
     }
 
+    @Transactional
     public PetImageResponse getPetImage(Long id) {
         Optional<Pet> pet = petRepository.findById(id);
         if (pet.isPresent()) {
