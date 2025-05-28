@@ -55,6 +55,7 @@ public class PetController {
         return ResponseEntity.ok(petService.getPets());
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @GetMapping("/filter")
     public ResponseEntity<List<PetResponse>> getFilteredPets(
             @RequestParam(required = false) Boolean vaccinated,
@@ -66,10 +67,14 @@ public class PetController {
             @RequestParam(required = false) PetType type,
             @RequestParam(required = false) Double userLat,
             @RequestParam(required = false) Double userLng,
-            @RequestParam(required = false) Double radiusKm
+            @RequestParam(required = false) Double radiusKm,
+            @AuthenticationPrincipal Jwt jwt
     ) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
         return ResponseEntity.ok(
-                petService.getFilteredPets(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge, type, userLat, userLng, radiusKm)
+                petService.getFilteredPets(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
+                        type, userLat, userLng, radiusKm, username)
         );
     }
 
