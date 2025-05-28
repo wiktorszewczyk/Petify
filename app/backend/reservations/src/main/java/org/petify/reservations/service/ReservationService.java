@@ -1,16 +1,23 @@
 package org.petify.reservations.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.petify.reservations.client.PetClient;
 import org.petify.reservations.dto.SlotBatchRequest;
 import org.petify.reservations.dto.SlotRequest;
 import org.petify.reservations.dto.SlotResponse;
 import org.petify.reservations.dto.TimeWindowRequest;
-import org.petify.reservations.exception.*;
+import org.petify.reservations.exception.InvalidTimeRangeException;
+import org.petify.reservations.exception.PetNotFoundException;
+import org.petify.reservations.exception.PetServiceUnavailableException;
+import org.petify.reservations.exception.SlotAlreadyExistsException;
+import org.petify.reservations.exception.SlotNotAvailableException;
+import org.petify.reservations.exception.SlotNotFoundException;
+import org.petify.reservations.exception.UnauthorizedOperationException;
 import org.petify.reservations.model.ReservationSlot;
 import org.petify.reservations.model.ReservationStatus;
 import org.petify.reservations.repository.SlotRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -263,7 +270,6 @@ public class ReservationService {
             throw new PetNotFoundException("Pet with ID " + petId + " not found");
         }
     }
-
 
     private void validateUsername(String username) {
         if (username == null || username.trim().isEmpty()) {

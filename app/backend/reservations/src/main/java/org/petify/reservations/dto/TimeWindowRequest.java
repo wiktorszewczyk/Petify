@@ -1,6 +1,7 @@
 package org.petify.reservations.dto;
 
 import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalTime;
 
 public record TimeWindowRequest(

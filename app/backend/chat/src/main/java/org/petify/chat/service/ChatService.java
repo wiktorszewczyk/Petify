@@ -1,15 +1,21 @@
 package org.petify.chat.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.petify.chat.client.ShelterClient;
 import org.petify.chat.dto.ChatMessageDTO;
 import org.petify.chat.dto.ChatRoomDTO;
-import org.petify.chat.exception.*;
+import org.petify.chat.exception.ChatAccessDeniedException;
+import org.petify.chat.exception.ChatNotFoundException;
+import org.petify.chat.exception.InvalidChatParameterException;
+import org.petify.chat.exception.InvalidMessageException;
+import org.petify.chat.exception.InvalidRoomStateException;
+import org.petify.chat.exception.ShelterServiceUnavailableException;
 import org.petify.chat.model.ChatMessage;
 import org.petify.chat.model.ChatRoom;
 import org.petify.chat.repository.ChatMessageRepository;
 import org.petify.chat.repository.ChatRoomRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -49,8 +55,12 @@ public class ChatService {
 
         boolean fromShelter = login.equals(room.getShelterName());
 
-        if (fromShelter && !room.isUserVisible()) room.setUserVisible(true);
-        if (!fromShelter && !room.isShelterVisible()) room.setShelterVisible(true);
+        if (fromShelter && !room.isUserVisible()) {
+            room.setUserVisible(true);
+        }
+        if (!fromShelter && !room.isShelterVisible()) {
+            room.setShelterVisible(true);
+        }
         roomRepo.save(room);
 
         ChatMessage saved = msgRepo.save(
@@ -297,8 +307,7 @@ public class ChatService {
     }
 
     private boolean visibleFor(ChatRoom r, String login) {
-        return login.equals(r.getUserName()) ? r.isUserVisible()
-                : login.equals(r.getShelterName()) ? r.isShelterVisible()
-                : false;
+        return (login.equals(r.getUserName()) && r.isUserVisible())
+                || (login.equals(r.getShelterName()) && r.isShelterVisible());
     }
 }

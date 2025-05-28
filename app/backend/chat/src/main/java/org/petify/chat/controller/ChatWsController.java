@@ -1,7 +1,8 @@
 package org.petify.chat.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.petify.chat.service.ChatService;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
