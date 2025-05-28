@@ -25,12 +25,14 @@ public class PetImageService {
     private final PetRepository petRepository;
     private final PetImageMapper petImageMapper;
 
+    @Transactional
     public List<PetImageResponse> getImagesByPetId(Long petId) {
         return petImageRepository.findAllByPetId(petId).stream()
                 .map(petImageMapper::toDto)
                 .toList();
     }
 
+    @Transactional
     public void addPetImages(Long petId, List<MultipartFile> images) throws IOException {
         for (MultipartFile input : images) {
             addPetImage(petId, input);
