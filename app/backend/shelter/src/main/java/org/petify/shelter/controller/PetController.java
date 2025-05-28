@@ -214,25 +214,42 @@ public class PetController {
             @AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
 
-        if (favoritePetService.save(username, petId)) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        favoritePetService.like(username, petId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
-    @DeleteMapping("/{id}/dislike")
+    @PostMapping("/{id}/dislike")
     public ResponseEntity<?> dislikePet(
             @PathVariable("id") Long petId,
             @AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
 
-        if (favoritePetService.delete(username, petId)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        favoritePetService.dislike(username, petId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
+    @PostMapping("/{id}/support")
+    public ResponseEntity<?> supportPet(
+            @PathVariable("id") Long petId,
+            @AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        favoritePetService.support(username, petId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
@@ -241,6 +258,15 @@ public class PetController {
         String username = jwt != null ? jwt.getSubject() : null;
 
         List<PetResponse> favoritePets = favoritePetService.getFavoritePets(username);
+        return ResponseEntity.ok(favoritePets);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
+    @GetMapping("/supportedPets")
+    public ResponseEntity<?> getSupportedPets(@AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        List<PetResponse> favoritePets = favoritePetService.getSupportedPets(username);
         return ResponseEntity.ok(favoritePets);
     }
 

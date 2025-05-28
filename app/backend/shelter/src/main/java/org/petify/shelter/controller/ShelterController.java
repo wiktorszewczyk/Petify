@@ -52,7 +52,7 @@ public class ShelterController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PostMapping()
     public ResponseEntity<?> addShelter(
-            @Valid @RequestBody ShelterRequest input,
+            @Valid @RequestPart ShelterRequest input,
             @RequestPart MultipartFile imageFile,
             @AuthenticationPrincipal Jwt jwt) throws IOException {
 
@@ -75,7 +75,7 @@ public class ShelterController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShelter(@PathVariable("id") Long id,
-                                           @Valid @RequestBody ShelterRequest input,
+                                           @Valid @RequestPart ShelterRequest input,
                                            @RequestPart MultipartFile imageFile,
                                            @AuthenticationPrincipal Jwt jwt) throws IOException {
 

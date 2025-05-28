@@ -1,6 +1,9 @@
 package org.petify.shelter.service;
 
 import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.enums.MatchType;
+import org.petify.shelter.exception.PetIsArchivedException;
+import org.petify.shelter.exception.ShelterIsNotActiveException;
 import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.mapper.PetMapper;
 import org.petify.shelter.model.FavoritePet;
@@ -9,12 +12,10 @@ import org.petify.shelter.repository.FavoritePetRepository;
 import org.petify.shelter.repository.PetRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,40 +24,57 @@ public class FavoritePetService {
     private final PetRepository petRepository;
     private final PetMapper petMapper;
 
-    @Transactional
-    public boolean save(String username, Long petId) {
+    private void upsertFavoritePet(String username, Long petId, MatchType status) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new PetNotFoundException(petId));
 
-        if (pet.isArchived() || !pet.getShelter().getIsActive()) {
-            return false;
+        if (pet.isArchived()) {
+            throw new PetIsArchivedException(petId);
+        } else if (!pet.getShelter().getIsActive()) {
+            throw new ShelterIsNotActiveException();
         }
 
-        FavoritePet favoritePet = new FavoritePet();
-        favoritePet.setUsername(username);
-        favoritePet.setPet(pet);
+        FavoritePet favoritePet = favoritePetRepository.findByUsernameAndPetId(username, petId)
+                .orElseGet(() -> {
+                    FavoritePet newFavorite = new FavoritePet();
+                    newFavorite.setUsername(username);
+                    newFavorite.setPet(pet);
+                    return newFavorite;
+                });
 
-        try {
-            favoritePetRepository.save(favoritePet);
-            return true;
-        } catch (DataIntegrityViolationException e) {
-            return false;
-        }
+        favoritePet.setStatus(status);
+        favoritePetRepository.save(favoritePet);
     }
 
     @Transactional
-    public boolean delete(String username, Long petId) {
-        Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new PetNotFoundException(petId));
+    public void like(String username, Long petId) {
+        upsertFavoritePet(username, petId, MatchType.LIKE);
+    }
 
-        Optional<FavoritePet> favoritePet = favoritePetRepository.findByUsernameAndPet(username, pet);
-        favoritePet.ifPresent(favoritePetRepository::delete);
-        return favoritePet.isPresent();
+    @Transactional
+    public void dislike(String username, Long petId) {
+        upsertFavoritePet(username, petId, MatchType.DISLIKE);
+    }
+
+    @Transactional
+    public void support(String username, Long petId) {
+        upsertFavoritePet(username, petId, MatchType.SUPPORT);
     }
 
     @Transactional
     public List<PetResponse> getFavoritePets(String username) {
-        return favoritePetRepository.findByUsername(username)
+        return favoritePetRepository.findByUsernameAndStatus(username, MatchType.LIKE)
+                .stream()
+                .map(FavoritePet::getPet)
+                .filter(pet -> !pet.isArchived())
+                .filter(pet -> pet.getShelter().getIsActive())
+                .map(petMapper::toDto)
+                .toList();
+    }
+
+    @Transactional
+    public List<PetResponse> getSupportedPets(String username) {
+        return favoritePetRepository.findByUsernameAndStatus(username, MatchType.SUPPORT)
                 .stream()
                 .map(FavoritePet::getPet)
                 .filter(pet -> !pet.isArchived())
