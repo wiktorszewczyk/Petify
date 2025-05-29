@@ -38,6 +38,12 @@ public class PetService {
     private final FavoritePetRepository favoritePetRepository;
     private final PetMapper petMapper;
 
+    public String getOwnerUsernameByPetId(Long petId) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new PetNotFoundException(petId));
+        return pet.getShelter().getOwnerUsername();
+    }
+
     public List<PetResponse> getPets() {
         List<Pet> pets = petRepository.findAll();
         List<PetResponse> petsList = new ArrayList<>();
@@ -101,6 +107,13 @@ public class PetService {
         return petRepository.findById(petId)
                 .map(petMapper::toDtoWithImages)
                 .orElseThrow(() -> new PetNotFoundException(petId));
+    }
+
+    public List<Long> getAllPetIds() {
+        return petRepository.findAll()
+                .stream()
+                .map(Pet::getId)
+                .collect(Collectors.toList());
     }
 
     public List<PetResponse> getAllShelterPets(Long shelterId) {
