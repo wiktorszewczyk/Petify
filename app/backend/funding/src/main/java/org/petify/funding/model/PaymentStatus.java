@@ -2,6 +2,10 @@ package org.petify.funding.model;
 
 public enum PaymentStatus {
     PENDING,
+    PROCESSING,
     SUCCEEDED,
-    FAILED
+    FAILED,
+    CANCELLED,
+    REFUNDED,
+    PARTIALLY_REFUNDED
 }
