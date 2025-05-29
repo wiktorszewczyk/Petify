@@ -88,6 +88,24 @@ public class ApplicationUser implements UserDetails {
     @Column(name = "badges_count")
     private Integer badgesCount = 0;
 
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "preferred_search_distance_km")
+    private Double preferredSearchDistanceKm = 20.0;
+
+    @Column(name = "auto_location_enabled")
+    private Boolean autoLocationEnabled = false;
+
+    @Column(name = "location_updated_at")
+    private LocalDateTime locationUpdatedAt;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<UserAchievement> achievements = new HashSet<>();
@@ -106,6 +124,30 @@ public class ApplicationUser implements UserDetails {
     @Transient
     public Integer getXpToNextLevel() {
         return 100 + (this.level * 50);
+    }
+
+    @Transient
+    public boolean hasLocation() {
+        return latitude != null && longitude != null;
+    }
+
+    @Transient
+    public boolean hasCompleteLocationProfile() {
+        return city != null && !city.trim().isEmpty() && hasLocation();
+    }
+
+    public void setLocation(String city, Double latitude, Double longitude) {
+        this.city = city;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.locationUpdatedAt = LocalDateTime.now();
+    }
+
+    public void clearLocation() {
+        this.city = null;
+        this.latitude = null;
+        this.longitude = null;
+        this.locationUpdatedAt = null;
     }
 
     public ApplicationUser() {
