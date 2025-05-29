@@ -35,7 +35,7 @@ public class MaterialDonation extends Donation {
     private Integer quantity;
 
     void recalculateAmount() {
-        setCurrency("PLN");
+        setCurrency(getCurrency() != null ? getCurrency() : Currency.PLN);
         setAmount(unitPrice.multiply(BigDecimal.valueOf(quantity)));
     }
 }

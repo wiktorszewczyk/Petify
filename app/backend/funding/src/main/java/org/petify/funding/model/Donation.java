@@ -1,22 +1,7 @@
 package org.petify.funding.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +26,6 @@ import java.util.List;
         discriminatorType = DiscriminatorType.STRING
 )
 public abstract class Donation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -75,7 +59,7 @@ public abstract class Donation {
             insertable = false,
             updatable = false
     )
-    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private DonationType donationType;
 
     @Column(
@@ -86,23 +70,105 @@ public abstract class Donation {
     )
     private BigDecimal amount;
 
-    @Column(
-            name = "currency",
-            length = 3,
-            nullable = false
-    )
-    private String currency;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "currency", length = 3, nullable = false)
+    private Currency currency = Currency.PLN;
+
+    @Column(name = "amount_in_pln", precision = 15, scale = 2)
+    private BigDecimal amountInPln;
+
+    @Column(name = "exchange_rate", precision = 10, scale = 6)
+    private BigDecimal exchangeRate;
+
+    @Column(name = "donor_email")
+    private String donorEmail;
+
+    @Column(name = "donor_name")
+    private String donorName;
+
+    @Column(name = "message", length = 500)
+    private String message;
+
+    @Column(name = "anonymous")
+    private Boolean anonymous = false;
+
+    @Column(name = "recurring")
+    private Boolean recurring = false;
+
+    @Column(name = "recurring_frequency")
+    private String recurringFrequency;
+
+    @Column(name = "receipt_requested")
+    private Boolean receiptRequested = false;
+
+    @Column(name = "total_fee_amount", precision = 15, scale = 2)
+    private BigDecimal totalFeeAmount;
+
+    @Column(name = "net_amount", precision = 15, scale = 2)
+    private BigDecimal netAmount;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "completed_at")
+    private Instant completedAt;
+
+    @Version
+    private Long version;
 
     @PrePersist
-    @PreUpdate
-    protected void beforeSave() {
+    protected void onCreate() {
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
+
         if (donatedAt == null) {
             donatedAt = Instant.now();
         }
+
+        calculateAmountInPln();
+
         if (this instanceof MaterialDonation md) {
             md.recalculateAmount();
-            this.amount   = md.getAmount();
+            this.amount = md.getAmount();
             this.currency = md.getCurrency();
         }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = Instant.now();
+        calculateAmountInPln();
+
+        if (status == DonationStatus.COMPLETED && completedAt == null) {
+            completedAt = Instant.now();
+        }
+
+        if (this instanceof MaterialDonation md) {
+            md.recalculateAmount();
+            this.amount = md.getAmount();
+            this.currency = md.getCurrency();
+        }
+    }
+
+    private void calculateAmountInPln() {
+        if (currency == Currency.PLN) {
+            amountInPln = amount;
+            exchangeRate = BigDecimal.ONE;
+        } else if (exchangeRate != null) {
+            amountInPln = amount.multiply(exchangeRate);
+        }
+    }
+
+    @Deprecated
+    public String getCurrencyAsString() {
+        return currency != null ? currency.name() : Currency.PLN.name();
+    }
+
+    @Deprecated
+    public void setCurrencyFromString(String currencyStr) {
+        this.currency = Currency.valueOf(currencyStr);
     }
 }

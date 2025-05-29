@@ -30,8 +30,6 @@ public class PaymentResponse {
     private String externalId;
     private BigDecimal amount;
     private Currency currency;
-    private BigDecimal exchangeRate;
-    private BigDecimal amountInPln;
     private BigDecimal feeAmount;
     private BigDecimal netAmount;
     private String failureReason;
@@ -53,8 +51,6 @@ public class PaymentResponse {
                 .externalId(payment.getExternalId())
                 .amount(payment.getAmount())
                 .currency(payment.getCurrency())
-                .exchangeRate(payment.getExchangeRate())
-                .amountInPln(payment.getAmountInPln())
                 .feeAmount(payment.getFeeAmount())
                 .netAmount(payment.getNetAmount())
                 .failureReason(payment.getFailureReason())

@@ -14,5 +14,4 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public class MonetaryDonation extends Donation {
-    // brak dodatkowych pól
 }

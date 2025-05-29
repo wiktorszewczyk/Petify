@@ -65,11 +65,6 @@ public class Payment {
     @Column(length = 3, nullable = false)
     private Currency currency;
 
-    @Column(name = "exchange_rate", precision = 10, scale = 6)
-    private BigDecimal exchangeRate;
-
-    @Column(name = "amount_in_pln", precision = 15, scale = 2)
-    private BigDecimal amountInPln;
 
     @Column(name = "fee_amount", precision = 15, scale = 2)
     private BigDecimal feeAmount;
@@ -120,23 +115,16 @@ public class Payment {
 
     private void calculateAmounts() {
         if (amount != null && currency != null) {
-            if (currency == Currency.PLN) {
-                amountInPln = amount;
-                exchangeRate = BigDecimal.ONE;
-            } else if (exchangeRate != null) {
-                amountInPln = amount.multiply(exchangeRate);
-            }
-
             // Calculate fees (example: 2.9% + 0.30 PLN for Stripe, 1.9% for PayU)
             if (provider == PaymentProvider.STRIPE) {
-                feeAmount = amountInPln.multiply(new BigDecimal("0.029"))
+                feeAmount = amount.multiply(new BigDecimal("0.029"))
                         .add(new BigDecimal("0.30"));
             } else if (provider == PaymentProvider.PAYU) {
-                feeAmount = amountInPln.multiply(new BigDecimal("0.019"));
+                feeAmount = amount.multiply(new BigDecimal("0.019"));
             }
 
             if (feeAmount != null) {
-                netAmount = amountInPln.subtract(feeAmount);
+                netAmount = amount.subtract(feeAmount);
             }
         }
     }

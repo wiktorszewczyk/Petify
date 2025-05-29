@@ -1,15 +1,16 @@
 package org.petify.funding.dto;
 
+import org.petify.funding.model.Currency;
 import org.petify.funding.model.Donation;
 import org.petify.funding.model.DonationType;
 import org.petify.funding.model.MaterialDonation;
 import org.petify.funding.model.MonetaryDonation;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,51 +25,69 @@ import java.math.BigDecimal;
 @DonationRequestValid
 public class DonationRequest {
 
-    @NotNull
+    @NotNull(message = "Shelter ID is required")
     private Long shelterId;
 
     private Long petId;
 
-    @NotBlank
+    @NotBlank(message = "Donor username is required")
     private String donorUsername;
 
-    @NotNull
+    @NotNull(message = "Donation type is required")
     private DonationType donationType;
 
-    // monetary
-    @DecimalMin("0.01")
+    @Email(message = "Invalid email format")
+    private String donorEmail;
+
+    private String donorName;
+    private String message;
+    private Boolean anonymous = false;
+    private Boolean receiptRequested = false;
+
+    @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
 
-    @Pattern(regexp = "[A-Z]{3}")
-    private String currency;
+    @NotNull(message = "Currency is required")
+    private Currency currency = Currency.PLN;
 
-    // material
-    @NotBlank
     private String itemName;
 
-    @DecimalMin("0.01")
+    @DecimalMin(value = "0.01", message = "Unit price must be greater than 0")
     private BigDecimal unitPrice;
 
-    @Min(1)
+    @Min(value = 1, message = "Quantity must be at least 1")
     private Integer quantity;
 
     public Donation toEntity() {
         return switch (donationType) {
             case MONEY -> MonetaryDonation.builder()
                     .shelterId(shelterId)
+                    .petId(petId)
                     .donorUsername(donorUsername)
+                    .donorEmail(donorEmail)
+                    .donorName(donorName)
+                    .message(message)
+                    .anonymous(anonymous)
+                    .receiptRequested(receiptRequested)
                     .amount(amount)
                     .currency(currency)
                     .build();
+
             case MATERIAL -> MaterialDonation.builder()
                     .shelterId(shelterId)
                     .petId(petId)
                     .donorUsername(donorUsername)
+                    .donorEmail(donorEmail)
+                    .donorName(donorName)
+                    .message(message)
+                    .anonymous(anonymous)
+                    .receiptRequested(receiptRequested)
                     .itemName(itemName)
                     .unitPrice(unitPrice)
                     .quantity(quantity)
                     .currency(currency)
                     .build();
+
             default -> throw new IllegalStateException("Unexpected donationType: " + donationType);
         };
     }

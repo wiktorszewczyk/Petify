@@ -3,9 +3,7 @@ package org.petify.funding.dto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class DonationRequestValidator
-        implements ConstraintValidator<DonationRequestValid, DonationRequest> {
-
+public class DonationRequestValidator implements ConstraintValidator<DonationRequestValid, DonationRequest> {
     @Override
     public boolean isValid(DonationRequest dto, ConstraintValidatorContext ctx) {
         if (dto.getDonationType() == null) {
@@ -19,44 +17,36 @@ public class DonationRequestValidator
             case MONEY -> {
                 if (dto.getAmount() == null) {
                     valid = false;
-                    ctx.buildConstraintViolationWithTemplate("amount is required for MONEY")
+                    ctx.buildConstraintViolationWithTemplate("Amount is required for monetary donations")
                             .addPropertyNode("amount").addConstraintViolation();
                 }
                 if (dto.getCurrency() == null) {
                     valid = false;
-                    ctx.buildConstraintViolationWithTemplate("currency is required for MONEY")
+                    ctx.buildConstraintViolationWithTemplate("Currency is required for monetary donations")
                             .addPropertyNode("currency").addConstraintViolation();
-                }
-                if (dto.getPetId() != null) {
-                    valid = false;
-                    ctx.buildConstraintViolationWithTemplate("petId must be null for MONEY")
-                            .addPropertyNode("petId").addConstraintViolation();
                 }
             }
             case MATERIAL -> {
-                if (dto.getItemName() == null) {
+                if (dto.getItemName() == null || dto.getItemName().trim().isEmpty()) {
                     valid = false;
-                    ctx.buildConstraintViolationWithTemplate("itemName is required for MATERIAL")
+                    ctx.buildConstraintViolationWithTemplate("Item name is required for material donations")
                             .addPropertyNode("itemName").addConstraintViolation();
                 }
                 if (dto.getUnitPrice() == null) {
                     valid = false;
-                    ctx.buildConstraintViolationWithTemplate("unitPrice is required for MATERIAL")
+                    ctx.buildConstraintViolationWithTemplate("Unit price is required for material donations")
                             .addPropertyNode("unitPrice").addConstraintViolation();
                 }
-                if (dto.getQuantity() == null) {
+                if (dto.getQuantity() == null || dto.getQuantity() < 1) {
                     valid = false;
-                    ctx.buildConstraintViolationWithTemplate("quantity is required for MATERIAL")
+                    ctx.buildConstraintViolationWithTemplate("Quantity must be at least 1 for material donations")
                             .addPropertyNode("quantity").addConstraintViolation();
                 }
                 if (dto.getCurrency() == null) {
                     valid = false;
-                    ctx.buildConstraintViolationWithTemplate("currency is required for MATERIAL")
+                    ctx.buildConstraintViolationWithTemplate("Currency is required for material donations")
                             .addPropertyNode("currency").addConstraintViolation();
                 }
-            }
-            default -> {
-                // no additional checks
             }
         }
 
