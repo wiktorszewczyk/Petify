@@ -1,7 +1,11 @@
 package org.petify.shelter.model;
 
+import org.petify.shelter.enums.MatchType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,34 +44,37 @@ public class FavoritePet {
     @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private MatchType status;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FavoritePet favorite)) {
+
+        if (!(o instanceof FavoritePet that)) {
             return false;
         }
 
-        return new EqualsBuilder()
-                .append(getUsername(), favorite.getUsername())
-                .append(getPet(), favorite.getPet())
-                .isEquals();
+        return new EqualsBuilder().append(getId(), that.getId()).append(getUsername(),
+                that.getUsername()).append(getPet(), that.getPet()).append(getStatus(), that.getStatus()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(getUsername())
-                .append(getPet())
-                .toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId())
+                .append(getUsername()).append(getPet()).append(getStatus()).toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .append("id", id)
                 .append("username", username)
                 .append("pet", pet)
+                .append("status", status)
                 .toString();
     }
 }

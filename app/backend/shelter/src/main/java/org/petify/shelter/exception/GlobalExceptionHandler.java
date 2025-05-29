@@ -75,6 +75,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(ShelterIsNotActiveException.class)
+    ProblemDetail handleShelterIsNotActive(ShelterIsNotActiveException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_ACCEPTABLE);
+        problemDetail.setTitle("Shelter is not active yet.");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
     @ExceptionHandler(PetIsArchivedException.class)
     ProblemDetail handlePetIsArchived(PetIsArchivedException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);

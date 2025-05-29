@@ -25,10 +25,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,11 +51,12 @@ public class ShelterController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PostMapping()
     public ResponseEntity<?> addShelter(
-            @Valid @RequestBody ShelterRequest input,
-            @AuthenticationPrincipal Jwt jwt) {
+            @Valid @RequestPart ShelterRequest shelterRequest,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+            @AuthenticationPrincipal Jwt jwt) throws IOException {
 
         String username = jwt != null ? jwt.getSubject() : null;
-        ShelterResponse shelter = shelterService.createShelter(input, username);
+        ShelterResponse shelter = shelterService.createShelter(shelterRequest, imageFile, username);
 
         return new ResponseEntity<>(shelter, HttpStatus.CREATED);
     }
@@ -72,12 +74,13 @@ public class ShelterController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShelter(@PathVariable("id") Long id,
-                                           @Valid @RequestBody ShelterRequest input,
-                                           @AuthenticationPrincipal Jwt jwt) {
+                                           @Valid @RequestPart ShelterRequest shelterRequest,
+                                           @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+                                           @AuthenticationPrincipal Jwt jwt) throws IOException {
 
         verifyShelterOwnership(id, jwt);
 
-        ShelterResponse updatedShelter = shelterService.updateShelter(input, id);
+        ShelterResponse updatedShelter = shelterService.updateShelter(shelterRequest, imageFile, id);
         return ResponseEntity.ok(updatedShelter);
     }
 
