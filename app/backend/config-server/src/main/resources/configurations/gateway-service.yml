@@ -37,6 +37,28 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: reservations-service
+          uri: lb://RESERVATIONS-SERVICE
+          predicates:
+            - Path=/reservations/**, /reservations
+          filters:
+            - PreserveHostHeader
+
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/ws-chat/**, /chat/**
+          filters:
+            - PreserveHostHeader
+
+
+        - id: shelter-service
+          uri: lb://SHELTER-SERVICE
+          predicates:
+            - Path=/shelters/**, /shelters, /pets/**, /pets, /adoptions/**, /adoptions
+          filters:
+            - PreserveHostHeader
+
         - id: shelter-service
           uri: lb://SHELTER-SERVICE
           predicates:

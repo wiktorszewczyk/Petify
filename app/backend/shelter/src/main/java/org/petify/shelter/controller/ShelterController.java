@@ -48,6 +48,12 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.getShelters());
     }
 
+    @GetMapping("/{id}/owner")
+    @PreAuthorize("hasAnyRole('USER', 'SHELTER', 'ADMIN')")
+    public ResponseEntity<String> owner(@PathVariable Long id) {
+        return ResponseEntity.ok(petService.getOwnerUsernameByPetId(id));
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PostMapping()
     public ResponseEntity<?> addShelter(
