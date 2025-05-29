@@ -55,6 +55,7 @@ public class PetController {
         return ResponseEntity.ok(petService.getPets());
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @GetMapping("/filter")
     public ResponseEntity<List<PetResponse>> getFilteredPets(
             @RequestParam(required = false) Boolean vaccinated,
@@ -66,10 +67,14 @@ public class PetController {
             @RequestParam(required = false) PetType type,
             @RequestParam(required = false) Double userLat,
             @RequestParam(required = false) Double userLng,
-            @RequestParam(required = false) Double radiusKm
+            @RequestParam(required = false) Double radiusKm,
+            @AuthenticationPrincipal Jwt jwt
     ) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
         return ResponseEntity.ok(
-                petService.getFilteredPets(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge, type, userLat, userLng, radiusKm)
+                petService.getFilteredPets(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
+                        type, userLat, userLng, radiusKm, username)
         );
     }
 
@@ -97,6 +102,12 @@ public class PetController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPetById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(petService.getPetById(id), HttpStatus.FOUND);
+    }
+
+    @GetMapping("/ids")
+    public ResponseEntity<List<Long>> getAllPetIds() {
+        List<Long> petIds = petService.getAllPetIds();
+        return ResponseEntity.ok(petIds);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
@@ -214,25 +225,42 @@ public class PetController {
             @AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
 
-        if (favoritePetService.save(username, petId)) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        favoritePetService.like(username, petId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
-    @DeleteMapping("/{id}/dislike")
+    @PostMapping("/{id}/dislike")
     public ResponseEntity<?> dislikePet(
             @PathVariable("id") Long petId,
             @AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
 
-        if (favoritePetService.delete(username, petId)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        favoritePetService.dislike(username, petId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
+    @PostMapping("/{id}/support")
+    public ResponseEntity<?> supportPet(
+            @PathVariable("id") Long petId,
+            @AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        favoritePetService.support(username, petId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
@@ -241,6 +269,15 @@ public class PetController {
         String username = jwt != null ? jwt.getSubject() : null;
 
         List<PetResponse> favoritePets = favoritePetService.getFavoritePets(username);
+        return ResponseEntity.ok(favoritePets);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
+    @GetMapping("/supportedPets")
+    public ResponseEntity<?> getSupportedPets(@AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        List<PetResponse> favoritePets = favoritePetService.getSupportedPets(username);
         return ResponseEntity.ok(favoritePets);
     }
 
