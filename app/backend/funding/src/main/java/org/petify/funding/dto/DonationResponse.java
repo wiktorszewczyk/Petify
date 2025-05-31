@@ -27,8 +27,6 @@ public class DonationResponse {
     private Long shelterId;
     private Long petId;
     private String donorUsername;
-    private String donorEmail;
-    private String donorName;
     private String message;
     private Boolean anonymous;
     private Boolean receiptRequested;
@@ -53,8 +51,6 @@ public class DonationResponse {
                 .shelterId(d.getShelterId())
                 .petId(d.getPetId())
                 .donorUsername(d.getDonorUsername())
-                .donorEmail(d.getDonorEmail())
-                .donorName(d.getDonorName())
                 .message(d.getMessage())
                 .anonymous(d.getAnonymous())
                 .receiptRequested(d.getReceiptRequested())

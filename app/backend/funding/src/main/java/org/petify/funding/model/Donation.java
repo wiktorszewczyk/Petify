@@ -77,15 +77,6 @@ public abstract class Donation {
     @Column(name = "amount_in_pln", precision = 15, scale = 2)
     private BigDecimal amountInPln;
 
-    @Column(name = "exchange_rate", precision = 10, scale = 6)
-    private BigDecimal exchangeRate;
-
-    @Column(name = "donor_email")
-    private String donorEmail;
-
-    @Column(name = "donor_name")
-    private String donorName;
-
     @Column(name = "message", length = 500)
     private String message;
 
@@ -115,9 +106,6 @@ public abstract class Donation {
 
     @Column(name = "completed_at")
     private Instant completedAt;
-
-    @Version
-    private Long version;
 
     @PrePersist
     protected void onCreate() {
@@ -156,19 +144,46 @@ public abstract class Donation {
     private void calculateAmountInPln() {
         if (currency == Currency.PLN) {
             amountInPln = amount;
-            exchangeRate = BigDecimal.ONE;
-        } else if (exchangeRate != null) {
-            amountInPln = amount.multiply(exchangeRate);
         }
     }
 
-    @Deprecated
-    public String getCurrencyAsString() {
-        return currency != null ? currency.name() : Currency.PLN.name();
+    // Business logic methods
+    public boolean isCompleted() {
+        return status == DonationStatus.COMPLETED;
     }
 
-    @Deprecated
-    public void setCurrencyFromString(String currencyStr) {
-        this.currency = Currency.valueOf(currencyStr);
+    public boolean hasPendingPayments() {
+        return payments.stream()
+                .anyMatch(payment -> payment.getStatus() == PaymentStatus.PENDING ||
+                        payment.getStatus() == PaymentStatus.PROCESSING);
+    }
+
+    public boolean hasSuccessfulPayment() {
+        return payments.stream()
+                .anyMatch(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED);
+    }
+
+    public BigDecimal getTotalPaidAmount() {
+        return payments.stream()
+                .filter(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED)
+                .map(Payment::getAmountInPln)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void calculateTotalFees() {
+        totalFeeAmount = payments.stream()
+                .filter(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED)
+                .map(payment -> payment.getFeeAmount() != null ? payment.getFeeAmount() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        netAmount = getTotalPaidAmount().subtract(totalFeeAmount);
+    }
+
+    public boolean isDonorUsernameEmail() {
+        return donorUsername != null && donorUsername.contains("@");
+    }
+
+    public boolean isDonorUsernamePhone() {
+        return donorUsername != null && donorUsername.matches("^\\+?[0-9]{9,15}$");
     }
 }

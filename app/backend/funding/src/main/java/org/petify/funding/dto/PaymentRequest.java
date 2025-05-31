@@ -4,7 +4,6 @@ import org.petify.funding.model.Currency;
 import org.petify.funding.model.PaymentMethod;
 import org.petify.funding.model.PaymentProvider;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -37,10 +36,7 @@ public class PaymentRequest {
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
 
-    @Email(message = "Invalid email format")
-    private String customerEmail;
-
-    private String customerName;
+    private String customerUsername;
 
     private String returnUrl;
 

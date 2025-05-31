@@ -65,6 +65,8 @@ public class Payment {
     @Column(length = 3, nullable = false)
     private Currency currency;
 
+    @Column(name = "amount_in_pln", precision = 15, scale = 2)
+    private BigDecimal amountInPln;
 
     @Column(name = "fee_amount", precision = 15, scale = 2)
     private BigDecimal feeAmount;
@@ -115,17 +117,41 @@ public class Payment {
 
     private void calculateAmounts() {
         if (amount != null && currency != null) {
-            // Calculate fees (example: 2.9% + 0.30 PLN for Stripe, 1.9% for PayU)
-            if (provider == PaymentProvider.STRIPE) {
-                feeAmount = amount.multiply(new BigDecimal("0.029"))
-                        .add(new BigDecimal("0.30"));
-            } else if (provider == PaymentProvider.PAYU) {
-                feeAmount = amount.multiply(new BigDecimal("0.019"));
+            if (currency == Currency.PLN) {
+                amountInPln = amount;
             }
 
-            if (feeAmount != null) {
-                netAmount = amount.subtract(feeAmount);
+            if (provider != null) {
+                calculateProviderFee();
             }
+
+            if (feeAmount != null && amountInPln != null) {
+                netAmount = amountInPln.subtract(feeAmount);
+            }
+        }
+    }
+
+    private void calculateProviderFee() {
+        if (amountInPln == null) return;
+
+        switch (provider) {
+            case STRIPE:
+                BigDecimal stripePercentage = amountInPln.multiply(new BigDecimal("0.029"));
+                BigDecimal stripeFixed = switch (currency) {
+                    case USD -> new BigDecimal("0.30");
+                    case EUR -> new BigDecimal("0.25");
+                    case GBP -> new BigDecimal("0.20");
+                    case PLN -> new BigDecimal("1.20");
+                };
+                feeAmount = stripePercentage.add(stripeFixed);
+                break;
+
+            case PAYU:
+                feeAmount = amountInPln.multiply(new BigDecimal("0.019"));
+                break;
+
+            default:
+                feeAmount = BigDecimal.ZERO;
         }
     }
 }

@@ -36,10 +36,6 @@ public class DonationRequest {
     @NotNull(message = "Donation type is required")
     private DonationType donationType;
 
-    @Email(message = "Invalid email format")
-    private String donorEmail;
-
-    private String donorName;
     private String message;
     private Boolean anonymous = false;
     private Boolean receiptRequested = false;
@@ -64,8 +60,6 @@ public class DonationRequest {
                     .shelterId(shelterId)
                     .petId(petId)
                     .donorUsername(donorUsername)
-                    .donorEmail(donorEmail)
-                    .donorName(donorName)
                     .message(message)
                     .anonymous(anonymous)
                     .receiptRequested(receiptRequested)
@@ -77,8 +71,6 @@ public class DonationRequest {
                     .shelterId(shelterId)
                     .petId(petId)
                     .donorUsername(donorUsername)
-                    .donorEmail(donorEmail)
-                    .donorName(donorName)
                     .message(message)
                     .anonymous(anonymous)
                     .receiptRequested(receiptRequested)
