@@ -1,106 +1,347 @@
 package org.petify.funding.service;
 
-import org.petify.funding.model.Donation;
-import org.petify.funding.model.DonationStatus;
-import org.petify.funding.model.Payment;
-import org.petify.funding.model.PaymentStatus;
+import org.petify.funding.dto.*;
+import org.petify.funding.model.*;
+import org.petify.funding.model.Currency;
 import org.petify.funding.repository.DonationRepository;
 import org.petify.funding.repository.PaymentRepository;
+import org.petify.funding.service.payment.PaymentProviderFactory;
+import org.petify.funding.service.payment.PaymentProviderService;
 
-import com.stripe.exception.SignatureVerificationException;
-import com.stripe.exception.StripeException;
-import com.stripe.model.Event;
-import com.stripe.model.PaymentIntent;
-import com.stripe.net.Webhook;
-import com.stripe.param.PaymentIntentCreateParams;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentService {
 
-    private final DonationRepository donationRepo;
-    private final PaymentRepository paymentRepo;
+    private final PaymentRepository paymentRepository;
+    private final DonationRepository donationRepository;
+    private final PaymentProviderFactory providerFactory;
 
-    @Value("${stripe.webhook-secret}")
-    private String webhookSecret;
+    /**
+     * Get available payment options for a donation
+     */
+    public List<PaymentOptionResponse> getAvailablePaymentOptions(Long donationId, String userCountry) {
+        Donation donation = donationRepository.findById(donationId)
+                .orElseThrow(() -> new RuntimeException("Donation not found"));
 
-    @Transactional
-    public String createPaymentIntent(Long donationId) throws StripeException {
-        Donation donation = donationRepo.findById(donationId)
-                .orElseThrow(() -> new IllegalArgumentException("Donation not found: " + donationId));
+        List<PaymentOptionResponse> options = new ArrayList<>();
 
-        long amountInCents = donation.getAmount()
-                .movePointRight(2)
-                .longValue();
+        for (PaymentProvider provider : PaymentProvider.values()) {
+            PaymentProviderService providerService = providerFactory.getProvider(provider);
 
-        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                .setAmount(amountInCents)
-                .setCurrency(donation.getCurrency().toLowerCase())
-                .putAllMetadata(Map.of("donationId", donationId.toString()))
-                .build();
+            PaymentOptionResponse option = PaymentOptionResponse.builder()
+                    .provider(provider)
+                    .providerDisplayName(getProviderDisplayName(provider))
+                    .supportedMethods(getSupportedMethods(provider))
+                    .supportedCurrencies(getSupportedCurrencies(provider))
+                    .feePercentage(getFeePercentage(provider))
+                    .fixedFee(getFixedFee(provider, donation.getCurrency()))
+                    .description(getProviderDescription(provider))
+                    .recommended(isRecommendedProvider(provider, userCountry, donation.getCurrency()))
+                    .available(isProviderAvailable(provider, donation))
+                    .build();
 
-        PaymentIntent intent = PaymentIntent.create(params);
+            options.add(option);
+        }
 
-        Payment payment = Payment.builder()
-                .donation(donation)
-                .provider("STRIPE")
-                .externalId(intent.getId())
-                .status(PaymentStatus.PENDING)
-                .amount(donation.getAmount())
-                .currency(donation.getCurrency())
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
-                .build();
-
-        paymentRepo.save(payment);
-        donation.getPayments().add(payment);
-        donation.setStatus(DonationStatus.PENDING);
-
-        return intent.getClientSecret();
+        return options.stream()
+                .sorted((o1, o2) -> {
+                    if (o1.isRecommended() != o2.isRecommended()) {
+                        return o1.isRecommended() ? -1 : 1;
+                    }
+                    if (o1.isAvailable() != o2.isAvailable()) {
+                        return o1.isAvailable() ? -1 : 1;
+                    }
+                    return 0;
+                })
+                .collect(Collectors.toList());
     }
 
+    /**
+     * Create a new payment
+     */
     @Transactional
-    public void handleWebhook(String payload, String sigHeader) throws SignatureVerificationException {
-        Event event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
-        if ("payment_intent.succeeded".equals(event.getType())) {
-            PaymentIntent pi = (PaymentIntent) event
-                    .getDataObjectDeserializer()
-                    .getObject()
-                    .orElseThrow();
-            paymentRepo.findByExternalId(pi.getId()).ifPresent(p -> {
-                p.setStatus(PaymentStatus.SUCCEEDED);
-                p.setUpdatedAt(Instant.now());
-                Donation d = p.getDonation();
-                d.setStatus(DonationStatus.COMPLETED);
-                donationRepo.save(d);
-            });
+    public PaymentResponse createPayment(PaymentRequest request) {
+        Donation donation = donationRepository.findById(request.getDonationId())
+                .orElseThrow(() -> new RuntimeException("Donation not found"));
 
-        } else if ("payment_intent.payment_failed".equals(event.getType())) {
-            PaymentIntent pi = (PaymentIntent) event
-                    .getDataObjectDeserializer()
-                    .getObject()
-                    .orElseThrow();
-            paymentRepo.findByExternalId(pi.getId()).ifPresent(p -> {
-                p.setStatus(PaymentStatus.FAILED);
-                p.setUpdatedAt(Instant.now());
-                paymentRepo.save(p);
+        PaymentProvider provider = determineOptimalProvider(request, donation);
+        request.setPreferredProvider(provider);
 
-                Donation d = p.getDonation();
-                // jeżeli żadna z prób nie jest SUCCEEDED → darowizna też FAILURE
-                boolean anySuccess = d.getPayments().stream()
-                        .anyMatch(x -> x.getStatus() == PaymentStatus.SUCCEEDED);
-                if (!anySuccess) {
-                    d.setStatus(DonationStatus.FAILED);
-                    donationRepo.save(d);
-                }
-            });
+        PaymentProviderService providerService = providerFactory.getProvider(provider);
+        PaymentResponse response = providerService.createPayment(request);
+
+        if (donation.getStatus() == DonationStatus.PENDING) {
+            donation.setStatus(DonationStatus.PENDING);
+            donationRepository.save(donation);
+        }
+
+        log.info("Payment created successfully: {} with provider {}", response.getId(), provider);
+        return response;
+    }
+
+    /**
+     * Get payment by ID
+     */
+    public PaymentResponse getPaymentById(Long paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        return PaymentResponse.fromEntity(payment);
+    }
+
+    /**
+     * Get payment by external ID
+     */
+    public PaymentResponse getPaymentByExternalId(String externalId) {
+        Payment payment = paymentRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        return PaymentResponse.fromEntity(payment);
+    }
+
+    /**
+     * Cancel a payment
+     */
+    @Transactional
+    public PaymentResponse cancelPayment(Long paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        PaymentProviderService providerService = providerFactory.getProvider(payment.getProvider());
+        return providerService.cancelPayment(payment.getExternalId());
+    }
+
+    /**
+     * Refund a payment
+     */
+    @Transactional
+    public PaymentResponse refundPayment(Long paymentId, BigDecimal amount) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        if (payment.getStatus() != PaymentStatus.SUCCEEDED) {
+            throw new RuntimeException("Can only refund successful payments");
+        }
+
+        BigDecimal refundAmount = amount != null ? amount : payment.getAmount();
+
+        PaymentProviderService providerService = providerFactory.getProvider(payment.getProvider());
+        return providerService.refundPayment(payment.getExternalId(), refundAmount);
+    }
+
+    /**
+     * Get user's payment history
+     */
+    public Page<PaymentResponse> getUserPaymentHistory(Pageable pageable, String status) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Page<Payment> payments;
+        if (status != null && !status.isEmpty()) {
+            PaymentStatus paymentStatus = PaymentStatus.valueOf(status.toUpperCase());
+            payments = paymentRepository.findByDonation_DonorUsernameAndStatusOrderByCreatedAtDesc(
+                    username, paymentStatus, pageable);
+        } else {
+            payments = paymentRepository.findByDonation_DonorUsernameOrderByCreatedAtDesc(
+                    username, pageable);
+        }
+
+        return payments.map(PaymentResponse::fromEntity);
+    }
+
+    /**
+     * Get payments for a specific donation
+     */
+    public List<PaymentResponse> getPaymentsByDonation(Long donationId) {
+        List<Payment> payments = paymentRepository.findByDonationId(donationId);
+        return payments.stream()
+                .map(PaymentResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Handle Stripe webhook
+     */
+    @Transactional
+    public void handleStripeWebhook(String payload, String signature) {
+        PaymentProviderService stripeService = providerFactory.getProvider(PaymentProvider.STRIPE);
+        stripeService.handleWebhook(payload, signature);
+    }
+
+    /**
+     * Handle PayU webhook
+     */
+    @Transactional
+    public void handlePayUWebhook(String payload, String signature) {
+        PaymentProviderService payuService = providerFactory.getProvider(PaymentProvider.PAYU);
+        payuService.handleWebhook(payload, signature);
+    }
+
+    /**
+     * Calculate payment fee
+     */
+    public Map<String, Object> calculatePaymentFee(BigDecimal amount, Currency currency,
+                                                   PaymentProvider provider) {
+        PaymentProviderService providerService = providerFactory.getProvider(provider);
+        BigDecimal fee = providerService.calculateFee(amount, currency);
+        BigDecimal netAmount = amount.subtract(fee);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("amount", amount);
+        result.put("currency", currency);
+        result.put("provider", provider);
+        result.put("fee", fee);
+        result.put("netAmount", netAmount);
+        result.put("feePercentage", fee.divide(amount, 4, java.math.RoundingMode.HALF_UP)
+                .multiply(new BigDecimal("100")));
+
+        return result;
+    }
+
+    /**
+     * Get supported payment methods for a provider
+     */
+    public List<String> getSupportedPaymentMethods(PaymentProvider provider) {
+        PaymentProviderService providerService = providerFactory.getProvider(provider);
+
+        return Arrays.stream(PaymentMethod.values())
+                .filter(providerService::supportsPaymentMethod)
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retry a failed payment
+     */
+    @Transactional
+    public PaymentResponse retryPayment(Long paymentId) {
+        Payment originalPayment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        if (originalPayment.getStatus() != PaymentStatus.FAILED) {
+            throw new RuntimeException("Can only retry failed payments");
+        }
+
+        PaymentRequest retryRequest = PaymentRequest.builder()
+                .donationId(originalPayment.getDonation().getId())
+                .preferredProvider(originalPayment.getProvider())
+                .preferredMethod(originalPayment.getPaymentMethod())
+                .currency(originalPayment.getCurrency())
+                .amount(originalPayment.getAmount())
+                .build();
+
+        return createPayment(retryRequest);
+    }
+
+    /**
+     * Get payment providers health status
+     */
+    public Map<String, Object> getPaymentProvidersHealth() {
+        Map<String, Object> health = new HashMap<>();
+
+        for (PaymentProvider provider : PaymentProvider.values()) {
+            Map<String, Object> providerHealth = new HashMap<>();
+
+            try {
+                PaymentProviderService service = providerFactory.getProvider(provider);
+                providerHealth.put("status", "UP");
+                providerHealth.put("available", true);
+            } catch (Exception e) {
+                providerHealth.put("status", "DOWN");
+                providerHealth.put("available", false);
+                providerHealth.put("error", e.getMessage());
+            }
+
+            health.put(provider.name().toLowerCase(), providerHealth);
+        }
+
+        return health;
+    }
+
+    private PaymentProvider determineOptimalProvider(PaymentRequest request, Donation donation) {
+        if (request.getPreferredProvider() != null) {
+            return request.getPreferredProvider();
+        }
+
+        Currency currency = request.getCurrency() != null ? request.getCurrency() : donation.getCurrency();
+
+        if (currency == Currency.PLN) {
+            return PaymentProvider.PAYU;
+        }
+
+        return PaymentProvider.STRIPE;
+    }
+
+    private String getProviderDisplayName(PaymentProvider provider) {
+        return switch (provider) {
+            case STRIPE -> "Stripe";
+            case PAYU -> "PayU";
+        };
+    }
+
+    private List<PaymentMethod> getSupportedMethods(PaymentProvider provider) {
+        PaymentProviderService service = providerFactory.getProvider(provider);
+        return Arrays.stream(PaymentMethod.values())
+                .filter(service::supportsPaymentMethod)
+                .collect(Collectors.toList());
+    }
+
+    private List<Currency> getSupportedCurrencies(PaymentProvider provider) {
+        PaymentProviderService service = providerFactory.getProvider(provider);
+        return Arrays.stream(Currency.values())
+                .filter(service::supportsCurrency)
+                .collect(Collectors.toList());
+    }
+
+    private BigDecimal getFeePercentage(PaymentProvider provider) {
+        return switch (provider) {
+            case STRIPE -> new BigDecimal("2.9");
+            case PAYU -> new BigDecimal("1.9");
+        };
+    }
+
+    private BigDecimal getFixedFee(PaymentProvider provider, Currency currency) {
+        if (provider == PaymentProvider.STRIPE) {
+            return switch (currency) {
+                case USD -> new BigDecimal("0.30");
+                case EUR -> new BigDecimal("0.25");
+                case GBP -> new BigDecimal("0.20");
+                case PLN -> new BigDecimal("1.20");
+            };
+        }
+        return BigDecimal.ZERO;
+    }
+
+    private String getProviderDescription(PaymentProvider provider) {
+        return switch (provider) {
+            case STRIPE -> "International payment processor supporting cards and digital wallets";
+            case PAYU -> "Polish payment processor with BLIK and local bank transfer support";
+        };
+    }
+
+    private boolean isRecommendedProvider(PaymentProvider provider, String userCountry, Currency currency) {
+        if ("PL".equals(userCountry) || currency == Currency.PLN) {
+            return provider == PaymentProvider.PAYU;
+        }
+        return provider == PaymentProvider.STRIPE;
+    }
+
+    private boolean isProviderAvailable(PaymentProvider provider, Donation donation) {
+        try {
+            PaymentProviderService service = providerFactory.getProvider(provider);
+            return service.supportsCurrency(donation.getCurrency());
+        } catch (Exception e) {
+            return false;
         }
     }
 }
