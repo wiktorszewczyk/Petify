@@ -46,24 +46,22 @@ public class StripePaymentService implements PaymentProviderService {
                     .orElseThrow(() -> new RuntimeException("Donation not found"));
 
             PaymentIntentCreateParams.Builder paramsBuilder = PaymentIntentCreateParams.builder()
-                    .setAmount(convertToStripeAmount(request.getAmount(), request.getCurrency()))
-                    .setCurrency(request.getCurrency().name().toLowerCase())
-                    .putMetadata("donationId", String.valueOf(request.getDonationId()))
+                    .setAmount(convertToStripeAmount(donation.getAmount(), donation.getCurrency()))
+                    .setCurrency(donation.getCurrency().name().toLowerCase())
+                    .putMetadata("donationId", String.valueOf(donation.getId()))
                     .putMetadata("provider", PaymentProvider.STRIPE.getValue())
                     .putMetadata("donationType", donation.getDonationType().name())
                     .putMetadata("shelterId", String.valueOf(donation.getShelterId()));
 
-            if (request.getDescription() != null) {
-                paramsBuilder.setDescription(request.getDescription());
-            } else {
-                String description = String.format("Donation to shelter #%d", donation.getShelterId());
-                if (donation.getPetId() != null) {
-                    description += String.format(" for pet #%d", donation.getPetId());
-                }
-                paramsBuilder.setDescription(description);
-            }
+            String description = buildDescription(donation);
+            paramsBuilder.setDescription(description);
 
-            configurePaymentMethods(paramsBuilder, request);
+            if (donation.getPetId() != null) {
+                paramsBuilder.putMetadata("petId", String.valueOf(donation.getPetId()));
+            }
+            if (donation.getDonorUsername() != null) {
+                paramsBuilder.putMetadata("donorUsername", donation.getDonorUsername());
+            }
 
             PaymentIntent intent = PaymentIntent.create(paramsBuilder.build());
 
@@ -72,11 +70,11 @@ public class StripePaymentService implements PaymentProviderService {
                     .provider(PaymentProvider.STRIPE)
                     .externalId(intent.getId())
                     .status(mapStripeStatus(intent.getStatus()))
-                    .amount(request.getAmount())
-                    .currency(request.getCurrency())
+                    .amount(donation.getAmount())
+                    .currency(donation.getCurrency())
                     .paymentMethod(determinePaymentMethod(request))
                     .clientSecret(intent.getClientSecret())
-                    .metadata(createMetadata(request, donation))
+                    .metadata(createMetadata(donation))
                     .expiresAt(Instant.now().plusSeconds(3600))
                     .build();
 
@@ -229,9 +227,12 @@ public class StripePaymentService implements PaymentProviderService {
 
     @Override
     public boolean supportsPaymentMethod(PaymentMethod method) {
-        return Set.of(PaymentMethod.CARD, PaymentMethod.GOOGLE_PAY,
-                        PaymentMethod.APPLE_PAY, PaymentMethod.PAYPAL)
-                .contains(method);
+        return Set.of(
+                PaymentMethod.CARD,
+                PaymentMethod.GOOGLE_PAY,
+                PaymentMethod.APPLE_PAY,
+                PaymentMethod.PAYPAL
+        ).contains(method);
     }
 
     @Override
@@ -273,9 +274,27 @@ public class StripePaymentService implements PaymentProviderService {
         return PaymentMethod.CARD;
     }
 
-    private Map<String, String> createMetadata(PaymentRequest request, Donation donation) {
+    private String buildDescription(Donation donation) {
+        StringBuilder desc = new StringBuilder();
+
+        if (donation.getDonationType() == DonationType.MONEY) {
+            desc.append("Monetary donation");
+        } else if (donation instanceof MaterialDonation md) {
+            desc.append("Material donation: ").append(md.getItemName());
+        }
+
+        desc.append(" to animal shelter #").append(donation.getShelterId());
+
+        if (donation.getPetId() != null) {
+            desc.append(" for pet #").append(donation.getPetId());
+        }
+
+        return desc.toString();
+    }
+
+    private Map<String, String> createMetadata(Donation donation) {
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("donationId", String.valueOf(request.getDonationId()));
+        metadata.put("donationId", String.valueOf(donation.getId()));
         metadata.put("provider", PaymentProvider.STRIPE.getValue());
         metadata.put("donationType", donation.getDonationType().name());
         metadata.put("shelterId", String.valueOf(donation.getShelterId()));
@@ -290,22 +309,6 @@ public class StripePaymentService implements PaymentProviderService {
         return metadata;
     }
 
-    private void configurePaymentMethods(PaymentIntentCreateParams.Builder builder,
-                                         PaymentRequest request) {
-        List<String> paymentMethodTypes = new ArrayList<>();
-        paymentMethodTypes.add("card");
-
-        if (request.getCurrency() == Currency.USD || request.getCurrency() == Currency.EUR) {
-            paymentMethodTypes.add("paypal");
-        }
-
-        if (request.getCurrency() == Currency.USD) {
-            paymentMethodTypes.add("us_bank_account");
-        }
-
-        builder.addAllPaymentMethodType(paymentMethodTypes);
-    }
-
     private void handlePaymentSucceeded(Event event) {
         PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
                 .getObject().orElseThrow();
@@ -313,7 +316,6 @@ public class StripePaymentService implements PaymentProviderService {
         paymentRepository.findByExternalId(paymentIntent.getId())
                 .ifPresent(payment -> {
                     payment.setStatus(PaymentStatus.SUCCEEDED);
-
                     paymentRepository.save(payment);
 
                     updateDonationStatus(payment.getDonation(), DonationStatus.COMPLETED);
@@ -385,7 +387,6 @@ public class StripePaymentService implements PaymentProviderService {
             donation.setStatus(newStatus);
             if (newStatus == DonationStatus.COMPLETED) {
                 donation.setCompletedAt(Instant.now());
-                donation.calculateTotalFees();
             }
             donationRepository.save(donation);
 

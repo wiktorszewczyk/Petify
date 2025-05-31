@@ -1,25 +1,19 @@
 package org.petify.funding.dto;
 
-import org.petify.funding.model.Currency;
-import org.petify.funding.model.PaymentMethod;
-import org.petify.funding.model.PaymentProvider;
-import org.petify.funding.model.PaymentStatus;
+import org.petify.funding.model.*;
 
-import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@lombok.Builder
 public class PaymentResponse {
 
     private Long id;
@@ -36,12 +30,11 @@ public class PaymentResponse {
     private String failureCode;
     private String clientSecret;
     private String checkoutUrl;
-    private Instant createdAt;
-    private Instant updatedAt;
-    private Instant expiresAt;
-    private Map<String, String> metadata;
+    private java.time.Instant createdAt;
+    private java.time.Instant updatedAt;
+    private java.time.Instant expiresAt;
 
-    public static PaymentResponse fromEntity(org.petify.funding.model.Payment payment) {
+    public static PaymentResponse fromEntity(Payment payment) {
         return PaymentResponse.builder()
                 .id(payment.getId())
                 .donationId(payment.getDonation().getId())
@@ -60,7 +53,6 @@ public class PaymentResponse {
                 .createdAt(payment.getCreatedAt())
                 .updatedAt(payment.getUpdatedAt())
                 .expiresAt(payment.getExpiresAt())
-                .metadata(payment.getMetadata())
                 .build();
     }
 }

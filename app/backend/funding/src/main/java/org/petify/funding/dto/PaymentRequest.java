@@ -1,53 +1,35 @@
 package org.petify.funding.dto;
 
-import org.petify.funding.model.Currency;
 import org.petify.funding.model.PaymentMethod;
 import org.petify.funding.model.PaymentProvider;
 
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@lombok.Builder
 public class PaymentRequest {
 
     @NotNull(message = "Donation ID is required")
     private Long donationId;
 
-    @NotNull(message = "Payment provider is required")
+    // Jeśli null, system wybierze najlepszego providera
     private PaymentProvider preferredProvider;
 
     private PaymentMethod preferredMethod;
 
-    @NotNull(message = "Currency is required")
-    private Currency currency;
-
-    @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
-    private BigDecimal amount;
-
-    private String customerUsername;
-
     private String returnUrl;
-
     private String cancelUrl;
 
-    private String description;
-
-    // For BLIK payments
-    @Pattern(regexp = "\\d{6}", message = "BLIK code must be 6 digits")
+    // Dla BLIK payments
     private String blikCode;
 
-    // For bank transfers
+    // Dla bank transfers
     private String bankCode;
 }

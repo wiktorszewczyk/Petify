@@ -1,8 +1,10 @@
 package org.petify.funding.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.petify.funding.client.ShelterClient;
 import org.petify.funding.dto.DonationRequest;
 import org.petify.funding.dto.DonationResponse;
+import org.petify.funding.dto.DonationStatistics;
 import org.petify.funding.exception.ResourceNotFoundException;
 import org.petify.funding.model.Donation;
 import org.petify.funding.model.DonationStatus;
@@ -15,16 +17,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class DonationService {
 
     private final DonationRepository donationRepository;
     private final ShelterClient shelterClient;
 
+    /**
+     * Pobiera wszystkie dotacje (z opcjonalnym filtrowaniem po typie)
+     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getAll(Pageable pageable, DonationType type) {
         Page<Donation> page = (type == null)
@@ -33,58 +41,189 @@ public class DonationService {
         return page.map(DonationResponse::fromEntity);
     }
 
+    /**
+     * Pobiera konkretną dotację po ID
+     */
     @Transactional(readOnly = true)
     public DonationResponse get(Long id) {
-        Donation d = donationRepository.findById(id)
+        Donation donation = donationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Donation not found: " + id));
-        return DonationResponse.fromEntity(d);
+        return DonationResponse.fromEntity(donation);
     }
 
+    /**
+     * Pobiera dotacje dla konkretnego schroniska
+     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForShelter(Long shelterId, Pageable pageable) {
         return donationRepository.findByShelterId(shelterId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
+    /**
+     * Pobiera dotacje dla konkretnego zwierzęcia
+     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForPet(Long petId, Pageable pageable) {
         return donationRepository.findByPetId(petId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
+    /**
+     * Pobiera dotacje konkretnego użytkownika
+     */
+    @Transactional(readOnly = true)
+    public Page<DonationResponse> getUserDonations(Pageable pageable) {
+        String username = getCurrentUsername();
+        if (username == null) {
+            throw new RuntimeException("User not authenticated");
+        }
+
+        return donationRepository.findByDonorUsernameOrderByCreatedAtDesc(username, pageable)
+                .map(DonationResponse::fromEntity);
+    }
+
+    /**
+     * Tworzy nową dotację
+     */
     @Transactional
-    public DonationResponse create(@Valid DonationRequest req) {
-        Donation donation = req.toEntity();
+    public DonationResponse create(@Valid DonationRequest request) {
+        log.info("Creating donation for shelter {} by user {}",
+                request.getShelterId(), request.getDonorUsername());
 
-        try {
-            shelterClient.checkShelterExists(donation.getShelterId());
-        } catch (FeignException.NotFound ex) {
-            throw new ResourceNotFoundException("Shelter not found: " + donation.getShelterId());
+        enrichDonorInformation(request);
+
+        validateDonationRequest(request);
+
+        validateShelterExists(request.getShelterId());
+
+        if (request.getPetId() != null) {
+            validatePetExists(request.getShelterId(), request.getPetId());
         }
 
-        if (donation.getPetId() != null) {
-            try {
-                shelterClient.checkPetExists(donation.getShelterId(), donation.getPetId());
-            } catch (FeignException.NotFound ex) {
-                throw new ResourceNotFoundException(
-                        "Pet not found: " + donation.getPetId()
-                                + " in shelter: " + donation.getShelterId()
-                );
-            }
-        }
-
+        Donation donation = request.toEntity();
         donation.setStatus(DonationStatus.PENDING);
+
         Donation saved = donationRepository.save(donation);
+
+        log.info("Donation created successfully with ID: {}", saved.getId());
         return DonationResponse.fromEntity(saved);
     }
 
+    /**
+     * Usuwa dotację (tylko admin)
+     */
     @Transactional
     public void delete(Long id) {
         try {
+            Donation donation = donationRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Donation not found: " + id));
+
+            if (donation.hasPendingPayments()) {
+                throw new RuntimeException("Cannot delete donation with pending payments");
+            }
+
             donationRepository.deleteById(id);
+            log.info("Donation {} deleted successfully", id);
+
         } catch (EmptyResultDataAccessException ex) {
-            throw new ResourceNotFoundException("Donation with id:"
-                    + id + "not found");
+            throw new ResourceNotFoundException("Donation with id: " + id + " not found");
         }
+    }
+
+    /**
+     * Aktualizuje status dotacji (używane wewnętrznie po płatnościach)
+     */
+    @Transactional
+    public void updateDonationStatus(Long donationId, DonationStatus newStatus) {
+        Donation donation = donationRepository.findById(donationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Donation not found: " + donationId));
+
+        DonationStatus oldStatus = donation.getStatus();
+        donation.setStatus(newStatus);
+
+        if (newStatus == DonationStatus.COMPLETED && oldStatus != DonationStatus.COMPLETED) {
+            donation.setCompletedAt(java.time.Instant.now());
+        }
+
+        donationRepository.save(donation);
+        log.info("Donation {} status updated from {} to {}", donationId, oldStatus, newStatus);
+    }
+
+    /**
+     * Pobiera statystyki dotacji dla schroniska
+     */
+    @Transactional(readOnly = true)
+    public DonationStatistics getShelterDonationStats(Long shelterId) {
+        return DonationStatistics.builder()
+                .shelterId(shelterId)
+                .totalDonations(donationRepository.countByShelterId(shelterId))
+                .totalAmount(donationRepository.sumAmountByShelterId(shelterId))
+                .build();
+    }
+
+
+    private void enrichDonorInformation(DonationRequest request) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+            if (request.getDonorUsername() == null) {
+                request.setDonorUsername(jwt.getSubject());
+            }
+
+            if (request.getDonorId() == null && jwt.getClaim("userId") != null) {
+                request.setDonorId(jwt.getClaim("userId"));
+            }
+        }
+    }
+
+    private void validateDonationRequest(DonationRequest request) {
+        if (request.getDonorUsername() == null || request.getDonorUsername().trim().isEmpty()) {
+            throw new RuntimeException("Donor username is required");
+        }
+
+        if (request.getDonationType() == DonationType.MONEY && request.getAmount() == null) {
+            throw new RuntimeException("Amount is required for monetary donations");
+        }
+
+        if (request.getDonationType() == DonationType.MATERIAL) {
+            if (request.getItemName() == null || request.getItemName().trim().isEmpty()) {
+                throw new RuntimeException("Item name is required for material donations");
+            }
+            if (request.getUnitPrice() == null || request.getQuantity() == null) {
+                throw new RuntimeException("Unit price and quantity are required for material donations");
+            }
+        }
+    }
+
+    private void validateShelterExists(Long shelterId) {
+        try {
+            shelterClient.checkShelterExists(shelterId);
+        } catch (FeignException.NotFound ex) {
+            throw new ResourceNotFoundException("Shelter not found: " + shelterId);
+        } catch (Exception ex) {
+            log.error("Error checking shelter existence: {}", ex.getMessage());
+            throw new RuntimeException("Could not verify shelter existence");
+        }
+    }
+
+    private void validatePetExists(Long shelterId, Long petId) {
+        try {
+            shelterClient.checkPetExists(shelterId, petId);
+        } catch (FeignException.NotFound ex) {
+            throw new ResourceNotFoundException(
+                    "Pet not found: " + petId + " in shelter: " + shelterId);
+        } catch (Exception ex) {
+            log.error("Error checking pet existence: {}", ex.getMessage());
+            throw new RuntimeException("Could not verify pet existence");
+        }
+    }
+
+    private String getCurrentUsername() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+            return jwt.getSubject();
+        }
+        return authentication != null ? authentication.getName() : null;
     }
 }

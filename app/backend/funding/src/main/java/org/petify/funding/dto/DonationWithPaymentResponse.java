@@ -5,16 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
+import org.petify.funding.service.PaymentService;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DonationWithPaymentOptions {
+public class DonationWithPaymentResponse {
     private DonationResponse donation;
-    private List<PaymentOptionResponse> availablePaymentOptions;
-    private PaymentResponse activePayment;
+    private PaymentResponse payment;
+    private PaymentService.PaymentFeeCalculation feeInformation;
 }

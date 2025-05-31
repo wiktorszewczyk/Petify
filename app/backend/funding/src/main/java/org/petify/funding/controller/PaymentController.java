@@ -30,22 +30,9 @@ public class PaymentController {
     private final PaymentAnalyticsService analyticsService;
 
     /**
-     * Get available payment options for a donation
+     * Tworzy nową płatność dla istniejącej dotacji
      */
-    @GetMapping("/options/{donationId}")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<List<PaymentOptionResponse>> getPaymentOptions(
-            @PathVariable Long donationId,
-            @RequestParam(required = false) String userCountry) {
-
-        List<PaymentOptionResponse> options = paymentService.getAvailablePaymentOptions(donationId, userCountry);
-        return ResponseEntity.ok(options);
-    }
-
-    /**
-     * Create a new payment
-     */
-    @PostMapping("/create")
+    @PostMapping
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<PaymentResponse> createPayment(@Valid @RequestBody PaymentRequest request) {
         log.info("Creating payment for donation {}", request.getDonationId());
@@ -54,7 +41,7 @@ public class PaymentController {
     }
 
     /**
-     * Get payment status
+     * Pobiera status płatności
      */
     @GetMapping("/{paymentId}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
@@ -64,7 +51,7 @@ public class PaymentController {
     }
 
     /**
-     * Get payment by external ID
+     * Pobiera płatność po external ID (dla webhook'ów)
      */
     @GetMapping("/external/{externalId}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
@@ -74,7 +61,7 @@ public class PaymentController {
     }
 
     /**
-     * Cancel a payment
+     * Anuluje płatność
      */
     @PostMapping("/{paymentId}/cancel")
     @PreAuthorize("hasAuthority('ROLE_USER')")
@@ -84,7 +71,7 @@ public class PaymentController {
     }
 
     /**
-     * Refund a payment (Admin only)
+     * Zwraca płatność (tylko admin)
      */
     @PostMapping("/{paymentId}/refund")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -97,11 +84,11 @@ public class PaymentController {
     }
 
     /**
-     * Get user's payment history
+     * Historia płatności użytkownika
      */
-    @GetMapping("/history")
+    @GetMapping("/my-history")
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<Page<PaymentResponse>> getPaymentHistory(
+    public ResponseEntity<Page<PaymentResponse>> getMyPaymentHistory(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String status) {
@@ -112,7 +99,7 @@ public class PaymentController {
     }
 
     /**
-     * Get payments for a specific donation
+     * Pobiera płatności dla konkretnej dotacji (admin)
      */
     @GetMapping("/donation/{donationId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -122,7 +109,43 @@ public class PaymentController {
     }
 
     /**
-     * Stripe webhook endpoint
+     * Ponawia nieudaną płatność
+     */
+    @PostMapping("/{paymentId}/retry")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<PaymentResponse> retryPayment(@PathVariable Long paymentId) {
+        PaymentResponse response = paymentService.retryPayment(paymentId);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Oblicza opłaty za płatność
+     */
+    @PostMapping("/calculate-fee")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<PaymentService.PaymentFeeCalculation> calculatePaymentFee(
+            @RequestBody CalculateFeesRequest request) {
+
+        PaymentService.PaymentFeeCalculation calculation = paymentService.calculatePaymentFee(
+                request.getAmount(),
+                request.getProvider() != null ? request.getProvider() : org.petify.funding.model.PaymentProvider.PAYU
+        );
+
+        return ResponseEntity.ok(calculation);
+    }
+
+    /**
+     * Sprawdza status providerów płatności
+     */
+    @GetMapping("/providers/health")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Map<String, Object>> getPaymentProvidersHealth() {
+        Map<String, Object> health = paymentService.getPaymentProvidersHealth();
+        return ResponseEntity.ok(health);
+    }
+
+    /**
+     * Webhook Stripe
      */
     @PostMapping("/webhook/stripe")
     public ResponseEntity<Void> handleStripeWebhook(
@@ -139,7 +162,7 @@ public class PaymentController {
     }
 
     /**
-     * PayU webhook endpoint
+     * Webhook PayU
      */
     @PostMapping("/webhook/payu")
     public ResponseEntity<Void> handlePayUWebhook(
@@ -156,7 +179,7 @@ public class PaymentController {
     }
 
     /**
-     * Get payment analytics (Admin only)
+     * Pobiera analityki płatności
      */
     @GetMapping("/analytics")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -170,7 +193,7 @@ public class PaymentController {
     }
 
     /**
-     * Get payment statistics summary (Admin only)
+     * Pobiera podsumowanie statystyk płatności
      */
     @GetMapping("/stats")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -182,54 +205,21 @@ public class PaymentController {
     }
 
     /**
-     * Retry failed payment
-     */
-    @PostMapping("/{paymentId}/retry")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<PaymentResponse> retryPayment(@PathVariable Long paymentId) {
-        PaymentResponse response = paymentService.retryPayment(paymentId);
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Get payment fee calculation
-     */
-    @PostMapping("/calculate-fee")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<Map<String, Object>> calculatePaymentFee(
-            @RequestBody Map<String, Object> request) {
-
-        java.math.BigDecimal amount = new java.math.BigDecimal(request.get("amount").toString());
-        String currency = request.get("currency").toString();
-        String provider = request.get("provider").toString();
-
-        Map<String, Object> feeCalculation = paymentService.calculatePaymentFee(
-                amount,
-                org.petify.funding.model.Currency.valueOf(currency),
-                org.petify.funding.model.PaymentProvider.valueOf(provider.toUpperCase())
-        );
-
-        return ResponseEntity.ok(feeCalculation);
-    }
-
-    /**
-     * Get payment methods for a specific provider
+     * Pobiera obsługiwane metody płatności dla providera
      */
     @GetMapping("/methods/{provider}")
     public ResponseEntity<List<String>> getPaymentMethods(@PathVariable String provider) {
-        List<String> methods = paymentService.getSupportedPaymentMethods(
-                org.petify.funding.model.PaymentProvider.valueOf(provider.toUpperCase())
-        );
-        return ResponseEntity.ok(methods);
-    }
+        try {
+            org.petify.funding.model.PaymentProvider paymentProvider =
+                    org.petify.funding.model.PaymentProvider.valueOf(provider.toUpperCase());
 
-    /**
-     * Health check for payment providers
-     */
-    @GetMapping("/health")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Map<String, Object>> getPaymentProvidersHealth() {
-        Map<String, Object> health = paymentService.getPaymentProvidersHealth();
-        return ResponseEntity.ok(health);
+            List<String> methods = java.util.Arrays.stream(org.petify.funding.model.PaymentMethod.values())
+                    .map(Enum::name)
+                    .collect(java.util.stream.Collectors.toList());
+
+            return ResponseEntity.ok(methods);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

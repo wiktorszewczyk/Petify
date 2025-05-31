@@ -20,11 +20,6 @@ public class DonationRequestValidator implements ConstraintValidator<DonationReq
                     ctx.buildConstraintViolationWithTemplate("Amount is required for monetary donations")
                             .addPropertyNode("amount").addConstraintViolation();
                 }
-                if (dto.getCurrency() == null) {
-                    valid = false;
-                    ctx.buildConstraintViolationWithTemplate("Currency is required for monetary donations")
-                            .addPropertyNode("currency").addConstraintViolation();
-                }
             }
             case MATERIAL -> {
                 if (dto.getItemName() == null || dto.getItemName().trim().isEmpty()) {
@@ -41,11 +36,6 @@ public class DonationRequestValidator implements ConstraintValidator<DonationReq
                     valid = false;
                     ctx.buildConstraintViolationWithTemplate("Quantity must be at least 1 for material donations")
                             .addPropertyNode("quantity").addConstraintViolation();
-                }
-                if (dto.getCurrency() == null) {
-                    valid = false;
-                    ctx.buildConstraintViolationWithTemplate("Currency is required for material donations")
-                            .addPropertyNode("currency").addConstraintViolation();
                 }
             }
         }

@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class PaymentAnalyticsResponse {
-
     private LocalDate date;
     private PaymentProvider provider;
     private Integer totalTransactions;

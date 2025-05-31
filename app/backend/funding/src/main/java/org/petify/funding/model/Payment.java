@@ -65,9 +65,6 @@ public class Payment {
     @Column(length = 3, nullable = false)
     private Currency currency;
 
-    @Column(name = "amount_in_pln", precision = 15, scale = 2)
-    private BigDecimal amountInPln;
-
     @Column(name = "fee_amount", precision = 15, scale = 2)
     private BigDecimal feeAmount;
 
@@ -106,52 +103,77 @@ public class Payment {
     protected void onCreate() {
         createdAt = Instant.now();
         updatedAt = Instant.now();
-        calculateAmounts();
+        calculateFeeAndNetAmount();
     }
 
     @PreUpdate
     protected void onUpdate() {
         updatedAt = Instant.now();
-        calculateAmounts();
+        calculateFeeAndNetAmount();
     }
 
-    private void calculateAmounts() {
-        if (amount != null && currency != null) {
-            if (currency == Currency.PLN) {
-                amountInPln = amount;
-            }
-
-            if (provider != null) {
-                calculateProviderFee();
-            }
-
-            if (feeAmount != null && amountInPln != null) {
-                netAmount = amountInPln.subtract(feeAmount);
-            }
+    /**
+     * Oblicza opłaty i kwotę netto na podstawie providera
+     */
+    private void calculateFeeAndNetAmount() {
+        if (amount != null && provider != null && currency != null) {
+            feeAmount = calculateProviderFee();
+            netAmount = amount.subtract(feeAmount != null ? feeAmount : BigDecimal.ZERO);
         }
     }
 
-    private void calculateProviderFee() {
-        if (amountInPln == null) return;
+    /**
+     * Oblicza opłatę w zależności od providera
+     */
+    private BigDecimal calculateProviderFee() {
+        if (amount == null) return BigDecimal.ZERO;
 
-        switch (provider) {
-            case STRIPE:
-                BigDecimal stripePercentage = amountInPln.multiply(new BigDecimal("0.029"));
-                BigDecimal stripeFixed = switch (currency) {
-                    case USD -> new BigDecimal("0.30");
-                    case EUR -> new BigDecimal("0.25");
-                    case GBP -> new BigDecimal("0.20");
+        return switch (provider) {
+            case STRIPE -> {
+                BigDecimal percentageFee = amount.multiply(new BigDecimal("0.029"));
+                BigDecimal fixedFee = switch (currency) {
                     case PLN -> new BigDecimal("1.20");
+                    case EUR -> null;
+                    case USD -> null;
+                    case GBP -> null;
                 };
-                feeAmount = stripePercentage.add(stripeFixed);
-                break;
+                yield percentageFee.add(fixedFee);
+            }
+            case PAYU -> amount.multiply(new BigDecimal("0.019"));
+            default -> BigDecimal.ZERO;
+        };
+    }
 
-            case PAYU:
-                feeAmount = amountInPln.multiply(new BigDecimal("0.019"));
-                break;
+    public boolean isActive() {
+        return status == PaymentStatus.PENDING || status == PaymentStatus.PROCESSING;
+    }
 
-            default:
-                feeAmount = BigDecimal.ZERO;
+    public boolean isSuccessful() {
+        return status == PaymentStatus.SUCCEEDED;
+    }
+
+    public boolean isFailed() {
+        return status == PaymentStatus.FAILED || status == PaymentStatus.CANCELLED;
+    }
+
+    public boolean canBeCancelled() {
+        return status == PaymentStatus.PENDING || status == PaymentStatus.PROCESSING;
+    }
+
+    public boolean canBeRefunded() {
+        return status == PaymentStatus.SUCCEEDED;
+    }
+
+    public boolean isExpired() {
+        return expiresAt != null && Instant.now().isAfter(expiresAt);
+    }
+
+    public BigDecimal getAmountInPln() {
+        if (currency == Currency.PLN) {
+            return amount;
         }
+        // Tymczasowo zwracamy oryginalną kwotę
+        // W przyszłości można dodać przeliczanie po kursie
+        return amount;
     }
 }

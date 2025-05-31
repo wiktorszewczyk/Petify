@@ -1,43 +1,37 @@
 package org.petify.funding.dto;
 
-import org.petify.funding.model.Currency;
-import org.petify.funding.model.Donation;
-import org.petify.funding.model.DonationStatus;
-import org.petify.funding.model.DonationType;
-import org.petify.funding.model.MaterialDonation;
-import org.petify.funding.model.MonetaryDonation;
+import org.petify.funding.model.*;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@lombok.Builder
 public class DonationResponse {
 
     private Long id;
     private Long shelterId;
     private Long petId;
+    private Integer donorId;
     private String donorUsername;
     private String message;
     private Boolean anonymous;
-    private Boolean receiptRequested;
-    private Instant donatedAt;
-    private Instant createdAt;
-    private Instant completedAt;
+    private java.time.Instant donatedAt;
+    private java.time.Instant createdAt;
+    private java.time.Instant completedAt;
     private DonationType donationType;
     private DonationStatus status;
 
     private BigDecimal amount;
     private Currency currency;
+
     private BigDecimal totalFeeAmount;
     private BigDecimal netAmount;
 
@@ -45,15 +39,17 @@ public class DonationResponse {
     private BigDecimal unitPrice;
     private Integer quantity;
 
+    private java.util.List<PaymentSummary> payments;
+
     public static DonationResponse fromEntity(Donation d) {
         DonationResponseBuilder builder = DonationResponse.builder()
                 .id(d.getId())
                 .shelterId(d.getShelterId())
                 .petId(d.getPetId())
+                .donorId(d.getDonorId())
                 .donorUsername(d.getDonorUsername())
                 .message(d.getMessage())
                 .anonymous(d.getAnonymous())
-                .receiptRequested(d.getReceiptRequested())
                 .donatedAt(d.getDonatedAt())
                 .createdAt(d.getCreatedAt())
                 .completedAt(d.getCompletedAt())
@@ -70,6 +66,46 @@ public class DonationResponse {
                     .quantity(m.getQuantity());
         }
 
+        // Dodanie informacji o płatnościach
+        if (d.getPayments() != null) {
+            java.util.List<PaymentSummary> paymentSummaries = d.getPayments().stream()
+                    .map(PaymentSummary::fromEntity)
+                    .collect(java.util.stream.Collectors.toList());
+            builder.payments(paymentSummaries);
+        }
+
         return builder.build();
+    }
+
+    /**
+     * Uproszczone info o płatności do wyświetlenia w donation response
+     */
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @lombok.Builder
+    public static class PaymentSummary {
+        private Long id;
+        private PaymentStatus status;
+        private PaymentProvider provider;
+        private PaymentMethod paymentMethod;
+        private BigDecimal amount;
+        private BigDecimal feeAmount;
+        private java.time.Instant createdAt;
+        private String failureReason;
+
+        public static PaymentSummary fromEntity(Payment payment) {
+            return PaymentSummary.builder()
+                    .id(payment.getId())
+                    .status(payment.getStatus())
+                    .provider(payment.getProvider())
+                    .paymentMethod(payment.getPaymentMethod())
+                    .amount(payment.getAmount())
+                    .feeAmount(payment.getFeeAmount())
+                    .createdAt(payment.getCreatedAt())
+                    .failureReason(payment.getFailureReason())
+                    .build();
+        }
     }
 }

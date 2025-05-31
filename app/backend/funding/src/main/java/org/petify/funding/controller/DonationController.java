@@ -27,48 +27,34 @@ public class DonationController {
     private final PaymentService paymentService;
 
     /**
-     * Create donation and return payment options
+     * Tworzy nową dotację (bez płatności)
      */
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<DonationWithPaymentOptions> createDonation(
+    public ResponseEntity<DonationResponse> createDonation(
             @RequestBody @Valid DonationRequest request,
-            @AuthenticationPrincipal Jwt jwt,
-            @RequestParam(required = false) String userCountry) {
+            @AuthenticationPrincipal Jwt jwt) {
 
-        if (request.getDonorUsername() == null && jwt != null) {
-            request.setDonorUsername(jwt.getSubject());
-        }
+        enrichRequestWithUserData(request, jwt);
 
         log.info("Creating donation for user: {}", request.getDonorUsername());
 
         DonationResponse donation = donationService.create(request);
-
-        var paymentOptions = paymentService.getAvailablePaymentOptions(donation.getId(), userCountry);
-
-        DonationWithPaymentOptions response = DonationWithPaymentOptions.builder()
-                .donation(donation)
-                .availablePaymentOptions(paymentOptions)
-                .activePayment(null)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(donation);
     }
 
     /**
-     * Create donation and immediately create payment
+     * Tworzy dotację wraz z płatnością w jednym kroku
      */
-    @PostMapping("/create-with-payment")
+    @PostMapping("/with-payment")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<DonationWithPaymentOptions> createDonationWithPayment(
+    public ResponseEntity<DonationWithPaymentResponse> createDonationWithPayment(
             @RequestBody @Valid CreateDonationWithPaymentRequest request,
             @AuthenticationPrincipal Jwt jwt) {
 
-        if (request.getDonationRequest().getDonorUsername() == null && jwt != null) {
-            request.getDonationRequest().setDonorUsername(jwt.getSubject());
-        }
+        enrichRequestWithUserData(request.getDonationRequest(), jwt);
 
         log.info("Creating donation with immediate payment for user: {}",
                 request.getDonationRequest().getDonorUsername());
@@ -79,25 +65,29 @@ public class DonationController {
                 .donationId(donation.getId())
                 .preferredProvider(request.getPreferredProvider())
                 .preferredMethod(request.getPreferredMethod())
-                .currency(donation.getCurrency())
-                .amount(donation.getAmount())
-                .customerUsername(donation.getDonorUsername())
-                .description("Donation to animal shelter")
+                .returnUrl(request.getReturnUrl())
+                .cancelUrl(request.getCancelUrl())
+                .blikCode(request.getBlikCode())
+                .bankCode(request.getBankCode())
                 .build();
 
         PaymentResponse payment = paymentService.createPayment(paymentRequest);
 
-        var paymentOptions = paymentService.getAvailablePaymentOptions(donation.getId(), null);
+        PaymentService.PaymentFeeCalculation feeInfo = paymentService.calculatePaymentFee(
+                donation.getAmount(), payment.getProvider());
 
-        DonationWithPaymentOptions response = DonationWithPaymentOptions.builder()
+        DonationWithPaymentResponse response = DonationWithPaymentResponse.builder()
                 .donation(donation)
-                .availablePaymentOptions(paymentOptions)
-                .activePayment(payment)
+                .payment(payment)
+                .feeInformation(feeInfo)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Pobiera wszystkie dotacje (tylko admin)
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Page<DonationResponse>> getAllDonations(
@@ -106,21 +96,41 @@ public class DonationController {
             @RequestParam(required = false) org.petify.funding.model.DonationType type) {
 
         Page<DonationResponse> donations = donationService.getAll(
-                PageRequest.of(page, size, Sort.by("donatedAt").descending()),
+                PageRequest.of(page, size, Sort.by("createdAt").descending()),
                 type
         );
         return ResponseEntity.ok(donations);
     }
 
+    /**
+     * Pobiera dotacje użytkownika
+     */
+    @GetMapping("/my")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<Page<DonationResponse>> getMyDonations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        Page<DonationResponse> donations = donationService.getUserDonations(
+                PageRequest.of(page, size, Sort.by("createdAt").descending())
+        );
+        return ResponseEntity.ok(donations);
+    }
+
+    /**
+     * Pobiera konkretną dotację
+     */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<DonationResponse> getDonationById(@PathVariable Long id) {
         DonationResponse donation = donationService.get(id);
         return ResponseEntity.ok(donation);
     }
 
+    /**
+     * Pobiera dotacje dla schroniska (publiczne)
+     */
     @GetMapping("/shelter/{shelterId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Page<DonationResponse>> getDonationsByShelter(
             @PathVariable Long shelterId,
             @RequestParam(defaultValue = "0") int page,
@@ -133,8 +143,10 @@ public class DonationController {
         return ResponseEntity.ok(donations);
     }
 
+    /**
+     * Pobiera dotacje dla zwierzęcia (publiczne)
+     */
     @GetMapping("/pet/{petId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Page<DonationResponse>> getDonationsByPet(
             @PathVariable Long petId,
             @RequestParam(defaultValue = "0") int page,
@@ -147,10 +159,51 @@ public class DonationController {
         return ResponseEntity.ok(donations);
     }
 
+    /**
+     * Pobiera statystyki dotacji dla schroniska
+     */
+    @GetMapping("/shelter/{shelterId}/stats")
+    public ResponseEntity<DonationStatistics> getShelterStats(
+            @PathVariable Long shelterId) {
+
+        DonationStatistics stats = donationService.getShelterDonationStats(shelterId);
+        return ResponseEntity.ok(stats);
+    }
+
+    /**
+     * Usuwa dotację (tylko admin)
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void deleteDonation(@PathVariable Long id) {
         donationService.delete(id);
+    }
+
+    /**
+     * Oblicza opłaty za płatność przed utworzeniem
+     */
+    @PostMapping("/calculate-fees")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<PaymentService.PaymentFeeCalculation> calculateFees(
+            @RequestBody CalculateFeesRequest request) {
+
+        PaymentService.PaymentFeeCalculation calculation = paymentService.calculatePaymentFee(
+                request.getAmount(),
+                request.getProvider() != null ? request.getProvider() : org.petify.funding.model.PaymentProvider.PAYU
+        );
+
+        return ResponseEntity.ok(calculation);
+    }
+
+    private void enrichRequestWithUserData(DonationRequest request, Jwt jwt) {
+        if (jwt != null) {
+            if (request.getDonorUsername() == null) {
+                request.setDonorUsername(jwt.getSubject());
+            }
+            if (request.getDonorId() == null && jwt.getClaim("userId") != null) {
+                request.setDonorId(jwt.getClaim("userId"));
+            }
+        }
     }
 }

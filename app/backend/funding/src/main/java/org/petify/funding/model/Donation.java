@@ -47,6 +47,10 @@ public abstract class Donation {
     @Column(name = "pet_id")
     private Long petId;
 
+    // Dodane powiązanie z User
+    @Column(name = "donor_id")
+    private Integer donorId;
+
     @Column(name = "donor_username", nullable = false)
     private String donorUsername;
 
@@ -74,29 +78,11 @@ public abstract class Donation {
     @Column(name = "currency", length = 3, nullable = false)
     private Currency currency = Currency.PLN;
 
-    @Column(name = "amount_in_pln", precision = 15, scale = 2)
-    private BigDecimal amountInPln;
-
     @Column(name = "message", length = 500)
     private String message;
 
     @Column(name = "anonymous")
     private Boolean anonymous = false;
-
-    @Column(name = "recurring")
-    private Boolean recurring = false;
-
-    @Column(name = "recurring_frequency")
-    private String recurringFrequency;
-
-    @Column(name = "receipt_requested")
-    private Boolean receiptRequested = false;
-
-    @Column(name = "total_fee_amount", precision = 15, scale = 2)
-    private BigDecimal totalFeeAmount;
-
-    @Column(name = "net_amount", precision = 15, scale = 2)
-    private BigDecimal netAmount;
 
     @Column(name = "created_at")
     private Instant createdAt;
@@ -116,8 +102,6 @@ public abstract class Donation {
             donatedAt = Instant.now();
         }
 
-        calculateAmountInPln();
-
         if (this instanceof MaterialDonation md) {
             md.recalculateAmount();
             this.amount = md.getAmount();
@@ -128,7 +112,6 @@ public abstract class Donation {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = Instant.now();
-        calculateAmountInPln();
 
         if (status == DonationStatus.COMPLETED && completedAt == null) {
             completedAt = Instant.now();
@@ -141,13 +124,6 @@ public abstract class Donation {
         }
     }
 
-    private void calculateAmountInPln() {
-        if (currency == Currency.PLN) {
-            amountInPln = amount;
-        }
-    }
-
-    // Business logic methods
     public boolean isCompleted() {
         return status == DonationStatus.COMPLETED;
     }
@@ -166,17 +142,20 @@ public abstract class Donation {
     public BigDecimal getTotalPaidAmount() {
         return payments.stream()
                 .filter(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED)
-                .map(Payment::getAmountInPln)
+                .map(Payment::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public void calculateTotalFees() {
-        totalFeeAmount = payments.stream()
+    // Obliczanie opłat dynamicznie na podstawie Payment
+    public BigDecimal getTotalFeeAmount() {
+        return payments.stream()
                 .filter(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED)
                 .map(payment -> payment.getFeeAmount() != null ? payment.getFeeAmount() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
-        netAmount = getTotalPaidAmount().subtract(totalFeeAmount);
+    public BigDecimal getNetAmount() {
+        return getTotalPaidAmount().subtract(getTotalFeeAmount());
     }
 
     public boolean isDonorUsernameEmail() {

@@ -24,4 +24,6 @@ public class CreateDonationWithPaymentRequest {
     private PaymentMethod preferredMethod;
     private String returnUrl;
     private String cancelUrl;
+    private String blikCode;
+    private String bankCode;
 }
