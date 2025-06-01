@@ -14,12 +14,14 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = PetImageMapper.class)
 public interface PetMapper {
     @Mapping(source = "shelter.id", target = "shelterId")
-    @Mapping(target = "imageData", expression = "java(pet.getImageData() != null ? java.util.Base64.getEncoder().encodeToString(pet.getImageData()) : null)")
+    @Mapping(target = "imageData", expression = "java(pet.getImageData() != null ?"
+            + " java.util.Base64.getEncoder().encodeToString(pet.getImageData()) : null)")
     PetResponse toDto(Pet pet);
 
     @Mapping(source = "shelter.id", target = "shelterId")
     @Mapping(target = "images", source = "images")
-    @Mapping(target = "imageData", expression = "java(pet.getImageData() != null ? java.util.Base64.getEncoder().encodeToString(pet.getImageData()) : null)")
+    @Mapping(target = "imageData", expression = "java(pet.getImageData() != null ?"
+            + " java.util.Base64.getEncoder().encodeToString(pet.getImageData()) : null)")
     PetResponseWithImages toDtoWithImages(Pet pet);
 
     @Mapping(target = "id", ignore = true)

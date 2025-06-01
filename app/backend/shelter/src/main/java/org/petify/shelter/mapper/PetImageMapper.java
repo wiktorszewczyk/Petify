@@ -1,12 +1,13 @@
 package org.petify.shelter.mapper;
 
+import org.petify.shelter.dto.PetImageResponse;
+import org.petify.shelter.model.PetImage;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
-import org.petify.shelter.dto.PetImageResponse;
-import org.petify.shelter.model.PetImage;
 
 import java.util.Base64;
 
