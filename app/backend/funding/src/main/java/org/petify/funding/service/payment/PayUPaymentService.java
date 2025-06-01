@@ -347,7 +347,9 @@ public class PayUPaymentService implements PaymentProviderService {
 
         orderRequest.put("currencyCode", "PLN");
         orderRequest.put("totalAmount", convertToPayUAmount(donation.getAmount()));
-        orderRequest.put("extOrderId", "donation_" + donation.getId() + "_" + System.currentTimeMillis());
+
+        String extOrderId = "donation_" + donation.getId() + "_" + System.currentTimeMillis();
+        orderRequest.put("extOrderId", extOrderId);
 
         Map<String, String> buyer = buildBuyerInfo(donation);
         if (!buyer.isEmpty()) {
