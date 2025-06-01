@@ -27,44 +27,28 @@ public class DonationController {
     private final PaymentService paymentService;
 
     /**
-     * Tworzy nową dotację (bez płatności)
+     * Tworzy nową dotację wraz z płatnością (unified endpoint)
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<DonationResponse> createDonation(
-            @RequestBody @Valid DonationRequest request,
+    public ResponseEntity<DonationWithPaymentResponse> createDonation(
+            @RequestBody @Valid DonationWithPaymentRequest request,
             @AuthenticationPrincipal Jwt jwt) {
 
         enrichRequestWithUserData(request, jwt);
 
-        log.info("Creating donation for user: {}", request.getDonorUsername());
+        log.info("Creating donation with payment for user: {}, provider: {}",
+                request.getDonorUsername(), request.getPaymentProvider());
 
-        DonationResponse donation = donationService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(donation);
-    }
+        // 1. Utwórz dotację
+        DonationResponse donation = donationService.create(request.toDonationRequest());
 
-    /**
-     * Tworzy dotację wraz z płatnością w jednym kroku
-     */
-    @PostMapping("/with-payment")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<DonationWithPaymentResponse> createDonationWithPayment(
-            @RequestBody @Valid CreateDonationWithPaymentRequest request,
-            @AuthenticationPrincipal Jwt jwt) {
-
-        enrichRequestWithUserData(request.getDonationRequest(), jwt);
-
-        log.info("Creating donation with immediate payment for user: {}",
-                request.getDonationRequest().getDonorUsername());
-
-        DonationResponse donation = donationService.create(request.getDonationRequest());
-
+        // 2. Utwórz płatność
         PaymentRequest paymentRequest = PaymentRequest.builder()
                 .donationId(donation.getId())
-                .preferredProvider(request.getPreferredProvider())
-                .preferredMethod(request.getPreferredMethod())
+                .preferredProvider(request.getPaymentProvider())
+                .preferredMethod(request.getPaymentMethod())
                 .returnUrl(request.getReturnUrl())
                 .cancelUrl(request.getCancelUrl())
                 .blikCode(request.getBlikCode())
@@ -73,9 +57,11 @@ public class DonationController {
 
         PaymentResponse payment = paymentService.createPayment(paymentRequest);
 
+        // 3. Oblicz opłaty
         PaymentService.PaymentFeeCalculation feeInfo = paymentService.calculatePaymentFee(
                 donation.getAmount(), payment.getProvider());
 
+        // 4. Zwróć wszystko
         DonationWithPaymentResponse response = DonationWithPaymentResponse.builder()
                 .donation(donation)
                 .payment(payment)
@@ -83,6 +69,30 @@ public class DonationController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * Endpoint dla powrotu z płatności - sprawdza status
+     */
+    @GetMapping("/payment-status/{donationId}")
+    public ResponseEntity<DonationWithPaymentStatusResponse> checkPaymentStatus(
+            @PathVariable Long donationId) {
+
+        DonationResponse donation = donationService.get(donationId);
+
+        var payments = paymentService.getPaymentsByDonation(donationId);
+        PaymentResponse latestPayment = payments.isEmpty() ? null :
+                payments.stream()
+                        .max((p1, p2) -> p1.getCreatedAt().compareTo(p2.getCreatedAt()))
+                        .orElse(null);
+
+        DonationWithPaymentStatusResponse response = DonationWithPaymentStatusResponse.builder()
+                .donation(donation)
+                .latestPayment(latestPayment)
+                .isCompleted(donation.getStatus() == org.petify.funding.model.DonationStatus.COMPLETED)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -196,7 +206,7 @@ public class DonationController {
         return ResponseEntity.ok(calculation);
     }
 
-    private void enrichRequestWithUserData(DonationRequest request, Jwt jwt) {
+    private void enrichRequestWithUserData(DonationWithPaymentRequest request, Jwt jwt) {
         if (jwt != null) {
             if (request.getDonorUsername() == null) {
                 request.setDonorUsername(jwt.getSubject());

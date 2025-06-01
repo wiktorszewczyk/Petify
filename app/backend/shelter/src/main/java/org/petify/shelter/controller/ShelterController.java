@@ -173,20 +173,26 @@ public class ShelterController {
         }
     }
 
-    @GetMapping("/{shelterId}/pets/{petId}")
-    public ResponseEntity<Void> checkPetInShelter(
+    /**
+     * Sprawdza czy schronisko istnieje i jest aktywne
+     */
+    @GetMapping("/{shelterId}/validate")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Void> validateShelter(@PathVariable Long shelterId) {
+        HttpStatus status = shelterService.validateShelterForDonations(shelterId);
+        return ResponseEntity.status(status).build();
+    }
+
+    /**
+     * Sprawdza czy zwierzę istnieje w danym schronisku i czy można na nie wpłacać
+     */
+    @GetMapping("/{shelterId}/pets/{petId}/validate")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Void> validatePetInShelter(
             @PathVariable Long shelterId,
             @PathVariable Long petId) {
 
-        try {
-            var pet = petService.getPetById(petId);
-            if (!pet.shelterId().equals(shelterId)) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok().build();
-
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        }
+        HttpStatus status = petService.validatePetForDonations(shelterId, petId);
+        return ResponseEntity.status(status).build();
     }
 }

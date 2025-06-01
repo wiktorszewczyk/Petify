@@ -66,12 +66,13 @@ public class DonationResponse {
                     .quantity(m.getQuantity());
         }
 
-        // Dodanie informacji o płatnościach
-        if (d.getPayments() != null) {
+        if (d.getPayments() != null && !d.getPayments().isEmpty()) {
             java.util.List<PaymentSummary> paymentSummaries = d.getPayments().stream()
                     .map(PaymentSummary::fromEntity)
                     .collect(java.util.stream.Collectors.toList());
             builder.payments(paymentSummaries);
+        } else {
+            builder.payments(new java.util.ArrayList<>());
         }
 
         return builder.build();

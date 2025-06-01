@@ -17,4 +17,39 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9000
+          jwk-set-uri: http://localhost:9000/.well-known/jwks.json
+
+payment:
+  stripe:
+    api-key: ${stripe.secret_key}
+    publishable-key: ${stripe.publishable_key}
+    webhook-secret: ${stripe.webhook_secret}
+    enabled: true
+    api-version: "2023-10-16"
+
+  payu:
+    # PayU Sandbox credentials
+    client-id: ${PAYU_CLIENT_ID:300746}
+    client-secret: ${PAYU_CLIENT_SECRET:2ee86a66e5d97e3fadc400c9f19b065d}
+    pos-id: ${PAYU_POS_ID:300746}
+    md5-key: ${PAYU_MD5_KEY:b6ca15b0d1020e8094d9b5f8d163db54}
+    api-url: ${PAYU_API_URL:https://secure.snd.payu.com}
+    enabled: true
+    sandbox-mode: true
+
+  analytics:
+    enabled: true
+    retention-days: 365
+    aggregation-schedule: "0 0 1 * * ?" # Daily at 1 AM
+
+logging:
+  level:
+    org.petify.funding: DEBUG
+    org.springframework.security: DEBUG
+    com.stripe: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+app:
+  webhook:
+    base-url: ${WEBHOOK_BASE_URL:http://localhost:8222}

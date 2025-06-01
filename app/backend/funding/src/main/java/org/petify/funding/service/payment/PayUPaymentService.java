@@ -445,7 +445,21 @@ public class PayUPaymentService implements PaymentProviderService {
     }
 
     private String convertToPayUAmount(BigDecimal amount) {
-        return amount.multiply(new BigDecimal("100")).toPlainString();
+        if (amount == null) {
+            throw new IllegalArgumentException("Amount cannot be null");
+        }
+
+        BigDecimal amountInGrosze = amount.multiply(new BigDecimal("100"));
+
+        if (amountInGrosze.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+
+        if (amountInGrosze.compareTo(new BigDecimal("999999999")) > 0) {
+            throw new IllegalArgumentException("Amount too large for PayU");
+        }
+
+        return amountInGrosze.setScale(0, java.math.RoundingMode.HALF_UP).toPlainString();
     }
 
     private PaymentStatus mapPayUStatus(String payuStatus) {

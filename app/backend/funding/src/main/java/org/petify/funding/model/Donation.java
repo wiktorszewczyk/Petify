@@ -2,10 +2,7 @@ package org.petify.funding.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
@@ -35,6 +32,7 @@ public abstract class Donation {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @Builder.Default
     private List<Payment> payments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -47,7 +45,6 @@ public abstract class Donation {
     @Column(name = "pet_id")
     private Long petId;
 
-    // Dodane powiązanie z User
     @Column(name = "donor_id")
     private Integer donorId;
 
@@ -129,25 +126,28 @@ public abstract class Donation {
     }
 
     public boolean hasPendingPayments() {
+        if (payments == null) return false;
         return payments.stream()
                 .anyMatch(payment -> payment.getStatus() == PaymentStatus.PENDING ||
                         payment.getStatus() == PaymentStatus.PROCESSING);
     }
 
     public boolean hasSuccessfulPayment() {
+        if (payments == null) return false;
         return payments.stream()
                 .anyMatch(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED);
     }
 
     public BigDecimal getTotalPaidAmount() {
+        if (payments == null) return BigDecimal.ZERO;
         return payments.stream()
                 .filter(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED)
                 .map(Payment::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Obliczanie opłat dynamicznie na podstawie Payment
     public BigDecimal getTotalFeeAmount() {
+        if (payments == null) return BigDecimal.ZERO;
         return payments.stream()
                 .filter(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED)
                 .map(payment -> payment.getFeeAmount() != null ? payment.getFeeAmount() : BigDecimal.ZERO)

@@ -20,22 +20,22 @@ import java.math.BigDecimal;
 @SuperBuilder
 public class MaterialDonation extends Donation {
 
-    @Column(name = "item_name", nullable = false)
+    @Column(name = "item_name")
     private String itemName;
 
     @Column(
             name = "unit_price",
-            nullable = false,
             precision = 15,
             scale = 2
     )
     private BigDecimal unitPrice;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(name = "quantity")
     private Integer quantity;
 
     void recalculateAmount() {
         setCurrency(getCurrency() != null ? getCurrency() : Currency.PLN);
         setAmount(unitPrice.multiply(BigDecimal.valueOf(quantity)));
     }
+
 }

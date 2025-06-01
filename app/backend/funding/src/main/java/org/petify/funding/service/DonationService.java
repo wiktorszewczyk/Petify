@@ -22,6 +22,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -182,40 +184,67 @@ public class DonationService {
             throw new RuntimeException("Donor username is required");
         }
 
-        if (request.getDonationType() == DonationType.MONEY && request.getAmount() == null) {
-            throw new RuntimeException("Amount is required for monetary donations");
+        if (request.getDonationType() == DonationType.MONEY) {
+            if (request.getAmount() == null || request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new RuntimeException("Amount must be positive for monetary donations");
+            }
+            if (request.getItemName() != null || request.getUnitPrice() != null || request.getQuantity() != null) {
+                throw new RuntimeException("Material donation fields should not be set for monetary donations");
+            }
         }
 
         if (request.getDonationType() == DonationType.MATERIAL) {
             if (request.getItemName() == null || request.getItemName().trim().isEmpty()) {
                 throw new RuntimeException("Item name is required for material donations");
             }
-            if (request.getUnitPrice() == null || request.getQuantity() == null) {
-                throw new RuntimeException("Unit price and quantity are required for material donations");
+            if (request.getUnitPrice() == null || request.getUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new RuntimeException("Unit price must be positive for material donations");
+            }
+            if (request.getQuantity() == null || request.getQuantity() <= 0) {
+                throw new RuntimeException("Quantity must be positive for material donations");
+            }
+            if (request.getAmount() != null) {
+                throw new RuntimeException("Amount should not be set manually for material donations - it will be calculated automatically");
             }
         }
     }
 
     private void validateShelterExists(Long shelterId) {
         try {
-            shelterClient.checkShelterExists(shelterId);
+            log.debug("Validating shelter ID: {}", shelterId);
+            shelterClient.validateShelter(shelterId);
+            log.debug("Shelter {} is valid and active", shelterId);
+
         } catch (FeignException.NotFound ex) {
+            log.warn("Shelter {} not found", shelterId);
             throw new ResourceNotFoundException("Shelter not found: " + shelterId);
+        } catch (FeignException.Forbidden ex) {
+            log.warn("Shelter {} is not active", shelterId);
+            throw new RuntimeException("Shelter is not active and cannot accept donations: " + shelterId);
         } catch (Exception ex) {
-            log.error("Error checking shelter existence: {}", ex.getMessage());
-            throw new RuntimeException("Could not verify shelter existence");
+            log.error("Error validating shelter {}: {}", shelterId, ex.getMessage(), ex);
+            throw new RuntimeException("Could not verify shelter existence: " + ex.getMessage());
         }
     }
 
     private void validatePetExists(Long shelterId, Long petId) {
         try {
-            shelterClient.checkPetExists(shelterId, petId);
+            log.debug("Validating pet {} in shelter {}", petId, shelterId);
+            shelterClient.validatePetInShelter(shelterId, petId);
+            log.debug("Pet {} in shelter {} is valid for donations", petId, shelterId);
+
         } catch (FeignException.NotFound ex) {
-            throw new ResourceNotFoundException(
-                    "Pet not found: " + petId + " in shelter: " + shelterId);
+            log.warn("Pet {} not found in shelter {} or doesn't belong to this shelter", petId, shelterId);
+            throw new ResourceNotFoundException("Pet not found in shelter: pet=" + petId + ", shelter=" + shelterId);
+        } catch (FeignException.Forbidden ex) {
+            log.warn("Shelter {} is not active", shelterId);
+            throw new RuntimeException("Shelter is not active: " + shelterId);
+        } catch (FeignException.Gone ex) {
+            log.warn("Pet {} is archived", petId);
+            throw new RuntimeException("Pet is archived and not available for donations: " + petId);
         } catch (Exception ex) {
-            log.error("Error checking pet existence: {}", ex.getMessage());
-            throw new RuntimeException("Could not verify pet existence");
+            log.error("Error validating pet {} in shelter {}: {}", petId, shelterId, ex.getMessage(), ex);
+            throw new RuntimeException("Could not verify pet existence: " + ex.getMessage());
         }
     }
 
