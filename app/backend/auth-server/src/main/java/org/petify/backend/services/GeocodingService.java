@@ -37,8 +37,8 @@ public class GeocodingService {
         }
 
         String encodedCity = URLEncoder.encode(cityName.trim() + ", Poland", StandardCharsets.UTF_8);
-        String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedCity +
-                "&format=json&limit=1&addressdetails=1";
+        String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedCity
+                + "&format=json&limit=1&addressdetails=1";
 
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
@@ -70,12 +70,12 @@ public class GeocodingService {
             double lon = firstResult.get("lon").asDouble();
 
             JsonNode address = firstResult.get("address");
-            String country = address != null && address.has("country") ?
-                    address.get("country").asText() : "Poland";
-            String state = address != null && address.has("state") ?
-                    address.get("state").asText() : "";
-            String displayName = firstResult.has("display_name") ?
-                    firstResult.get("display_name").asText() : cityName;
+            String country = address != null && address.has("country")
+                    ? address.get("country").asText() : "Poland";
+            String state = address != null && address.has("state")
+                    ? address.get("state").asText() : "";
+            String displayName = firstResult.has("display_name")
+                    ? firstResult.get("display_name").asText() : cityName;
 
             return new GeolocationResponse(cityName.trim(), lat, lon, country, state, displayName);
 
@@ -97,8 +97,8 @@ public class GeocodingService {
         }
 
         String encodedQuery = URLEncoder.encode(query.trim() + ", Poland", StandardCharsets.UTF_8);
-        String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedQuery +
-                "&format=json&limit=5&addressdetails=1&class=place&type=city,town,village";
+        String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedQuery
+                + "&format=json&limit=5&addressdetails=1&class=place&type=city,town,village";
 
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
@@ -141,12 +141,12 @@ public class GeocodingService {
                     }
                 }
 
-                String country = address != null && address.has("country") ?
-                        address.get("country").asText() : "Poland";
-                String state = address != null && address.has("state") ?
-                        address.get("state").asText() : "";
-                String displayName = result.has("display_name") ?
-                        result.get("display_name").asText() : cityName;
+                String country = address != null && address.has("country")
+                        ? address.get("country").asText() : "Poland";
+                String state = address != null && address.has("state")
+                        ? address.get("state").asText() : "";
+                String displayName = result.has("display_name")
+                        ? result.get("display_name").asText() : cityName;
 
                 if (!cityName.isEmpty()) {
                     cities.add(new GeolocationResponse(cityName, lat, lon, country, state, displayName));

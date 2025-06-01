@@ -147,7 +147,7 @@ public class UserLocationService {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return user.getPreferredSearchDistanceKm() != null ?
-                user.getPreferredSearchDistanceKm() : 20.0;
+        return user.getPreferredSearchDistanceKm() != null
+                ? user.getPreferredSearchDistanceKm() : 20.0;
     }
 }

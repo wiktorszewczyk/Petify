@@ -12,6 +12,7 @@ import org.petify.backend.services.AchievementService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootApplication
+@EnableFeignClients(basePackages = "org.petify.backend.client")
 public class AuthServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuthServerApplication.class, args);
@@ -59,9 +61,11 @@ public class AuthServerApplication {
                 admin.setSupportCount(0);
                 admin.setBadgesCount(0);
 
+                admin.setPreferredSearchDistanceKm(100.0);
+                admin.setAutoLocationEnabled(false);
+
                 ApplicationUser savedAdmin = userRepository.save(admin);
 
-                // Initialize achievements for admin user
                 achievementService.initializeUserAchievements(savedAdmin);
             }
 
