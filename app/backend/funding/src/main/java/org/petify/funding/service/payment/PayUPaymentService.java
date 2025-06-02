@@ -59,9 +59,24 @@ public class PayUPaymentService implements PaymentProviderService {
             Donation donation = donationRepository.findById(request.getDonationId())
                     .orElseThrow(() -> new RuntimeException("Donation not found"));
 
+            log.info("Donation details: id={}, type={}, amount={}",
+                    donation.getId(), donation.getDonationType(), donation.getAmount());
+
+            if (donation instanceof MaterialDonation md) {
+                log.info("Material donation: name={}, unitPrice={}, quantity={}",
+                        md.getItemName(), md.getUnitPrice(), md.getQuantity());
+            }
+
             String accessToken = getAccessToken();
 
             Map<String, Object> orderRequest = buildOrderRequest(donation, request);
+
+            try {
+                String jsonRequest = objectMapper.writeValueAsString(orderRequest);
+                log.info("PayU order request JSON: {}", jsonRequest);
+            } catch (Exception e) {
+                log.error("Failed to serialize request for logging", e);
+            }
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -95,7 +110,7 @@ public class PayUPaymentService implements PaymentProviderService {
                     .paymentMethod(determinePaymentMethod(request))
                     .checkoutUrl(responseJson.get("redirectUri").asText())
                     .metadata(createMetadata(donation))
-                    .expiresAt(Instant.now().plusSeconds(900)) // 15 minut
+                    .expiresAt(Instant.now().plusSeconds(900))
                     .build();
 
             Payment savedPayment = paymentRepository.save(payment);
@@ -361,20 +376,26 @@ public class PayUPaymentService implements PaymentProviderService {
 
         configurePaymentMethods(orderRequest, request);
 
-        if (request.getReturnUrl() != null) {
+        if (request.getReturnUrl() != null && !request.getReturnUrl().trim().isEmpty()) {
             orderRequest.put("continueUrl", request.getReturnUrl());
         }
 
         return orderRequest;
     }
 
+
     private String buildDescription(Donation donation) {
         StringBuilder desc = new StringBuilder();
 
-        if (donation.getDonationType() == DonationType.MONEY) {
+        if (donation instanceof MaterialDonation md) {
+            String itemName = md.getItemName();
+            if (itemName != null && !itemName.trim().isEmpty()) {
+                desc.append("Dotacja rzeczowa: ").append(itemName);
+            } else {
+                desc.append("Dotacja rzeczowa");
+            }
+        } else {
             desc.append("Dotacja pieniężna");
-        } else if (donation instanceof MaterialDonation md) {
-            desc.append("Dotacja rzeczowa: ").append(md.getItemName());
         }
 
         desc.append(" dla schroniska #").append(donation.getShelterId());
@@ -389,11 +410,14 @@ public class PayUPaymentService implements PaymentProviderService {
     private Map<String, String> buildBuyerInfo(Donation donation) {
         Map<String, String> buyer = new HashMap<>();
 
-        if (donation.getDonorUsername() != null) {
+        if (donation.getDonorUsername() != null && !donation.getDonorUsername().trim().isEmpty()) {
             if (donation.isDonorUsernameEmail()) {
                 buyer.put("email", donation.getDonorUsername());
+                buyer.put("firstName", "Darczyńca");
+                buyer.put("lastName", "Anonimowy");
             } else {
-                buyer.put("username", donation.getDonorUsername());
+                buyer.put("firstName", donation.getDonorUsername());
+                buyer.put("lastName", "");
             }
         }
 
@@ -401,20 +425,55 @@ public class PayUPaymentService implements PaymentProviderService {
     }
 
     private List<Map<String, Object>> buildProducts(Donation donation) {
+        log.info("Building products for donation: id={}, type={}, amount={}",
+                donation.getId(), donation.getDonationType(), donation.getAmount());
+
         List<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> product = new HashMap<>();
 
-        if (donation.getDonationType() == DonationType.MONEY) {
-            product.put("name", "Dotacja pieniężna");
+        if (donation instanceof MaterialDonation md) {
+            log.info("Processing MATERIAL donation");
+
+            String itemName = md.getItemName();
+            if (itemName == null || itemName.trim().isEmpty()) {
+                itemName = "Dotacja rzeczowa";
+            }
+
+            BigDecimal unitPrice = md.getUnitPrice();
+            Integer quantity = md.getQuantity();
+
+            if (unitPrice == null) {
+                log.error("MaterialDonation unitPrice is null!");
+                throw new IllegalArgumentException("Material donation unit price cannot be null");
+            }
+
+            if (quantity == null || quantity <= 0) {
+                log.error("MaterialDonation quantity is invalid: {}", quantity);
+                quantity = 1;
+            }
+
+            product.put("name", itemName);
+            product.put("unitPrice", convertToPayUAmount(unitPrice));
+            product.put("quantity", quantity);
+
+        } else {
+            log.info("Processing MONEY donation (default case)");
+
+            product.put("name", "Dotacja pieniężna dla schroniska");
             product.put("unitPrice", convertToPayUAmount(donation.getAmount()));
-            product.put("quantity", "1");
-        } else if (donation instanceof MaterialDonation md) {
-            product.put("name", md.getItemName());
-            product.put("unitPrice", convertToPayUAmount(md.getUnitPrice()));
-            product.put("quantity", String.valueOf(md.getQuantity()));
+            product.put("quantity", 1);
         }
 
+        log.info("Created product: name={}, unitPrice={}, quantity={}",
+                product.get("name"), product.get("unitPrice"), product.get("quantity"));
+
         products.add(product);
+
+        log.info("Final products list size: {}", products.size());
+        if (!products.isEmpty()) {
+            log.info("First product details: {}", products.get(0));
+        }
+
         return products;
     }
 
@@ -424,19 +483,34 @@ public class PayUPaymentService implements PaymentProviderService {
 
             switch (request.getPreferredMethod()) {
                 case BLIK:
-                    payMethods.put("payMethod", Map.of("type", "BLIK"));
-                    if (request.getBlikCode() != null) {
-                        payMethods.put("blikCode", request.getBlikCode());
+                    if (request.getBlikCode() != null && !request.getBlikCode().trim().isEmpty()) {
+                        Map<String, Object> blikMethod = new HashMap<>();
+                        blikMethod.put("type", "PBL");
+                        blikMethod.put("value", "blik");
+                        payMethods.put("payMethod", blikMethod);
+
+                        payMethods.put("authorizationCode", request.getBlikCode());
+                    } else {
+                        Map<String, Object> blikMethod = new HashMap<>();
+                        blikMethod.put("type", "PBL");
+                        blikMethod.put("value", "blik");
+                        payMethods.put("payMethod", blikMethod);
                     }
                     break;
+
                 case BANK_TRANSFER:
-                    payMethods.put("payMethod", Map.of("type", "PBL"));
-                    if (request.getBankCode() != null) {
-                        payMethods.put("bankCode", request.getBankCode());
+                    Map<String, Object> bankMethod = new HashMap<>();
+                    bankMethod.put("type", "PBL");
+                    if (request.getBankCode() != null && !request.getBankCode().trim().isEmpty()) {
+                        bankMethod.put("value", request.getBankCode());
                     }
+                    payMethods.put("payMethod", bankMethod);
                     break;
+
                 case CARD:
-                    payMethods.put("payMethod", Map.of("type", "CARD_TOKEN"));
+                    Map<String, Object> cardMethod = new HashMap<>();
+                    cardMethod.put("type", "CARD_TOKEN");
+                    payMethods.put("payMethod", cardMethod);
                     break;
             }
 

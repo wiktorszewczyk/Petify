@@ -99,10 +99,14 @@ public abstract class Donation {
             donatedAt = Instant.now();
         }
 
-        if (this instanceof MaterialDonation md) {
+        if (this instanceof MaterialDonation) {
+            this.donationType = DonationType.MATERIAL;
+            MaterialDonation md = (MaterialDonation) this;
             md.recalculateAmount();
             this.amount = md.getAmount();
             this.currency = md.getCurrency();
+        } else if (this instanceof MonetaryDonation) {
+            this.donationType = DonationType.MONEY;
         }
     }
 
@@ -114,10 +118,14 @@ public abstract class Donation {
             completedAt = Instant.now();
         }
 
-        if (this instanceof MaterialDonation md) {
+        if (this instanceof MaterialDonation) {
+            this.donationType = DonationType.MATERIAL;
+            MaterialDonation md = (MaterialDonation) this;
             md.recalculateAmount();
             this.amount = md.getAmount();
             this.currency = md.getCurrency();
+        } else if (this instanceof MonetaryDonation) {
+            this.donationType = DonationType.MONEY;
         }
     }
 
