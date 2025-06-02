@@ -25,8 +25,8 @@ public class JwtSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // webhook Stripe musi być publiczny
-                        .requestMatchers("/payments/webhook").permitAll()
+                        // webhook Stripe i PayU musi być publiczny
+                        .requestMatchers("/payments/webhook/**").permitAll()
                         // wszystkie pozostałe żądania muszą być uwierzytelnione
                         .anyRequest().authenticated()
                 )
