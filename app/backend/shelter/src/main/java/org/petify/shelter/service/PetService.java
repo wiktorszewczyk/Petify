@@ -10,10 +10,13 @@ import org.petify.shelter.exception.ShelterNotFoundException;
 import org.petify.shelter.mapper.PetMapper;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
+import org.petify.shelter.repository.FavoritePetRepository;
 import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
+import org.petify.shelter.specification.PetSpecification;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +35,14 @@ import java.util.stream.Stream;
 public class PetService {
     private final PetRepository petRepository;
     private final ShelterRepository shelterRepository;
+    private final FavoritePetRepository favoritePetRepository;
     private final PetMapper petMapper;
+
+    public String getOwnerUsernameByPetId(Long petId) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new PetNotFoundException(petId));
+        return pet.getShelter().getOwnerUsername();
+    }
 
     public List<PetResponse> getPets() {
         List<Pet> pets = petRepository.findAll();
@@ -44,35 +54,30 @@ public class PetService {
         return petsList;
     }
 
+    @Transactional(readOnly = true)
     public List<PetResponse> getFilteredPets(Boolean vaccinated, Boolean urgent, Boolean sterilized,
                                              Boolean kidFriendly, Integer minAge, Integer maxAge,
-                                             PetType type, Double userLat, Double userLng, Double radiusKm) {
+                                             PetType type, Double userLat, Double userLng, Double radiusKm,
+                                             String username) {
 
-        List<Pet> pets = petRepository.findAll();
+        List<Long> favoritePetIds = favoritePetRepository.findByUsername(username)
+                .stream()
+                .map(fp -> fp.getPet().getId())
+                .toList();
 
-        Stream<Pet> stream = pets.stream();
+        Specification<Pet> spec = Specification.where(PetSpecification.hasVaccinated(vaccinated))
+                .and(PetSpecification.isUrgent(urgent))
+                .and(PetSpecification.isSterilized(sterilized))
+                .and(PetSpecification.isKidFriendly(kidFriendly))
+                .and(PetSpecification.ageBetween(minAge, maxAge))
+                .and(PetSpecification.hasType(type))
+                .and(PetSpecification.isNotArchived())
+                .and(PetSpecification.hasActiveShelter())
+                .and(PetSpecification.notInFavorites(favoritePetIds));
 
-        if (vaccinated != null) {
-            stream = stream.filter(p -> p.isVaccinated() == vaccinated);
-        }
-        if (urgent != null) {
-            stream = stream.filter(p -> p.isUrgent() == urgent);
-        }
-        if (sterilized != null) {
-            stream = stream.filter(p -> p.isSterilized() == sterilized);
-        }
-        if (kidFriendly != null) {
-            stream = stream.filter(p -> p.isKidFriendly() == kidFriendly);
-        }
-        if (minAge != null) {
-            stream = stream.filter(p -> p.getAge() >= minAge);
-        }
-        if (maxAge != null) {
-            stream = stream.filter(p -> p.getAge() <= maxAge);
-        }
-        if (type != null) {
-            stream = stream.filter(p -> p.getType() == type);
-        }
+        List<Pet> filteredPets = petRepository.findAll(spec);
+
+        Stream<Pet> stream = filteredPets.stream();
 
         if (userLat != null && userLng != null && radiusKm != null) {
             stream = stream.filter(p -> {
@@ -84,11 +89,7 @@ public class PetService {
             });
         }
 
-        return stream
-                .filter(pet -> !pet.isArchived())   // zwracamy tylko te, które nie sa zarchiwizowane
-                .filter(pet -> pet.getShelter().getIsActive())  // zwracamy tylko te, ktorych schronisko jest aktywowane
-                .map(petMapper::toDto)
-                .collect(Collectors.toList());
+        return stream.map(petMapper::toDto).toList();
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -106,6 +107,13 @@ public class PetService {
         return petRepository.findById(petId)
                 .map(petMapper::toDtoWithImages)
                 .orElseThrow(() -> new PetNotFoundException(petId));
+    }
+
+    public List<Long> getAllPetIds() {
+        return petRepository.findAll()
+                .stream()
+                .map(Pet::getId)
+                .collect(Collectors.toList());
     }
 
     public List<PetResponse> getAllShelterPets(Long shelterId) {
@@ -131,6 +139,7 @@ public class PetService {
         return petMapper.toDto(savedPet);
     }
 
+    @Transactional
     public PetImageResponse getPetImage(Long id) {
         Optional<Pet> pet = petRepository.findById(id);
         if (pet.isPresent()) {

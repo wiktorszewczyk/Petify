@@ -14,7 +14,11 @@ import org.petify.shelter.exception.ShelterNotFoundException;
 import org.petify.shelter.mapper.ShelterMapper;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.ShelterRepository;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +35,9 @@ class ShelterServiceTest {
     @Mock
     private ShelterMapper shelterMapper;
 
+    @Mock
+    private MultipartFile multipartFile;
+
     @InjectMocks
     private ShelterService shelterService;
 
@@ -39,7 +46,12 @@ class ShelterServiceTest {
     private ShelterResponse shelterResponse;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
+        byte[] imageBytes = "dummy image".getBytes(StandardCharsets.UTF_8);
+        when(multipartFile.getBytes()).thenReturn(imageBytes);
+        when(multipartFile.getOriginalFilename()).thenReturn("image.jpg");
+        when(multipartFile.getContentType()).thenReturn("image/jpeg");
+
         shelter = new Shelter();
         shelter.setId(1L);
         shelter.setName("Shelter Name");
@@ -67,7 +79,10 @@ class ShelterServiceTest {
                 "123456789",
                 52.2297,
                 21.0122,
-                true
+                true,
+                multipartFile.getOriginalFilename(),
+                multipartFile.getContentType(),
+                Base64.getEncoder().encodeToString(multipartFile.getBytes())
         );
     }
 
@@ -119,33 +134,36 @@ class ShelterServiceTest {
     }
 
     @Test
-    void testCreateShelter() {
+    void testCreateShelterWithFile() throws IOException {
         when(shelterRepository.getShelterByOwnerUsername("ownerUsername")).thenReturn(Optional.empty());
         when(shelterMapper.toEntity(any(ShelterRequest.class))).thenReturn(shelter);
+        when(multipartFile.getOriginalFilename()).thenReturn("image.jpg");
+        when(multipartFile.getContentType()).thenReturn("image/jpeg");
+        when(multipartFile.getBytes()).thenReturn(new byte[]{1, 2, 3});
         when(shelterRepository.save(any(Shelter.class))).thenReturn(shelter);
         when(shelterMapper.toDto(any(Shelter.class))).thenReturn(shelterResponse);
 
-        ShelterResponse result = shelterService.createShelter(shelterRequest, "ownerUsername");
+        ShelterResponse result = shelterService.createShelter(shelterRequest, multipartFile, "ownerUsername");
 
         assertThat(result).isEqualTo(shelterResponse);
-        verify(shelterRepository, times(1)).save(shelter);
+        verify(shelterRepository).save(any(Shelter.class));
     }
 
     @Test
     void testCreateShelter_AlreadyExists() {
         when(shelterRepository.getShelterByOwnerUsername("ownerUsername")).thenReturn(Optional.of(shelter));
 
-        assertThatThrownBy(() -> shelterService.createShelter(shelterRequest, "ownerUsername"))
+        assertThatThrownBy(() -> shelterService.createShelter(shelterRequest, multipartFile, "ownerUsername"))
                 .isInstanceOf(ShelterAlreadyExistsException.class);
     }
 
     @Test
-    void testUpdateShelter() {
+    void testUpdateShelter() throws IOException {
         when(shelterRepository.findById(1L)).thenReturn(Optional.of(shelter));
         when(shelterRepository.save(any(Shelter.class))).thenReturn(shelter);
         when(shelterMapper.toDto(any(Shelter.class))).thenReturn(shelterResponse);
 
-        ShelterResponse result = shelterService.updateShelter(shelterRequest, 1L);
+        ShelterResponse result = shelterService.updateShelter(shelterRequest, multipartFile, 1L);
 
         assertThat(result).isEqualTo(shelterResponse);
         verify(shelterRepository, times(1)).save(shelter);
@@ -155,7 +173,7 @@ class ShelterServiceTest {
     void testUpdateShelter_NotFound() {
         when(shelterRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> shelterService.updateShelter(shelterRequest, 1L))
+        assertThatThrownBy(() -> shelterService.updateShelter(shelterRequest, multipartFile, 1L))
                 .isInstanceOf(ShelterNotFoundException.class);
     }
 
