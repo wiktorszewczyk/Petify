@@ -15,6 +15,5 @@ import org.petify.funding.model.PaymentMethod;
 public class PaymentMethodOption {
     private PaymentMethod method;
     private String displayName;
-    private String iconUrl;
     private boolean requiresAdditionalInfo;
 }

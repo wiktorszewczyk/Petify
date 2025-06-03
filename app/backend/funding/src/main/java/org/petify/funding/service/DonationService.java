@@ -13,7 +13,6 @@ import org.petify.funding.model.DonationType;
 import org.petify.funding.repository.DonationRepository;
 
 import feign.FeignException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -38,25 +37,20 @@ public class DonationService {
         log.info("Creating draft donation for shelter {} by user {}",
                 request.getShelterId(), jwt.getSubject());
 
-        // Konwertuj na standardowy DonationRequest
         DonationRequest donationRequest = convertToDonationRequest(request);
 
-        // Wzbogać danymi użytkownika
         enrichDonorInformation(donationRequest, jwt);
 
-        // Waliduj request
         validateDonationRequest(donationRequest);
 
-        // Waliduj schronisko
         validateShelterExists(donationRequest.getShelterId());
 
         if (donationRequest.getPetId() != null) {
             validatePetExists(donationRequest.getShelterId(), donationRequest.getPetId());
         }
 
-        // Stwórz dotację
         Donation donation = donationRequest.toEntity();
-        donation.setStatus(DonationStatus.PENDING); // PENDING zamiast DRAFT
+        donation.setStatus(DonationStatus.PENDING);
 
         Donation saved = donationRepository.save(donation);
 

@@ -298,10 +298,8 @@ public class PayUPaymentService implements PaymentProviderService {
 
     @Override
     public BigDecimal calculateFee(BigDecimal amount, Currency currency) {
-        return amount.multiply(new BigDecimal("0.019")); // 1.9%
+        return amount.multiply(new BigDecimal("0.019"));
     }
-
-    // === PRIVATE HELPER METHODS ===
 
     private String getAccessToken() {
         try {
@@ -340,23 +338,18 @@ public class PayUPaymentService implements PaymentProviderService {
         orderRequest.put("currencyCode", "PLN");
         orderRequest.put("totalAmount", convertToPayUAmount(donation.getAmount()));
 
-        // Krótki external order ID
         String extOrderId = "d" + donation.getId() + "_" + (System.nanoTime() % 100000);
         orderRequest.put("extOrderId", extOrderId);
 
-        // Buyer info
         Map<String, String> buyer = buildBuyerInfo(donation);
         if (!buyer.isEmpty()) {
             orderRequest.put("buyer", buyer);
         }
 
-        // Products
         orderRequest.put("products", buildProducts(donation));
 
-        // Payment methods - tylko jeśli określono
         configurePaymentMethods(orderRequest, request);
 
-        // Return URL
         if (request.getReturnUrl() != null && !request.getReturnUrl().trim().isEmpty()) {
             orderRequest.put("continueUrl", request.getReturnUrl());
         }
@@ -440,41 +433,24 @@ public class PayUPaymentService implements PaymentProviderService {
     }
 
     private void configurePaymentMethods(Map<String, Object> orderRequest, PaymentRequest request) {
-        // Dla karty - nie określaj payMethods, PayU pokaże formularz wyboru
-        if (request.getPreferredMethod() == null || request.getPreferredMethod() == PaymentMethod.CARD) {
+        if (request.getPreferredMethod() == PaymentMethod.BLIK &&
+                request.getBlikCode() != null &&
+                !request.getBlikCode().trim().isEmpty() &&
+                request.getBlikCode().matches("\\d{6}")) {
+
+            Map<String, Object> payMethods = new HashMap<>();
+            Map<String, Object> blikMethod = new HashMap<>();
+            blikMethod.put("type", "PBL");
+            blikMethod.put("value", "blik");
+            payMethods.put("payMethod", blikMethod);
+            payMethods.put("authorizationCode", request.getBlikCode());
+
+            orderRequest.put("payMethods", payMethods);
+
+            log.info("Configured BLIK direct payment with authorization code");
             return;
         }
-
-        Map<String, Object> payMethods = new HashMap<>();
-
-        switch (request.getPreferredMethod()) {
-            case BLIK:
-                Map<String, Object> blikMethod = new HashMap<>();
-                blikMethod.put("type", "PBL");
-                blikMethod.put("value", "blik");
-                payMethods.put("payMethod", blikMethod);
-
-                if (request.getBlikCode() != null && !request.getBlikCode().trim().isEmpty()) {
-                    payMethods.put("authorizationCode", request.getBlikCode());
-                }
-                break;
-
-            case BANK_TRANSFER:
-                Map<String, Object> bankMethod = new HashMap<>();
-                bankMethod.put("type", "PBL");
-                bankMethod.put("value", request.getBankCode() != null ?
-                        request.getBankCode() : "t"); // "t" = ogólny transfer
-                payMethods.put("payMethod", bankMethod);
-                break;
-
-            default:
-                // Dla innych metod - nie określaj, PayU pokaże opcje
-                return;
-        }
-
-        if (!payMethods.isEmpty()) {
-            orderRequest.put("payMethods", payMethods);
-        }
+        log.info("Using PayU universal checkout - user will choose payment method in PayU interface");
     }
 
     private String convertToPayUAmount(BigDecimal amount) {
@@ -510,7 +486,7 @@ public class PayUPaymentService implements PaymentProviderService {
         if (request.getPreferredMethod() != null) {
             return request.getPreferredMethod();
         }
-        return PaymentMethod.CARD; // Domyślnie karta
+        return PaymentMethod.CARD;
     }
 
     private Map<String, String> createMetadata(Donation donation) {

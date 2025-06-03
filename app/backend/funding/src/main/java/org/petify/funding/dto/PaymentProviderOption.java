@@ -17,7 +17,6 @@ import java.util.List;
 public class PaymentProviderOption {
     private PaymentProvider provider;
     private String displayName;
-    private String logoUrl;
     private List<PaymentMethodOption> supportedMethods;
     private PaymentFeeCalculation fees; // Używamy istniejącego!
     private boolean recommended;

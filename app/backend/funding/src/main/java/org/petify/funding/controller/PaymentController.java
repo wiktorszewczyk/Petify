@@ -78,7 +78,6 @@ public class PaymentController {
         try {
             PaymentProvider paymentProvider = PaymentProvider.valueOf(provider.toUpperCase());
 
-            // Zwróć metody obsługiwane przez providera
             List<String> methods = paymentService.getSupportedPaymentMethods(paymentProvider);
             return ResponseEntity.ok(methods);
 
@@ -86,8 +85,6 @@ public class PaymentController {
             return ResponseEntity.badRequest().build();
         }
     }
-
-    // === WEBHOOK ENDPOINTS ===
 
     /**
      * Webhook Stripe
@@ -123,7 +120,6 @@ public class PaymentController {
         }
     }
 
-    // === ADMIN ENDPOINTS ===
 
     /**
      * Pobiera płatności dla konkretnej dotacji (admin)

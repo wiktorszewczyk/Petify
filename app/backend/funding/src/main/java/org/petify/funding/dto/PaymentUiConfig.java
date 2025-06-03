@@ -15,7 +15,5 @@ import org.petify.funding.model.PaymentProvider;
 public class PaymentUiConfig {
     private PaymentProvider provider;
     private String sdkConfiguration;
-    private boolean requiresWebView;
     private boolean hasNativeSDK;
-    private String mobileDeepLink;
 }

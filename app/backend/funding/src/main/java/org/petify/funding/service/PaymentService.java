@@ -65,71 +65,65 @@ public class PaymentService {
     public List<PaymentProviderOption> getAvailablePaymentOptions(BigDecimal amount, String userLocation) {
         List<PaymentProviderOption> options = new ArrayList<>();
 
-        // PayU - głównie dla Polski
         if ("PL".equals(userLocation)) {
             PaymentFeeCalculation payuFees = calculatePaymentFee(amount, PaymentProvider.PAYU);
 
             options.add(PaymentProviderOption.builder()
                     .provider(PaymentProvider.PAYU)
                     .displayName("PayU")
-                    .logoUrl("/images/payu-logo.png")
                     .recommended(true)
                     .fees(payuFees)
                     .supportedMethods(Arrays.asList(
                             PaymentMethodOption.builder()
                                     .method(PaymentMethod.BLIK)
                                     .displayName("BLIK")
-                                    .iconUrl("/images/blik-icon.png")
                                     .requiresAdditionalInfo(true)
                                     .build(),
                             PaymentMethodOption.builder()
                                     .method(PaymentMethod.CARD)
                                     .displayName("Karta płatnicza")
-                                    .iconUrl("/images/card-icon.png")
                                     .requiresAdditionalInfo(false)
                                     .build(),
                             PaymentMethodOption.builder()
                                     .method(PaymentMethod.BANK_TRANSFER)
                                     .displayName("Przelew bankowy")
-                                    .iconUrl("/images/bank-icon.png")
+                                    .requiresAdditionalInfo(false)
+                                    .build(),
+                            PaymentMethodOption.builder()
+                                    .method(PaymentMethod.GOOGLE_PAY)
+                                    .displayName("Płatność Google Pay")
                                     .requiresAdditionalInfo(false)
                                     .build()
                     ))
                     .build());
         }
 
-        // Stripe - międzynarodowo
         PaymentFeeCalculation stripeFees = calculatePaymentFee(amount, PaymentProvider.STRIPE);
 
         options.add(PaymentProviderOption.builder()
                 .provider(PaymentProvider.STRIPE)
                 .displayName("Stripe")
-                .logoUrl("/images/stripe-logo.png")
                 .recommended(false)
                 .fees(stripeFees)
                 .supportedMethods(Arrays.asList(
                         PaymentMethodOption.builder()
                                 .method(PaymentMethod.CARD)
                                 .displayName("Credit/Debit Card")
-                                .iconUrl("/images/card-icon.png")
                                 .requiresAdditionalInfo(false)
                                 .build(),
                         PaymentMethodOption.builder()
                                 .method(PaymentMethod.GOOGLE_PAY)
                                 .displayName("Google Pay")
-                                .iconUrl("/images/googlepay-icon.png")
                                 .requiresAdditionalInfo(false)
                                 .build(),
                         PaymentMethodOption.builder()
                                 .method(PaymentMethod.APPLE_PAY)
                                 .displayName("Apple Pay")
-                                .iconUrl("/images/applepay-icon.png")
                                 .requiresAdditionalInfo(false)
                                 .build()
                 ))
                 .build());
 
-        // Oznacz najniższą opłatę
         markLowestFee(options);
 
         return options;
@@ -145,7 +139,6 @@ public class PaymentService {
 
         validateDonationCanAcceptPayment(donation);
 
-        // Zaktualizuj status dotacji na PENDING jeśli była DRAFT
         if (donation.getStatus() == DonationStatus.PENDING) {
             donation.setStatus(DonationStatus.PENDING);
             donationRepository.save(donation);
@@ -153,7 +146,6 @@ public class PaymentService {
 
         PaymentProviderService providerService = providerFactory.getProvider(request.getProvider());
 
-        // Zbuduj payment request
         PaymentRequest paymentRequest = PaymentRequest.builder()
                 .donationId(donationId)
                 .preferredProvider(request.getProvider())
@@ -161,19 +153,15 @@ public class PaymentService {
                 .returnUrl(request.getReturnUrl())
                 .cancelUrl(request.getCancelUrl())
                 .blikCode(request.getBlikCode())
-                .bankCode(request.getBankCode())
                 .build();
 
         PaymentResponse payment = providerService.createPayment(paymentRequest);
 
-        // Zbuduj UI config
         PaymentUiConfig uiConfig = buildUiConfig(request.getProvider(), request.getMethod(), payment);
 
         return PaymentInitializationResponse.builder()
                 .payment(payment)
                 .uiConfig(uiConfig)
-                .checkoutUrl(payment.getCheckoutUrl())
-                .clientSecret(payment.getClientSecret())
                 .build();
     }
 
@@ -253,9 +241,7 @@ public class PaymentService {
         return switch (provider) {
             case PAYU -> PaymentUiConfig.builder()
                     .provider(PaymentProvider.PAYU)
-                    .requiresWebView(true)
-                    .hasNativeSDK(false)
-                    .mobileDeepLink(payment.getCheckoutUrl())
+                    .hasNativeSDK(true)
                     .sdkConfiguration(String.format("""
                         {
                             "merchantPosId": "300746",
@@ -267,7 +253,6 @@ public class PaymentService {
 
             case STRIPE -> PaymentUiConfig.builder()
                     .provider(PaymentProvider.STRIPE)
-                    .requiresWebView(false)
                     .hasNativeSDK(true)
                     .sdkConfiguration(String.format("""
                         {

@@ -12,7 +12,5 @@ import java.util.Map;
 public class PaymentInitializationResponse {
     private PaymentResponse payment;
     private PaymentUiConfig uiConfig;
-    private String checkoutUrl; // dla web redirect
-    private String clientSecret; // dla Stripe Elements
     private Map<String, Object> providerSpecificData;
 }

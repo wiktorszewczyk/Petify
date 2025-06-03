@@ -42,14 +42,11 @@ public class DonationController {
 
         log.info("Creating donation intent for user: {}", jwt.getSubject());
 
-        // Stwórz dotację w statusie DRAFT
         DonationResponse donation = donationService.createDraft(request, jwt);
 
-        // Pobierz dostępne opcje płatności
         List<PaymentProviderOption> options = paymentService.getAvailablePaymentOptions(
                 donation.getAmount(), getCurrentUserLocation(jwt));
 
-        // Wygeneruj session token
         String sessionToken = generateSessionToken(donation.getId());
 
         PaymentOptionsResponse response = PaymentOptionsResponse.builder()
@@ -161,10 +158,8 @@ public class DonationController {
         donationService.delete(id);
     }
 
-    // === HELPER METHODS ===
 
     private String getCurrentUserLocation(Jwt jwt) {
-        // Możesz rozszerzyć o właściwe wykrywanie lokalizacji
         return "PL"; // domyślnie Polska
     }
 
@@ -185,7 +180,6 @@ public class DonationController {
             long timestamp = Long.parseLong(decoded.substring(expectedPrefix.length()));
             long now = System.currentTimeMillis();
 
-            // Token ważny przez 30 minut
             if (now - timestamp > 30 * 60 * 1000) {
                 throw new RuntimeException("Session token expired");
             }

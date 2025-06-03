@@ -18,7 +18,6 @@ public class PaymentChoiceRequest {
 
     private PaymentMethod method;
     private String blikCode;
-    private String bankCode;
     private String returnUrl;
     private String cancelUrl;
 }
