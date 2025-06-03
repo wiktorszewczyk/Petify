@@ -84,10 +84,10 @@ public class Payment {
     @Column(name = "metadata_value")
     private Map<String, String> metadata;
 
-    @Column(name = "client_secret")
+    @Column(name = "client_secret", columnDefinition = "TEXT")
     private String clientSecret;
 
-    @Column(name = "checkout_url")
+    @Column(name = "checkout_url", columnDefinition = "TEXT")
     private String checkoutUrl;
 
     @Column(name = "created_at", nullable = false)

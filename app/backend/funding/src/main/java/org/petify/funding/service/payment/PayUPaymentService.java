@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
@@ -44,10 +45,7 @@ public class PayUPaymentService implements PaymentProviderService {
     @Value("${payment.payu.pos-id}")
     private String posId;
 
-    @Value("${payment.payu.md5-key}")
-    private String md5Key;
-
-    @Value("${app.webhook.base-url:http://localhost:9001}")
+    @Value("${app.webhook.base-url:http://localhost:8222}")
     private String webhookBaseUrl;
 
     @Override
@@ -59,24 +57,8 @@ public class PayUPaymentService implements PaymentProviderService {
             Donation donation = donationRepository.findById(request.getDonationId())
                     .orElseThrow(() -> new RuntimeException("Donation not found"));
 
-            log.info("Donation details: id={}, type={}, amount={}",
-                    donation.getId(), donation.getDonationType(), donation.getAmount());
-
-            if (donation instanceof MaterialDonation md) {
-                log.info("Material donation: name={}, unitPrice={}, quantity={}",
-                        md.getItemName(), md.getUnitPrice(), md.getQuantity());
-            }
-
             String accessToken = getAccessToken();
-
             Map<String, Object> orderRequest = buildOrderRequest(donation, request);
-
-            try {
-                String jsonRequest = objectMapper.writeValueAsString(orderRequest);
-                log.info("PayU order request JSON: {}", jsonRequest);
-            } catch (Exception e) {
-                log.error("Failed to serialize request for logging", e);
-            }
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -248,10 +230,6 @@ public class PayUPaymentService implements PaymentProviderService {
         try {
             log.info("Processing PayU webhook");
 
-            if (!verifySignature(payload, signature)) {
-                log.warn("Invalid PayU webhook signature - processing anyway for development");
-            }
-
             JsonNode webhookData = objectMapper.readTree(payload);
             JsonNode orderData = webhookData.get("order");
 
@@ -320,8 +298,10 @@ public class PayUPaymentService implements PaymentProviderService {
 
     @Override
     public BigDecimal calculateFee(BigDecimal amount, Currency currency) {
-        return amount.multiply(new BigDecimal("0.019"));
+        return amount.multiply(new BigDecimal("0.019")); // 1.9%
     }
+
+    // === PRIVATE HELPER METHODS ===
 
     private String getAccessToken() {
         try {
@@ -356,33 +336,33 @@ public class PayUPaymentService implements PaymentProviderService {
         orderRequest.put("notifyUrl", webhookBaseUrl + "/payments/webhook/payu");
         orderRequest.put("customerIp", "127.0.0.1");
         orderRequest.put("merchantPosId", posId);
-
-        String description = buildDescription(donation);
-        orderRequest.put("description", description);
-
+        orderRequest.put("description", buildDescription(donation));
         orderRequest.put("currencyCode", "PLN");
         orderRequest.put("totalAmount", convertToPayUAmount(donation.getAmount()));
 
-        String extOrderId = "donation_" + donation.getId() + "_" + System.currentTimeMillis();
+        // Krótki external order ID
+        String extOrderId = "d" + donation.getId() + "_" + (System.nanoTime() % 100000);
         orderRequest.put("extOrderId", extOrderId);
 
+        // Buyer info
         Map<String, String> buyer = buildBuyerInfo(donation);
         if (!buyer.isEmpty()) {
             orderRequest.put("buyer", buyer);
         }
 
-        List<Map<String, Object>> products = buildProducts(donation);
-        orderRequest.put("products", products);
+        // Products
+        orderRequest.put("products", buildProducts(donation));
 
+        // Payment methods - tylko jeśli określono
         configurePaymentMethods(orderRequest, request);
 
+        // Return URL
         if (request.getReturnUrl() != null && !request.getReturnUrl().trim().isEmpty()) {
             orderRequest.put("continueUrl", request.getReturnUrl());
         }
 
         return orderRequest;
     }
-
 
     private String buildDescription(Donation donation) {
         StringBuilder desc = new StringBuilder();
@@ -425,15 +405,10 @@ public class PayUPaymentService implements PaymentProviderService {
     }
 
     private List<Map<String, Object>> buildProducts(Donation donation) {
-        log.info("Building products for donation: id={}, type={}, amount={}",
-                donation.getId(), donation.getDonationType(), donation.getAmount());
-
         List<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> product = new HashMap<>();
 
         if (donation instanceof MaterialDonation md) {
-            log.info("Processing MATERIAL donation");
-
             String itemName = md.getItemName();
             if (itemName == null || itemName.trim().isEmpty()) {
                 itemName = "Dotacja rzeczowa";
@@ -443,12 +418,10 @@ public class PayUPaymentService implements PaymentProviderService {
             Integer quantity = md.getQuantity();
 
             if (unitPrice == null) {
-                log.error("MaterialDonation unitPrice is null!");
                 throw new IllegalArgumentException("Material donation unit price cannot be null");
             }
 
             if (quantity == null || quantity <= 0) {
-                log.error("MaterialDonation quantity is invalid: {}", quantity);
                 quantity = 1;
             }
 
@@ -457,63 +430,49 @@ public class PayUPaymentService implements PaymentProviderService {
             product.put("quantity", quantity);
 
         } else {
-            log.info("Processing MONEY donation (default case)");
-
             product.put("name", "Dotacja pieniężna dla schroniska");
             product.put("unitPrice", convertToPayUAmount(donation.getAmount()));
             product.put("quantity", 1);
         }
 
-        log.info("Created product: name={}, unitPrice={}, quantity={}",
-                product.get("name"), product.get("unitPrice"), product.get("quantity"));
-
         products.add(product);
-
-        log.info("Final products list size: {}", products.size());
-        if (!products.isEmpty()) {
-            log.info("First product details: {}", products.get(0));
-        }
-
         return products;
     }
 
     private void configurePaymentMethods(Map<String, Object> orderRequest, PaymentRequest request) {
-        if (request.getPreferredMethod() != null) {
-            Map<String, Object> payMethods = new HashMap<>();
+        // Dla karty - nie określaj payMethods, PayU pokaże formularz wyboru
+        if (request.getPreferredMethod() == null || request.getPreferredMethod() == PaymentMethod.CARD) {
+            return;
+        }
 
-            switch (request.getPreferredMethod()) {
-                case BLIK:
-                    if (request.getBlikCode() != null && !request.getBlikCode().trim().isEmpty()) {
-                        Map<String, Object> blikMethod = new HashMap<>();
-                        blikMethod.put("type", "PBL");
-                        blikMethod.put("value", "blik");
-                        payMethods.put("payMethod", blikMethod);
+        Map<String, Object> payMethods = new HashMap<>();
 
-                        payMethods.put("authorizationCode", request.getBlikCode());
-                    } else {
-                        Map<String, Object> blikMethod = new HashMap<>();
-                        blikMethod.put("type", "PBL");
-                        blikMethod.put("value", "blik");
-                        payMethods.put("payMethod", blikMethod);
-                    }
-                    break;
+        switch (request.getPreferredMethod()) {
+            case BLIK:
+                Map<String, Object> blikMethod = new HashMap<>();
+                blikMethod.put("type", "PBL");
+                blikMethod.put("value", "blik");
+                payMethods.put("payMethod", blikMethod);
 
-                case BANK_TRANSFER:
-                    Map<String, Object> bankMethod = new HashMap<>();
-                    bankMethod.put("type", "PBL");
-                    if (request.getBankCode() != null && !request.getBankCode().trim().isEmpty()) {
-                        bankMethod.put("value", request.getBankCode());
-                    }
-                    payMethods.put("payMethod", bankMethod);
-                    break;
+                if (request.getBlikCode() != null && !request.getBlikCode().trim().isEmpty()) {
+                    payMethods.put("authorizationCode", request.getBlikCode());
+                }
+                break;
 
-                case CARD:
-                    Map<String, Object> cardMethod = new HashMap<>();
-                    cardMethod.put("type", "CARD_TOKEN");
-                    payMethods.put("payMethod", cardMethod);
-                    break;
-            }
+            case BANK_TRANSFER:
+                Map<String, Object> bankMethod = new HashMap<>();
+                bankMethod.put("type", "PBL");
+                bankMethod.put("value", request.getBankCode() != null ?
+                        request.getBankCode() : "t"); // "t" = ogólny transfer
+                payMethods.put("payMethod", bankMethod);
+                break;
 
+            default:
+                // Dla innych metod - nie określaj, PayU pokaże opcje
+                return;
+        }
+
+        if (!payMethods.isEmpty()) {
             orderRequest.put("payMethods", payMethods);
         }
     }
@@ -533,7 +492,7 @@ public class PayUPaymentService implements PaymentProviderService {
             throw new IllegalArgumentException("Amount too large for PayU");
         }
 
-        return amountInGrosze.setScale(0, java.math.RoundingMode.HALF_UP).toPlainString();
+        return amountInGrosze.setScale(0, RoundingMode.HALF_UP).toPlainString();
     }
 
     private PaymentStatus mapPayUStatus(String payuStatus) {
@@ -551,7 +510,7 @@ public class PayUPaymentService implements PaymentProviderService {
         if (request.getPreferredMethod() != null) {
             return request.getPreferredMethod();
         }
-        return PaymentMethod.BLIK;
+        return PaymentMethod.CARD; // Domyślnie karta
     }
 
     private Map<String, String> createMetadata(Donation donation) {
@@ -569,36 +528,6 @@ public class PayUPaymentService implements PaymentProviderService {
         }
 
         return metadata;
-    }
-
-    private boolean verifySignature(String payload, String signature) {
-        if (signature == null || signature.isEmpty()) {
-            return false;
-        }
-
-        try {
-            String expectedSignature = generateMD5Signature(payload);
-            return expectedSignature.equals(signature);
-        } catch (Exception e) {
-            log.error("Failed to verify PayU signature", e);
-            return false;
-        }
-    }
-
-    private String generateMD5Signature(String payload) {
-        try {
-            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
-            String toHash = payload + md5Key;
-            byte[] hashBytes = md.digest(toHash.getBytes("UTF-8"));
-
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate MD5 signature", e);
-        }
     }
 
     private void updateDonationStatus(Donation donation, DonationStatus newStatus) {

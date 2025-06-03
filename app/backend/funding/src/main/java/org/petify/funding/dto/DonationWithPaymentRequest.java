@@ -46,7 +46,8 @@ public class DonationWithPaymentRequest {
     @NotNull(message = "Payment provider is required")
     private PaymentProvider paymentProvider;
 
-    private PaymentMethod paymentMethod;
+    // domyślnie karta
+    private PaymentMethod paymentMethod = PaymentMethod.CARD;
     private String returnUrl;
     private String cancelUrl;
     private String blikCode;

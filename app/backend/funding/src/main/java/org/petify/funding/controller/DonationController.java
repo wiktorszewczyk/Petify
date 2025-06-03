@@ -1,6 +1,8 @@
 package org.petify.funding.controller;
 
 import org.petify.funding.dto.*;
+import org.petify.funding.model.DonationStatus;
+import org.petify.funding.model.DonationType;
 import org.petify.funding.service.DonationService;
 import org.petify.funding.service.PaymentService;
 
@@ -17,6 +19,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
+import java.util.List;
+
 @RestController
 @RequestMapping("/donations")
 @RequiredArgsConstructor
@@ -27,52 +32,59 @@ public class DonationController {
     private final PaymentService paymentService;
 
     /**
-     * Tworzy nową dotację wraz z płatnością (unified endpoint)
+     * Krok 1: Stwórz intent dotacji i pobierz opcje płatności
      */
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/intent")
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<DonationWithPaymentResponse> createDonation(
-            @RequestBody @Valid DonationWithPaymentRequest request,
+    public ResponseEntity<PaymentOptionsResponse> createDonationIntent(
+            @RequestBody @Valid DonationIntentRequest request,
             @AuthenticationPrincipal Jwt jwt) {
 
-        enrichRequestWithUserData(request, jwt);
+        log.info("Creating donation intent for user: {}", jwt.getSubject());
 
-        log.info("Creating donation with payment for user: {}, provider: {}",
-                request.getDonorUsername(), request.getPaymentProvider());
+        // Stwórz dotację w statusie DRAFT
+        DonationResponse donation = donationService.createDraft(request, jwt);
 
-        // 1. Utwórz dotację
-        DonationResponse donation = donationService.create(request.toDonationRequest());
+        // Pobierz dostępne opcje płatności
+        List<PaymentProviderOption> options = paymentService.getAvailablePaymentOptions(
+                donation.getAmount(), getCurrentUserLocation(jwt));
 
-        // 2. Utwórz płatność
-        PaymentRequest paymentRequest = PaymentRequest.builder()
+        // Wygeneruj session token
+        String sessionToken = generateSessionToken(donation.getId());
+
+        PaymentOptionsResponse response = PaymentOptionsResponse.builder()
                 .donationId(donation.getId())
-                .preferredProvider(request.getPaymentProvider())
-                .preferredMethod(request.getPaymentMethod())
-                .returnUrl(request.getReturnUrl())
-                .cancelUrl(request.getCancelUrl())
-                .blikCode(request.getBlikCode())
-                .bankCode(request.getBankCode())
-                .build();
-
-        PaymentResponse payment = paymentService.createPayment(paymentRequest);
-
-        // 3. Oblicz opłaty
-        PaymentService.PaymentFeeCalculation feeInfo = paymentService.calculatePaymentFee(
-                donation.getAmount(), payment.getProvider());
-
-        // 4. Zwróć wszystko
-        DonationWithPaymentResponse response = DonationWithPaymentResponse.builder()
                 .donation(donation)
-                .payment(payment)
-                .feeInformation(feeInfo)
+                .availableProviders(options)
+                .sessionToken(sessionToken)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.ok(response);
     }
 
     /**
-     * Endpoint dla powrotu z płatności - sprawdza status
+     * Krok 2: Użytkownik wybiera provider i metodę - inicjalizuje płatność
+     */
+    @PostMapping("/{donationId}/payment/initialize")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<PaymentInitializationResponse> initializePayment(
+            @PathVariable Long donationId,
+            @RequestBody @Valid PaymentChoiceRequest request,
+            @RequestHeader("Session-Token") String sessionToken) {
+
+        log.info("Initializing payment for donation {} with provider {}",
+                donationId, request.getProvider());
+
+        validateSessionToken(sessionToken, donationId);
+
+        PaymentInitializationResponse response = paymentService.initializePayment(
+                donationId, request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Sprawdza status płatności po powrocie
      */
     @GetMapping("/payment-status/{donationId}")
     public ResponseEntity<DonationWithPaymentStatusResponse> checkPaymentStatus(
@@ -80,7 +92,7 @@ public class DonationController {
 
         DonationResponse donation = donationService.get(donationId);
 
-        var payments = paymentService.getPaymentsByDonation(donationId);
+        List<PaymentResponse> payments = paymentService.getPaymentsByDonation(donationId);
         PaymentResponse latestPayment = payments.isEmpty() ? null :
                 payments.stream()
                         .max((p1, p2) -> p1.getCreatedAt().compareTo(p2.getCreatedAt()))
@@ -89,32 +101,24 @@ public class DonationController {
         DonationWithPaymentStatusResponse response = DonationWithPaymentStatusResponse.builder()
                 .donation(donation)
                 .latestPayment(latestPayment)
-                .isCompleted(donation.getStatus() == org.petify.funding.model.DonationStatus.COMPLETED)
+                .isCompleted(donation.getStatus() == DonationStatus.COMPLETED)
                 .build();
 
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Pobiera wszystkie dotacje (tylko admin)
-     */
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Page<DonationResponse>> getAllDonations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false) org.petify.funding.model.DonationType type) {
+            @RequestParam(required = false) DonationType type) {
 
         Page<DonationResponse> donations = donationService.getAll(
-                PageRequest.of(page, size, Sort.by("createdAt").descending()),
-                type
-        );
+                PageRequest.of(page, size, Sort.by("createdAt").descending()), type);
         return ResponseEntity.ok(donations);
     }
 
-    /**
-     * Pobiera dotacje użytkownika
-     */
     @GetMapping("/my")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Page<DonationResponse>> getMyDonations(
@@ -122,14 +126,10 @@ public class DonationController {
             @RequestParam(defaultValue = "20") int size) {
 
         Page<DonationResponse> donations = donationService.getUserDonations(
-                PageRequest.of(page, size, Sort.by("createdAt").descending())
-        );
+                PageRequest.of(page, size, Sort.by("createdAt").descending()));
         return ResponseEntity.ok(donations);
     }
 
-    /**
-     * Pobiera konkretną dotację
-     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<DonationResponse> getDonationById(@PathVariable Long id) {
@@ -137,9 +137,6 @@ public class DonationController {
         return ResponseEntity.ok(donation);
     }
 
-    /**
-     * Pobiera dotacje dla schroniska (publiczne)
-     */
     @GetMapping("/shelter/{shelterId}")
     public ResponseEntity<Page<DonationResponse>> getDonationsByShelter(
             @PathVariable Long shelterId,
@@ -147,42 +144,16 @@ public class DonationController {
             @RequestParam(defaultValue = "20") int size) {
 
         Page<DonationResponse> donations = donationService.getForShelter(
-                shelterId,
-                PageRequest.of(page, size, Sort.by("donatedAt").descending())
-        );
+                shelterId, PageRequest.of(page, size, Sort.by("donatedAt").descending()));
         return ResponseEntity.ok(donations);
     }
 
-    /**
-     * Pobiera dotacje dla zwierzęcia (publiczne)
-     */
-    @GetMapping("/pet/{petId}")
-    public ResponseEntity<Page<DonationResponse>> getDonationsByPet(
-            @PathVariable Long petId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-
-        Page<DonationResponse> donations = donationService.getForPet(
-                petId,
-                PageRequest.of(page, size, Sort.by("donatedAt").descending())
-        );
-        return ResponseEntity.ok(donations);
-    }
-
-    /**
-     * Pobiera statystyki dotacji dla schroniska
-     */
     @GetMapping("/shelter/{shelterId}/stats")
-    public ResponseEntity<DonationStatistics> getShelterStats(
-            @PathVariable Long shelterId) {
-
+    public ResponseEntity<DonationStatistics> getShelterStats(@PathVariable Long shelterId) {
         DonationStatistics stats = donationService.getShelterDonationStats(shelterId);
         return ResponseEntity.ok(stats);
     }
 
-    /**
-     * Usuwa dotację (tylko admin)
-     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -190,30 +161,37 @@ public class DonationController {
         donationService.delete(id);
     }
 
-    /**
-     * Oblicza opłaty za płatność przed utworzeniem
-     */
-    @PostMapping("/calculate-fees")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<PaymentService.PaymentFeeCalculation> calculateFees(
-            @RequestBody CalculateFeesRequest request) {
+    // === HELPER METHODS ===
 
-        PaymentService.PaymentFeeCalculation calculation = paymentService.calculatePaymentFee(
-                request.getAmount(),
-                request.getProvider() != null ? request.getProvider() : org.petify.funding.model.PaymentProvider.PAYU
-        );
-
-        return ResponseEntity.ok(calculation);
+    private String getCurrentUserLocation(Jwt jwt) {
+        // Możesz rozszerzyć o właściwe wykrywanie lokalizacji
+        return "PL"; // domyślnie Polska
     }
 
-    private void enrichRequestWithUserData(DonationWithPaymentRequest request, Jwt jwt) {
-        if (jwt != null) {
-            if (request.getDonorUsername() == null) {
-                request.setDonorUsername(jwt.getSubject());
+    private String generateSessionToken(Long donationId) {
+        return Base64.getEncoder().encodeToString(
+                (donationId + ":" + System.currentTimeMillis()).getBytes());
+    }
+
+    private void validateSessionToken(String sessionToken, Long donationId) {
+        try {
+            String decoded = new String(Base64.getDecoder().decode(sessionToken));
+            String expectedPrefix = donationId + ":";
+
+            if (!decoded.startsWith(expectedPrefix)) {
+                throw new RuntimeException("Invalid session token");
             }
-            if (request.getDonorId() == null && jwt.getClaim("userId") != null) {
-                request.setDonorId(jwt.getClaim("userId"));
+
+            long timestamp = Long.parseLong(decoded.substring(expectedPrefix.length()));
+            long now = System.currentTimeMillis();
+
+            // Token ważny przez 30 minut
+            if (now - timestamp > 30 * 60 * 1000) {
+                throw new RuntimeException("Session token expired");
             }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid session token", e);
         }
     }
 }

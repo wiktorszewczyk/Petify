@@ -53,6 +53,14 @@ public class StripePaymentService implements PaymentProviderService {
                     .putMetadata("donationType", donation.getDonationType().name())
                     .putMetadata("shelterId", String.valueOf(donation.getShelterId()));
 
+            if (request.getPreferredMethod() == PaymentMethod.GOOGLE_PAY) {
+                paramsBuilder.addPaymentMethodType("card")
+                        .putMetadata("payment_method_preference", "google_pay");
+            } else if (request.getPreferredMethod() == PaymentMethod.APPLE_PAY) {
+                paramsBuilder.addPaymentMethodType("card")
+                        .putMetadata("payment_method_preference", "apple_pay");
+            }
+
             String description = buildDescription(donation);
             paramsBuilder.setDescription(description);
 

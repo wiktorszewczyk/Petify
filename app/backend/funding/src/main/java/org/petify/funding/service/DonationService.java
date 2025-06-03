@@ -2,6 +2,7 @@ package org.petify.funding.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.petify.funding.client.ShelterClient;
+import org.petify.funding.dto.DonationIntentRequest;
 import org.petify.funding.dto.DonationRequest;
 import org.petify.funding.dto.DonationResponse;
 import org.petify.funding.dto.DonationStatistics;
@@ -31,6 +32,37 @@ public class DonationService {
 
     private final DonationRepository donationRepository;
     private final ShelterClient shelterClient;
+
+    @Transactional
+    public DonationResponse createDraft(DonationIntentRequest request, Jwt jwt) {
+        log.info("Creating draft donation for shelter {} by user {}",
+                request.getShelterId(), jwt.getSubject());
+
+        // Konwertuj na standardowy DonationRequest
+        DonationRequest donationRequest = convertToDonationRequest(request);
+
+        // Wzbogać danymi użytkownika
+        enrichDonorInformation(donationRequest, jwt);
+
+        // Waliduj request
+        validateDonationRequest(donationRequest);
+
+        // Waliduj schronisko
+        validateShelterExists(donationRequest.getShelterId());
+
+        if (donationRequest.getPetId() != null) {
+            validatePetExists(donationRequest.getShelterId(), donationRequest.getPetId());
+        }
+
+        // Stwórz dotację
+        Donation donation = donationRequest.toEntity();
+        donation.setStatus(DonationStatus.PENDING); // PENDING zamiast DRAFT
+
+        Donation saved = donationRepository.save(donation);
+
+        log.info("Draft donation created successfully with ID: {}", saved.getId());
+        return DonationResponse.fromEntity(saved);
+    }
 
     /**
      * Pobiera wszystkie dotacje (z opcjonalnym filtrowaniem po typie)
@@ -86,33 +118,6 @@ public class DonationService {
     }
 
     /**
-     * Tworzy nową dotację
-     */
-    @Transactional
-    public DonationResponse create(@Valid DonationRequest request) {
-        log.info("Creating donation for shelter {} by user {}",
-                request.getShelterId(), request.getDonorUsername());
-
-        enrichDonorInformation(request);
-
-        validateDonationRequest(request);
-
-        validateShelterExists(request.getShelterId());
-
-        if (request.getPetId() != null) {
-            validatePetExists(request.getShelterId(), request.getPetId());
-        }
-
-        Donation donation = request.toEntity();
-        donation.setStatus(DonationStatus.PENDING);
-
-        Donation saved = donationRepository.save(donation);
-
-        log.info("Donation created successfully with ID: {}", saved.getId());
-        return DonationResponse.fromEntity(saved);
-    }
-
-    /**
      * Usuwa dotację (tylko admin)
      */
     @Transactional
@@ -165,14 +170,11 @@ public class DonationService {
     }
 
 
-    private void enrichDonorInformation(DonationRequest request) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+    private void enrichDonorInformation(DonationRequest request, Jwt jwt) {
+        if (jwt != null) {
             if (request.getDonorUsername() == null) {
                 request.setDonorUsername(jwt.getSubject());
             }
-
             if (request.getDonorId() == null && jwt.getClaim("userId") != null) {
                 request.setDonorId(jwt.getClaim("userId"));
             }
@@ -254,5 +256,19 @@ public class DonationService {
             return jwt.getSubject();
         }
         return authentication != null ? authentication.getName() : null;
+    }
+
+    private DonationRequest convertToDonationRequest(DonationIntentRequest request) {
+        DonationRequest donationRequest = new DonationRequest();
+        donationRequest.setShelterId(request.getShelterId());
+        donationRequest.setPetId(request.getPetId());
+        donationRequest.setDonationType(request.getDonationType());
+        donationRequest.setAmount(request.getAmount());
+        donationRequest.setMessage(request.getMessage());
+        donationRequest.setAnonymous(request.getAnonymous());
+        donationRequest.setItemName(request.getItemName());
+        donationRequest.setUnitPrice(request.getUnitPrice());
+        donationRequest.setQuantity(request.getQuantity());
+        return donationRequest;
     }
 }

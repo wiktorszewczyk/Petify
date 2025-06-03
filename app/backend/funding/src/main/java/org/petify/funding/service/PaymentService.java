@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,52 +31,20 @@ public class PaymentService {
     private final DonationRepository donationRepository;
     private final PaymentProviderFactory providerFactory;
 
-    /**
-     * Tworzy nową płatność dla dotacji
-     */
     @Transactional
-    public PaymentResponse createPayment(PaymentRequest request) {
-        log.info("Creating payment for donation {}", request.getDonationId());
+    public void handleStripeWebhook(String payload, String signature) {
+        PaymentProviderService stripeService = providerFactory.getProvider(PaymentProvider.STRIPE);
+        stripeService.handleWebhook(payload, signature);
+    }
 
-        Donation donation = donationRepository.findById(request.getDonationId())
-                .orElseThrow(() -> new RuntimeException("Donation not found"));
-
-        validateDonationCanAcceptPayment(donation);
-
-        PaymentProvider provider = determineOptimalProvider(request, donation);
-
-        PaymentProviderService providerService = providerFactory.getProvider(provider);
-
-        PaymentRequest fullRequest = buildFullPaymentRequest(request, donation, provider);
-
-        PaymentResponse response = providerService.createPayment(fullRequest);
-
-        updateDonationAfterPaymentCreation(donation);
-
-        log.info("Payment created successfully: {} with provider {}", response.getId(), provider);
-        return response;
+    @Transactional
+    public void handlePayUWebhook(String payload, String signature) {
+        PaymentProviderService payuService = providerFactory.getProvider(PaymentProvider.PAYU);
+        payuService.handleWebhook(payload, signature);
     }
 
     /**
-     * Pobiera status płatności
-     */
-    public PaymentResponse getPaymentById(Long paymentId) {
-        Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
-        return PaymentResponse.fromEntity(payment);
-    }
-
-    /**
-     * Pobiera płatność po external ID
-     */
-    public PaymentResponse getPaymentByExternalId(String externalId) {
-        Payment payment = paymentRepository.findByExternalId(externalId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
-        return PaymentResponse.fromEntity(payment);
-    }
-
-    /**
-     * Anuluje płatność
+     * Anulowanie płatności
      */
     @Transactional
     public PaymentResponse cancelPayment(Long paymentId) {
@@ -91,7 +60,157 @@ public class PaymentService {
     }
 
     /**
-     * Zwraca płatność (tylko dla adminów)
+     * Pobiera dostępne opcje płatności dla danej kwoty i lokalizacji
+     */
+    public List<PaymentProviderOption> getAvailablePaymentOptions(BigDecimal amount, String userLocation) {
+        List<PaymentProviderOption> options = new ArrayList<>();
+
+        // PayU - głównie dla Polski
+        if ("PL".equals(userLocation)) {
+            PaymentFeeCalculation payuFees = calculatePaymentFee(amount, PaymentProvider.PAYU);
+
+            options.add(PaymentProviderOption.builder()
+                    .provider(PaymentProvider.PAYU)
+                    .displayName("PayU")
+                    .logoUrl("/images/payu-logo.png")
+                    .recommended(true)
+                    .fees(payuFees)
+                    .supportedMethods(Arrays.asList(
+                            PaymentMethodOption.builder()
+                                    .method(PaymentMethod.BLIK)
+                                    .displayName("BLIK")
+                                    .iconUrl("/images/blik-icon.png")
+                                    .requiresAdditionalInfo(true)
+                                    .build(),
+                            PaymentMethodOption.builder()
+                                    .method(PaymentMethod.CARD)
+                                    .displayName("Karta płatnicza")
+                                    .iconUrl("/images/card-icon.png")
+                                    .requiresAdditionalInfo(false)
+                                    .build(),
+                            PaymentMethodOption.builder()
+                                    .method(PaymentMethod.BANK_TRANSFER)
+                                    .displayName("Przelew bankowy")
+                                    .iconUrl("/images/bank-icon.png")
+                                    .requiresAdditionalInfo(false)
+                                    .build()
+                    ))
+                    .build());
+        }
+
+        // Stripe - międzynarodowo
+        PaymentFeeCalculation stripeFees = calculatePaymentFee(amount, PaymentProvider.STRIPE);
+
+        options.add(PaymentProviderOption.builder()
+                .provider(PaymentProvider.STRIPE)
+                .displayName("Stripe")
+                .logoUrl("/images/stripe-logo.png")
+                .recommended(false)
+                .fees(stripeFees)
+                .supportedMethods(Arrays.asList(
+                        PaymentMethodOption.builder()
+                                .method(PaymentMethod.CARD)
+                                .displayName("Credit/Debit Card")
+                                .iconUrl("/images/card-icon.png")
+                                .requiresAdditionalInfo(false)
+                                .build(),
+                        PaymentMethodOption.builder()
+                                .method(PaymentMethod.GOOGLE_PAY)
+                                .displayName("Google Pay")
+                                .iconUrl("/images/googlepay-icon.png")
+                                .requiresAdditionalInfo(false)
+                                .build(),
+                        PaymentMethodOption.builder()
+                                .method(PaymentMethod.APPLE_PAY)
+                                .displayName("Apple Pay")
+                                .iconUrl("/images/applepay-icon.png")
+                                .requiresAdditionalInfo(false)
+                                .build()
+                ))
+                .build());
+
+        // Oznacz najniższą opłatę
+        markLowestFee(options);
+
+        return options;
+    }
+
+    /**
+     * Inicjalizuje płatność po wyborze przez użytkownika
+     */
+    @Transactional
+    public PaymentInitializationResponse initializePayment(Long donationId, PaymentChoiceRequest request) {
+        Donation donation = donationRepository.findById(donationId)
+                .orElseThrow(() -> new RuntimeException("Donation not found"));
+
+        validateDonationCanAcceptPayment(donation);
+
+        // Zaktualizuj status dotacji na PENDING jeśli była DRAFT
+        if (donation.getStatus() == DonationStatus.PENDING) {
+            donation.setStatus(DonationStatus.PENDING);
+            donationRepository.save(donation);
+        }
+
+        PaymentProviderService providerService = providerFactory.getProvider(request.getProvider());
+
+        // Zbuduj payment request
+        PaymentRequest paymentRequest = PaymentRequest.builder()
+                .donationId(donationId)
+                .preferredProvider(request.getProvider())
+                .preferredMethod(request.getMethod())
+                .returnUrl(request.getReturnUrl())
+                .cancelUrl(request.getCancelUrl())
+                .blikCode(request.getBlikCode())
+                .bankCode(request.getBankCode())
+                .build();
+
+        PaymentResponse payment = providerService.createPayment(paymentRequest);
+
+        // Zbuduj UI config
+        PaymentUiConfig uiConfig = buildUiConfig(request.getProvider(), request.getMethod(), payment);
+
+        return PaymentInitializationResponse.builder()
+                .payment(payment)
+                .uiConfig(uiConfig)
+                .checkoutUrl(payment.getCheckoutUrl())
+                .clientSecret(payment.getClientSecret())
+                .build();
+    }
+
+    /**
+     * Oblicza opłaty za płatność
+     */
+    public PaymentFeeCalculation calculatePaymentFee(BigDecimal amount, PaymentProvider provider) {
+        PaymentProviderService providerService = providerFactory.getProvider(provider);
+        BigDecimal fee = providerService.calculateFee(amount, Currency.PLN);
+        BigDecimal netAmount = amount.subtract(fee);
+
+        return PaymentFeeCalculation.builder()
+                .grossAmount(amount)
+                .feeAmount(fee)
+                .netAmount(netAmount)
+                .provider(provider)
+                .currency(Currency.PLN)
+                .feePercentage(fee.divide(amount, 4, RoundingMode.HALF_UP)
+                        .multiply(new BigDecimal("100")))
+                .build();
+    }
+
+    public PaymentResponse getPaymentById(Long paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        return PaymentResponse.fromEntity(payment);
+    }
+
+    public List<PaymentResponse> getPaymentsByDonation(Long donationId) {
+        List<Payment> payments = paymentRepository.findByDonationId(donationId);
+        return payments.stream()
+                .map(PaymentResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Zwrot płatności (tylko admin)
      */
     @Transactional
     public PaymentResponse refundPayment(Long paymentId, BigDecimal amount) {
@@ -112,56 +231,82 @@ public class PaymentService {
         return providerService.refundPayment(payment.getExternalId(), refundAmount);
     }
 
-    /**
-     * Historia płatności użytkownika
-     */
-    public Page<PaymentResponse> getUserPaymentHistory(Pageable pageable, String status) {
-        String username = getCurrentUsername();
-
-        Page<Payment> payments;
-        if (status != null && !status.isEmpty()) {
-            PaymentStatus paymentStatus = PaymentStatus.valueOf(status.toUpperCase());
-            payments = paymentRepository.findByDonation_DonorUsernameAndStatusOrderByCreatedAtDesc(
-                    username, paymentStatus, pageable);
-        } else {
-            payments = paymentRepository.findByDonation_DonorUsernameOrderByCreatedAtDesc(
-                    username, pageable);
+    private void validateDonationCanAcceptPayment(Donation donation) {
+        if (donation.getStatus() == DonationStatus.COMPLETED) {
+            throw new RuntimeException("Cannot create payment for completed donation");
         }
 
-        return payments.map(PaymentResponse::fromEntity);
+        if (donation.getStatus() == DonationStatus.FAILED) {
+            throw new RuntimeException("Cannot create payment for failed donation");
+        }
+
+        boolean hasActivePendingPayment = donation.getPayments().stream()
+                .anyMatch(p -> p.getStatus() == PaymentStatus.PENDING ||
+                        p.getStatus() == PaymentStatus.PROCESSING);
+
+        if (hasActivePendingPayment) {
+            throw new RuntimeException("Donation already has an active payment in progress");
+        }
+    }
+
+    private PaymentUiConfig buildUiConfig(PaymentProvider provider, PaymentMethod method, PaymentResponse payment) {
+        return switch (provider) {
+            case PAYU -> PaymentUiConfig.builder()
+                    .provider(PaymentProvider.PAYU)
+                    .requiresWebView(true)
+                    .hasNativeSDK(false)
+                    .mobileDeepLink(payment.getCheckoutUrl())
+                    .sdkConfiguration(String.format("""
+                        {
+                            "merchantPosId": "300746",
+                            "environment": "sandbox",
+                            "orderId": "%s"
+                        }
+                        """, payment.getExternalId()))
+                    .build();
+
+            case STRIPE -> PaymentUiConfig.builder()
+                    .provider(PaymentProvider.STRIPE)
+                    .requiresWebView(false)
+                    .hasNativeSDK(true)
+                    .sdkConfiguration(String.format("""
+                        {
+                            "publishableKey": "pk_test_...",
+                            "clientSecret": "%s",
+                            "appearance": {
+                                "theme": "stripe"
+                            }
+                        }
+                        """, payment.getClientSecret()))
+                    .build();
+        };
+    }
+
+    private void markLowestFee(List<PaymentProviderOption> options) {
+        if (options.isEmpty()) return;
+
+        BigDecimal lowestFee = options.stream()
+                .map(option -> option.getFees().getFeeAmount())
+                .min(BigDecimal::compareTo)
+                .orElse(BigDecimal.ZERO);
+
+        log.info("Lowest fee among providers: {}", lowestFee);
     }
 
     /**
-     * Pobiera wszystkie płatności dla konkretnej dotacji
+     * Pobiera obsługiwane metody płatności dla danego providera
      */
-    public List<PaymentResponse> getPaymentsByDonation(Long donationId) {
-        List<Payment> payments = paymentRepository.findByDonationId(donationId);
-        return payments.stream()
-                .map(PaymentResponse::fromEntity)
+    public List<String> getSupportedPaymentMethods(PaymentProvider provider) {
+        PaymentProviderService providerService = providerFactory.getProvider(provider);
+
+        return Arrays.stream(PaymentMethod.values())
+                .filter(providerService::supportsPaymentMethod)
+                .map(Enum::name)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Oblicza opłatę za płatność
-     */
-    public PaymentFeeCalculation calculatePaymentFee(BigDecimal amount, PaymentProvider provider) {
-        PaymentProviderService providerService = providerFactory.getProvider(provider);
-        BigDecimal fee = providerService.calculateFee(amount, Currency.PLN);
-        BigDecimal netAmount = amount.subtract(fee);
-
-        return PaymentFeeCalculation.builder()
-                .grossAmount(amount)
-                .feeAmount(fee)
-                .netAmount(netAmount)
-                .provider(provider)
-                .currency(Currency.PLN)
-                .feePercentage(fee.divide(amount, 4, java.math.RoundingMode.HALF_UP)
-                        .multiply(new BigDecimal("100")))
-                .build();
-    }
-
-    /**
-     * Sprawdza dostępność providerów płatności
+     * Sprawdza stan zdrowia providerów płatności
      */
     public Map<String, Object> getPaymentProvidersHealth() {
         Map<String, Object> health = new HashMap<>();
@@ -196,86 +341,22 @@ public class PaymentService {
     }
 
     /**
-     * Obsługa webhook'ów
+     * Historia płatności użytkownika
      */
-    @Transactional
-    public void handleStripeWebhook(String payload, String signature) {
-        PaymentProviderService stripeService = providerFactory.getProvider(PaymentProvider.STRIPE);
-        stripeService.handleWebhook(payload, signature);
-    }
+    public Page<PaymentResponse> getUserPaymentHistory(Pageable pageable, String status) {
+        String username = getCurrentUsername();
 
-    @Transactional
-    public void handlePayUWebhook(String payload, String signature) {
-        PaymentProviderService payuService = providerFactory.getProvider(PaymentProvider.PAYU);
-        payuService.handleWebhook(payload, signature);
-    }
-
-    /**
-     * Ponawia nieudaną płatność
-     */
-    @Transactional
-    public PaymentResponse retryPayment(Long paymentId) {
-        Payment originalPayment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
-
-        if (originalPayment.getStatus() != PaymentStatus.FAILED) {
-            throw new RuntimeException("Can only retry failed payments");
+        Page<Payment> payments;
+        if (status != null && !status.isEmpty()) {
+            PaymentStatus paymentStatus = PaymentStatus.valueOf(status.toUpperCase());
+            payments = paymentRepository.findByDonation_DonorUsernameAndStatusOrderByCreatedAtDesc(
+                    username, paymentStatus, pageable);
+        } else {
+            payments = paymentRepository.findByDonation_DonorUsernameOrderByCreatedAtDesc(
+                    username, pageable);
         }
 
-        PaymentRequest retryRequest = PaymentRequest.builder()
-                .donationId(originalPayment.getDonation().getId())
-                .preferredProvider(originalPayment.getProvider())
-                .preferredMethod(originalPayment.getPaymentMethod())
-                .build();
-
-        return createPayment(retryRequest);
-    }
-
-    private void validateDonationCanAcceptPayment(Donation donation) {
-        if (donation.getStatus() == DonationStatus.COMPLETED) {
-            throw new RuntimeException("Cannot create payment for completed donation");
-        }
-
-        if (donation.getStatus() == DonationStatus.FAILED) {
-            throw new RuntimeException("Cannot create payment for failed donation");
-        }
-
-        boolean hasActivePendingPayment = donation.getPayments().stream()
-                .anyMatch(p -> p.getStatus() == PaymentStatus.PENDING ||
-                        p.getStatus() == PaymentStatus.PROCESSING);
-
-        if (hasActivePendingPayment) {
-            throw new RuntimeException("Donation already has an active payment in progress");
-        }
-    }
-
-    private PaymentProvider determineOptimalProvider(PaymentRequest request, Donation donation) {
-        if (request.getPreferredProvider() != null) {
-            return request.getPreferredProvider();
-        }
-
-        return PaymentProvider.PAYU;
-    }
-
-    private PaymentRequest buildFullPaymentRequest(PaymentRequest request, Donation donation, PaymentProvider provider) {
-        return PaymentRequest.builder()
-                .donationId(request.getDonationId())
-                .preferredProvider(provider)
-                .preferredMethod(request.getPreferredMethod())
-                .returnUrl(request.getReturnUrl())
-                .cancelUrl(request.getCancelUrl())
-                .blikCode(request.getBlikCode())
-                .bankCode(request.getBankCode())
-                .build();
-    }
-
-    private void updateDonationAfterPaymentCreation(Donation donation) {
-        donationRepository.save(donation);
-    }
-
-    private boolean canCancelPayment(Payment payment) {
-        return payment.getStatus() == PaymentStatus.PENDING ||
-                payment.getStatus() == PaymentStatus.PROCESSING;
+        return payments.map(PaymentResponse::fromEntity);
     }
 
     private String getCurrentUsername() {
@@ -287,19 +368,10 @@ public class PaymentService {
     }
 
     /**
-     * DTO dla obliczenia opłat
+     * Sprawdza czy płatność może być anulowana
      */
-    @lombok.Getter
-    @lombok.Setter
-    @lombok.NoArgsConstructor
-    @lombok.AllArgsConstructor
-    @lombok.Builder
-    public static class PaymentFeeCalculation {
-        private BigDecimal grossAmount;
-        private BigDecimal feeAmount;
-        private BigDecimal netAmount;
-        private BigDecimal feePercentage;
-        private PaymentProvider provider;
-        private Currency currency;
+    private boolean canCancelPayment(Payment payment) {
+        return payment.getStatus() == PaymentStatus.PENDING ||
+                payment.getStatus() == PaymentStatus.PROCESSING;
     }
 }
