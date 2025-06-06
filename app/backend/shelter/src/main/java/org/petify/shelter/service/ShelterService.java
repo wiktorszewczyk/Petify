@@ -13,6 +13,7 @@ import org.petify.shelter.repository.ShelterRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
@@ -50,19 +51,19 @@ public class ShelterService {
     }
 
     @Transactional
-    public ShelterResponse createShelter(ShelterRequest input, String username) {
+    public ShelterResponse createShelter(ShelterRequest input, MultipartFile file, String username) throws IOException {
         if (shelterRepository.getShelterByOwnerUsername(username).isPresent()) {
             throw new ShelterAlreadyExistsException(username);
         }
 
         Shelter shelter = shelterMapper.toEntity(input);
         shelter.setOwnerUsername(username);
-        Shelter savedShelter = shelterRepository.save(shelter);
-        return shelterMapper.toDto(savedShelter);
+
+        return setIfImageIncluded(file, shelter);
     }
 
     @Transactional
-    public ShelterResponse updateShelter(ShelterRequest input, Long shelterId) {
+    public ShelterResponse updateShelter(ShelterRequest input, MultipartFile file, Long shelterId) throws IOException {
         Shelter existingShelter = shelterRepository.findById(shelterId)
                 .orElseThrow(() -> new ShelterNotFoundException(shelterId));
 
@@ -72,6 +73,16 @@ public class ShelterService {
         existingShelter.setPhoneNumber(input.phoneNumber());
         existingShelter.setLatitude(input.latitude());
         existingShelter.setLongitude(input.longitude());
+
+        return setIfImageIncluded(file, existingShelter);
+    }
+
+    private ShelterResponse setIfImageIncluded(MultipartFile file, Shelter existingShelter) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            existingShelter.setImageName(file.getOriginalFilename());
+            existingShelter.setImageType(file.getContentType());
+            existingShelter.setImageData(file.getBytes());
+        }
 
         Shelter updatedShelter = shelterRepository.save(existingShelter);
 
