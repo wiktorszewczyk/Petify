@@ -13,6 +13,7 @@ import '../views/messages_view.dart';
 import '../views/profile_view.dart';
 import '../widgets/profile/notifications_sheet.dart';
 import 'discovery_settings_sheet.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -291,7 +292,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         elevation: 0,
         title: Row(
           children: [
-            Icon(Icons.pets, color: AppColors.primaryColor, size: 20),
+            SvgPicture.asset(
+              'assets/logo.svg',
+              width: 42,
+              height: 42,
+            ),
             const SizedBox(width: 8),
             Text(
               'Petify',
