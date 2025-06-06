@@ -11,5 +11,7 @@ public record ShelterResponse(
         String name,
         String description,
         String address,
-        String phoneNumber
-) implements Serializable {}
+        String phoneNumber,
+        Double latitude,
+        Double longitude,
+        Boolean isActive) implements Serializable {}

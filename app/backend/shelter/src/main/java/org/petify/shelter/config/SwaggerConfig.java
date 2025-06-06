@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
         name = "bearerAuth",
         description = "JWT auth desc",
         scheme = "bearer",
-        type = SecuritySchemeType.OAUTH2,
+        type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
         in = SecuritySchemeIn.HEADER
 )
