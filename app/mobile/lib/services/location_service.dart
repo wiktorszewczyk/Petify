@@ -1,0 +1,95 @@
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class LocationService {
+  static LocationService? _instance;
+
+  factory LocationService() => _instance ??= LocationService._();
+  LocationService._();
+
+  Future<Position?> getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return null;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return null;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return null;
+    }
+
+    try {
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 10),
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<Position?> getCityCoordinates(String cityName) async {
+    try {
+      List<Location> locations = await locationFromAddress('$cityName, Polska');
+      if (locations.isNotEmpty) {
+        return Position(
+          longitude: locations.first.longitude,
+          latitude: locations.first.latitude,
+          timestamp: DateTime.now(),
+          accuracy: 0,
+          altitude: 0,
+          heading: 0,
+          speed: 0,
+          speedAccuracy: 0,
+          floor: null,
+          isMocked: false,
+          altitudeAccuracy: 0,
+          headingAccuracy: 0,
+        );
+      }
+    } catch (e) {
+      print('Błąd podczas wyszukiwania miasta: $e');
+    }
+    return null;
+  }
+
+  Future<void> saveLocationPreferences({
+    required bool useCurrentLocation,
+    required double? latitude,
+    required double? longitude,
+    String? cityName,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('use_current_location', useCurrentLocation);
+
+    if (latitude != null && longitude != null) {
+      await prefs.setDouble('saved_latitude', latitude);
+      await prefs.setDouble('saved_longitude', longitude);
+    }
+
+    if (cityName != null) {
+      await prefs.setString('saved_city', cityName);
+    }
+  }
+
+  Future<Map<String, dynamic>> getLocationPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'use_current_location': prefs.getBool('use_current_location') ?? true,
+      'latitude': prefs.getDouble('saved_latitude'),
+      'longitude': prefs.getDouble('saved_longitude'),
+      'city_name': prefs.getString('saved_city'),
+    };
+  }
+}
