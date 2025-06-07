@@ -3,19 +3,19 @@ package org.petify.funding.model;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.MapKeyColumn;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -126,7 +126,9 @@ public class Payment {
      * Oblicza opłatę w zależności od providera
      */
     private BigDecimal calculateProviderFee() {
-        if (amount == null) return BigDecimal.ZERO;
+        if (amount == null) {
+            return BigDecimal.ZERO;
+        }
 
         return switch (provider) {
             case STRIPE -> {

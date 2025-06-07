@@ -38,6 +38,9 @@ public class DonationRequestValidator implements ConstraintValidator<DonationReq
                             .addPropertyNode("quantity").addConstraintViolation();
                 }
             }
+
+            default -> {
+            }
         }
 
         return valid;

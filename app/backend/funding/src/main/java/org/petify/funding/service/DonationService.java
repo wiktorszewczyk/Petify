@@ -1,6 +1,5 @@
 package org.petify.funding.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.petify.funding.client.ShelterClient;
 import org.petify.funding.dto.DonationIntentRequest;
 import org.petify.funding.dto.DonationRequest;
@@ -14,6 +13,7 @@ import org.petify.funding.repository.DonationRepository;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -163,7 +163,6 @@ public class DonationService {
                 .build();
     }
 
-
     private void enrichDonorInformation(DonationRequest request, Jwt jwt) {
         if (jwt != null) {
             if (request.getDonorUsername() == null) {
@@ -200,7 +199,8 @@ public class DonationService {
                 throw new RuntimeException("Quantity must be positive for material donations");
             }
             if (request.getAmount() != null) {
-                throw new RuntimeException("Amount should not be set manually for material donations - it will be calculated automatically");
+                throw new RuntimeException("Amount should not be set manually for material donations"
+                        + " - it will be calculated automatically");
             }
         }
     }

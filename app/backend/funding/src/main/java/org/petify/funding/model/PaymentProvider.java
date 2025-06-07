@@ -15,7 +15,7 @@ public enum PaymentProvider {
     }
 
     public static PaymentProvider fromString(String provider) {
-        for (PaymentProvider p : PaymentProvider.values()) {
+        for (PaymentProvider p : values()) {
             if (p.value.equalsIgnoreCase(provider)) {
                 return p;
             }

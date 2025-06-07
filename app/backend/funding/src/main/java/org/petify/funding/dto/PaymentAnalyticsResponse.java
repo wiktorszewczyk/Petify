@@ -2,8 +2,8 @@ package org.petify.funding.dto;
 
 import org.petify.funding.model.PaymentProvider;
 
-import lombok.Builder;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -202,7 +202,6 @@ public class PetService {
         return petMapper.toDto(savedPet);
     }
 
-
     public HttpStatus validatePetForDonations(Long shelterId, Long petId) {
         try {
             Shelter shelter = shelterRepository.findById(shelterId)

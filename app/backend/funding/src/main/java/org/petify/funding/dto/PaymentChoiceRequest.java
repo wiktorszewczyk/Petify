@@ -1,12 +1,13 @@
 package org.petify.funding.dto;
 
+import org.petify.funding.model.PaymentMethod;
+import org.petify.funding.model.PaymentProvider;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
-import org.petify.funding.model.PaymentMethod;
-import org.petify.funding.model.PaymentProvider;
+import lombok.Setter;
 
 @Getter
 @Setter

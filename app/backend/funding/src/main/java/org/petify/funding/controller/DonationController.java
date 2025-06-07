@@ -1,18 +1,18 @@
 package org.petify.funding.controller;
 
+import org.petify.funding.dto.DonationIntentRequest;
+import org.petify.funding.dto.DonationResponse;
+import org.petify.funding.dto.DonationStatistics;
+import org.petify.funding.dto.DonationWithPaymentStatusResponse;
+import org.petify.funding.dto.PaymentChoiceRequest;
+import org.petify.funding.dto.PaymentInitializationResponse;
+import org.petify.funding.dto.PaymentOptionsResponse;
+import org.petify.funding.dto.PaymentProviderOption;
+import org.petify.funding.dto.PaymentResponse;
 import org.petify.funding.model.DonationStatus;
 import org.petify.funding.model.DonationType;
 import org.petify.funding.service.DonationService;
 import org.petify.funding.service.PaymentService;
-import org.petify.funding.dto.DonationResponse;
-import org.petify.funding.dto.DonationStatistics;
-import org.petify.funding.dto.DonationWithPaymentStatusResponse;
-import org.petify.funding.dto.DonationIntentRequest;
-import org.petify.funding.dto.PaymentChoiceRequest;
-import org.petify.funding.dto.PaymentOptionsResponse;
-import org.petify.funding.dto.PaymentProviderOption;
-import org.petify.funding.dto.PaymentResponse;
-import org.petify.funding.dto.PaymentInitializationResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,16 +25,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Base64;
 import java.util.List;
@@ -62,7 +62,7 @@ public class DonationController {
         DonationResponse donation = donationService.createDraft(request, jwt);
 
         List<PaymentProviderOption> options = paymentService.getAvailablePaymentOptions(
-                donation.getAmount(), getCurrentUserLocation(jwt));
+                donation.getAmount(), getCurrentUserLocation());
 
         String sessionToken = generateSessionToken(donation.getId());
 
@@ -175,8 +175,7 @@ public class DonationController {
         donationService.delete(id);
     }
 
-
-    private String getCurrentUserLocation(Jwt jwt) {
+    private String getCurrentUserLocation() {
         return "PL"; // domyślnie Polska
     }
 

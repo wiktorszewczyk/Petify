@@ -46,7 +46,7 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @Autowired
-    private OAuth2TokenService oAuth2TokenService;
+    private OAuth2TokenService oauth2TokenService;
 
     @Autowired
     private UserRepository userRepository;
@@ -231,7 +231,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
-        LoginResponseDTO response = oAuth2TokenService.exchangeGoogleToken(accessToken);
+        LoginResponseDTO response = oauth2TokenService.exchangeGoogleToken(accessToken);
         if (response.getUser() == null) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Invalid Google access token");

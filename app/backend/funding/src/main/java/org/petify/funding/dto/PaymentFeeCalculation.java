@@ -1,8 +1,13 @@
 package org.petify.funding.dto;
 
-import lombok.*;
 import org.petify.funding.model.Currency;
 import org.petify.funding.model.PaymentProvider;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 

@@ -1,8 +1,20 @@
 package org.petify.funding.service;
 
-import org.petify.funding.dto.*;
-import org.petify.funding.model.*;
+import org.petify.funding.dto.PaymentChoiceRequest;
+import org.petify.funding.dto.PaymentFeeCalculation;
+import org.petify.funding.dto.PaymentInitializationResponse;
+import org.petify.funding.dto.PaymentMethodOption;
+import org.petify.funding.dto.PaymentProviderOption;
+import org.petify.funding.dto.PaymentRequest;
+import org.petify.funding.dto.PaymentResponse;
+import org.petify.funding.dto.PaymentUiConfig;
 import org.petify.funding.model.Currency;
+import org.petify.funding.model.Donation;
+import org.petify.funding.model.DonationStatus;
+import org.petify.funding.model.Payment;
+import org.petify.funding.model.PaymentMethod;
+import org.petify.funding.model.PaymentProvider;
+import org.petify.funding.model.PaymentStatus;
 import org.petify.funding.repository.DonationRepository;
 import org.petify.funding.repository.PaymentRepository;
 import org.petify.funding.service.payment.PaymentProviderFactory;
@@ -19,7 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -157,7 +173,7 @@ public class PaymentService {
 
         PaymentResponse payment = providerService.createPayment(paymentRequest);
 
-        PaymentUiConfig uiConfig = buildUiConfig(request.getProvider(), request.getMethod(), payment);
+        PaymentUiConfig uiConfig = buildUiConfig(request.getProvider(), payment);
 
         return PaymentInitializationResponse.builder()
                 .payment(payment)
@@ -229,15 +245,15 @@ public class PaymentService {
         }
 
         boolean hasActivePendingPayment = donation.getPayments().stream()
-                .anyMatch(p -> p.getStatus() == PaymentStatus.PENDING ||
-                        p.getStatus() == PaymentStatus.PROCESSING);
+                .anyMatch(p -> p.getStatus() == PaymentStatus.PENDING
+                        || p.getStatus() == PaymentStatus.PROCESSING);
 
         if (hasActivePendingPayment) {
             throw new RuntimeException("Donation already has an active payment in progress");
         }
     }
 
-    private PaymentUiConfig buildUiConfig(PaymentProvider provider, PaymentMethod method, PaymentResponse payment) {
+    private PaymentUiConfig buildUiConfig(PaymentProvider provider, PaymentResponse payment) {
         return switch (provider) {
             case PAYU -> PaymentUiConfig.builder()
                     .provider(PaymentProvider.PAYU)
@@ -268,7 +284,9 @@ public class PaymentService {
     }
 
     private void markLowestFee(List<PaymentProviderOption> options) {
-        if (options.isEmpty()) return;
+        if (options.isEmpty()) {
+            return;
+        }
 
         BigDecimal lowestFee = options.stream()
                 .map(option -> option.getFees().getFeeAmount())
@@ -356,7 +374,7 @@ public class PaymentService {
      * Sprawdza czy płatność może być anulowana
      */
     private boolean canCancelPayment(Payment payment) {
-        return payment.getStatus() == PaymentStatus.PENDING ||
-                payment.getStatus() == PaymentStatus.PROCESSING;
+        return payment.getStatus() == PaymentStatus.PENDING
+                || payment.getStatus() == PaymentStatus.PROCESSING;
     }
 }

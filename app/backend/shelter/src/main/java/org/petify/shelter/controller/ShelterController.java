@@ -1,6 +1,5 @@
 package org.petify.shelter.controller;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.dto.ShelterRequest;
 import org.petify.shelter.dto.ShelterResponse;

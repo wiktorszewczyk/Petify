@@ -1,6 +1,14 @@
 package org.petify.funding.dto;
 
-import org.petify.funding.model.*;
+import org.petify.funding.model.Currency;
+import org.petify.funding.model.Donation;
+import org.petify.funding.model.DonationStatus;
+import org.petify.funding.model.DonationType;
+import org.petify.funding.model.MaterialDonation;
+import org.petify.funding.model.Payment;
+import org.petify.funding.model.PaymentMethod;
+import org.petify.funding.model.PaymentProvider;
+import org.petify.funding.model.PaymentStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

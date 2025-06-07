@@ -1,6 +1,10 @@
 package org.petify.funding.dto;
 
-import org.petify.funding.model.*;
+import org.petify.funding.model.Currency;
+import org.petify.funding.model.Donation;
+import org.petify.funding.model.DonationType;
+import org.petify.funding.model.MaterialDonation;
+import org.petify.funding.model.MonetaryDonation;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;

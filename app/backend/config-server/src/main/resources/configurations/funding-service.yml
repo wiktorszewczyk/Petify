@@ -29,6 +29,7 @@ payment:
 
   payu:
     # PayU Sandbox credentials
+    default-customer-ip: "127.0.0.1"
     client-id: ${PAYU_CLIENT_ID:300746}
     client-secret: ${PAYU_CLIENT_SECRET:2ee86a66e5d97e3fadc400c9f19b065d}
     pos-id: ${PAYU_POS_ID:300746}

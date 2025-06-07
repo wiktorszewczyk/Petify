@@ -1,12 +1,13 @@
 package org.petify.funding.dto;
 
+import org.petify.funding.model.PaymentProvider;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.petify.funding.model.PaymentProvider;
 
 import java.math.BigDecimal;
 

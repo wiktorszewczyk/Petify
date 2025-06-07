@@ -3,8 +3,14 @@ package org.petify.funding.service.payment;
 import org.petify.funding.dto.PaymentRequest;
 import org.petify.funding.dto.PaymentResponse;
 import org.petify.funding.dto.WebhookEventDto;
-import org.petify.funding.model.*;
 import org.petify.funding.model.Currency;
+import org.petify.funding.model.Donation;
+import org.petify.funding.model.DonationStatus;
+import org.petify.funding.model.MaterialDonation;
+import org.petify.funding.model.Payment;
+import org.petify.funding.model.PaymentMethod;
+import org.petify.funding.model.PaymentProvider;
+import org.petify.funding.model.PaymentStatus;
 import org.petify.funding.repository.DonationRepository;
 import org.petify.funding.repository.PaymentRepository;
 
@@ -13,7 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +31,12 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +62,9 @@ public class PayUPaymentService implements PaymentProviderService {
 
     @Value("${app.webhook.base-url:http://localhost:8222}")
     private String webhookBaseUrl;
+
+    @Value("${payment.payu.default-customer-ip:127.0.0.1}")
+    private String defaultCustomerIp;
 
     @Override
     @Transactional
@@ -75,11 +93,11 @@ public class PayUPaymentService implements PaymentProviderService {
 
             JsonNode responseJson = objectMapper.readTree(response.getBody());
 
-            if (responseJson.has("status") &&
-                    responseJson.get("status").has("statusCode") &&
-                    !"SUCCESS".equals(responseJson.get("status").get("statusCode").asText())) {
-                throw new RuntimeException("PayU order creation failed: " +
-                        responseJson.get("status").get("statusDesc").asText());
+            if (responseJson.has("status")
+                    && responseJson.get("status").has("statusCode")
+                    && !"SUCCESS".equals(responseJson.get("status").get("statusCode").asText())) {
+                throw new RuntimeException("PayU order creation failed: "
+                        + responseJson.get("status").get("statusDesc").asText());
             }
 
             Payment payment = Payment.builder()
@@ -156,15 +174,6 @@ public class PayUPaymentService implements PaymentProviderService {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(accessToken);
 
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> response = restTemplate.exchange(
-                    apiUrl + "/api/v2_1/orders/" + externalId,
-                    HttpMethod.DELETE,
-                    entity,
-                    String.class
-            );
-
             Payment payment = paymentRepository.findByExternalId(externalId)
                     .orElseThrow(() -> new RuntimeException("Payment not found"));
 
@@ -194,15 +203,6 @@ public class PayUPaymentService implements PaymentProviderService {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(accessToken);
-
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(refundRequest, headers);
-
-            ResponseEntity<String> response = restTemplate.exchange(
-                    apiUrl + "/api/v2_1/orders/" + externalId + "/refunds",
-                    HttpMethod.POST,
-                    entity,
-                    String.class
-            );
 
             Payment payment = paymentRepository.findByExternalId(externalId)
                     .orElseThrow(() -> new RuntimeException("Payment not found"));
@@ -306,9 +306,9 @@ public class PayUPaymentService implements PaymentProviderService {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            String body = "grant_type=client_credentials" +
-                    "&client_id=" + clientId +
-                    "&client_secret=" + clientSecret;
+            String body = "grant_type=client_credentials"
+                    + "&client_id=" + clientId
+                    + "&client_secret=" + clientSecret;
 
             HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
@@ -332,7 +332,7 @@ public class PayUPaymentService implements PaymentProviderService {
         Map<String, Object> orderRequest = new HashMap<>();
 
         orderRequest.put("notifyUrl", webhookBaseUrl + "/payments/webhook/payu");
-        orderRequest.put("customerIp", "127.0.0.1");
+        orderRequest.put("customerIp", defaultCustomerIp);
         orderRequest.put("merchantPosId", posId);
         orderRequest.put("description", buildDescription(donation));
         orderRequest.put("currencyCode", "PLN");
@@ -433,10 +433,10 @@ public class PayUPaymentService implements PaymentProviderService {
     }
 
     private void configurePaymentMethods(Map<String, Object> orderRequest, PaymentRequest request) {
-        if (request.getPreferredMethod() == PaymentMethod.BLIK &&
-                request.getBlikCode() != null &&
-                !request.getBlikCode().trim().isEmpty() &&
-                request.getBlikCode().matches("\\d{6}")) {
+        if (request.getPreferredMethod() == PaymentMethod.BLIK
+                && request.getBlikCode() != null
+                && !request.getBlikCode().trim().isEmpty()
+                && request.getBlikCode().matches("\\d{6}")) {
 
             Map<String, Object> payMethods = new HashMap<>();
             Map<String, Object> blikMethod = new HashMap<>();

@@ -1,11 +1,12 @@
 package org.petify.funding.dto;
 
+import org.petify.funding.model.PaymentProvider;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
-import org.petify.funding.model.PaymentProvider;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -15,7 +15,6 @@ public interface PaymentAnalyticsRepository extends JpaRepository<PaymentAnalyti
 
     Optional<PaymentAnalytics> findByDateAndProvider(LocalDate date, PaymentProvider provider);
 
-
     List<PaymentAnalytics> findByDateBetween(LocalDate startDate, LocalDate endDate);
 
     List<PaymentAnalytics> findByDateBetweenAndProvider(LocalDate startDate, LocalDate endDate,

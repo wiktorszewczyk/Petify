@@ -1,8 +1,27 @@
 package org.petify.funding.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
@@ -134,20 +153,26 @@ public abstract class Donation {
     }
 
     public boolean hasPendingPayments() {
-        if (payments == null) return false;
+        if (payments == null) {
+            return false;
+        }
         return payments.stream()
-                .anyMatch(payment -> payment.getStatus() == PaymentStatus.PENDING ||
-                        payment.getStatus() == PaymentStatus.PROCESSING);
+                .anyMatch(payment -> payment.getStatus() == PaymentStatus.PENDING
+                        || payment.getStatus() == PaymentStatus.PROCESSING);
     }
 
     public boolean hasSuccessfulPayment() {
-        if (payments == null) return false;
+        if (payments == null) {
+            return false;
+        }
         return payments.stream()
                 .anyMatch(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED);
     }
 
     public BigDecimal getTotalPaidAmount() {
-        if (payments == null) return BigDecimal.ZERO;
+        if (payments == null) {
+            return BigDecimal.ZERO;
+        }
         return payments.stream()
                 .filter(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED)
                 .map(Payment::getAmount)
@@ -155,7 +180,9 @@ public abstract class Donation {
     }
 
     public BigDecimal getTotalFeeAmount() {
-        if (payments == null) return BigDecimal.ZERO;
+        if (payments == null) {
+            return BigDecimal.ZERO;
+        }
         return payments.stream()
                 .filter(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED)
                 .map(payment -> payment.getFeeAmount() != null ? payment.getFeeAmount() : BigDecimal.ZERO)

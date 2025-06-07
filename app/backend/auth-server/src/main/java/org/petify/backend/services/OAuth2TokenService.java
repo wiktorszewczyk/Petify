@@ -7,6 +7,7 @@ import org.petify.backend.models.Role;
 import org.petify.backend.repository.OAuth2ProviderRepository;
 import org.petify.backend.repository.RoleRepository;
 import org.petify.backend.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -44,19 +50,15 @@ public class OAuth2TokenService {
      * Exchange Google access token for JWT
      */
     public LoginResponseDTO exchangeGoogleToken(String accessToken) {
-        // Verify Google token
         Map<String, Object> googleUserInfo = verifyGoogleToken(accessToken);
         if (googleUserInfo == null) {
             throw new RuntimeException("Invalid Google access token");
         }
 
-        // Find or create user
         ApplicationUser user = findOrCreateUserFromGoogle(googleUserInfo);
 
-        // Create authentication object
         Authentication authentication = createAuthenticationFromUser(user);
 
-        // Generate JWT
         String token = tokenService.generateJwt(authentication);
 
         return new LoginResponseDTO(user, token);
@@ -73,7 +75,6 @@ public class OAuth2TokenService {
             @SuppressWarnings("unchecked")
             Map<String, Object> response = restTemplate.getForObject(googleApiUrl, Map.class);
 
-            // Check if response contains required fields
             if (response != null && response.containsKey("email") && response.containsKey("id")) {
                 return response;
             }
@@ -98,7 +99,7 @@ public class OAuth2TokenService {
                 oauth2ProviderRepository.findByProviderIdAndProviderUserId("google", googleId);
 
         if (existingProvider.isPresent()) {
-            ApplicationUser user = existingProvider.get().getUser();
+            final ApplicationUser user = existingProvider.get().getUser();
 
             existingProvider.get().setEmail(email);
             existingProvider.get().setName(name);
@@ -107,36 +108,29 @@ public class OAuth2TokenService {
             return user;
         }
 
-        Optional<ApplicationUser> existingUser = userRepository.findByUsername(email);
+        final ApplicationUser user = userRepository.findByUsername(email)
+                .orElseGet(() -> {
+                    Role userRole = roleRepository.findByAuthority("USER")
+                            .orElseThrow(() -> new RuntimeException("USER role not found"));
+                    Set<Role> authorities = new HashSet<>();
+                    authorities.add(userRole);
+                    ApplicationUser u = new ApplicationUser();
+                    u.setUsername(email);
+                    u.setEmail(email);
 
-        ApplicationUser user;
-        if (existingUser.isPresent()) {
-            user = existingUser.get();
-        } else {
-            Role userRole = roleRepository.findByAuthority("USER")
-                    .orElseThrow(() -> new RuntimeException("USER role not found"));
+                    if (name != null) {
+                        String[] nameParts = name.split(" ", 2);
+                        u.setFirstName(nameParts[0]);
+                        if (nameParts.length > 1) {
+                            u.setLastName(nameParts[1]);
+                        }
+                    }
 
-            Set<Role> authorities = new HashSet<>();
-            authorities.add(userRole);
+                    u.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+                    u.setAuthorities(authorities);
 
-            user = new ApplicationUser();
-            user.setUsername(email);
-            user.setEmail(email);
-
-            if (name != null) {
-                String[] nameParts = name.split(" ", 2);
-                user.setFirstName(nameParts[0]);
-                if (nameParts.length > 1) {
-                    user.setLastName(nameParts[1]);
-                }
-            }
-
-            user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
-            user.setAuthorities(authorities);
-
-            user = userRepository.save(user);
-        }
-
+                    return userRepository.save(u);
+                });
         OAuth2Provider provider = new OAuth2Provider(
                 "google",
                 googleId,
@@ -145,7 +139,6 @@ public class OAuth2TokenService {
                 name
         );
         oauth2ProviderRepository.save(provider);
-
         return user;
     }
 
