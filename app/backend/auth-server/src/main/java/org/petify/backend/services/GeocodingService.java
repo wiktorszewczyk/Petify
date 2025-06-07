@@ -24,7 +24,60 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GeocodingService {
 
+    private static final String USER_AGENT = "Petify-App/1.0";
+    private static final String POLAND_SUFFIX = ", Poland";
+    private static final String ACCEPT_JSON = "application/json";
+    private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(10);
+    private static final String COUNTRY_POLAND = "Poland";
+
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private HttpResponse<String> executeHttpRequest(String url) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(CONNECT_TIMEOUT)
+                .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .timeout(REQUEST_TIMEOUT)
+                .header("Accept", ACCEPT_JSON)
+                .header("User-Agent", USER_AGENT)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Request failed with status: " + response.statusCode());
+        }
+
+        return response;
+    }
+
+    private String extractCityName(JsonNode address) {
+        if (address == null) {
+            return "";
+        }
+
+        String[] cityFields = {"city", "town", "village", "municipality"};
+        for (String field : cityFields) {
+            if (address.has(field)) {
+                return address.get(field).asText();
+            }
+        }
+        return "";
+    }
+
+    // Wydzielona metoda do wyciągania informacji z address node
+    private AddressInfo extractAddressInfo(JsonNode address) {
+        String country = address != null && address.has("country")
+                ? address.get("country").asText() : COUNTRY_POLAND;
+        String state = address != null && address.has("state")
+                ? address.get("state").asText() : "";
+
+        return new AddressInfo(country, state);
+    }
 
     @Cacheable(value = "geocoding", key = "#cityName.toLowerCase().strip()")
     public GeolocationResponse getCoordinatesForCity(String cityName) throws Exception {
@@ -32,29 +85,12 @@ public class GeocodingService {
             throw new IllegalArgumentException("City name cannot be empty");
         }
 
-        String encodedCity = URLEncoder.encode(cityName.trim() + ", Poland", StandardCharsets.UTF_8);
+        String encodedCity = URLEncoder.encode(cityName.trim() + POLAND_SUFFIX, StandardCharsets.UTF_8);
         String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedCity
                 + "&format=json&limit=1&addressdetails=1";
 
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(5))
-                .build();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(nominatimUrl))
-                .timeout(Duration.ofSeconds(10))
-                .header("Accept", "application/json")
-                .header("User-Agent", "Petify-App/1.0")
-                .GET()
-                .build();
-
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() != 200) {
-                throw new RuntimeException("Geocoding request failed with status: " + response.statusCode());
-            }
-
+            HttpResponse<String> response = executeHttpRequest(nominatimUrl);
             JsonNode results = objectMapper.readTree(response.body());
 
             if (results.isEmpty()) {
@@ -66,14 +102,12 @@ public class GeocodingService {
             double lon = firstResult.get("lon").asDouble();
 
             JsonNode address = firstResult.get("address");
-            String country = address != null && address.has("country")
-                    ? address.get("country").asText() : "Poland";
-            String state = address != null && address.has("state")
-                    ? address.get("state").asText() : "";
+            AddressInfo addressInfo = extractAddressInfo(address);
             String displayName = firstResult.has("display_name")
                     ? firstResult.get("display_name").asText() : cityName;
 
-            return new GeolocationResponse(cityName.trim(), lat, lon, country, state, displayName);
+            return new GeolocationResponse(cityName.trim(), lat, lon,
+                    addressInfo.country(), addressInfo.state(), displayName);
 
         } catch (HttpTimeoutException e) {
             throw new RuntimeException("Geocoding request timed out for city: " + cityName, e);
@@ -89,29 +123,12 @@ public class GeocodingService {
             return new ArrayList<>();
         }
 
-        String encodedQuery = URLEncoder.encode(query.trim() + ", Poland", StandardCharsets.UTF_8);
+        String encodedQuery = URLEncoder.encode(query.trim() + POLAND_SUFFIX, StandardCharsets.UTF_8);
         String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedQuery
                 + "&format=json&limit=5&addressdetails=1&class=place&type=city,town,village";
 
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(5))
-                .build();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(nominatimUrl))
-                .timeout(Duration.ofSeconds(10))
-                .header("Accept", "application/json")
-                .header("User-Agent", "Petify-App/1.0")
-                .GET()
-                .build();
-
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() != 200) {
-                throw new RuntimeException("City search request failed with status: " + response.statusCode());
-            }
-
+            HttpResponse<String> response = executeHttpRequest(nominatimUrl);
             JsonNode results = objectMapper.readTree(response.body());
             List<GeolocationResponse> cities = new ArrayList<>();
 
@@ -120,29 +137,15 @@ public class GeocodingService {
                 double lon = result.get("lon").asDouble();
 
                 JsonNode address = result.get("address");
-                String cityName = "";
-
-                if (address != null) {
-                    if (address.has("city")) {
-                        cityName = address.get("city").asText();
-                    } else if (address.has("town")) {
-                        cityName = address.get("town").asText();
-                    } else if (address.has("village")) {
-                        cityName = address.get("village").asText();
-                    } else if (address.has("municipality")) {
-                        cityName = address.get("municipality").asText();
-                    }
-                }
-
-                String country = address != null && address.has("country")
-                        ? address.get("country").asText() : "Poland";
-                String state = address != null && address.has("state")
-                        ? address.get("state").asText() : "";
-                String displayName = result.has("display_name")
-                        ? result.get("display_name").asText() : cityName;
+                String cityName = extractCityName(address);
 
                 if (!cityName.isEmpty()) {
-                    cities.add(new GeolocationResponse(cityName, lat, lon, country, state, displayName));
+                    AddressInfo addressInfo = extractAddressInfo(address);
+                    String displayName = result.has("display_name")
+                            ? result.get("display_name").asText() : cityName;
+
+                    cities.add(new GeolocationResponse(cityName, lat, lon,
+                            addressInfo.country(), addressInfo.state(), displayName));
                 }
             }
 
@@ -159,9 +162,11 @@ public class GeocodingService {
     public boolean isCityValid(String cityName) {
         try {
             GeolocationResponse result = getCoordinatesForCity(cityName);
-            return result != null && "Poland".equalsIgnoreCase(result.country());
+            return result != null && COUNTRY_POLAND.equalsIgnoreCase(result.country());
         } catch (Exception e) {
             return false;
         }
     }
+
+    private record AddressInfo(String country, String state) {}
 }

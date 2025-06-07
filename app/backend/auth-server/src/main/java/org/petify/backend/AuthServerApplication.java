@@ -42,8 +42,8 @@ public class AuthServerApplication {
             Role userRole = roleRepository.findByAuthority("USER")
                     .orElseGet(() -> roleRepository.save(new Role("USER")));
 
-            Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
-                    .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
+            // Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
+            // .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
 
             Role shelterRole = roleRepository.findByAuthority("SHELTER")
                     .orElseGet(() -> roleRepository.save(new Role("SHELTER")));
