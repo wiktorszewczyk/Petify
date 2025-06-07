@@ -102,8 +102,8 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
 
     try {
       final donation = await _donationService.addMaterialDonation(
-        shelterName: widget.pet.shelterName,
-        petId: widget.pet.id,
+        shelterName: widget.pet.shelterName.toString(),
+        petId: widget.pet.id.toString(),
         item: _selectedItem!,
         quantity: _quantity,
         message: 'Wsparcie dla ${widget.pet.name}',
@@ -255,7 +255,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
                   ),
                 ),
                 Text(
-                  widget.pet.shelterName,
+                  widget.pet.shelterName.toString(),
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.grey[600],

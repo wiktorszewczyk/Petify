@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +42,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Nie udało się pobrać listy schronisk. Spróbuj ponownie później.';
+        _errorMessage = 'Nie udało się pobrać listy schronisk: $e';
         _isLoading = false;
       });
     }
@@ -386,7 +388,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (shelter.isUrgent)
+            if (shelter.isUrgent == true)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 6),
@@ -417,34 +419,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                     child: SizedBox(
                       width: 80,
                       height: 80,
-                      child: Image.network(
-                        shelter.imageUrl,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
-                            color: Colors.grey[300],
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                    : null,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppColors.primaryColor),
-                              ),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) =>
-                            Container(
-                              color: Colors.grey[300],
-                              child: Center(
-                                child: Icon(Icons.image_not_supported,
-                                    color: Colors.grey[400]),
-                              ),
-                            ),
-                      ),
+                      child: _buildShelterImage(shelter.imageUrl),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -462,31 +437,33 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_outlined,
-                                size: 14, color: Colors.grey[600]),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                shelter.address,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
+                        if (shelter.address != null) ...[
+                          Row(
+                            children: [
+                              Icon(Icons.location_on_outlined,
+                                  size: 14, color: Colors.grey[600]),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  shelter.address!,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                        ],
                         Row(
                           children: [
                             Icon(Icons.pets, size: 14, color: Colors.grey[600]),
                             const SizedBox(width: 4),
                             Text(
-                              '${shelter.petsCount} zwierząt',
+                              '${shelter.petsCount ?? 0} zwierząt',
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 color: Colors.grey[600],
@@ -497,7 +474,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                                 size: 14, color: Colors.grey[600]),
                             const SizedBox(width: 4),
                             Text(
-                              '${shelter.volunteersCount} wolontariuszy',
+                              '${shelter.volunteersCount ?? 0} wolontariuszy',
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 color: Colors.grey[600],
@@ -511,7 +488,9 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                 ],
               ),
             ),
-            if (shelter.donationGoal > 0) ...[
+
+            // Pasek postępu donacji
+            if (shelter.donationGoal != null && shelter.donationGoal! > 0) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -521,7 +500,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Cel zbiórki: ${shelter.donationGoal.toInt()} PLN',
+                          'Cel zbiórki: ${shelter.donationGoal!.toInt()} PLN',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: Colors.grey[700],
@@ -553,12 +532,14 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                 ),
               ),
             ],
+
+            // Potrzeby i przyciski akcji
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (shelter.needs.isNotEmpty) ...[
+                  if (shelter.needs != null && shelter.needs!.isNotEmpty) ...[
                     Text(
                       'Potrzeby:',
                       style: GoogleFonts.poppins(
@@ -570,7 +551,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: shelter.needs
+                      children: shelter.needs!
                           .take(3)
                           .map(
                             (need) => Container(
@@ -595,10 +576,10 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                       )
                           .toList(),
                     ),
-                    if (shelter.needs.length > 3) ...[
+                    if (shelter.needs!.length > 3) ...[
                       const SizedBox(height: 8),
                       Text(
-                        '+ ${shelter.needs.length - 3} więcej...',
+                        '+ ${shelter.needs!.length - 3} więcej...',
                         style: GoogleFonts.poppins(
                           fontSize: 12,
                           color: Colors.grey[600],
@@ -663,6 +644,57 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
       duration: 300.ms,
       delay: (50 * index).ms,
       curve: Curves.easeOutCubic,
+    );
+  }
+
+  Widget _buildShelterImage(String imageUrl) {
+    if (imageUrl.startsWith('data:image/')) {
+      try {
+        final base64String = imageUrl.split(',')[1];
+        return Image.memory(
+          base64Decode(base64String),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+        );
+      } catch (e) {
+        return _buildPlaceholderImage();
+      }
+    }
+
+    if (imageUrl.startsWith('http')) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[300],
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes!
+                    : null,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.primaryColor),
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+      );
+    }
+
+    return _buildPlaceholderImage();
+  }
+
+  Widget _buildPlaceholderImage() {
+    return Container(
+      color: Colors.grey[300],
+      child: Center(
+        child: Icon(Icons.home_work_outlined,
+            color: Colors.grey[400], size: 30),
+      ),
     );
   }
 }

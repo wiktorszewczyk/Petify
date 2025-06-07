@@ -85,16 +85,14 @@ class _ChatViewState extends State<ChatView> {
         _conversation = conversation;
       });
 
-      // Po pobraniu konwersacji, załaduj wiadomości
       await _loadMessages();
     } catch (e) {
       if (mounted) {
         setState(() {
-          // Jeśli mamy dane zwierzaka, możemy wygenerować konwersację nawet jeśli nie znaleźliśmy jej w API
           if (widget.pet != null && widget.isNewConversation) {
             _conversation = ConversationModel(
               id: widget.conversationId,
-              petId: widget.pet!.id,
+              petId: widget.pet!.id.toString(),
               petName: widget.pet!.name,
               petImageUrl: widget.pet!.imageUrl,
               shelterName: widget.pet!.shelterName ?? 'Schronisko',

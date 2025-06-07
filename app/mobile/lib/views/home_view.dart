@@ -88,6 +88,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
     try {
       final petService = PetService();
+
+      // Używamy nowej metody z API
       final petsData = await petService.getPets();
 
       if (mounted) {
@@ -233,9 +235,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   void _likePet(Pet pet) async {
     try {
       final petService = PetService();
-      await petService.likePet(pet.id);
+      final response = await petService.likePet(pet.id);
 
-      if (mounted) {
+      if (mounted && response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Dodano ${pet.name} do polubionych!'),
@@ -243,6 +245,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             duration: const Duration(seconds: 1),
           ),
         );
+      } else {
+        throw Exception('Nie udało się polubić zwierzaka');
       }
     } catch (e) {
       if (mounted) {
@@ -271,16 +275,67 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     );
   }
 
+  Future<void> _loadFilteredPets(Map<String, dynamic> filters) async {
+    setState(() {
+      _isLoading = true;
+      _isError = false;
+    });
+
+    try {
+      final petService = PetService();
+
+      // Wywołaj metodę z filtrami
+      final petsData = await petService.getFilteredPets(
+        vaccinated: filters['vaccinated'],
+        urgent: filters['urgent'],
+        sterilized: filters['sterilized'],
+        kidFriendly: filters['kidFriendly'],
+        minAge: filters['minAge'],
+        maxAge: filters['maxAge'],
+        type: filters['type'],
+        userLat: filters['userLat'],
+        userLng: filters['userLng'],
+        radiusKm: filters['radiusKm'],
+      );
+
+      if (mounted) {
+        setState(() {
+          _pets.clear();
+          _pets.addAll(petsData);
+          _isLoading = false;
+
+          // Regeneruj klucze
+          _cardKeys.clear();
+          for (int i = 0; i < _pets.length; i++) {
+            _cardKeys.add(GlobalKey<State<StatefulWidget>>());
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isError = true;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Nie udało się pobrać przefiltrowanych danych: $e')),
+        );
+      }
+    }
+  }
+
   void _showDiscoverySettings() async {
     final result = await DiscoverySettingsSheet.show<Map<String, dynamic>>(context);
 
     if (!mounted) return;
 
     if (result == 'reset') {
-      // przywróć domyślne filtry
-    } else if (result != null) {
-      // zastosuj filtry z result
-      _loadPets(/* pass filters */);
+      // Przywróć domyślne filtry - pobierz wszystkie zwierzęta
+      _loadPets();
+    } else if (result != null && result is Map<String, dynamic>) {
+      // Zastosuj filtry z result
+      await _loadFilteredPets(result);
     }
   }
 

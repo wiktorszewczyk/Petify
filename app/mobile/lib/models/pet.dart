@@ -1,61 +1,74 @@
+import 'dart:convert';
+
 class Pet {
-  final String id;
+  final int id;
   final String name;
+  final String type; // CAT, DOG, OTHER
+  final String? breed;
   final int age;
-  final String gender;
-  final String breed;
-  final String size;
-  final String description;
-  final String imageUrl;
-  final List<String> galleryImages;
-  final int distance;
-  final bool isVaccinated;
-  final bool isNeutered;
-  final bool isChildFriendly;
-  final bool isUrgent;
-  final String shelterId;
-  final String shelterName;
-  final String shelterAddress;
+  final bool archived;
+  final String? description;
+  final int shelterId;
+  final String gender; // MALE, FEMALE, UNKNOWN
+  final String size; // SMALL, MEDIUM, BIG, VERY_BIG
+  final bool vaccinated;
+  final bool urgent;
+  final bool sterilized;
+  final bool kidFriendly;
+  final String? imageName;
+  final String? imageType;
+  final String? imageData; // Base64
+
+  // Dodatkowe pola dla kompatybilności z frontendem
+  final String? shelterName;
+  final String? shelterAddress;
+  final int? distance; // obliczane po stronie frontu
 
   Pet({
     required this.id,
     required this.name,
+    required this.type,
+    this.breed,
     required this.age,
-    required this.gender,
-    required this.breed,
-    required this.size,
-    required this.description,
-    required this.imageUrl,
-    required this.galleryImages,
-    required this.distance,
-    required this.isVaccinated,
-    required this.isNeutered,
-    required this.isChildFriendly,
-    required this.isUrgent,
+    this.archived = false,
+    this.description,
     required this.shelterId,
-    required this.shelterName,
-    required this.shelterAddress,
+    required this.gender,
+    required this.size,
+    required this.vaccinated,
+    required this.urgent,
+    required this.sterilized,
+    required this.kidFriendly,
+    this.imageName,
+    this.imageType,
+    this.imageData,
+    this.shelterName,
+    this.shelterAddress,
+    this.distance,
   });
 
   factory Pet.fromJson(Map<String, dynamic> json) {
     return Pet(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      age: json['age'] as int,
-      gender: json['gender'] as String,
-      breed: json['breed'] as String,
-      size: json['size'] as String,
-      description: json['description'] as String,
-      imageUrl: json['imageUrl'] as String,
-      galleryImages: (json['galleryImages'] as List).map((e) => e as String).toList(),
-      distance: json['distance'] as int,
-      isVaccinated: json['isVaccinated'] as bool,
-      isNeutered: json['isNeutered'] as bool,
-      isChildFriendly: json['isChildFriendly'] as bool,
-      isUrgent: json['isUrgent'] as bool,
-      shelterId: json['shelterId'] as String,
-      shelterName: json['shelterName'] as String,
-      shelterAddress: json['shelterAddress'] as String,
+      id: json['id'] is String ? int.parse(json['id']) : json['id'],
+      name: json['name'] ?? '',
+      type: json['type'] ?? 'OTHER',
+      breed: json['breed'],
+      age: json['age'] ?? 0,
+      archived: json['archived'] ?? false,
+      description: json['description'],
+      shelterId: json['shelterId'] is String ? int.parse(json['shelterId']) : json['shelterId'],
+      gender: _mapGender(json['gender']),
+      size: _mapSize(json['size']),
+      vaccinated: json['vaccinated'] ?? false,
+      urgent: json['urgent'] ?? false,
+      sterilized: json['sterilized'] ?? false,
+      kidFriendly: json['kidFriendly'] ?? false,
+      imageName: json['imageName'],
+      imageType: json['imageType'],
+      imageData: json['imageData'],
+      shelterName: json['shelterName'],
+      shelterAddress: json['shelterAddress'],
+      distance: json['distance'],
     );
   }
 
@@ -63,21 +76,119 @@ class Pet {
     return {
       'id': id,
       'name': name,
-      'age': age,
-      'gender': gender,
+      'type': type,
       'breed': breed,
-      'size': size,
+      'age': age,
+      'archived': archived,
       'description': description,
-      'imageUrl': imageUrl,
-      'galleryImages': galleryImages,
-      'distance': distance,
-      'isVaccinated': isVaccinated,
-      'isNeutered': isNeutered,
-      'isChildFriendly': isChildFriendly,
-      'isUrgent': isUrgent,
       'shelterId': shelterId,
+      'gender': gender,
+      'size': size,
+      'vaccinated': vaccinated,
+      'urgent': urgent,
+      'sterilized': sterilized,
+      'kidFriendly': kidFriendly,
+      'imageName': imageName,
+      'imageType': imageType,
+      'imageData': imageData,
       'shelterName': shelterName,
       'shelterAddress': shelterAddress,
+      'distance': distance,
     };
   }
+
+  static String _mapGender(String? gender) {
+    switch (gender?.toUpperCase()) {
+      case 'MALE':
+        return 'male';
+      case 'FEMALE':
+        return 'female';
+      case 'UNKNOWN':
+      default:
+        return 'unknown';
+    }
+  }
+
+  static String _mapSize(String? size) {
+    switch (size?.toUpperCase()) {
+      case 'SMALL':
+        return 'small';
+      case 'MEDIUM':
+        return 'medium';
+      case 'BIG':
+        return 'large';
+      case 'VERY_BIG':
+        return 'xlarge';
+      default:
+        return 'medium';
+    }
+  }
+
+  // Gettery dla kompatybilności z istniejącym kodem
+  String get imageUrl {
+    if (imageData != null && imageData!.isNotEmpty) {
+      // Sprawdź czy to już jest data URL
+      if (imageData!.startsWith('data:image')) {
+        return imageData!;
+      }
+      // Jeśli nie, dodaj prefix
+      final mimeType = imageType ?? 'image/jpeg';
+      return 'data:$mimeType;base64,$imageData';
+    }
+    // Fallback do placeholder
+    return 'assets/images/pet_placeholder.png';
+  }
+
+  List<String> get galleryImages {
+    // Na razie zwracamy pustą listę, bo backend nie ma galerii w tej wersji
+    // Można to rozszerzyć jeśli backend będzie obsługiwał wiele zdjęć
+    return [];
+  }
+
+  // Getter dla typu zwierzęcia po polsku
+  String get typeDisplayName {
+    switch (type.toUpperCase()) {
+      case 'CAT':
+        return 'Kot';
+      case 'DOG':
+        return 'Pies';
+      case 'OTHER':
+      default:
+        return 'Inne';
+    }
+  }
+
+  // Getter dla rozmiaru po polsku
+  String get sizeDisplayName {
+    switch (size) {
+      case 'small':
+        return 'Mały';
+      case 'medium':
+        return 'Średni';
+      case 'large':
+        return 'Duży';
+      case 'xlarge':
+        return 'Bardzo duży';
+      default:
+        return 'Średni';
+    }
+  }
+
+  // Getter dla płci po polsku
+  String get genderDisplayName {
+    switch (gender) {
+      case 'male':
+        return 'Samiec';
+      case 'female':
+        return 'Samica';
+      default:
+        return 'Nieznana';
+    }
+  }
+
+  // Gettery dla kompatybilności z istniejącym kodem
+  bool get isVaccinated => vaccinated;
+  bool get isNeutered => sterilized;
+  bool get isChildFriendly => kidFriendly;
+  bool get isUrgent => urgent;
 }

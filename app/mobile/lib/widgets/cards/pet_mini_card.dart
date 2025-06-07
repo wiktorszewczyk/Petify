@@ -105,7 +105,7 @@ class PetMiniCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    pet.breed,
+                    pet.breed ?? 'Nieznana rasa',
                     style: TextStyle(fontSize: 11, color: Colors.grey[600]),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

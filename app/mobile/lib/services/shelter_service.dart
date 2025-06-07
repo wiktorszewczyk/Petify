@@ -1,58 +1,143 @@
-import 'dart:math';
-import 'dart:async';
+import 'dart:developer' as dev;
+import 'package:dio/dio.dart';
 import '../models/shelter.dart';
+import '../models/pet.dart';
+import '../models/basic_response.dart';
+import 'api/initial_api.dart';
 
 class ShelterService {
-  static final ShelterService _instance = ShelterService._internal();
+  final _api = InitialApi().dio;
+  static ShelterService? _instance;
 
-  factory ShelterService() {
-    return _instance;
+  factory ShelterService() => _instance ??= ShelterService._();
+  ShelterService._();
+
+  /// Pobiera listę wszystkich schronisk
+  Future<List<Shelter>> getShelters() async {
+    try {
+      final response = await _api.get('/shelters');
+
+      if (response.statusCode == 200 && response.data is List) {
+        final sheltersData = response.data as List;
+        List<Shelter> shelters = [];
+
+        for (var shelterJson in sheltersData) {
+          var shelter = Shelter.fromJson(shelterJson);
+
+          // Dodaj dodatkowe informacje (liczba zwierząt, miasto itp.)
+          shelter = await _enrichShelterData(shelter);
+          shelters.add(shelter);
+        }
+
+        return shelters;
+      }
+
+      throw Exception('Nieprawidłowa odpowiedź serwera');
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pobierania schronisk: ${e.message}');
+      throw Exception('Nie udało się pobrać listy schronisk: ${e.message}');
+    }
   }
 
-  ShelterService._internal();
+  /// Pobiera szczegóły schroniska
+  Future<Shelter> getShelterById(int shelterId) async {
+    try {
+      final response = await _api.get('/shelters/$shelterId');
 
-  // Pobieranie listy schronisk (symulacja API)
-  /// TODO: Implementacja API do pobierania schronisk
-  Future<List<Shelter>> getShelters() async {
-    final random = Random();
+      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+        var shelter = Shelter.fromJson(response.data);
+        return await _enrichShelterData(shelter);
+      }
 
-    final shelterCount = random.nextInt(4) + 6; // 6-10 schronisk
+      throw Exception('Nieprawidłowa odpowiedź serwera');
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pobierania szczegółów schroniska: ${e.message}');
+      throw Exception('Nie udało się pobrać szczegółów schroniska: ${e.message}');
+    }
+  }
 
-    final shelterNames = [
-      'Schronisko "Pod Dobrą Łapą"',
-      'Azyl dla Zwierząt',
-      'Fundacja "Szczęśliwy Ogon"',
-      'Miejskie Schronisko dla Zwierząt',
-      'Fundacja "Łapa w Łapę"',
-      'Przytulisko "Zwierzęcy Dom"',
-      'Schronisko "Psia Przystań"',
-      'Kocia Przystań',
-      'Schronisko "Reksio"',
-      'Fundacja Pomocy Zwierzętom "Bezdomniaki"',
-      'Stowarzyszenie Opieki nad Zwierzętami "Nadzieja"',
-      'Fundacja "Cztery Łapy"'
-    ];
+  /// Pobiera zwierzęta z konkretnego schroniska
+  Future<List<Pet>> getShelterPets(int shelterId) async {
+    try {
+      final response = await _api.get('/shelters/$shelterId/pets');
 
-    final cities = [
-      'Warszawa', 'Kraków', 'Poznań', 'Wrocław', 'Gdańsk',
-      'Łódź', 'Szczecin', 'Bydgoszcz', 'Lublin', 'Katowice'
-    ];
+      if (response.statusCode == 200 && response.data is List) {
+        final petsData = response.data as List;
+        return petsData.map((petJson) => Pet.fromJson(petJson)).toList();
+      }
 
-    final streets = [
-      'Adopcyjna', 'Schroniskowa', 'Kocia', 'Pieskowa', 'Zwierzęca',
-      'Opiekuńcza', 'Przyjaciół Zwierząt', 'Dobrej Woli', 'Azylu', 'Pomocna'
-    ];
+      throw Exception('Nieprawidłowa odpowiedź serwera');
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pobierania zwierząt ze schroniska: ${e.message}');
+      throw Exception('Nie udało się pobrać zwierząt ze schroniska: ${e.message}');
+    }
+  }
 
-    final descriptions = [
-      'Nasze schronisko zajmuje się opieką nad bezdomnymi zwierzętami od ponad 15 lat. Zapewniamy naszym podopiecznym profesjonalną opiekę weterynaryjną, ciepłe schronienie i codzienną porcję miłości.',
-      'Pomagamy zwierzętom w potrzebie, zapewniając im bezpieczne schronienie i poszukując dla nich nowych, kochających domów. Prowadzimy również programy edukacyjne dla społeczności lokalnej.',
-      'Fundacja powstała z miłości do czworonogów. Naszym celem jest pomoc bezdomnym i porzuconym zwierzętom oraz walka o poprawę ich losu. Warunki w naszym schronisku staramy się uczynić jak najbardziej przyjazne dla zwierząt.',
-      'Miejskie schronisko z wieloletnią tradycją. Zapewniamy opiekę psom i kotom, które straciły dom. Prowadzimy również programy adopcyjne i współpracujemy z wolontariuszami.',
-      'Jesteśmy małym, ale prężnie działającym schroniskiem. Naszym celem jest znalezienie nowych domów dla wszystkich naszych podopiecznych. Oferujemy również usługi weterynaryjne dla zwierząt z ubogich rodzin.',
-      'Nasza fundacja koncentruje się na ratowaniu zwierząt z trudnych warunków. Prowadzimy również programy edukacyjne i współpracujemy z lokalnymi szkołami.',
-    ];
+  /// Pobiera trasę do schroniska
+  Future<String?> getRouteToShelter({
+    required int shelterId,
+    required double userLatitude,
+    required double userLongitude,
+  }) async {
+    try {
+      final response = await _api.get('/shelters/$shelterId/route', queryParameters: {
+        'latitude': userLatitude,
+        'longitude': userLongitude,
+      });
 
-    final needs = [
+      if (response.statusCode == 200) {
+        return response.data.toString();
+      }
+
+      return null;
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pobierania trasy: ${e.message}');
+      return null;
+    }
+  }
+
+  /// Wzbogaca dane schroniska o dodatkowe informacje
+  Future<Shelter> _enrichShelterData(Shelter shelter) async {
+    try {
+      // Pobierz liczbę zwierząt w schronisku
+      final petsCount = await _getPetsCount(shelter.id);
+
+      // Generuj dodatkowe dane dla UI (tymczasowo)
+      final enrichedData = _generateAdditionalShelterData(shelter);
+
+      return shelter.copyWith(
+        petsCount: petsCount,
+        volunteersCount: enrichedData['volunteersCount'],
+        needs: enrichedData['needs'],
+        email: enrichedData['email'],
+        website: enrichedData['website'],
+        isUrgent: enrichedData['isUrgent'],
+        donationGoal: enrichedData['donationGoal'],
+        donationCurrent: enrichedData['donationCurrent'],
+        city: enrichedData['city'],
+      );
+    } catch (e) {
+      dev.log('Błąd podczas wzbogacania danych schroniska: $e');
+      return shelter;
+    }
+  }
+
+  /// Pobiera liczbę zwierząt w schronisku
+  Future<int> _getPetsCount(int shelterId) async {
+    try {
+      final pets = await getShelterPets(shelterId);
+      return pets.length;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  /// Generuje dodatkowe dane dla schroniska (tymczasowo, dopóki backend ich nie obsługuje)
+  Map<String, dynamic> _generateAdditionalShelterData(Shelter shelter) {
+    // Tymczasowe dane - można je zastąpić prawdziwymi z backendu gdy będą dostępne
+    final random = DateTime.now().millisecondsSinceEpoch % 100;
+
+    final needsList = [
       'Karma sucha i mokra dla psów i kotów',
       'Koce, poduszki i legowiska',
       'Środki czystości',
@@ -61,81 +146,42 @@ class ShelterService {
       'Leki i środki medyczne',
       'Kuwety i żwirek dla kotów',
       'Wsparcie finansowe na leczenie weterynaryjne',
-      'Materiały budowlane do naprawy boksów',
-      'Pomoc wolontariuszy przy wyprowadzaniu psów'
     ];
 
-    final images = [
-      'https://images.pexels.com/photos/1634840/pexels-photo-1634840.jpeg',
-      'https://images.pexels.com/photos/1350588/pexels-photo-1350588.jpeg',
-      'https://images.pexels.com/photos/2607544/pexels-photo-2607544.jpeg',
-      'https://images.pexels.com/photos/1633522/pexels-photo-1633522.jpeg',
-      'https://images.pexels.com/photos/1906153/pexels-photo-1906153.jpeg',
-      'https://images.pexels.com/photos/551628/pexels-photo-551628.jpeg',
-      'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg',
-    ];
+    // Wybierz losowe potrzeby
+    final shuffledNeeds = List<String>.from(needsList)..shuffle();
+    final selectedNeeds = shuffledNeeds.take(3 + (random % 3)).toList();
 
-    List<Shelter> shelters = [];
-
-    List<String> usedNames = [];
-
-    // Generowanie losowych schronisk do testów
-    for (int i = 0; i < shelterCount; i++) {
-      String shelterName;
-      do {
-        shelterName = shelterNames[random.nextInt(shelterNames.length)];
-      } while (usedNames.contains(shelterName));
-      usedNames.add(shelterName);
-
-      final city = cities[random.nextInt(cities.length)];
-      final street = streets[random.nextInt(streets.length)];
-      final streetNumber = random.nextInt(50) + 1;
-      final address = 'ul. $street $streetNumber, $city';
-      final description = descriptions[random.nextInt(descriptions.length)];
-      final imageUrl = images[random.nextInt(images.length)];
-
-      final shelterNeeds = <String>[];
-      final needsCount = random.nextInt(4) + 2;
-      final allNeeds = List<String>.from(needs);
-      allNeeds.shuffle();
-      shelterNeeds.addAll(allNeeds.take(needsCount));
-
-      final petsCount = random.nextInt(100) + 50;
-
-      final volunteersCount = random.nextInt(30) + 5;
-
-      final isUrgent = random.nextInt(10) < 3; // 30% szans
-
-      shelters.add(
-        Shelter(
-          id: 'shelter_${DateTime.now().millisecondsSinceEpoch}_$i',
-          name: shelterName,
-          address: address,
-          description: description,
-          imageUrl: imageUrl,
-          petsCount: petsCount,
-          volunteersCount: volunteersCount,
-          needs: shelterNeeds,
-          phoneNumber: '+48 ${random.nextInt(900) + 100} ${random.nextInt(900) + 100} ${random.nextInt(900) + 100}',
-          email: shelterName.toLowerCase().replaceAll(RegExp(r'[^a-zA-Z0-9]'), '') + '@schronisko.pl',
-          website: 'www.${shelterName.toLowerCase().replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')}.pl',
-          isUrgent: isUrgent,
-          donationGoal: (random.nextInt(10) + 5) * 1000, // 5000-15000 PLN
-          donationCurrent: (random.nextInt(5)) * 1000, // 0-5000 PLN
-          city: city,
-        ),
-      );
+    // Wyciągnij miasto z adresu
+    String? city;
+    if (shelter.address != null) {
+      final addressParts = shelter.address!.split(',');
+      if (addressParts.length > 1) {
+        city = addressParts.last.trim();
+      }
     }
 
-    await Future.delayed(const Duration(milliseconds: 800));
-
-    return shelters;
+    return {
+      'volunteersCount': 10 + (random % 20),
+      'needs': selectedNeeds,
+      'email': '${shelter.name.toLowerCase().replaceAll(' ', '')}@schronisko.pl',
+      'website': 'www.${shelter.name.toLowerCase().replaceAll(' ', '')}.pl',
+      'isUrgent': random % 10 < 3, // 30% szans na pilność
+      'donationGoal': (5 + (random % 10)) * 1000.0, // 5000-15000
+      'donationCurrent': (random % 5) * 1000.0, // 0-5000
+      'city': city ?? 'Nieznane',
+    };
   }
 
-  // Symulacja wsparcia schroniska
+  /// Symulacja wsparcia schroniska (tymczasowo)
   Future<bool> donateShelter(String shelterId, double amount) async {
-    /// TODO: Implementacja wsparcia schroniska w bazie danych
-    await Future.delayed(const Duration(seconds: 1));
-    return true;
+    try {
+      // TODO: Implementacja rzeczywistego API dla donacji
+      await Future.delayed(const Duration(seconds: 1));
+      return true;
+    } catch (e) {
+      dev.log('Błąd podczas wsparcia schroniska: $e');
+      return false;
+    }
   }
 }

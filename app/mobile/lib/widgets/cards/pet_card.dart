@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,6 +28,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   final MessageService _messageService = MessageService();
 
   final Map<String, bool> _loadedImages = {};
+  bool isLoaded = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -112,13 +115,23 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
-    final isNetwork = _isNetworkImage(path);
-    final isLoaded = _loadedImages[path] ?? false;
+    if (path.startsWith('data:image/')) {
+      return Image.memory(
+        base64Decode(path.split(',')[1]),
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            color: Colors.grey[300],
+            child: const Center(
+              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
+            ),
+          );
+        },
+      );
+    }
 
-    Widget imageWidget;
-
-    if (isNetwork) {
-      imageWidget = Image.network(
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return Image.network(
         path,
         fit: fit,
         errorBuilder: (context, error, stackTrace) {
@@ -143,40 +156,24 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
         },
         cacheWidth: MediaQuery.of(context).size.width.round(),
       );
-    } else {
-      imageWidget = Image.asset(
-        path,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[300],
-            child: const Center(
-              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
-            ),
-          );
-        },
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded || frame != null) {
-            return child;
-          }
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
-            ),
-          );
-        },
-      );
     }
 
-    return imageWidget;
+    return Image.asset(
+      path,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          color: Colors.grey[300],
+          child: const Center(
+            child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
+          ),
+        );
+      },
+    );
   }
 
   void _shareProfile() {
-    /// TODO: Generować odpowiedni link do profilu zwierzaka, który można udostepnić
-    final placeholderLink = "https://petadopt.petify.com/demo/${widget.pet.id}";
+    final petLink = "https://petify.com/pet/${widget.pet.id}";
 
     showModalBottomSheet(
       context: context,
@@ -215,7 +212,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               color: Colors.blue,
               title: 'Skopiuj link',
               onTap: () {
-                Clipboard.setData(ClipboardData(text: placeholderLink));
+                Clipboard.setData(ClipboardData(text: petLink));
                 Navigator.pop(context);
                 _showShareConfirmation(context, 'Link skopiowany do schowka');
               },
@@ -227,7 +224,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               color: Color(0xFF1877F2),
               title: 'Facebook',
               onTap: () {
-                _shareToSocialMedia('facebook', placeholderLink);
+                _shareToSocialMedia('facebook', petLink);
                 Navigator.pop(context);
               },
             ),
@@ -238,7 +235,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               color: Color(0xFFE1306C),
               title: 'Instagram',
               onTap: () {
-                _shareToSocialMedia('instagram', placeholderLink);
+                _shareToSocialMedia('instagram', petLink);
                 Navigator.pop(context);
               },
             ),
@@ -249,7 +246,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               color: Color(0xFF25D366),
               title: 'WhatsApp',
               onTap: () {
-                _shareToSocialMedia('whatsapp', placeholderLink);
+                _shareToSocialMedia('whatsapp', petLink);
                 Navigator.pop(context);
               },
             ),
@@ -261,8 +258,8 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               title: 'Inne',
               onTap: () {
                 Share.share(
-                  'Poznaj ${widget.pet.name}! ${widget.pet.gender == 'male' ? 'Czeka' : 'Czeka'} '
-                      'na adopcję w ${widget.pet.shelterName}. ${placeholderLink}',
+                  'Poznaj ${widget.pet.name}! Czeka '
+                      'na adopcję w ${widget.pet.shelterName}. ${petLink}',
                   subject: 'Zwierzak do adopcji: ${widget.pet.name}',
                 );
                 Navigator.pop(context);
@@ -361,7 +358,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
 
-    final allImages = _getAllImages();
+    final allImages = [widget.pet.imageUrl, ...widget.pet.galleryImages];
 
     return Container(
       width: double.infinity,
@@ -385,10 +382,9 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Karuzela zdjęć z wyłączonym przewijaniem przy przeciąganiu
                 PageView.builder(
                   controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(), // To wyłącza przewijanie przez użytkownika
+                  physics: const NeverScrollableScrollPhysics(),
                   onPageChanged: (index) {
                     setState(() {
                       _currentPhotoIndex = index;
@@ -406,7 +402,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                 ),
 
                 if (allImages.length > 1) ...[
-                  // Przycisk do przewijania w lewo - na całej lewej stronie zdjęcia
                   Positioned.fill(
                     child: Align(
                       alignment: Alignment.centerLeft,
@@ -437,7 +432,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     ),
                   ),
 
-                  // Przycisk do przewijania w prawo - na całej prawej stronie zdjęcia
                   Positioned.fill(
                     child: Align(
                       alignment: Alignment.centerRight,
@@ -573,7 +567,9 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Odległość: ${widget.pet.distance} km',
+                            widget.pet.distance != null
+                                ? 'Odległość: ${widget.pet.distance} km'
+                                : 'Lokalizacja nieznana',
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
@@ -661,10 +657,10 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _buildTraitChip(widget.pet.breed, Icons.pets),
-                      _buildTraitChip(widget.pet.gender == 'male' ? 'Samiec' : 'Samica',
+                      _buildTraitChip(widget.pet.breed ?? widget.pet.typeDisplayName, Icons.pets),
+                      _buildTraitChip(widget.pet.genderDisplayName,
                           widget.pet.gender == 'male' ? Icons.male : Icons.female),
-                      _buildTraitChip(_getSizeText(widget.pet.size), Icons.height),
+                      _buildTraitChip(widget.pet.sizeDisplayName, Icons.height),
                       if (widget.pet.isChildFriendly)
                         _buildTraitChip('Przyjazny dzieciom', Icons.child_care),
                       if (widget.pet.isNeutered)
@@ -744,9 +740,9 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
         conversationId = existingConversation.first.id;
       } else {
         conversationId = await _messageService.createConversation(
-          petId: widget.pet.id,
+          petId: widget.pet.id.toString(),
           petName: widget.pet.name,
-          shelterId: widget.pet.shelterId,
+          shelterId: widget.pet.shelterId.toString(),
           shelterName: widget.pet.shelterName ?? 'Schronisko',
           petImageUrl: widget.pet.imageUrl,
         );
@@ -894,7 +890,11 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Widget _buildDetailSection(String title, String content) {
+  Widget _buildDetailSection(String? title, String? content) {
+    if (title == null || title.isEmpty || content == null || content.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

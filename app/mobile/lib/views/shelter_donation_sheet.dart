@@ -273,7 +273,7 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
                   ),
                 ),
                 Text(
-                  widget.shelter.address,
+                  widget.shelter.address.toString(),
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.grey[600],

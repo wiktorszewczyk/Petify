@@ -35,7 +35,8 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
     });
 
     try {
-      final pets = await _petService.getLikedPets();
+      // Używamy nowej metody z API
+      final pets = await _petService.getFavoritePets();
       setState(() {
         _favoritePets = pets;
         _isLoading = false;
@@ -50,32 +51,42 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
 
   Future<void> _removeFavorite(Pet pet) async {
     try {
-      /// TODO: zaimplementować usuwanie zwierzaka z ulubionych przez API
-      setState(() {
-        _favoritePets!.removeWhere((element) => element.id == pet.id);
-      });
+      // Wywołaj API do usunięcia z polubionych
+      final response = await _petService.unlikePet(pet.id);
 
-      if (!mounted) return;
+      if (response.statusCode == 200) {
+        setState(() {
+          _favoritePets!.removeWhere((element) => element.id == pet.id);
+        });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${pet.name} został usunięty z ulubionych'),
-          action: SnackBarAction(
-            label: 'Cofnij',
-            onPressed: () async {
-              setState(() {
-                _favoritePets!.add(pet);
-              });
-            },
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${pet.name} został usunięty z ulubionych'),
+            action: SnackBarAction(
+              label: 'Cofnij',
+              onPressed: () async {
+                // Przywróć do polubionych
+                final likeResponse = await _petService.likePet(pet.id);
+                if (likeResponse.statusCode == 200) {
+                  setState(() {
+                    _favoritePets!.add(pet);
+                  });
+                }
+              },
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        throw Exception('Błąd serwera: ${response.statusCode}');
+      }
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nie udało się usunąć zwierzaka z ulubionych'),
+        SnackBar(
+          content: Text('Nie udało się usunąć zwierzaka z ulubionych: $e'),
         ),
       );
     }

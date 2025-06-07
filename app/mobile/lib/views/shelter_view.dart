@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -59,9 +60,9 @@ class _ShelterViewState extends State<ShelterView> {
 
   void _shareShelter() {
     final String shareText = 'Pomóż schronisku ${widget.shelter.name}!\n'
-        'Adres: ${widget.shelter.address}\n'
-        'Kontakt: ${widget.shelter.phoneNumber}\n\n'
-        'Potrzeby: ${widget.shelter.needs.join(", ")}\n\n'
+        '${widget.shelter.address != null ? 'Adres: ${widget.shelter.address}\n' : ''}'
+        '${widget.shelter.phoneNumber != null ? 'Kontakt: ${widget.shelter.phoneNumber}\n' : ''}'
+        '${widget.shelter.needs?.isNotEmpty == true ? 'Potrzeby: ${widget.shelter.needs!.join(", ")}\n' : ''}\n'
         'Dowiedz się więcej: https://schroniska-app.pl/shelter/${widget.shelter.id}';
 
     Share.share(shareText, subject: 'Wesprzyj schronisko ${widget.shelter.name}');
@@ -76,7 +77,6 @@ class _ShelterViewState extends State<ShelterView> {
         url = 'https://www.facebook.com/sharer/sharer.php?u=$shelterUrl';
         break;
       case 'instagram':
-      // Instagram nie ma bezpośredniego API do udostępniania, więc pokazujemy tylko komunikat
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Skopiuj link i udostępnij na Instagramie')),
         );
@@ -92,7 +92,6 @@ class _ShelterViewState extends State<ShelterView> {
   }
 
   void _supportShelter() {
-    // TODO: Implementacja procesu wsparcia schroniska
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -258,7 +257,7 @@ class _ShelterViewState extends State<ShelterView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (widget.shelter.isUrgent)
+                  if (widget.shelter.isUrgent == true)
                     Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -308,19 +307,19 @@ class _ShelterViewState extends State<ShelterView> {
                     children: [
                       _buildStatBox(
                         Icons.pets,
-                        '${widget.shelter.petsCount}',
+                        '${widget.shelter.petsCount ?? 0}',
                         'Zwierzęta',
                       ),
                       const SizedBox(width: 16),
                       _buildStatBox(
                         Icons.volunteer_activism,
-                        '${widget.shelter.volunteersCount}',
+                        '${widget.shelter.volunteersCount ?? 0}',
                         'Wolontariusze',
                       ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  if (widget.shelter.donationGoal > 0) ...[
+                  if (widget.shelter.donationGoal != null && widget.shelter.donationGoal! > 0) ...[
                     _buildDonationProgress(),
                     const SizedBox(height: 24),
                   ],
@@ -333,7 +332,7 @@ class _ShelterViewState extends State<ShelterView> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.shelter.description,
+                    widget.shelter.description ?? 'Brak opisu schroniska.',
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: Colors.grey[800],
@@ -346,7 +345,7 @@ class _ShelterViewState extends State<ShelterView> {
                   _buildContactSection(),
                   const SizedBox(height: 24),
                   _buildShareSection(),
-                  const SizedBox(height: 80), // Space for bottom buttons
+                  const SizedBox(height: 80),
                 ],
               ),
             ),
@@ -377,16 +376,7 @@ class _ShelterViewState extends State<ShelterView> {
           children: [
             Hero(
               tag: 'shelter_image_${widget.shelter.id}',
-              child: Image.network(
-                widget.shelter.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[300],
-                  child: const Center(
-                    child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
-                  ),
-                ),
-              ),
+              child: _buildShelterImage(),
             ),
             Container(
               decoration: BoxDecoration(
@@ -416,7 +406,50 @@ class _ShelterViewState extends State<ShelterView> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String text, {VoidCallback? onTap}) {
+  Widget _buildShelterImage() {
+    final imageUrl = widget.shelter.imageUrl;
+
+    // Obsługa Base64 z backendu
+    if (imageUrl.startsWith('data:image/')) {
+      try {
+        final base64String = imageUrl.split(',')[1];
+        return Image.memory(
+          base64Decode(base64String),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+        );
+      } catch (e) {
+        return _buildPlaceholderImage();
+      }
+    }
+
+    // Obsługa URL sieciowych
+    if (imageUrl.startsWith('http')) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+      );
+    }
+
+    return _buildPlaceholderImage();
+  }
+
+  Widget _buildPlaceholderImage() {
+    return Container(
+      color: Colors.grey[300],
+      child: const Center(
+        child: Icon(Icons.home_work_outlined, size: 50, color: Colors.grey),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String? text, {VoidCallback? onTap}) {
+    // Jeśli text jest null lub pusty, nie wyświetlaj wiersza
+    if (text == null || text.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     final row = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -520,7 +553,7 @@ class _ShelterViewState extends State<ShelterView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${widget.shelter.donationCurrent.toInt()} PLN',
+                '${(widget.shelter.donationCurrent ?? 0).toInt()} PLN',
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -528,7 +561,7 @@ class _ShelterViewState extends State<ShelterView> {
                 ),
               ),
               Text(
-                '${widget.shelter.donationGoal.toInt()} PLN',
+                '${(widget.shelter.donationGoal ?? 0).toInt()} PLN',
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -578,7 +611,7 @@ class _ShelterViewState extends State<ShelterView> {
   }
 
   Widget _buildNeedsList() {
-    if (widget.shelter.needs.isEmpty) {
+    if (widget.shelter.needs == null || widget.shelter.needs!.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -593,7 +626,7 @@ class _ShelterViewState extends State<ShelterView> {
           ),
         ),
         const SizedBox(height: 12),
-        ...widget.shelter.needs.map((need) => _buildNeedItem(need)).toList(),
+        ...widget.shelter.needs!.map((need) => _buildNeedItem(need)).toList(),
       ],
     );
   }
@@ -642,89 +675,94 @@ class _ShelterViewState extends State<ShelterView> {
         const SizedBox(height: 16),
         Row(
           children: [
-            Expanded(
-              child: InkWell(
-                onTap: () => _launchUrl('tel:${widget.shelter.phoneNumber}'),
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[300]!),
-                  ),
-                  child: Column(
-                    children: [
-                      Icon(Icons.phone, color: AppColors.primaryColor),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Zadzwoń',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+            if (widget.shelter.phoneNumber != null) ...[
+              Expanded(
+                child: InkWell(
+                  onTap: () => _launchUrl('tel:${widget.shelter.phoneNumber}'),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(Icons.phone, color: AppColors.primaryColor),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Zadzwoń',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: InkWell(
-                onTap: () => _launchUrl('mailto:${widget.shelter.email}'),
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[300]!),
-                  ),
-                  child: Column(
-                    children: [
-                      Icon(Icons.email, color: AppColors.primaryColor),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Email',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+              const SizedBox(width: 16),
+            ],
+            if (widget.shelter.email != null) ...[
+              Expanded(
+                child: InkWell(
+                  onTap: () => _launchUrl('mailto:${widget.shelter.email}'),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(Icons.email, color: AppColors.primaryColor),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Email',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: InkWell(
-                onTap: () => _launchUrl('https://maps.google.com/?q=${widget.shelter.address}'),
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[300]!),
-                  ),
-                  child: Column(
-                    children: [
-                      Icon(Icons.map, color: AppColors.primaryColor),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Mapa',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+              const SizedBox(width: 16),
+            ],
+            if (widget.shelter.address != null)
+              Expanded(
+                child: InkWell(
+                  onTap: () => _launchUrl('https://maps.google.com/?q=${widget.shelter.address}'),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(Icons.map, color: AppColors.primaryColor),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Mapa',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ],
