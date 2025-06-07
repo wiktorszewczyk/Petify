@@ -22,7 +22,6 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String login) throws UsernameNotFoundException {
         System.out.println("In the user details service");
 
-        // Try to find user by username, email, or phone number
         return userRepository.findByUsername(login)
                 .orElseGet(() -> userRepository.findByEmail(login)
                         .orElseGet(() -> userRepository.findByPhoneNumber(login)

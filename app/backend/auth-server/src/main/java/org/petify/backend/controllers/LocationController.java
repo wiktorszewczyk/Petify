@@ -39,9 +39,6 @@ public class LocationController {
     @Autowired
     private GeocodingService geocodingService;
 
-    /**
-     * Pobiera lokalizację użytkownika
-     */
     @GetMapping("/")
     public ResponseEntity<UserLocationResponse> getUserLocation(Authentication authentication) {
         String username = authentication.getName();
@@ -49,9 +46,6 @@ public class LocationController {
         return ResponseEntity.ok(location);
     }
 
-    /**
-     * Aktualizuje lokalizację użytkownika
-     */
     @PutMapping("/")
     public ResponseEntity<?> updateUserLocation(
             Authentication authentication,
@@ -72,9 +66,6 @@ public class LocationController {
         }
     }
 
-    /**
-     * Automatycznie ustawia lokalizację użytkownika na podstawie miasta
-     */
     @PostMapping("/set-by-city")
     public ResponseEntity<?> setLocationByCity(
             Authentication authentication,
@@ -99,9 +90,6 @@ public class LocationController {
         }
     }
 
-    /**
-     * Wyszukuje współrzędne dla podanego miasta
-     */
     @PostMapping("/geocode")
     public ResponseEntity<?> geocodeCity(@Valid @RequestBody GeolocationRequest request) {
         try {
@@ -116,9 +104,6 @@ public class LocationController {
         }
     }
 
-    /**
-     * Wyszukuje sugestie miast
-     */
     @GetMapping("/search-cities")
     public ResponseEntity<?> searchCities(@RequestParam String query) {
         try {
@@ -139,9 +124,6 @@ public class LocationController {
         }
     }
 
-    /**
-     * Sprawdza czy miasto jest prawidłowe
-     */
     @PostMapping("/validate-city")
     public ResponseEntity<?> validateCity(@Valid @RequestBody GeolocationRequest request) {
         try {
@@ -169,9 +151,6 @@ public class LocationController {
         }
     }
 
-    /**
-     * Czyści lokalizację użytkownika
-     */
     @DeleteMapping("/")
     public ResponseEntity<?> clearUserLocation(Authentication authentication) {
         try {
@@ -189,9 +168,6 @@ public class LocationController {
         }
     }
 
-    /**
-     * Zwraca sugerowane odległości wyszukiwania
-     */
     @GetMapping("/search-distances")
     public ResponseEntity<List<Map<String, Object>>> getSearchDistances() {
         List<Map<String, Object>> distances = List.of(
@@ -206,9 +182,6 @@ public class LocationController {
         return ResponseEntity.ok(distances);
     }
 
-    /**
-     * Pobiera statystyki lokalizacji użytkownika
-     */
     @GetMapping("/stats")
     public ResponseEntity<?> getLocationStats(Authentication authentication) {
         try {
@@ -233,9 +206,6 @@ public class LocationController {
         }
     }
 
-    /**
-     * Endpoint dla innych serwisów do pobierania lokalizacji użytkownika
-     */
     @GetMapping("/by-username")
     public ResponseEntity<UserLocationResponse> getUserLocationByUsername(
             @RequestParam String username,
@@ -244,9 +214,6 @@ public class LocationController {
         return ResponseEntity.ok(location);
     }
 
-    /**
-     * Endpoint dla innych serwisów do sprawdzania czy użytkownik ma lokalizację
-     */
     @GetMapping("/has-location")
     public ResponseEntity<Boolean> userHasLocationByUsername(
             @RequestParam String username,
@@ -256,9 +223,6 @@ public class LocationController {
         return ResponseEntity.ok(hasLocation);
     }
 
-    /**
-     * Endpoint do pobierania preferencji użytkownika
-     */
     @GetMapping("/preferences")
     public ResponseEntity<?> getUserLocationPreferences(Authentication authentication) {
         try {

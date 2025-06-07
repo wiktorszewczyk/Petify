@@ -26,10 +26,6 @@ public class GeocodingService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    /**
-     * Pobiera współrzędne geograficzne dla danego miasta używając Nominatim API (OpenStreetMap)
-     * Wyniki są cache'owane żeby nie wykonywać zbędnych zapytań dla tego samego miasta
-     */
     @Cacheable(value = "geocoding", key = "#cityName.toLowerCase().strip()")
     public GeolocationResponse getCoordinatesForCity(String cityName) throws Exception {
         if (cityName == null || cityName.trim().isEmpty()) {
@@ -87,9 +83,6 @@ public class GeocodingService {
         }
     }
 
-    /**
-     * Wyszukuje sugestie miast na podstawie wprowadzonego tekstu
-     */
     @Cacheable(value = "city-suggestions", key = "#query.toLowerCase().strip()")
     public List<GeolocationResponse> searchCities(String query) throws Exception {
         if (query == null || query.trim().isEmpty()) {
@@ -163,9 +156,6 @@ public class GeocodingService {
         }
     }
 
-    /**
-     * Sprawdza czy podane miasto istnieje w Polsce
-     */
     public boolean isCityValid(String cityName) {
         try {
             GeolocationResponse result = getCoordinatesForCity(cityName);

@@ -13,7 +13,6 @@ import org.petify.backend.services.AchievementService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -24,7 +23,6 @@ import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication
-//@EnableFeignClients(basePackages = "org.petify.backend.client")
 public class AuthServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuthServerApplication.class, args);
@@ -38,42 +36,24 @@ public class AuthServerApplication {
             AchievementService achievementService,
             PasswordEncoder passwordEncoder) {
         return args -> {
-            // Inicjalizacja ról
-            System.out.println("Sprawdzanie i inicjalizacja ról...");
-
             Role adminRole = roleRepository.findByAuthority("ADMIN")
-                    .orElseGet(() -> {
-                        System.out.println("Tworzenie roli ADMIN...");
-                        return roleRepository.save(new Role("ADMIN"));
-                    });
+                    .orElseGet(() -> roleRepository.save(new Role("ADMIN")));
 
             Role userRole = roleRepository.findByAuthority("USER")
-                    .orElseGet(() -> {
-                        System.out.println("Tworzenie roli USER...");
-                        return roleRepository.save(new Role("USER"));
-                    });
+                    .orElseGet(() -> roleRepository.save(new Role("USER")));
 
             Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
-                    .orElseGet(() -> {
-                        System.out.println("Tworzenie roli VOLUNTEER...");
-                        return roleRepository.save(new Role("VOLUNTEER"));
-                    });
+                    .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
 
             Role shelterRole = roleRepository.findByAuthority("SHELTER")
-                    .orElseGet(() -> {
-                        System.out.println("Tworzenie roli SHELTER...");
-                        return roleRepository.save(new Role("SHELTER"));
-                    });
+                    .orElseGet(() -> roleRepository.save(new Role("SHELTER")));
 
-            // Sprawdzenie czy użytkownik admin już istnieje
             Optional<ApplicationUser> existingAdmin = userRepository.findByUsername("admin");
 
             if (existingAdmin.isEmpty()) {
-                System.out.println("Tworzenie użytkownika admin...");
-
                 Set<Role> adminRoles = new HashSet<>();
                 adminRoles.add(adminRole);
-                adminRoles.add(userRole); // Admin ma też rolę USER dla dostępu do endpointów użytkownika
+                adminRoles.add(userRole);
 
                 ApplicationUser admin = new ApplicationUser();
                 admin.setUsername("admin");
@@ -88,8 +68,6 @@ public class AuthServerApplication {
                 admin.setActive(true);
                 admin.setCreatedAt(LocalDateTime.now());
                 admin.setAuthorities(adminRoles);
-
-                // Ustawienie XP i poziomu dla admina
                 admin.setXpPoints(1000);
                 admin.setLevel(10);
                 admin.setLikesCount(0);
@@ -97,27 +75,11 @@ public class AuthServerApplication {
                 admin.setBadgesCount(0);
 
                 ApplicationUser savedAdmin = userRepository.save(admin);
-
-                System.out.println("Użytkownik admin utworzony pomyślnie!");
-                System.out.println("Email: admin@petify.org");
-                System.out.println("Login: admin");
-                System.out.println("Hasło: admin");
-                System.out.println("ID: " + savedAdmin.getUserId());
-
-                // Inicjalizacja osiągnięć dla admina
                 achievementService.initializeUserAchievements(savedAdmin);
-                System.out.println("Osiągnięcia dla admina zainicjalizowane");
-
-            } else {
-                System.out.println("Użytkownik admin już istnieje - pomijanie tworzenia");
-                System.out.println("Możesz się zalogować danymi: admin/admin");
             }
 
-            // Tworzenie użytkownika testowego SHELTER (opcjonalnie)
             Optional<ApplicationUser> existingShelterUser = userRepository.findByUsername("shelter");
             if (existingShelterUser.isEmpty()) {
-                System.out.println("Tworzenie użytkownika testowego schroniska...");
-
                 Set<Role> shelterRoles = new HashSet<>();
                 shelterRoles.add(shelterRole);
                 shelterRoles.add(userRole);
@@ -143,17 +105,10 @@ public class AuthServerApplication {
 
                 ApplicationUser savedShelterUser = userRepository.save(shelterUser);
                 achievementService.initializeUserAchievements(savedShelterUser);
-
-                System.out.println("Użytkownik testowy schroniska utworzony!");
-                System.out.println("Login: shelter, Hasło: shelter");
             }
 
-            // Inicjalizacja osiągnięć
             long achievementCount = achievementRepository.count();
             if (achievementCount == 0) {
-                System.out.println("Inicjalizacja osiągnięć...");
-
-                // LIKES category achievements
                 Achievement achievement1 = new Achievement();
                 achievement1.setName("Początkujący miłośnik");
                 achievement1.setDescription("Polub 10 zwierząt");
@@ -181,7 +136,6 @@ public class AuthServerApplication {
                 achievement3.setRequiredActions(100);
                 achievementRepository.save(achievement3);
 
-                // SUPPORT category achievements
                 Achievement achievement4 = new Achievement();
                 achievement4.setName("Początkujące wsparcie");
                 achievement4.setDescription("Wesprzyj 3 zwierzęta");
@@ -209,7 +163,6 @@ public class AuthServerApplication {
                 achievement6.setRequiredActions(25);
                 achievementRepository.save(achievement6);
 
-                // BADGE category achievements
                 Achievement achievement7 = new Achievement();
                 achievement7.setName("Wirtualny opiekun");
                 achievement7.setDescription("Wspieraj wybranego zwierzaka przez 5 kolejnych dni");
@@ -227,18 +180,7 @@ public class AuthServerApplication {
                 achievement8.setCategory(AchievementCategory.BADGE);
                 achievement8.setRequiredActions(100);
                 achievementRepository.save(achievement8);
-
-                System.out.println("Osiągnięcia zainicjalizowane pomyślnie");
-            } else {
-                System.out.println("Osiągnięcia już istnieją - pomijanie inicjalizacji");
             }
-
-            System.out.println("=".repeat(50));
-            System.out.println("PETIFY AUTH SERVER GOTOWY DO PRACY!");
-            System.out.println("=".repeat(50));
-            System.out.println("ADMIN: admin/admin");
-            System.out.println("SHELTER: shelter/shelter");
-            System.out.println("=".repeat(50));
         };
     }
 }

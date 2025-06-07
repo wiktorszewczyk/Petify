@@ -18,9 +18,6 @@ public class UserLocationService {
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Pobiera lokalizację użytkownika
-     */
     public UserLocationResponse getUserLocation(String username) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -37,9 +34,6 @@ public class UserLocationService {
         );
     }
 
-    /**
-     * Aktualizuje lokalizację użytkownika
-     */
     public UserLocationResponse updateUserLocation(String username, UserLocationRequest locationRequest) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -77,9 +71,6 @@ public class UserLocationService {
         );
     }
 
-    /**
-     * Ustawia lokalizację użytkownika na podstawie współrzędnych
-     */
     public UserLocationResponse setUserLocationByCoordinates(String username, String city,
                                                              Double latitude, Double longitude,
                                                              Double preferredDistance) {
@@ -106,9 +97,6 @@ public class UserLocationService {
         );
     }
 
-    /**
-     * Czyści lokalizację użytkownika
-     */
     public UserLocationResponse clearUserLocation(String username) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -130,9 +118,6 @@ public class UserLocationService {
         );
     }
 
-    /**
-     * Sprawdza czy użytkownik ma ustawioną lokalizację
-     */
     public boolean userHasLocation(String username) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -140,9 +125,6 @@ public class UserLocationService {
         return user.hasLocation();
     }
 
-    /**
-     * Pobiera domyślną odległość wyszukiwania użytkownika
-     */
     public Double getUserPreferredSearchDistance(String username) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));

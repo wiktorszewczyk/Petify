@@ -77,6 +77,30 @@ public class AchievementService {
         return userAchievementRepository.save(userAchievement);
     }
 
+    @Transactional
+    public void trackLikeAchievements(String username) {
+        ApplicationUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Achievement> likeAchievements = achievementRepository.findByCategory(AchievementCategory.LIKES);
+
+        for (Achievement achievement : likeAchievements) {
+            trackAchievementProgress(username, achievement.getId(), 1);
+        }
+    }
+
+    @Transactional
+    public void trackSupportAchievements(String username) {
+        ApplicationUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Achievement> supportAchievements = achievementRepository.findByCategory(AchievementCategory.SUPPORT);
+
+        for (Achievement achievement : supportAchievements) {
+            trackAchievementProgress(username, achievement.getId(), 1);
+        }
+    }
+
     private void updateBadgeCounts(ApplicationUser user, AchievementCategory category) {
         switch (category) {
             case LIKES:

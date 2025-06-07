@@ -186,9 +186,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Deletes a user account
-     */
     public void deleteUserAccount(String username) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -196,9 +193,6 @@ public class AuthenticationService {
         userRepository.delete(user);
     }
 
-    /**
-     * Updates a user's volunteer status
-     */
     public ApplicationUser updateVolunteerStatus(Integer userId, VolunteerStatus status) {
         ApplicationUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -207,9 +201,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Assigns roles to a user
-     */
     public ApplicationUser assignRolesToUser(Integer userId, Set<String> roleNames) {
         ApplicationUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -225,9 +216,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Deactivate user account (by admin)
-     */
     @Transactional
     public ApplicationUser deactivateUserAccount(Integer userId, String reason) {
         ApplicationUser user = userRepository.findById(userId)
@@ -239,9 +227,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Reactivate user account (by admin)
-     */
     @Transactional
     public ApplicationUser reactivateUserAccount(Integer userId) {
         ApplicationUser user = userRepository.findById(userId)
@@ -253,9 +238,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Self-deactivate account (by user)
-     */
     @Transactional
     public ApplicationUser selfDeactivateAccount(String username, String reason) {
         ApplicationUser user = userRepository.findByUsername(username)

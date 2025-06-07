@@ -30,10 +30,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Controller handling all authentication, authorization and user management endpoints,
- * both for form login and OAuth2
- */
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthenticationController {
@@ -46,10 +42,6 @@ public class AuthenticationController {
 
     @Autowired
     private UserRepository userRepository;
-
-    /**
-     * Authentication Endpoints
-     */
 
     @PostMapping("/auth/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
@@ -87,22 +79,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * JWT Token validation endpoint
-     *
-     * @param authHeader Authorization header with JWT token
-     * @return Token validation status
-     */
     @PostMapping("/auth/token/validate")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authHeader) {
         try {
             // Extract token from Bearer header
             String token = authHeader.substring(7); // Remove "Bearer " from beginning
 
-            // Check if token is valid
             var jwt = tokenService.validateJwt(token);
 
-            // If we get here, token is valid
             Map<String, Object> response = new HashMap<>();
             response.put("valid", true);
             response.put("subject", jwt.getSubject());
@@ -118,26 +102,11 @@ public class AuthenticationController {
         }
     }
 
-    // OAuth2 endpoints
-
-    /**
-     * Initiate Google OAuth2 login process
-     * Spring Security will handle redirecting to Google login page
-     *
-     * @param response HTTP response to redirect
-     * @throws IOException if redirection fails
-     */
     @GetMapping("/auth/oauth2/google")
     public void initiateGoogleLogin(HttpServletResponse response) throws IOException {
         response.sendRedirect("/oauth2/authorization/google");
     }
 
-    /**
-     * Get information about logged in OAuth2 user
-     *
-     * @param principal Information about logged in OAuth2 user
-     * @return Map of user data
-     */
     @GetMapping("/auth/oauth2/user-info")
     public Map<String, Object> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
         Map<String, Object> userInfo = new HashMap<>();
@@ -152,12 +121,6 @@ public class AuthenticationController {
         return userInfo;
     }
 
-    /**
-     * Generate JWT token for logged in OAuth2 user
-     *
-     * @param authentication Authentication object
-     * @return Map containing JWT token or error message
-     */
     @GetMapping("/auth/oauth2/token")
     public Map<String, String> getOAuth2Token(Authentication authentication) {
         Map<String, String> response = new HashMap<>();
@@ -172,13 +135,6 @@ public class AuthenticationController {
         return response;
     }
 
-    /**
-     * Handle successful OAuth2 login (e.g., Google)
-     *
-     * @param token JWT Token passed from OAuth2 login success handler
-     * @param oauth2User Information about logged in OAuth2 user
-     * @return User data and JWT token
-     */
     @GetMapping("/auth/oauth2/success")
     public ResponseEntity<Map<String, Object>> oauthLoginSuccess(
             @RequestParam String token,
@@ -195,11 +151,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Handle OAuth2 login error
-     *
-     * @return Error information
-     */
     @GetMapping("/auth/oauth2/error")
     public ResponseEntity<Map<String, String>> oauthLoginError() {
         Map<String, String> response = new HashMap<>();
@@ -207,14 +158,6 @@ public class AuthenticationController {
         return ResponseEntity.badRequest().body(response);
     }
 
-    // User Management Endpoints
-
-    /**
-     * Get user data endpoint
-     *
-     * @param authentication Authentication object
-     * @return User data
-     */
     @GetMapping("/user")
     public ResponseEntity<?> getUserData(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -232,13 +175,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(user);
     }
 
-    /**
-     * Update user data endpoint
-     *
-     * @param authentication Authentication object
-     * @param userData Updated user data
-     * @return Updated user data
-     */
     @PutMapping("/user")
     public ResponseEntity<?> updateUserData(
             Authentication authentication,
@@ -254,7 +190,6 @@ public class AuthenticationController {
             ApplicationUser updatedUser = authenticationService.updateUserProfile(
                     authentication.getName(), userData);
 
-            // Remove sensitive information
             updatedUser.setPassword(null);
 
             return ResponseEntity.ok(updatedUser);
@@ -269,12 +204,6 @@ public class AuthenticationController {
         }
     }
 
-    /**
-     * Delete user account endpoint
-     *
-     * @param authentication Authentication object
-     * @return Success/failure message
-     */
     @DeleteMapping("/user")
     public ResponseEntity<?> deleteUser(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -296,13 +225,6 @@ public class AuthenticationController {
         }
     }
 
-    /**
-     * Self-deactivate account endpoint
-     *
-     * @param authentication Authentication object
-     * @param reason Optional reason for deactivation
-     * @return Success/failure message
-     */
     @PostMapping("/user/deactivate")
     public ResponseEntity<?> selfDeactivateAccount(
             Authentication authentication,
