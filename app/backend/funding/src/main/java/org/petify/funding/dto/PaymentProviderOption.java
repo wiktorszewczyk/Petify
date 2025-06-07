@@ -18,6 +18,6 @@ public class PaymentProviderOption {
     private PaymentProvider provider;
     private String displayName;
     private List<PaymentMethodOption> supportedMethods;
-    private PaymentFeeCalculation fees; // Używamy istniejącego!
+    private PaymentFeeCalculation fees;
     private boolean recommended;
 }

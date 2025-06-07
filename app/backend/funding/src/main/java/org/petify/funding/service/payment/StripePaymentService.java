@@ -203,7 +203,9 @@ public class StripePaymentService implements PaymentProviderService {
                 PaymentMethod.CARD,
                 PaymentMethod.GOOGLE_PAY,
                 PaymentMethod.APPLE_PAY,
-                PaymentMethod.PAYPAL
+                PaymentMethod.PRZELEWY24,
+                PaymentMethod.BLIK,
+                PaymentMethod.BANK_TRANSFER
         ).contains(method);
     }
 

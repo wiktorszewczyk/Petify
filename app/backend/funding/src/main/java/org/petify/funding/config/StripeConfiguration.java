@@ -20,7 +20,7 @@ public class StripeConfiguration {
         Stripe.apiKey = paymentProperties.getStripe().getApiKey();
 
         Stripe.setMaxNetworkRetries(3);
-        Stripe.setConnectTimeout(30 * 1000); // 30 seconds
-        Stripe.setReadTimeout(80 * 1000); // 80 seconds
+        Stripe.setConnectTimeout(30 * 1000);
+        Stripe.setReadTimeout(80 * 1000);
     }
 }

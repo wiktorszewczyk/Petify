@@ -6,5 +6,5 @@ public enum PaymentMethod {
     BANK_TRANSFER,
     GOOGLE_PAY,
     APPLE_PAY,
-    PAYPAL
+    PRZELEWY24
 }

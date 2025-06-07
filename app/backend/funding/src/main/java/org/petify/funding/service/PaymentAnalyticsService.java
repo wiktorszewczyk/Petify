@@ -3,7 +3,6 @@ package org.petify.funding.service;
 import org.petify.funding.dto.PaymentAnalyticsResponse;
 import org.petify.funding.model.PaymentAnalytics;
 import org.petify.funding.model.PaymentProvider;
-import org.petify.funding.model.PaymentStatus;
 import org.petify.funding.repository.PaymentAnalyticsRepository;
 import org.petify.funding.repository.PaymentRepository;
 
@@ -30,7 +29,7 @@ public class PaymentAnalyticsService {
     private final PaymentRepository paymentRepository;
 
     /**
-     * Get payment analytics for a date range
+     * Zwraca analizę płatności w określonym zakresie dat
      */
     public List<PaymentAnalyticsResponse> getAnalytics(LocalDate startDate, LocalDate endDate, String provider) {
         List<PaymentAnalytics> analytics;
@@ -48,7 +47,7 @@ public class PaymentAnalyticsService {
     }
 
     /**
-     * Get payment statistics summary
+     * Zwraca podsumowanie statystyk płatności za ostatnie N dni
      */
     public Map<String, Object> getPaymentStatsSummary(int days) {
         LocalDate endDate = LocalDate.now();
@@ -122,9 +121,9 @@ public class PaymentAnalyticsService {
     }
 
     /**
-     * Generate daily analytics - scheduled task
+     * Generuje codzienną analizę płatności dla każdego dostawcy płatności
      */
-    @Scheduled(cron = "0 0 1 * * ?") // Run at 1 AM daily
+    @Scheduled(cron = "0 0 1 * * ?") // 1 AM daily
     @Transactional
     public void generateDailyAnalytics() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
