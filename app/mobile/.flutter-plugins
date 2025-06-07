@@ -1,5 +1,13 @@
 # This is a generated file; do not edit or check into version control.
 flutter_stripe=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\flutter_stripe-11.5.0\\
+geocoding=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\geocoding-4.0.0\\
+geocoding_android=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\geocoding_android-4.0.1\\
+geocoding_ios=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\geocoding_ios-3.0.2\\
+geolocator=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\geolocator-14.0.1\\
+geolocator_android=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\geolocator_android-5.0.1+1\\
+geolocator_apple=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\geolocator_apple-2.3.13\\
+geolocator_web=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\geolocator_web-4.1.3\\
+geolocator_windows=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\geolocator_windows-0.2.5\\
 google_sign_in=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\google_sign_in-6.3.0\\
 google_sign_in_android=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\google_sign_in_android-6.2.1\\
 google_sign_in_ios=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\google_sign_in_ios-5.9.0\\
@@ -9,6 +17,11 @@ path_provider_android=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.
 path_provider_foundation=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\path_provider_foundation-2.4.1\\
 path_provider_linux=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\path_provider_linux-2.2.1\\
 path_provider_windows=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\path_provider_windows-2.3.0\\
+permission_handler=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\permission_handler-12.0.0+1\\
+permission_handler_android=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\permission_handler_android-13.0.1\\
+permission_handler_apple=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\permission_handler_apple-9.4.7\\
+permission_handler_html=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\permission_handler_html-0.1.3+5\\
+permission_handler_windows=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\permission_handler_windows-0.2.1\\
 share_plus=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\share_plus-11.0.0\\
 shared_preferences=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\shared_preferences-2.5.3\\
 shared_preferences_android=C:\\Users\\piotr\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\shared_preferences_android-2.4.8\\

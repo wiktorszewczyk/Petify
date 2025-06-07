@@ -1,8 +1,10 @@
 import 'dart:developer' as dev;
-import 'dart:math';
 import 'package:dio/dio.dart';
+import '../models/filter_preferences.dart';
 import '../models/pet.dart';
 import '../models/basic_response.dart';
+import '../services/filter_preferences_service.dart';
+import '../services/location_service.dart';
 import 'api/initial_api.dart';
 
 class PetService {
@@ -12,7 +14,66 @@ class PetService {
   factory PetService() => _instance ??= PetService._();
   PetService._();
 
-  /// Pobiera listę wszystkich zwierząt
+  /// Pobiera zwierzęta z domyślnymi filtrami
+  Future<List<Pet>> getPetsWithDefaultFilters() async {
+    final filterPrefs = await FilterPreferencesService().getFilterPreferences();
+    final locationService = LocationService();
+
+    double? userLat;
+    double? userLng;
+
+    if (filterPrefs.useCurrentLocation) {
+      final position = await locationService.getCurrentLocation();
+      if (position != null) {
+        userLat = position.latitude;
+        userLng = position.longitude;
+      }
+    } else if (filterPrefs.selectedCity != null) {
+      final position = await locationService.getCityCoordinates(filterPrefs.selectedCity!);
+      if (position != null) {
+        userLat = position.latitude;
+        userLng = position.longitude;
+      }
+    }
+
+    return getFilteredPets(
+      vaccinated: filterPrefs.onlyVaccinated ? true : null,
+      urgent: filterPrefs.onlyUrgent ? true : null,
+      sterilized: filterPrefs.onlySterilized ? true : null,
+      kidFriendly: filterPrefs.kidFriendly ? true : null,
+      minAge: filterPrefs.minAge,
+      maxAge: filterPrefs.maxAge,
+      type: _mapAnimalTypesToBackend(filterPrefs.animalTypes),
+      userLat: userLat,
+      userLng: userLng,
+      radiusKm: filterPrefs.maxDistance,
+    );
+  }
+
+  String? _mapAnimalTypesToBackend(Set<String> types) {
+    if (types.isEmpty || types.length >= 3) {
+      return null;
+    }
+
+    if (types.length == 1) {
+      final type = types.first;
+      switch (type) {
+        case 'Psy':
+          return 'DOG';
+        case 'Koty':
+          return 'CAT';
+        case 'Inne':
+          return 'OTHER';
+        default:
+          return null;
+      }
+    }
+
+    return null;
+  }
+
+  /// Pobiera listę wszystkich zwierząt (używana tylko dla kompatybilności)
+  @Deprecated('Użyj getPetsWithDefaultFilters() lub getFilteredPets()')
   Future<List<Pet>> getPets() async {
     try {
       final response = await _api.get('/pets');
@@ -29,7 +90,7 @@ class PetService {
     }
   }
 
-  /// Pobiera przefiltrowane zwierzęta
+  /// Pobiera przefiltrowane zwierzęta z backendu
   Future<List<Pet>> getFilteredPets({
     bool? vaccinated,
     bool? urgent,
@@ -37,7 +98,7 @@ class PetService {
     bool? kidFriendly,
     int? minAge,
     int? maxAge,
-    String? type, // CAT, DOG, OTHER
+    String? type, // DOG, CAT, OTHER
     double? userLat,
     double? userLng,
     double? radiusKm,
@@ -51,7 +112,7 @@ class PetService {
       if (kidFriendly != null) queryParams['kidFriendly'] = kidFriendly;
       if (minAge != null) queryParams['minAge'] = minAge;
       if (maxAge != null) queryParams['maxAge'] = maxAge;
-      if (type != null) queryParams['type'] = type.toUpperCase();
+      if (type != null) queryParams['type'] = type;
       if (userLat != null) queryParams['userLat'] = userLat;
       if (userLng != null) queryParams['userLng'] = userLng;
       if (radiusKm != null) queryParams['radiusKm'] = radiusKm;
@@ -70,7 +131,42 @@ class PetService {
     }
   }
 
-  /// Pobiera szczegóły zwierzęcia
+  /// Pobiera zwierzęta na podstawie zapisanych filtrów użytkownika
+  Future<List<Pet>> getPetsWithCustomFilters(FilterPreferences filterPrefs) async {
+    final locationService = LocationService();
+
+    double? userLat;
+    double? userLng;
+
+    if (filterPrefs.useCurrentLocation) {
+      final position = await locationService.getCurrentLocation();
+      if (position != null) {
+        userLat = position.latitude;
+        userLng = position.longitude;
+      }
+    } else if (filterPrefs.selectedCity != null) {
+      final position = await locationService.getCityCoordinates(filterPrefs.selectedCity!);
+      if (position != null) {
+        userLat = position.latitude;
+        userLng = position.longitude;
+      }
+    }
+
+    return getFilteredPets(
+      vaccinated: filterPrefs.onlyVaccinated ? true : null,
+      urgent: filterPrefs.onlyUrgent ? true : null,
+      sterilized: filterPrefs.onlySterilized ? true : null,
+      kidFriendly: filterPrefs.kidFriendly ? true : null,
+      minAge: filterPrefs.minAge,
+      maxAge: filterPrefs.maxAge,
+      type: _mapAnimalTypesToBackend(filterPrefs.animalTypes),
+      userLat: userLat,
+      userLng: userLng,
+      radiusKm: filterPrefs.maxDistance, // null = bez ograniczeń
+    );
+  }
+
+  // Reszta metod bez zmian...
   Future<Pet> getPetById(int petId) async {
     try {
       final response = await _api.get('/pets/$petId');
@@ -86,7 +182,6 @@ class PetService {
     }
   }
 
-  /// Polub zwierzę
   Future<BasicResponse> likePet(int petId) async {
     try {
       final response = await _api.post('/pets/$petId/like');
@@ -97,7 +192,6 @@ class PetService {
     }
   }
 
-  /// Cofnij polubienie zwierzęcia
   Future<BasicResponse> unlikePet(int petId) async {
     try {
       final response = await _api.post('/pets/$petId/dislike');
@@ -108,7 +202,6 @@ class PetService {
     }
   }
 
-  /// Wesprzyj zwierzę
   Future<BasicResponse> supportPet(int petId) async {
     try {
       final response = await _api.post('/pets/$petId/support');
@@ -119,7 +212,6 @@ class PetService {
     }
   }
 
-  /// Pobiera polubione zwierzęta
   Future<List<Pet>> getFavoritePets() async {
     try {
       final response = await _api.get('/pets/favorites');
@@ -136,7 +228,6 @@ class PetService {
     }
   }
 
-  /// Pobiera wspierane zwierzęta
   Future<List<Pet>> getSupportedPets() async {
     try {
       final response = await _api.get('/pets/supportedPets');
@@ -153,13 +244,11 @@ class PetService {
     }
   }
 
-  /// Pobiera zdjęcie zwierzęcia
   Future<String?> getPetImage(int petId) async {
     try {
       final response = await _api.get('/pets/$petId/image');
 
       if (response.statusCode == 200 && response.data is String) {
-        // Backend zwraca Base64 string, dodajemy prefix data URL
         return 'data:image/jpeg;base64,${response.data}';
       }
 
@@ -170,7 +259,6 @@ class PetService {
     }
   }
 
-  /// Tworzy formularz adopcji
   Future<BasicResponse> createAdoptionForm({
     required int petId,
     required String motivationText,
@@ -203,11 +291,5 @@ class PetService {
     }
   }
 
-  // Metody kompatybilności z istniejącym kodem
   Future<List<Pet>> getLikedPets() => getFavoritePets();
-
-  // Metody do symulacji starych funkcjonalności (tymczasowo)
-  Future<void> _simulateOldMethods() async {
-    // Te metody były używane w starym kodzie, ale teraz używamy nowych API
-  }
 }

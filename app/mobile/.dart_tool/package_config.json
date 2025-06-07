@@ -158,6 +158,66 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "geocoding",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "geocoding_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_android-4.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "geocoding_ios",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_ios-3.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "geocoding_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_platform_interface-3.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "geolocator",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator-14.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_android-5.0.1+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_apple",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_apple-2.3.13",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_platform_interface-4.2.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_web",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_web-4.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_windows",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_windows-0.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "google_fonts",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-6.2.1",
       "packageUri": "lib/",
@@ -322,6 +382,42 @@
     {
       "name": "percent_indicator",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/percent_indicator-4.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "permission_handler",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler-12.0.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "permission_handler_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_android-13.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "permission_handler_apple",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_apple-9.4.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "permission_handler_html",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_html-0.1.3+5",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "permission_handler_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_platform_interface-4.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "permission_handler_windows",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_windows-0.2.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -608,7 +704,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-06-06T11:36:47.223222Z",
+  "generated": "2025-06-07T19:33:26.862212Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///C:/flutter",

@@ -7,6 +7,8 @@ import '../../models/pet.dart';
 import '../../widgets/buttons/action_button.dart';
 import '../../widgets/cards/pet_card.dart';
 import '../../services/pet_service.dart';
+import '../../services/filter_preferences_service.dart';
+import '../models/filter_preferences.dart';
 import '../views/community_support_view.dart';
 import '../views/favorites_view.dart';
 import '../views/messages_view.dart';
@@ -30,17 +32,16 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   late AnimationController _swipeController;
   late Animation<Offset> _swipeAnimation;
   late Animation<double> _rotationAnimation;
+  FilterPreferences? _currentFilters;
 
   Offset _dragPosition = Offset.zero;
   SwipeDirection? _swipeDirection;
 
-  // Current tab index for bottom navigation
   int _selectedTabIndex = 0;
 
   bool _isDragging = false;
   bool _isAnimating = false;
 
-  // Listę kluczy do unikalnej identyfikacji kart
   final List<GlobalKey<State<StatefulWidget>>> _cardKeys = [];
 
   @override
@@ -52,8 +53,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     );
 
     _initAnimations();
-
-    _loadPets();
+    _loadFiltersAndPets();
   }
 
   void _initAnimations() {
@@ -80,6 +80,20 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
+  /// Ładuje filtry użytkownika i na ich podstawie pobiera zwierzęta
+  Future<void> _loadFiltersAndPets() async {
+    try {
+      _currentFilters = await FilterPreferencesService().getFilterPreferences();
+      await _loadPets();
+    } catch (e) {
+      print('Błąd podczas ładowania filtrów: $e');
+      // Jeśli błąd z filtrami, użyj domyślnych
+      _currentFilters = FilterPreferences();
+      await _loadPets();
+    }
+  }
+
+  /// Pobiera zwierzęta na podstawie aktualnych filtrów
   Future<void> _loadPets() async {
     setState(() {
       _isLoading = true;
@@ -88,15 +102,22 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
     try {
       final petService = PetService();
+      List<Pet> petsData;
 
-      // Używamy nowej metody z API
-      final petsData = await petService.getPets();
+      if (_currentFilters != null) {
+        // Użyj filtrów użytkownika
+        petsData = await petService.getPetsWithCustomFilters(_currentFilters!);
+      } else {
+        // Fallback - użyj domyślnych filtrów
+        petsData = await petService.getPetsWithDefaultFilters();
+      }
 
       if (mounted) {
         setState(() {
           _pets.clear();
           _pets.addAll(petsData);
           _isLoading = false;
+          _currentIndex = 0; // Reset do pierwszego zwierzaka
 
           // Generujemy klucze dla każdego zwierzaka
           _cardKeys.clear();
@@ -172,14 +193,13 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   void _completeSwipeReset() {
-    // To jest nowa funkcja, która w pełni resetuje stan przeciągania i animacji
     if (!mounted) return;
 
     setState(() {
       _dragPosition = Offset.zero;
       _swipeDirection = null;
       _swipeController.reset();
-      _initAnimations(); // Inicjalizujemy animacje od nowa
+      _initAnimations();
       _isAnimating = false;
     });
   }
@@ -223,11 +243,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         if (_currentIndex < _pets.length - 1) {
           _currentIndex++;
         } else {
+          // Jeśli koniec listy, przeładuj zwierzęta
           _loadPets();
         }
       });
 
-      // Kompletny reset stanu przeciągania i animacji po ukończeniu animacji
       _completeSwipeReset();
     });
   }
@@ -275,67 +295,20 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     );
   }
 
-  Future<void> _loadFilteredPets(Map<String, dynamic> filters) async {
-    setState(() {
-      _isLoading = true;
-      _isError = false;
-    });
-
-    try {
-      final petService = PetService();
-
-      // Wywołaj metodę z filtrami
-      final petsData = await petService.getFilteredPets(
-        vaccinated: filters['vaccinated'],
-        urgent: filters['urgent'],
-        sterilized: filters['sterilized'],
-        kidFriendly: filters['kidFriendly'],
-        minAge: filters['minAge'],
-        maxAge: filters['maxAge'],
-        type: filters['type'],
-        userLat: filters['userLat'],
-        userLng: filters['userLng'],
-        radiusKm: filters['radiusKm'],
-      );
-
-      if (mounted) {
-        setState(() {
-          _pets.clear();
-          _pets.addAll(petsData);
-          _isLoading = false;
-
-          // Regeneruj klucze
-          _cardKeys.clear();
-          for (int i = 0; i < _pets.length; i++) {
-            _cardKeys.add(GlobalKey<State<StatefulWidget>>());
-          }
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _isError = true;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Nie udało się pobrać przefiltrowanych danych: $e')),
-        );
-      }
-    }
-  }
-
+  /// Otwiera ustawienia filtrów i przeładowuje zwierzęta po zmianie
   void _showDiscoverySettings() async {
-    final result = await DiscoverySettingsSheet.show<Map<String, dynamic>>(context);
+    final result = await DiscoverySettingsSheet.show<FilterPreferences>(
+      context,
+      currentPreferences: _currentFilters,
+    );
 
     if (!mounted) return;
 
-    if (result == 'reset') {
-      // Przywróć domyślne filtry - pobierz wszystkie zwierzęta
-      _loadPets();
-    } else if (result != null && result is Map<String, dynamic>) {
-      // Zastosuj filtry z result
-      await _loadFilteredPets(result);
+    if (result != null) {
+      setState(() {
+        _currentFilters = result;
+      });
+      await _loadPets(); // Przeładuj zwierzęta z nowymi filtrami
     }
   }
 
@@ -372,11 +345,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
-              // Implementacja przejścia do ustawień aplikacji
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => const HomeView(),
-                  // const AppSettingsView(),
                 ),
               );
             },
@@ -395,20 +366,16 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   Widget _buildBody() {
-    // Różne widoki w zależności od wybranej zakładki
     switch (_selectedTabIndex) {
       case 0:
         return _buildSwipeView();
       case 1:
         return const CommunitySupportView();
       case 2:
-      // return _buildSwipeView();
         return const FavoritesView();
       case 3:
-      // return _buildSwipeView();
         return const MessagesView();
       case 4:
-      // return _buildSwipeView();
         return const ProfileView();
       default:
         return _buildSwipeView();
@@ -515,9 +482,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Stack(
-              clipBehavior: Clip.none, // Umożliwia wyjście za granice stosu
+              clipBehavior: Clip.none,
               children: [
-                // Prebuffer karty w tle (więcej niż jedna dla lepszego UX)
+                // Prebuffer karty w tle
                 if (_currentIndex < _pets.length - 2)
                   Positioned.fill(
                     child: PetCard(
@@ -550,7 +517,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       child: AnimatedBuilder(
                         animation: _swipeController,
                         builder: (context, child) {
-                          // Używamy tylko jednej zmiennej dla pozycji - albo z animacji albo z przeciągania
                           final offset = _isAnimating ? _swipeAnimation.value : _dragPosition;
                           final angle = _isAnimating ? _rotationAnimation.value : _dragPosition.dx * 0.001;
 

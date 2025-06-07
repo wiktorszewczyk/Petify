@@ -89,9 +89,47 @@ class UserService {
       }
       throw Exception('Nieoczekiwana odpowiedź serwera: ${resp.statusCode}');
     } on DioException catch (e) {
-      // możesz dodatkowo sprawdzić e.response?.statusCode == 401 -> wymuś logout/redirect
       throw Exception('Błąd podczas pobierania profilu: ${e.message}');
     }
   }
 
+  Future<Map<String, dynamic>> updateUserProfile(Map<String, dynamic> userData) async {
+    try {
+      final resp = await _api.put('/user', data: userData);
+
+      if (resp.statusCode == 200) {
+        return {
+          'success': true,
+          'user': resp.data,
+        };
+      } else {
+        return {
+          'success': false,
+          'error': 'Nieoczekiwana odpowiedź serwera: ${resp.statusCode}',
+        };
+      }
+    } on DioException catch (e) {
+      dev.log('Błąd podczas aktualizacji profilu: ${e.message}');
+
+      if (e.response?.statusCode == 400) {
+        final errorData = e.response?.data;
+        if (errorData is Map<String, dynamic> && errorData['error'] != null) {
+          return {
+            'success': false,
+            'error': errorData['error'],
+          };
+        }
+      }
+
+      return {
+        'success': false,
+        'error': e.message ?? 'Nieznany błąd podczas aktualizacji profilu',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'error': 'Wystąpił nieoczekiwany błąd: $e',
+      };
+    }
+  }
 }

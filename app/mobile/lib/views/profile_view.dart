@@ -1,6 +1,6 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mobile/views/edit_profile_view.dart';
 import '../models/user.dart';
 import '../models/achievement.dart';
 import '../services/user_service.dart';
@@ -12,10 +12,6 @@ import '../widgets/profile/achievement_progress.dart';
 import '../widgets/profile/quick_stats.dart';
 import '../widgets/profile/achievements.dart';
 import '../widgets/profile/active_achievements.dart';
-import '../widgets/profile/supported_pets_tab.dart';
-import '../widgets/profile/donations_tab.dart';
-import '../widgets/profile/activity_tab.dart';
-import '../widgets/profile/notifications_sheet.dart';
 import '../widgets/profile/volutneer_status_card.dart';
 import 'auth/welcome_view.dart';
 
@@ -234,7 +230,12 @@ class _ProfileViewState extends State<ProfileView>
       actions: [
         IconButton(
           icon: const Icon(Icons.edit, color: Colors.black),
-          onPressed: () {/* TODO: Edycja profilu */},
+          onPressed: () {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => EditProfileView(user: _user!)),
+                  (route) => false,
+            );
+          },
           tooltip: 'Edytuj profil',
         ),
         IconButton(
