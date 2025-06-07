@@ -66,6 +66,13 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: funding-service
+          uri: lb://FUNDING-SERVICE
+          predicates:
+            - Path=/donations/**, /donations, /payments/**, /payments
+          filters:
+            - PreserveHostHeader
+
 # Konfiguracja Eureka
 eureka:
   client:
