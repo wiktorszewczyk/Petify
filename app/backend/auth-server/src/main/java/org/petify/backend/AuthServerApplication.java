@@ -4,6 +4,7 @@ import org.petify.backend.models.Achievement;
 import org.petify.backend.models.AchievementCategory;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.models.Role;
+import org.petify.backend.models.VolunteerStatus;
 import org.petify.backend.repository.AchievementRepository;
 import org.petify.backend.repository.RoleRepository;
 import org.petify.backend.repository.UserRepository;
@@ -16,11 +17,14 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "org.petify.backend.client")
+//@EnableFeignClients(basePackages = "org.petify.backend.client")
 public class AuthServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuthServerApplication.class, args);
@@ -34,41 +38,117 @@ public class AuthServerApplication {
             AchievementService achievementService,
             PasswordEncoder passwordEncoder) {
         return args -> {
-            boolean needToInitRoles = !roleRepository.findByAuthority("ADMIN").isPresent();
+            // Inicjalizacja ról
+            System.out.println("Sprawdzanie i inicjalizacja ról...");
 
-            if (needToInitRoles) {
-                System.out.println("Inicjalizacja ról...");
-                final Role adminRole = roleRepository.save(new Role("ADMIN"));
-                roleRepository.save(new Role("USER"));
-                roleRepository.save(new Role("VOLUNTEER"));
-                roleRepository.save(new Role("SHELTER"));
+            Role adminRole = roleRepository.findByAuthority("ADMIN")
+                    .orElseGet(() -> {
+                        System.out.println("Tworzenie roli ADMIN...");
+                        return roleRepository.save(new Role("ADMIN"));
+                    });
+
+            Role userRole = roleRepository.findByAuthority("USER")
+                    .orElseGet(() -> {
+                        System.out.println("Tworzenie roli USER...");
+                        return roleRepository.save(new Role("USER"));
+                    });
+
+            Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
+                    .orElseGet(() -> {
+                        System.out.println("Tworzenie roli VOLUNTEER...");
+                        return roleRepository.save(new Role("VOLUNTEER"));
+                    });
+
+            Role shelterRole = roleRepository.findByAuthority("SHELTER")
+                    .orElseGet(() -> {
+                        System.out.println("Tworzenie roli SHELTER...");
+                        return roleRepository.save(new Role("SHELTER"));
+                    });
+
+            // Sprawdzenie czy użytkownik admin już istnieje
+            Optional<ApplicationUser> existingAdmin = userRepository.findByUsername("admin");
+
+            if (existingAdmin.isEmpty()) {
+                System.out.println("Tworzenie użytkownika admin...");
 
                 Set<Role> adminRoles = new HashSet<>();
                 adminRoles.add(adminRole);
+                adminRoles.add(userRole); // Admin ma też rolę USER dla dostępu do endpointów użytkownika
 
                 ApplicationUser admin = new ApplicationUser();
                 admin.setUsername("admin");
                 admin.setPassword(passwordEncoder.encode("admin"));
                 admin.setEmail("admin@petify.org");
                 admin.setFirstName("Admin");
-                admin.setLastName("User");
+                admin.setLastName("Administrator");
+                admin.setBirthDate(LocalDate.of(1980, 1, 1));
+                admin.setGender("MALE");
+                admin.setPhoneNumber("+48123456789");
+                admin.setVolunteerStatus(VolunteerStatus.NONE);
+                admin.setActive(true);
+                admin.setCreatedAt(LocalDateTime.now());
                 admin.setAuthorities(adminRoles);
 
-                // Set XP and level for admin
-                admin.setXpPoints(500);
-                admin.setLevel(5);
+                // Ustawienie XP i poziomu dla admina
+                admin.setXpPoints(1000);
+                admin.setLevel(10);
                 admin.setLikesCount(0);
                 admin.setSupportCount(0);
                 admin.setBadgesCount(0);
 
-                admin.setPreferredSearchDistanceKm(100.0);
-                admin.setAutoLocationEnabled(false);
-
                 ApplicationUser savedAdmin = userRepository.save(admin);
 
+                System.out.println("Użytkownik admin utworzony pomyślnie!");
+                System.out.println("Email: admin@petify.org");
+                System.out.println("Login: admin");
+                System.out.println("Hasło: admin");
+                System.out.println("ID: " + savedAdmin.getUserId());
+
+                // Inicjalizacja osiągnięć dla admina
                 achievementService.initializeUserAchievements(savedAdmin);
+                System.out.println("Osiągnięcia dla admina zainicjalizowane");
+
+            } else {
+                System.out.println("Użytkownik admin już istnieje - pomijanie tworzenia");
+                System.out.println("Możesz się zalogować danymi: admin/admin");
             }
 
+            // Tworzenie użytkownika testowego SHELTER (opcjonalnie)
+            Optional<ApplicationUser> existingShelterUser = userRepository.findByUsername("shelter");
+            if (existingShelterUser.isEmpty()) {
+                System.out.println("Tworzenie użytkownika testowego schroniska...");
+
+                Set<Role> shelterRoles = new HashSet<>();
+                shelterRoles.add(shelterRole);
+                shelterRoles.add(userRole);
+
+                ApplicationUser shelterUser = new ApplicationUser();
+                shelterUser.setUsername("shelter");
+                shelterUser.setPassword(passwordEncoder.encode("shelter"));
+                shelterUser.setEmail("shelter@petify.org");
+                shelterUser.setFirstName("Schronisko");
+                shelterUser.setLastName("Testowe");
+                shelterUser.setBirthDate(LocalDate.of(1990, 1, 1));
+                shelterUser.setGender("OTHER");
+                shelterUser.setPhoneNumber("+48987654321");
+                shelterUser.setVolunteerStatus(VolunteerStatus.NONE);
+                shelterUser.setActive(true);
+                shelterUser.setCreatedAt(LocalDateTime.now());
+                shelterUser.setAuthorities(shelterRoles);
+                shelterUser.setXpPoints(0);
+                shelterUser.setLevel(1);
+                shelterUser.setLikesCount(0);
+                shelterUser.setSupportCount(0);
+                shelterUser.setBadgesCount(0);
+
+                ApplicationUser savedShelterUser = userRepository.save(shelterUser);
+                achievementService.initializeUserAchievements(savedShelterUser);
+
+                System.out.println("Użytkownik testowy schroniska utworzony!");
+                System.out.println("Login: shelter, Hasło: shelter");
+            }
+
+            // Inicjalizacja osiągnięć
             long achievementCount = achievementRepository.count();
             if (achievementCount == 0) {
                 System.out.println("Inicjalizacja osiągnięć...");
@@ -149,7 +229,16 @@ public class AuthServerApplication {
                 achievementRepository.save(achievement8);
 
                 System.out.println("Osiągnięcia zainicjalizowane pomyślnie");
+            } else {
+                System.out.println("Osiągnięcia już istnieją - pomijanie inicjalizacji");
             }
+
+            System.out.println("=".repeat(50));
+            System.out.println("PETIFY AUTH SERVER GOTOWY DO PRACY!");
+            System.out.println("=".repeat(50));
+            System.out.println("ADMIN: admin/admin");
+            System.out.println("SHELTER: shelter/shelter");
+            System.out.println("=".repeat(50));
         };
     }
 }
