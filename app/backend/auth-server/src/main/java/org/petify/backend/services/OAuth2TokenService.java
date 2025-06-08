@@ -147,7 +147,13 @@ public class OAuth2TokenService {
      */
     private Authentication createAuthenticationFromUser(ApplicationUser user) {
         List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getAuthority()))
+                .map(role -> {
+                    String authority = role.getAuthority();
+                    if (!authority.startsWith("ROLE_")) {
+                        authority = "ROLE_" + authority;
+                    }
+                    return new SimpleGrantedAuthority(authority);
+                })
                 .collect(Collectors.toList());
 
         return new UsernamePasswordAuthenticationToken(

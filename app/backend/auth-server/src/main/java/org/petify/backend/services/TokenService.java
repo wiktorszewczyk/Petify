@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -31,18 +32,21 @@ public class TokenService {
      */
     public String generateJwt(Authentication auth) {
         Instant now = Instant.now();
-        Instant expiryTime = now.plus(24, ChronoUnit.HOURS);  // Token valid for 24h
+        Instant expiryTime = now.plus(24, ChronoUnit.HOURS);
 
-        String scope = auth.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+        List<String> roles = auth.getAuthorities().stream()
+                .map(authority -> {
+                    String role = authority.getAuthority();
+                    return role.startsWith("ROLE_") ? role.substring(5) : role;
+                })
+                .collect(Collectors.toList());
 
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .issuer("http://localhost:9000")
                 .issuedAt(now)
                 .expiresAt(expiryTime)
                 .subject(auth.getName())
-                .claim("roles", scope);
+                .claim("roles", roles);
 
         if (auth.getPrincipal() instanceof OAuth2User) {
             addOAuth2Claims(claimsBuilder, (OAuth2User) auth.getPrincipal());
