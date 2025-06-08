@@ -11,6 +11,7 @@ import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.ShelterRepository;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -154,6 +155,21 @@ public class ShelterService {
             throw new RoutingException("OSRM request timed out", e);
         } catch (IOException e) {
             throw new RoutingException("Network error while contacting OSRM", e);
+        }
+    }
+
+    public HttpStatus validateShelterForDonations(Long shelterId) {
+        try {
+            ShelterResponse shelter = getShelterById(shelterId);
+
+            if (!shelter.isActive()) {
+                return HttpStatus.FORBIDDEN;
+            }
+
+            return HttpStatus.OK;
+
+        } catch (ShelterNotFoundException ex) {
+            return HttpStatus.NOT_FOUND;
         }
     }
 }
