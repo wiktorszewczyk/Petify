@@ -17,6 +17,7 @@ import org.petify.shelter.specification.PetSpecification;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -199,5 +200,31 @@ public class PetService {
         Pet savedPet = petRepository.save(pet);
 
         return petMapper.toDto(savedPet);
+    }
+
+    public HttpStatus validatePetForDonations(Long shelterId, Long petId) {
+        try {
+            Shelter shelter = shelterRepository.findById(shelterId)
+                    .orElseThrow(() -> new ShelterNotFoundException(shelterId));
+
+            if (!shelter.getIsActive()) {
+                return HttpStatus.FORBIDDEN;
+            }
+
+            PetResponseWithImages pet = getPetById(petId);
+
+            if (!pet.shelterId().equals(shelterId)) {
+                return HttpStatus.NOT_FOUND;
+            }
+
+            if (pet.archived()) {
+                return HttpStatus.GONE;
+            }
+
+            return HttpStatus.OK;
+
+        } catch (ShelterNotFoundException | PetNotFoundException ex) {
+            return HttpStatus.NOT_FOUND;
+        }
     }
 }

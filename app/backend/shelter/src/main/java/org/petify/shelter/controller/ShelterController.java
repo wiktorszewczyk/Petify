@@ -67,6 +67,7 @@ public class ShelterController {
         return new ResponseEntity<>(shelter, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getShelterById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(shelterService.getShelterById(id));
@@ -169,5 +170,28 @@ public class ShelterController {
         if (!shelter.ownerUsername().equals(username)) {
             throw new AccessDeniedException("You are not the owner of this shelter");
         }
+    }
+
+    /**
+     * Sprawdza czy schronisko istnieje i jest aktywne
+     */
+    @GetMapping("/{shelterId}/validate")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Void> validateShelter(@PathVariable Long shelterId) {
+        HttpStatus status = shelterService.validateShelterForDonations(shelterId);
+        return ResponseEntity.status(status).build();
+    }
+
+    /**
+     * Sprawdza czy zwierzę istnieje w danym schronisku i czy można na nie wpłacać
+     */
+    @GetMapping("/{shelterId}/pets/{petId}/validate")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Void> validatePetInShelter(
+            @PathVariable Long shelterId,
+            @PathVariable Long petId) {
+
+        HttpStatus status = petService.validatePetForDonations(shelterId, petId);
+        return ResponseEntity.status(status).build();
     }
 }
