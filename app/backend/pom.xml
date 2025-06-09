@@ -24,6 +24,7 @@
     <module>reservations</module>
     <module>feed</module>
     <module>chat</module>
+    <module>funding</module>
   </modules>
 
   <distributionManagement>
