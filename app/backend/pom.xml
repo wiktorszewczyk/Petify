@@ -22,9 +22,9 @@
     <module>image</module>
     <module>shelter</module>
     <module>reservations</module>
+    <module>funding</module>
     <module>feed</module>
     <module>chat</module>
-    <module>funding</module>
   </modules>
 
   <distributionManagement>
