@@ -2,7 +2,6 @@ package org.petify.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,18 +25,21 @@ public class TokenService {
 
     public String generateJwt(Authentication auth) {
         Instant now = Instant.now();
-        Instant expiryTime = now.plus(24, ChronoUnit.HOURS);  // Token valid for 24h
+        Instant expiryTime = now.plus(24, ChronoUnit.HOURS);
 
-        String scope = auth.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+        List<String> roles = auth.getAuthorities().stream()
+                .map(authority -> {
+                    String role = authority.getAuthority();
+                    return role.startsWith("ROLE_") ? role.substring(5) : role;
+                })
+                .collect(Collectors.toList());
 
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .issuer("http://localhost:9000")
                 .issuedAt(now)
                 .expiresAt(expiryTime)
                 .subject(auth.getName())
-                .claim("roles", scope);
+                .claim("roles", roles);
 
         if (auth.getPrincipal() instanceof OAuth2User) {
             addOAuth2Claims(claimsBuilder, (OAuth2User) auth.getPrincipal());
@@ -48,7 +51,6 @@ public class TokenService {
     }
 
     private void addOAuth2Claims(JwtClaimsSet.Builder claimsBuilder, OAuth2User oauth2User) {
-        // Add user ID if available
         if (oauth2User.getAttribute("userId") != null) {
             claimsBuilder.claim("userId", oauth2User.getAttribute("userId"));
         }

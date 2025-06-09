@@ -69,7 +69,6 @@ public class GeocodingService {
         return "";
     }
 
-    // Wydzielona metoda do wyciągania informacji z address node
     private AddressInfo extractAddressInfo(JsonNode address) {
         String country = address != null && address.has("country")
                 ? address.get("country").asText() : COUNTRY_POLAND;

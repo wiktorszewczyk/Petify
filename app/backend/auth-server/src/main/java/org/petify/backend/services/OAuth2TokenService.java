@@ -25,9 +25,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * Service for handling OAuth2 token exchange operations
- */
 @Service
 public class OAuth2TokenService {
 
@@ -46,9 +43,6 @@ public class OAuth2TokenService {
     @Autowired
     private TokenService tokenService;
 
-    /**
-     * Exchange Google access token for JWT
-     */
     public LoginResponseDTO exchangeGoogleToken(String accessToken) {
         Map<String, Object> googleUserInfo = verifyGoogleToken(accessToken);
         if (googleUserInfo == null) {
@@ -64,9 +58,6 @@ public class OAuth2TokenService {
         return new LoginResponseDTO(user, token);
     }
 
-    /**
-     * Verify Google access token by calling Google's API
-     */
     private Map<String, Object> verifyGoogleToken(String accessToken) {
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -86,9 +77,6 @@ public class OAuth2TokenService {
         }
     }
 
-    /**
-     * Find existing user or create new one based on Google user info
-     */
     @Transactional
     protected ApplicationUser findOrCreateUserFromGoogle(Map<String, Object> googleUserInfo) {
         String email = (String) googleUserInfo.get("email");
@@ -142,12 +130,15 @@ public class OAuth2TokenService {
         return user;
     }
 
-    /**
-     * Create Authentication object from ApplicationUser for JWT generation
-     */
     private Authentication createAuthenticationFromUser(ApplicationUser user) {
         List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getAuthority()))
+                .map(role -> {
+                    String authority = role.getAuthority();
+                    if (!authority.startsWith("ROLE_")) {
+                        authority = "ROLE_" + authority;
+                    }
+                    return new SimpleGrantedAuthority(authority);
+                })
                 .collect(Collectors.toList());
 
         return new UsernamePasswordAuthenticationToken(

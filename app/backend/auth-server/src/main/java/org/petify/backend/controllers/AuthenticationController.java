@@ -6,6 +6,7 @@ import org.petify.backend.dto.RegistrationDTO;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.repository.UserRepository;
 import org.petify.backend.services.AuthenticationService;
+import org.petify.backend.services.OAuth2TokenService;
 import org.petify.backend.services.TokenService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,6 +56,9 @@ public class AuthenticationController {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private OAuth2TokenService oauth2TokenService;
 
     @Autowired
     private UserRepository userRepository;
@@ -107,7 +111,7 @@ public class AuthenticationController {
     @PostMapping("/auth/token/validate")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authHeader) {
         try {
-            String token = authHeader.substring(7); // Remove "Bearer " from beginning
+            String token = authHeader.substring(7);
 
             var jwt = tokenService.validateJwt(token);
 
@@ -180,6 +184,32 @@ public class AuthenticationController {
         Map<String, String> response = new HashMap<>();
         response.put(ERROR_KEY, "OAuth2 authentication failed");
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @PostMapping("/auth/oauth2/exchange")
+    public ResponseEntity<?> exchangeOAuth2Token(@RequestBody Map<String, String> request) {
+        String provider = request.get("provider");
+        String accessToken = request.get("access_token");
+
+        if (!"google".equals(provider)) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Unsupported provider: " + provider);
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        if (accessToken == null || accessToken.trim().isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Access token is required");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        LoginResponseDTO response = oauth2TokenService.exchangeGoogleToken(accessToken);
+        if (response.getUser() == null) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid Google access token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/user")

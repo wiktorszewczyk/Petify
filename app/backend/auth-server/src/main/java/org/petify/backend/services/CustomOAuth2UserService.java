@@ -110,8 +110,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        user.getAuthorities().forEach(role ->
-                authorities.add(new SimpleGrantedAuthority(role.getAuthority())));
+        user.getAuthorities().forEach(role -> {
+            String authority = role.getAuthority();
+            if (!authority.startsWith("ROLE_")) {
+                authority = "ROLE_" + authority;
+            }
+            authorities.add(new SimpleGrantedAuthority(authority));
+        });
 
         Map<String, Object> attributes = new HashMap<>(oauth2User.getAttributes());
         attributes.put("userId", user.getUserId());
