@@ -22,6 +22,7 @@
     <module>shelter</module>
     <module>reservations</module>
     <module>chat</module>
+    <module>funding</module>
   </modules>
 
   <distributionManagement>
