@@ -5,7 +5,6 @@ import org.petify.image.service.ImageService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,10 +30,7 @@ public class ImageController {
     @GetMapping("/{imageId}")
     public ResponseEntity<ImageResponse> getImageById(@PathVariable Long imageId) {
         ImageResponse image = imageService.getImageById(imageId);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.valueOf(image.imageType()))
-                .body(Base64.getEncoder().encodeToString(image.imageData().getBytes(StandardCharsets.UTF_8)));
+        return ResponseEntity.ok(image);
     }
 
     @GetMapping("/{entityId}/images")
