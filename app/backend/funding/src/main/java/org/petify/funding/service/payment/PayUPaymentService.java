@@ -13,6 +13,7 @@ import org.petify.funding.model.PaymentProvider;
 import org.petify.funding.model.PaymentStatus;
 import org.petify.funding.repository.DonationRepository;
 import org.petify.funding.repository.PaymentRepository;
+import org.petify.funding.service.DonationStatusUpdateService;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,6 +48,7 @@ public class PayUPaymentService implements PaymentProviderService {
     private final DonationRepository donationRepository;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final DonationStatusUpdateService statusUpdateService;
 
     @Value("${payment.payu.client-id}")
     private String clientId;
@@ -152,12 +154,12 @@ public class PayUPaymentService implements PaymentProviderService {
             PaymentStatus newStatus = mapPayUStatus(orderJson.get("status").asText());
 
             payment.setStatus(newStatus);
+            Payment savedPayment = paymentRepository.save(payment);
 
-            if (newStatus == PaymentStatus.SUCCEEDED && oldStatus != PaymentStatus.SUCCEEDED) {
-                updateDonationStatus(payment.getDonation(), DonationStatus.COMPLETED);
+            if (newStatus != oldStatus) {
+                statusUpdateService.handlePaymentStatusChange(payment.getId(), newStatus);
             }
 
-            Payment savedPayment = paymentRepository.save(payment);
             return PaymentResponse.fromEntity(savedPayment);
 
         } catch (Exception e) {
@@ -171,14 +173,29 @@ public class PayUPaymentService implements PaymentProviderService {
         try {
             String accessToken = getAccessToken();
 
+            Map<String, Object> cancelRequest = new HashMap<>();
+            cancelRequest.put("orderId", externalId);
+
             HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(accessToken);
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(cancelRequest, headers);
+
+            restTemplate.exchange(
+                    apiUrl + "/api/v2_1/orders/" + externalId,
+                    HttpMethod.DELETE,
+                    entity,
+                    String.class
+            );
 
             Payment payment = paymentRepository.findByExternalId(externalId)
                     .orElseThrow(() -> new RuntimeException("Payment not found"));
 
             payment.setStatus(PaymentStatus.CANCELLED);
             Payment savedPayment = paymentRepository.save(payment);
+
+            statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.CANCELLED);
 
             log.info("PayU payment {} cancelled", payment.getId());
             return PaymentResponse.fromEntity(savedPayment);
@@ -204,17 +221,27 @@ public class PayUPaymentService implements PaymentProviderService {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(accessToken);
 
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(refundRequest, headers);
+
+            restTemplate.exchange(
+                    apiUrl + "/api/v2_1/orders/" + externalId + "/refunds",
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+
             Payment payment = paymentRepository.findByExternalId(externalId)
                     .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-            if (amount.compareTo(payment.getAmount()) == 0) {
-                payment.setStatus(PaymentStatus.REFUNDED);
-                updateDonationStatus(payment.getDonation(), DonationStatus.FAILED);
-            } else {
-                payment.setStatus(PaymentStatus.PARTIALLY_REFUNDED);
-            }
+            PaymentStatus newStatus = amount.compareTo(payment.getAmount()) == 0
+                    ? PaymentStatus.REFUNDED
+                    : PaymentStatus.PARTIALLY_REFUNDED;
 
+            payment.setStatus(newStatus);
             Payment savedPayment = paymentRepository.save(payment);
+
+            statusUpdateService.handlePaymentStatusChange(payment.getId(), newStatus);
+
             log.info("PayU payment {} refunded (amount: {})", payment.getId(), amount);
             return PaymentResponse.fromEntity(savedPayment);
 
@@ -241,17 +268,16 @@ public class PayUPaymentService implements PaymentProviderService {
                         .ifPresent(payment -> {
                             PaymentStatus oldStatus = payment.getStatus();
                             PaymentStatus newStatus = mapPayUStatus(status);
-                            payment.setStatus(newStatus);
-                            paymentRepository.save(payment);
 
-                            if (newStatus == PaymentStatus.SUCCEEDED && oldStatus != PaymentStatus.SUCCEEDED) {
-                                updateDonationStatus(payment.getDonation(), DonationStatus.COMPLETED);
-                            } else if (newStatus == PaymentStatus.FAILED && oldStatus != PaymentStatus.FAILED) {
-                                updateDonationStatus(payment.getDonation(), DonationStatus.FAILED);
+                            if (oldStatus != newStatus) {
+                                payment.setStatus(newStatus);
+                                paymentRepository.save(payment);
+
+                                statusUpdateService.handlePaymentStatusChange(payment.getId(), newStatus);
+
+                                log.info("PayU payment {} status updated to {} for donation {}",
+                                        payment.getId(), newStatus, payment.getDonation().getId());
                             }
-
-                            log.info("PayU payment {} status updated to {} for donation {}",
-                                    payment.getId(), newStatus, payment.getDonation().getId());
                         });
             }
 
@@ -504,19 +530,5 @@ public class PayUPaymentService implements PaymentProviderService {
         }
 
         return metadata;
-    }
-
-    private void updateDonationStatus(Donation donation, DonationStatus newStatus) {
-        try {
-            donation.setStatus(newStatus);
-            if (newStatus == DonationStatus.COMPLETED) {
-                donation.setCompletedAt(Instant.now());
-            }
-            donationRepository.save(donation);
-
-            log.info("Updated donation {} status to {}", donation.getId(), newStatus);
-        } catch (Exception e) {
-            log.error("Failed to update donation status", e);
-        }
     }
 }

@@ -5,7 +5,6 @@ import org.petify.funding.dto.PaymentResponse;
 import org.petify.funding.dto.WebhookEventDto;
 import org.petify.funding.model.Currency;
 import org.petify.funding.model.Donation;
-import org.petify.funding.model.DonationStatus;
 import org.petify.funding.model.DonationType;
 import org.petify.funding.model.MaterialDonation;
 import org.petify.funding.model.Payment;
@@ -14,6 +13,7 @@ import org.petify.funding.model.PaymentProvider;
 import org.petify.funding.model.PaymentStatus;
 import org.petify.funding.repository.DonationRepository;
 import org.petify.funding.repository.PaymentRepository;
+import org.petify.funding.service.DonationStatusUpdateService;
 
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
@@ -42,6 +42,7 @@ public class StripePaymentService implements PaymentProviderService {
 
     private final PaymentRepository paymentRepository;
     private final DonationRepository donationRepository;
+    private final DonationStatusUpdateService statusUpdateService;
 
     @Value("${payment.stripe.webhook-secret}")
     private String webhookSecret;
@@ -69,25 +70,20 @@ public class StripePaymentService implements PaymentProviderService {
     @Override
     public PaymentResponse getPaymentStatus(String externalId) {
         try {
-            PaymentIntent intent = PaymentIntent.retrieve(externalId);
+            Session session = Session.retrieve(externalId);
             Payment payment = paymentRepository.findByExternalId(externalId)
                     .orElseThrow(() -> new RuntimeException("Payment not found"));
 
             PaymentStatus oldStatus = payment.getStatus();
-            PaymentStatus newStatus = mapStripeStatus(intent.getStatus());
+            PaymentStatus newStatus = mapStripeSessionStatus(session.getStatus());
 
             payment.setStatus(newStatus);
-
-            if (intent.getLastPaymentError() != null) {
-                payment.setFailureReason(intent.getLastPaymentError().getMessage());
-                payment.setFailureCode(intent.getLastPaymentError().getCode());
-            }
-
-            if (newStatus == PaymentStatus.SUCCEEDED && oldStatus != PaymentStatus.SUCCEEDED) {
-                updateDonationStatus(payment.getDonation(), DonationStatus.COMPLETED);
-            }
-
             Payment savedPayment = paymentRepository.save(payment);
+
+            if (newStatus != oldStatus) {
+                statusUpdateService.handlePaymentStatusChange(payment.getId(), newStatus);
+            }
+
             return PaymentResponse.fromEntity(savedPayment);
 
         } catch (StripeException e) {
@@ -98,20 +94,44 @@ public class StripePaymentService implements PaymentProviderService {
 
     @Override
     public PaymentResponse cancelPayment(String externalId) {
-        Payment payment = paymentRepository.findByExternalId(externalId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        try {
+            Session session = Session.retrieve(externalId);
 
-        payment.setStatus(PaymentStatus.CANCELLED);
-        Payment savedPayment = paymentRepository.save(payment);
+            if (session.getPaymentIntent() != null) {
+                PaymentIntent intent = PaymentIntent.retrieve(session.getPaymentIntent());
+                if (intent.getStatus().equals("requires_payment_method")
+                        || intent.getStatus().equals("requires_confirmation")) {
+                    intent.cancel();
+                }
+            }
 
-        log.info("Stripe payment {} cancelled", payment.getId());
-        return PaymentResponse.fromEntity(savedPayment);
+            Payment payment = paymentRepository.findByExternalId(externalId)
+                    .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+            payment.setStatus(PaymentStatus.CANCELLED);
+            Payment savedPayment = paymentRepository.save(payment);
+
+            statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.CANCELLED);
+
+            log.info("Stripe payment {} cancelled", payment.getId());
+            return PaymentResponse.fromEntity(savedPayment);
+
+        } catch (StripeException e) {
+            log.error("Failed to cancel Stripe payment", e);
+            throw new RuntimeException("Failed to cancel payment: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public PaymentResponse refundPayment(String externalId, BigDecimal amount) {
         try {
-            PaymentIntent intent = PaymentIntent.retrieve(externalId);
+            Session session = Session.retrieve(externalId);
+
+            if (session.getPaymentIntent() == null) {
+                throw new RuntimeException("No payment intent found for session");
+            }
+
+            PaymentIntent intent = PaymentIntent.retrieve(session.getPaymentIntent());
 
             com.stripe.param.RefundCreateParams refundParams =
                     com.stripe.param.RefundCreateParams.builder()
@@ -125,14 +145,15 @@ public class StripePaymentService implements PaymentProviderService {
             Payment payment = paymentRepository.findByExternalId(externalId)
                     .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-            if (refund.getAmount().equals(intent.getAmount())) {
-                payment.setStatus(PaymentStatus.REFUNDED);
-                updateDonationStatus(payment.getDonation(), DonationStatus.FAILED);
-            } else {
-                payment.setStatus(PaymentStatus.PARTIALLY_REFUNDED);
-            }
+            PaymentStatus newStatus = refund.getAmount().equals(intent.getAmount())
+                    ? PaymentStatus.REFUNDED
+                    : PaymentStatus.PARTIALLY_REFUNDED;
 
+            payment.setStatus(newStatus);
             Payment savedPayment = paymentRepository.save(payment);
+
+            statusUpdateService.handlePaymentStatusChange(payment.getId(), newStatus);
+
             log.info("Stripe payment {} refunded (amount: {})", payment.getId(), amount);
             return PaymentResponse.fromEntity(savedPayment);
 
@@ -166,6 +187,10 @@ public class StripePaymentService implements PaymentProviderService {
                 case "payment_intent.payment_failed" -> {
                     log.info("Handling payment intent failed");
                     handlePaymentFailed(event);
+                }
+                case "payment_intent.canceled" -> {
+                    log.info("Handling payment intent canceled");
+                    handlePaymentCanceled(event);
                 }
                 default -> {
                     log.debug("Unhandled Stripe event type: {}", event.getType());
@@ -232,10 +257,13 @@ public class StripePaymentService implements PaymentProviderService {
 
         paymentRepository.findByExternalId(session.getId())
                 .ifPresent(payment -> {
+                    PaymentStatus oldStatus = payment.getStatus();
                     payment.setStatus(PaymentStatus.SUCCEEDED);
                     paymentRepository.save(payment);
 
-                    updateDonationStatus(payment.getDonation(), DonationStatus.COMPLETED);
+                    if (oldStatus != PaymentStatus.SUCCEEDED) {
+                        statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.SUCCEEDED);
+                    }
 
                     log.info("Stripe checkout session {} completed for donation {}",
                             payment.getId(), payment.getDonation().getId());
@@ -248,12 +276,96 @@ public class StripePaymentService implements PaymentProviderService {
 
         paymentRepository.findByExternalId(session.getId())
                 .ifPresent(payment -> {
+                    PaymentStatus oldStatus = payment.getStatus();
                     payment.setStatus(PaymentStatus.CANCELLED);
                     paymentRepository.save(payment);
+
+                    if (oldStatus != PaymentStatus.CANCELLED) {
+                        statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.CANCELLED);
+                    }
 
                     log.info("Stripe checkout session {} expired for donation {}",
                             payment.getId(), payment.getDonation().getId());
                 });
+    }
+
+    private void handlePaymentSucceeded(Event event) {
+        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
+                .getObject().orElseThrow();
+
+        log.info("Processing payment_intent.succeeded for PaymentIntent: {}", paymentIntent.getId());
+
+        try {
+            processStripeIntent(paymentIntent.getId(), payment -> {
+                PaymentStatus oldStatus = payment.getStatus();
+                payment.setStatus(PaymentStatus.SUCCEEDED);
+                paymentRepository.save(payment);
+
+                if (oldStatus != PaymentStatus.SUCCEEDED) {
+                    statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.SUCCEEDED);
+                }
+
+                log.info("Stripe payment {} succeeded for donation {}",
+                        payment.getId(), payment.getDonation().getId());
+            });
+
+        } catch (Exception e) {
+            log.warn("Could not process payment_intent.succeeded event: {}", e.getMessage());
+        }
+    }
+
+    private void handlePaymentFailed(Event event) {
+        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
+                .getObject().orElseThrow();
+
+        log.info("Processing payment_intent.payment_failed for PaymentIntent: {}", paymentIntent.getId());
+
+        try {
+            processStripeIntent(paymentIntent.getId(), payment -> {
+                PaymentStatus oldStatus = payment.getStatus();
+                payment.setStatus(PaymentStatus.FAILED);
+
+                if (paymentIntent.getLastPaymentError() != null) {
+                    payment.setFailureReason(paymentIntent.getLastPaymentError().getMessage());
+                    payment.setFailureCode(paymentIntent.getLastPaymentError().getCode());
+                }
+
+                paymentRepository.save(payment);
+
+                if (oldStatus != PaymentStatus.FAILED) {
+                    statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.FAILED);
+                }
+
+                log.info("Stripe payment {} failed for donation {}",
+                        payment.getId(), payment.getDonation().getId());
+            });
+        } catch (Exception e) {
+            log.warn("Could not process payment_intent.payment_failed event: {}", e.getMessage());
+        }
+    }
+
+    private void handlePaymentCanceled(Event event) {
+        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
+                .getObject().orElseThrow();
+
+        log.info("Processing payment_intent.canceled for PaymentIntent: {}", paymentIntent.getId());
+
+        try {
+            processStripeIntent(paymentIntent.getId(), payment -> {
+                PaymentStatus oldStatus = payment.getStatus();
+                payment.setStatus(PaymentStatus.CANCELLED);
+                paymentRepository.save(payment);
+
+                if (oldStatus != PaymentStatus.CANCELLED) {
+                    statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.CANCELLED);
+                }
+
+                log.info("Stripe payment {} cancelled for donation {}",
+                        payment.getId(), payment.getDonation().getId());
+            });
+        } catch (Exception e) {
+            log.warn("Could not process payment_intent.canceled event: {}", e.getMessage());
+        }
     }
 
     private PaymentResponse createCheckoutSession(Donation donation, PaymentRequest request) throws StripeException {
@@ -351,13 +463,12 @@ public class StripePaymentService implements PaymentProviderService {
         return amount.multiply(new BigDecimal("100")).longValue();
     }
 
-    private PaymentStatus mapStripeStatus(String stripeStatus) {
+    private PaymentStatus mapStripeSessionStatus(String stripeStatus) {
         return switch (stripeStatus) {
-            case "requires_payment_method", "requires_confirmation", "requires_action" -> PaymentStatus.PENDING;
-            case "processing" -> PaymentStatus.PROCESSING;
-            case "succeeded" -> PaymentStatus.SUCCEEDED;
-            case "canceled" -> PaymentStatus.CANCELLED;
-            default -> PaymentStatus.FAILED;
+            case "open" -> PaymentStatus.PENDING;
+            case "complete" -> PaymentStatus.SUCCEEDED;
+            case "expired" -> PaymentStatus.CANCELLED;
+            default -> PaymentStatus.PENDING;
         };
     }
 
@@ -396,60 +507,7 @@ public class StripePaymentService implements PaymentProviderService {
         return metadata;
     }
 
-    private void handlePaymentSucceeded(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
-                .getObject().orElseThrow();
-
-        log.info("Processing payment_intent.succeeded for PaymentIntent: {}", paymentIntent.getId());
-
-        try {
-            processStripeIntent(paymentIntent.getId(), payment -> {
-                payment.setStatus(PaymentStatus.SUCCEEDED);
-                paymentRepository.save(payment);
-                updateDonationStatus(payment.getDonation(), DonationStatus.COMPLETED);
-                log.info("Stripe payment {} succeeded for donation {}",
-                        payment.getId(), payment.getDonation().getId());
-            });
-
-        } catch (Exception e) {
-            log.warn("Could not process payment_intent.succeeded event: {}", e.getMessage());
-        }
-    }
-
-    private void handlePaymentFailed(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
-                .getObject().orElseThrow();
-
-        log.info("Processing payment_intent.payment_failed for PaymentIntent: {}", paymentIntent.getId());
-
-        try {
-            processStripeIntent(paymentIntent.getId(), payment -> {
-                payment.setStatus(PaymentStatus.FAILED);
-                paymentRepository.save(payment);
-                log.info("Stripe payment {} failed for donation {}",
-                        payment.getId(), payment.getDonation().getId());
-            });
-        } catch (Exception e) {
-            log.warn("Could not process payment_intent.payment_failed event: {}", e.getMessage());
-        }
-    }
-
-    private void updateDonationStatus(Donation donation, DonationStatus newStatus) {
-        try {
-            donation.setStatus(newStatus);
-            if (newStatus == DonationStatus.COMPLETED) {
-                donation.setCompletedAt(Instant.now());
-            }
-            donationRepository.save(donation);
-
-            log.info("Updated donation {} status to {}", donation.getId(), newStatus);
-        } catch (Exception e) {
-            log.error("Failed to update donation status", e);
-        }
-    }
-
-    private void processStripeIntent(String intentId,
-                                     Consumer<Payment> onMatch) {
+    private void processStripeIntent(String intentId, Consumer<Payment> onMatch) {
         log.info("Processing Stripe intent: {}", intentId);
         paymentRepository.findAll().stream()
                 .filter(p -> p.getProvider() == PaymentProvider.STRIPE)

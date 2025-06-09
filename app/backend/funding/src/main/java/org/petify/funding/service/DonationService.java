@@ -9,7 +9,10 @@ import org.petify.funding.exception.ResourceNotFoundException;
 import org.petify.funding.model.Donation;
 import org.petify.funding.model.DonationStatus;
 import org.petify.funding.model.DonationType;
+import org.petify.funding.model.Payment;
+import org.petify.funding.model.PaymentStatus;
 import org.petify.funding.repository.DonationRepository;
+import org.petify.funding.repository.PaymentRepository;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -30,19 +34,16 @@ import java.math.BigDecimal;
 public class DonationService {
 
     private final DonationRepository donationRepository;
+    private final PaymentRepository paymentRepository;
     private final ShelterClient shelterClient;
 
     @Transactional
     public DonationResponse createDraft(DonationIntentRequest request, Jwt jwt) {
-        log.info("Creating draft donation for shelter {} by user {}",
-                request.getShelterId(), jwt.getSubject());
+        log.info("Creating draft donation for shelter {} by user {}", request.getShelterId(), jwt.getSubject());
 
         DonationRequest donationRequest = convertToDonationRequest(request);
-
         enrichDonorInformation(donationRequest, jwt);
-
         validateDonationRequest(donationRequest);
-
         validateShelterExists(donationRequest.getShelterId());
 
         if (donationRequest.getPetId() != null) {
@@ -51,16 +52,12 @@ public class DonationService {
 
         Donation donation = donationRequest.toEntity();
         donation.setStatus(DonationStatus.PENDING);
-
         Donation saved = donationRepository.save(donation);
 
         log.info("Draft donation created successfully with ID: {}", saved.getId());
         return DonationResponse.fromEntity(saved);
     }
 
-    /**
-     * Pobiera wszystkie dotacje (z opcjonalnym filtrowaniem po typie)
-     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getAll(Pageable pageable, DonationType type) {
         Page<Donation> page = (type == null)
@@ -69,9 +66,6 @@ public class DonationService {
         return page.map(DonationResponse::fromEntity);
     }
 
-    /**
-     * Pobiera konkretną dotację po ID
-     */
     @Transactional(readOnly = true)
     public DonationResponse get(Long id) {
         Donation donation = donationRepository.findById(id)
@@ -79,41 +73,28 @@ public class DonationService {
         return DonationResponse.fromEntity(donation);
     }
 
-    /**
-     * Pobiera dotacje dla konkretnego schroniska
-     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForShelter(Long shelterId, Pageable pageable) {
         return donationRepository.findByShelterId(shelterId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
-    /**
-     * Pobiera dotacje dla konkretnego zwierzęcia
-     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForPet(Long petId, Pageable pageable) {
         return donationRepository.findByPetId(petId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
-    /**
-     * Pobiera dotacje konkretnego użytkownika
-     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getUserDonations(Pageable pageable) {
         String username = getCurrentUsername();
         if (username == null) {
             throw new RuntimeException("User not authenticated");
         }
-
         return donationRepository.findByDonorUsernameOrderByCreatedAtDesc(username, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
-    /**
-     * Usuwa dotację (tylko admin)
-     */
     @Transactional
     public void delete(Long id) {
         try {
@@ -132,34 +113,108 @@ public class DonationService {
         }
     }
 
-    /**
-     * Aktualizuje status dotacji (używane wewnętrznie po płatnościach)
-     */
     @Transactional
-    public void updateDonationStatus(Long donationId, DonationStatus newStatus) {
+    public DonationResponse cancelDonation(Long donationId) {
+        String currentUsername = getCurrentUsername();
+
         Donation donation = donationRepository.findById(donationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Donation not found: " + donationId));
 
-        DonationStatus oldStatus = donation.getStatus();
-        donation.setStatus(newStatus);
-
-        if (newStatus == DonationStatus.COMPLETED && oldStatus != DonationStatus.COMPLETED) {
-            donation.setCompletedAt(java.time.Instant.now());
+        if (!donation.getDonorUsername().equals(currentUsername)) {
+            throw new RuntimeException("Can only cancel your own donations");
         }
 
-        donationRepository.save(donation);
-        log.info("Donation {} status updated from {} to {}", donationId, oldStatus, newStatus);
+        if (!donation.canBeCancelled()) {
+            throw new RuntimeException("Donation cannot be cancelled in current state: " + donation.getStatus());
+        }
+
+        List<Payment> activePayments = donation.getPayments().stream()
+                .filter(p -> p.getStatus() == PaymentStatus.PENDING || p.getStatus() == PaymentStatus.PROCESSING)
+                .toList();
+
+        for (Payment payment : activePayments) {
+            try {
+                payment.setStatus(PaymentStatus.CANCELLED);
+                paymentRepository.save(payment);
+                log.info("Cancelled payment {} for donation {}", payment.getId(), donationId);
+            } catch (Exception e) {
+                log.warn("Failed to cancel payment {} for donation {}: {}",
+                        payment.getId(), donationId, e.getMessage());
+            }
+        }
+
+        donation.setStatus(DonationStatus.CANCELLED);
+        Donation saved = donationRepository.save(donation);
+
+        log.info("Donation {} cancelled by user {}", donationId, currentUsername);
+        return DonationResponse.fromEntity(saved);
     }
 
-    /**
-     * Pobiera statystyki dotacji dla schroniska
-     */
+    @Transactional
+    public DonationResponse refundDonation(Long donationId, BigDecimal amount) {
+        Donation donation = donationRepository.findById(donationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Donation not found: " + donationId));
+
+        if (!donation.canBeRefunded()) {
+            throw new RuntimeException("Donation cannot be refunded in current state: " + donation.getStatus());
+        }
+
+        List<Payment> successfulPayments = donation.getPayments().stream()
+                .filter(p -> p.getStatus() == PaymentStatus.SUCCEEDED)
+                .toList();
+
+        if (successfulPayments.isEmpty()) {
+            throw new RuntimeException("No successful payments found for refund");
+        }
+
+        BigDecimal totalRefundAmount = BigDecimal.ZERO;
+        BigDecimal refundAmountLeft = amount != null ? amount : donation.getTotalPaidAmount();
+
+        for (Payment payment : successfulPayments) {
+            if (refundAmountLeft.compareTo(BigDecimal.ZERO) <= 0) {
+                break;
+            }
+
+            BigDecimal paymentRefundAmount = refundAmountLeft.min(payment.getAmount());
+
+            try {
+                PaymentStatus newStatus = paymentRefundAmount.compareTo(payment.getAmount()) == 0
+                        ? PaymentStatus.REFUNDED
+                        : PaymentStatus.PARTIALLY_REFUNDED;
+
+                payment.setStatus(newStatus);
+                paymentRepository.save(payment);
+
+                totalRefundAmount = totalRefundAmount.add(paymentRefundAmount);
+                refundAmountLeft = refundAmountLeft.subtract(paymentRefundAmount);
+
+                log.info("Refunded {} from payment {} for donation {}",
+                        paymentRefundAmount, payment.getId(), donationId);
+            } catch (Exception e) {
+                log.error("Failed to refund payment {} for donation {}: {}",
+                        payment.getId(), donationId, e.getMessage());
+            }
+        }
+
+        if (totalRefundAmount.compareTo(donation.getTotalPaidAmount()) >= 0) {
+            donation.setStatus(DonationStatus.REFUNDED);
+        }
+
+        Donation saved = donationRepository.save(donation);
+        log.info("Donation {} refunded (total amount: {})", donationId, totalRefundAmount);
+
+        return DonationResponse.fromEntity(saved);
+    }
+
     @Transactional(readOnly = true)
     public DonationStatistics getShelterDonationStats(Long shelterId) {
         return DonationStatistics.builder()
                 .shelterId(shelterId)
                 .totalDonations(donationRepository.countByShelterId(shelterId))
                 .totalAmount(donationRepository.sumAmountByShelterId(shelterId))
+                .completedDonations(donationRepository.countCompletedByShelterId(shelterId))
+                .pendingDonations(donationRepository.countPendingByShelterId(shelterId))
+                .averageDonationAmount(donationRepository.averageAmountByShelterId(shelterId))
                 .build();
     }
 
@@ -199,8 +254,7 @@ public class DonationService {
                 throw new RuntimeException("Quantity must be positive for material donations");
             }
             if (request.getAmount() != null) {
-                throw new RuntimeException("Amount should not be set manually for material donations"
-                        + " - it will be calculated automatically");
+                throw new RuntimeException("Amount should not be set manually for material donations - it will be calculated automatically");
             }
         }
     }
@@ -210,7 +264,6 @@ public class DonationService {
             log.debug("Validating shelter ID: {}", shelterId);
             shelterClient.validateShelter(shelterId);
             log.debug("Shelter {} is valid and active", shelterId);
-
         } catch (FeignException.NotFound ex) {
             log.warn("Shelter {} not found", shelterId);
             throw new ResourceNotFoundException("Shelter not found: " + shelterId);
@@ -228,7 +281,6 @@ public class DonationService {
             log.debug("Validating pet {} in shelter {}", petId, shelterId);
             shelterClient.validatePetInShelter(shelterId, petId);
             log.debug("Pet {} in shelter {} is valid for donations", petId, shelterId);
-
         } catch (FeignException.NotFound ex) {
             log.warn("Pet {} not found in shelter {} or doesn't belong to this shelter", petId, shelterId);
             throw new ResourceNotFoundException("Pet not found in shelter: pet=" + petId + ", shelter=" + shelterId);

@@ -109,6 +109,15 @@ public abstract class Donation {
     @Column(name = "completed_at")
     private Instant completedAt;
 
+    @Column(name = "cancelled_at")
+    private Instant cancelledAt;
+
+    @Column(name = "refunded_at")
+    private Instant refundedAt;
+
+    @Column(name = "payment_attempts", nullable = false)
+    private Integer paymentAttempts = 0;
+
     @PrePersist
     protected void onCreate() {
         createdAt = Instant.now();
@@ -136,6 +145,12 @@ public abstract class Donation {
         if (status == DonationStatus.COMPLETED && completedAt == null) {
             completedAt = Instant.now();
         }
+        if (status == DonationStatus.CANCELLED && cancelledAt == null) {
+            cancelledAt = Instant.now();
+        }
+        if (status == DonationStatus.REFUNDED && refundedAt == null) {
+            refundedAt = Instant.now();
+        }
 
         if (this instanceof MaterialDonation) {
             this.donationType = DonationType.MATERIAL;
@@ -150,6 +165,18 @@ public abstract class Donation {
 
     public boolean isCompleted() {
         return status == DonationStatus.COMPLETED;
+    }
+
+    public boolean isCancelled() {
+        return status == DonationStatus.CANCELLED;
+    }
+
+    public boolean isFailed() {
+        return status == DonationStatus.FAILED;
+    }
+
+    public boolean isRefunded() {
+        return status == DonationStatus.REFUNDED;
     }
 
     public boolean hasPendingPayments() {
@@ -167,6 +194,35 @@ public abstract class Donation {
         }
         return payments.stream()
                 .anyMatch(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED);
+    }
+
+    public boolean canAcceptNewPayment() {
+        if (status == DonationStatus.COMPLETED || status == DonationStatus.CANCELLED
+                || status == DonationStatus.REFUNDED) {
+            return false;
+        }
+
+        if (paymentAttempts >= 3) {
+            return false;
+        }
+
+        return !hasPendingPayments();
+    }
+
+    public boolean canBeCancelled() {
+        return status == DonationStatus.PENDING && !hasSuccessfulPayment();
+    }
+
+    public boolean canBeRefunded() {
+        return status == DonationStatus.COMPLETED && hasSuccessfulPayment();
+    }
+
+    public void incrementPaymentAttempts() {
+        this.paymentAttempts = (this.paymentAttempts == null ? 0 : this.paymentAttempts) + 1;
+    }
+
+    public boolean hasReachedMaxPaymentAttempts() {
+        return this.paymentAttempts != null && this.paymentAttempts >= 3;
     }
 
     public BigDecimal getTotalPaidAmount() {

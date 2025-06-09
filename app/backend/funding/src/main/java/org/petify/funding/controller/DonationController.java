@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.List;
 
@@ -48,9 +50,6 @@ public class DonationController {
     private final DonationService donationService;
     private final PaymentService paymentService;
 
-    /**
-     * Stworzenie intent dotacji i pobranie dostępnych opcji płatności
-     */
     @PostMapping("/intent")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<PaymentOptionsResponse> createDonationIntent(
@@ -76,9 +75,6 @@ public class DonationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Inicjalizacja płatności z wybranym providerem
-     */
     @PostMapping("/{donationId}/payment/initialize")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<PaymentInitializationResponse> initializePayment(
@@ -97,9 +93,6 @@ public class DonationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Sprawdza status płatności po powrocie
-     */
     @GetMapping("/payment-status/{donationId}")
     public ResponseEntity<DonationWithPaymentStatusResponse> checkPaymentStatus(
             @PathVariable Long donationId) {
@@ -119,6 +112,22 @@ public class DonationController {
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{donationId}/cancel")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<DonationResponse> cancelDonation(@PathVariable Long donationId) {
+        DonationResponse donation = donationService.cancelDonation(donationId);
+        return ResponseEntity.ok(donation);
+    }
+
+    @PostMapping("/{donationId}/refund")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<DonationResponse> refundDonation(
+            @PathVariable Long donationId,
+            @RequestParam(required = false) BigDecimal amount) {
+        DonationResponse donation = donationService.refundDonation(donationId, amount);
+        return ResponseEntity.ok(donation);
     }
 
     @GetMapping
@@ -162,6 +171,17 @@ public class DonationController {
         return ResponseEntity.ok(donations);
     }
 
+    @GetMapping("/pet/{petId}")
+    public ResponseEntity<Page<DonationResponse>> getDonationsByPet(
+            @PathVariable Long petId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        Page<DonationResponse> donations = donationService.getForPet(
+                petId, PageRequest.of(page, size, Sort.by("donatedAt").descending()));
+        return ResponseEntity.ok(donations);
+    }
+
     @GetMapping("/shelter/{shelterId}/stats")
     public ResponseEntity<DonationStatistics> getShelterStats(@PathVariable Long shelterId) {
         DonationStatistics stats = donationService.getShelterDonationStats(shelterId);
@@ -176,7 +196,7 @@ public class DonationController {
     }
 
     private String getCurrentUserLocation() {
-        return "PL"; // domyślnie Polska
+        return "PL";
     }
 
     private String generateSessionToken(Long donationId) {

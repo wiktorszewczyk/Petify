@@ -34,6 +34,8 @@ public class DonationResponse {
     private java.time.Instant donatedAt;
     private java.time.Instant createdAt;
     private java.time.Instant completedAt;
+    private java.time.Instant cancelledAt;
+    private java.time.Instant refundedAt;
     private DonationType donationType;
     private DonationStatus status;
 
@@ -46,6 +48,11 @@ public class DonationResponse {
     private String itemName;
     private BigDecimal unitPrice;
     private Integer quantity;
+
+    private Integer paymentAttempts;
+    private Boolean canAcceptNewPayment;
+    private Boolean canBeCancelled;
+    private Boolean canBeRefunded;
 
     private java.util.List<PaymentSummary> payments;
 
@@ -61,12 +68,18 @@ public class DonationResponse {
                 .donatedAt(d.getDonatedAt())
                 .createdAt(d.getCreatedAt())
                 .completedAt(d.getCompletedAt())
+                .cancelledAt(d.getCancelledAt())
+                .refundedAt(d.getRefundedAt())
                 .donationType(d.getDonationType())
                 .status(d.getStatus())
                 .amount(d.getAmount())
                 .currency(d.getCurrency())
                 .totalFeeAmount(d.getTotalFeeAmount())
-                .netAmount(d.getNetAmount());
+                .netAmount(d.getNetAmount())
+                .paymentAttempts(d.getPaymentAttempts())
+                .canAcceptNewPayment(d.canAcceptNewPayment())
+                .canBeCancelled(d.canBeCancelled())
+                .canBeRefunded(d.canBeRefunded());
 
         if (d instanceof MaterialDonation m) {
             builder.itemName(m.getItemName())
@@ -86,9 +99,6 @@ public class DonationResponse {
         return builder.build();
     }
 
-    /**
-     * Uproszczone info o płatności do wyświetlenia w donation response
-     */
     @Getter
     @Setter
     @NoArgsConstructor
@@ -102,7 +112,9 @@ public class DonationResponse {
         private BigDecimal amount;
         private BigDecimal feeAmount;
         private java.time.Instant createdAt;
+        private java.time.Instant updatedAt;
         private String failureReason;
+        private String failureCode;
 
         public static PaymentSummary fromEntity(Payment payment) {
             return PaymentSummary.builder()
@@ -113,7 +125,9 @@ public class DonationResponse {
                     .amount(payment.getAmount())
                     .feeAmount(payment.getFeeAmount())
                     .createdAt(payment.getCreatedAt())
+                    .updatedAt(payment.getUpdatedAt())
                     .failureReason(payment.getFailureReason())
+                    .failureCode(payment.getFailureCode())
                     .build();
         }
     }

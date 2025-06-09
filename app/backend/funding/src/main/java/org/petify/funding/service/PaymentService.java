@@ -46,6 +46,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final DonationRepository donationRepository;
     private final PaymentProviderFactory providerFactory;
+    private final DonationStatusUpdateService statusUpdateService;
 
     @Transactional
     public void handleStripeWebhook(String payload, String signature) {
@@ -59,9 +60,6 @@ public class PaymentService {
         payuService.handleWebhook(payload, signature);
     }
 
-    /**
-     * Anulowanie płatności
-     */
     @Transactional
     public PaymentResponse cancelPayment(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
@@ -72,12 +70,17 @@ public class PaymentService {
         }
 
         PaymentProviderService providerService = providerFactory.getProvider(payment.getProvider());
-        return providerService.cancelPayment(payment.getExternalId());
+        PaymentResponse response = providerService.cancelPayment(payment.getExternalId());
+
+        payment.setStatus(PaymentStatus.CANCELLED);
+        paymentRepository.save(payment);
+
+        statusUpdateService.handlePaymentStatusChange(paymentId, PaymentStatus.CANCELLED);
+
+        log.info("Payment {} cancelled successfully", paymentId);
+        return response;
     }
 
-    /**
-     * Pobiera dostępne opcje płatności dla danej kwoty i lokalizacji
-     */
     public List<PaymentProviderOption> getAvailablePaymentOptions(BigDecimal amount, String userLocation) {
         List<PaymentProviderOption> options = new ArrayList<>();
 
@@ -145,15 +148,14 @@ public class PaymentService {
         return options;
     }
 
-    /**
-     * Inicjalizuje płatność po wyborze przez użytkownika
-     */
     @Transactional
     public PaymentInitializationResponse initializePayment(Long donationId, PaymentChoiceRequest request) {
         Donation donation = donationRepository.findById(donationId)
                 .orElseThrow(() -> new RuntimeException("Donation not found"));
 
         validateDonationCanAcceptPayment(donation);
+
+        donation.incrementPaymentAttempts();
 
         if (donation.getStatus() == DonationStatus.PENDING) {
             donation.setStatus(DonationStatus.PENDING);
@@ -181,9 +183,6 @@ public class PaymentService {
                 .build();
     }
 
-    /**
-     * Oblicza opłaty za płatność
-     */
     public PaymentFeeCalculation calculatePaymentFee(BigDecimal amount, PaymentProvider provider) {
         PaymentProviderService providerService = providerFactory.getProvider(provider);
         BigDecimal fee = providerService.calculateFee(amount, Currency.PLN);
@@ -213,9 +212,6 @@ public class PaymentService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Zwrot płatności (tylko admin)
-     */
     @Transactional
     public PaymentResponse refundPayment(Long paymentId, BigDecimal amount) {
         Payment payment = paymentRepository.findById(paymentId)
@@ -232,24 +228,52 @@ public class PaymentService {
         }
 
         PaymentProviderService providerService = providerFactory.getProvider(payment.getProvider());
-        return providerService.refundPayment(payment.getExternalId(), refundAmount);
+        PaymentResponse response = providerService.refundPayment(payment.getExternalId(), refundAmount);
+
+        PaymentStatus newStatus = refundAmount.compareTo(payment.getAmount()) == 0
+                ? PaymentStatus.REFUNDED
+                : PaymentStatus.PARTIALLY_REFUNDED;
+
+        payment.setStatus(newStatus);
+        paymentRepository.save(payment);
+
+        statusUpdateService.handlePaymentStatusChange(paymentId, newStatus);
+
+        log.info("Payment {} refunded (amount: {})", paymentId, refundAmount);
+        return response;
+    }
+
+    @Transactional
+    public void updatePaymentStatus(Long paymentId, PaymentStatus newStatus) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        PaymentStatus oldStatus = payment.getStatus();
+        payment.setStatus(newStatus);
+        paymentRepository.save(payment);
+
+        statusUpdateService.handlePaymentStatusChange(paymentId, newStatus);
+
+        log.info("Payment {} status updated from {} to {}", paymentId, oldStatus, newStatus);
     }
 
     private void validateDonationCanAcceptPayment(Donation donation) {
-        if (donation.getStatus() == DonationStatus.COMPLETED) {
-            throw new RuntimeException("Cannot create payment for completed donation");
-        }
-
-        if (donation.getStatus() == DonationStatus.FAILED) {
-            throw new RuntimeException("Cannot create payment for failed donation");
-        }
-
-        boolean hasActivePendingPayment = donation.getPayments().stream()
-                .anyMatch(p -> p.getStatus() == PaymentStatus.PENDING
-                        || p.getStatus() == PaymentStatus.PROCESSING);
-
-        if (hasActivePendingPayment) {
-            throw new RuntimeException("Donation already has an active payment in progress");
+        if (!donation.canAcceptNewPayment()) {
+            if (donation.getStatus() == DonationStatus.COMPLETED) {
+                throw new RuntimeException("Cannot create payment for completed donation");
+            }
+            if (donation.getStatus() == DonationStatus.FAILED) {
+                throw new RuntimeException("Cannot create payment for failed donation");
+            }
+            if (donation.getStatus() == DonationStatus.CANCELLED) {
+                throw new RuntimeException("Cannot create payment for cancelled donation");
+            }
+            if (donation.hasReachedMaxPaymentAttempts()) {
+                throw new RuntimeException("Maximum payment attempts reached (3)");
+            }
+            if (donation.hasPendingPayments()) {
+                throw new RuntimeException("Donation already has an active payment in progress");
+            }
         }
     }
 
@@ -296,9 +320,6 @@ public class PaymentService {
         log.info("Lowest fee among providers: {}", lowestFee);
     }
 
-    /**
-     * Pobiera obsługiwane metody płatności dla danego providera
-     */
     public List<String> getSupportedPaymentMethods(PaymentProvider provider) {
         PaymentProviderService providerService = providerFactory.getProvider(provider);
 
@@ -308,9 +329,6 @@ public class PaymentService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Sprawdza stan zdrowia providerów płatności
-     */
     public Map<String, Object> getPaymentProvidersHealth() {
         Map<String, Object> health = new HashMap<>();
 
@@ -343,9 +361,6 @@ public class PaymentService {
         return health;
     }
 
-    /**
-     * Historia płatności użytkownika
-     */
     public Page<PaymentResponse> getUserPaymentHistory(Pageable pageable, String status) {
         String username = getCurrentUsername();
 
@@ -370,9 +385,6 @@ public class PaymentService {
         return authentication != null ? authentication.getName() : null;
     }
 
-    /**
-     * Sprawdza czy płatność może być anulowana
-     */
     private boolean canCancelPayment(Payment payment) {
         return payment.getStatus() == PaymentStatus.PENDING
                 || payment.getStatus() == PaymentStatus.PROCESSING;
