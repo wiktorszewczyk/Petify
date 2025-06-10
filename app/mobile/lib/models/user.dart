@@ -10,7 +10,7 @@ class User {
   final String? gender;
   final String? phoneNumber;
   final String? email;
-  final String volunteerStatus;
+  final String? volunteerStatus;
   final bool active;
   final DateTime createdAt;
   final int xpPoints;

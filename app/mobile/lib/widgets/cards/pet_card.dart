@@ -27,8 +27,9 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   final PageController _pageController = PageController();
   final MessageService _messageService = MessageService();
 
-  final Map<String, bool> _loadedImages = {};
-  bool isLoaded = false;
+  // Cache dla obrazów - zapobiega mruganiu
+  final Map<String, ImageProvider> _imageCache = {};
+  bool _isImageLoaded = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -42,37 +43,17 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   void _preloadImages() {
     final allImages = _getAllImages();
     for (final imagePath in allImages) {
-      if (!_loadedImages.containsKey(imagePath)) {
-        if (_isNetworkImage(imagePath)) {
-          final imageProvider = NetworkImage(imagePath);
+      final imageProvider = _getImageProvider(imagePath);
+      if (imageProvider != null) {
+        _imageCache[imagePath] = imageProvider;
+
+        // Preload tylko pierwszy obraz
+        if (imagePath == allImages.first) {
           imageProvider.resolve(const ImageConfiguration()).addListener(
             ImageStreamListener((info, _) {
               if (mounted) {
                 setState(() {
-                  _loadedImages[imagePath] = true;
-                });
-              }
-            }, onError: (exception, stackTrace) {
-              if (mounted) {
-                setState(() {
-                  _loadedImages[imagePath] = false;
-                });
-              }
-            }),
-          );
-        } else {
-          final imageProvider = AssetImage(imagePath);
-          imageProvider.resolve(const ImageConfiguration()).addListener(
-            ImageStreamListener((info, _) {
-              if (mounted) {
-                setState(() {
-                  _loadedImages[imagePath] = true;
-                });
-              }
-            }, onError: (exception, stackTrace) {
-              if (mounted) {
-                setState(() {
-                  _loadedImages[imagePath] = false;
+                  _isImageLoaded = true;
                 });
               }
             }),
@@ -80,6 +61,28 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
         }
       }
     }
+  }
+
+  ImageProvider? _getImageProvider(String path) {
+    if (path.startsWith('data:image/')) {
+      try {
+        final base64String = path.split(',')[1];
+        final imageBytes = base64Decode(base64String);
+        return MemoryImage(imageBytes);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return NetworkImage(path);
+    }
+
+    if (path.startsWith('assets/')) {
+      return AssetImage(path);
+    }
+
+    return null;
   }
 
   @override
@@ -110,41 +113,21 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     return [widget.pet.imageUrl, ...widget.pet.galleryImages];
   }
 
-  bool _isNetworkImage(String path) {
-    return path.startsWith('http://') || path.startsWith('https://');
-  }
-
   Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
-    if (path.startsWith('data:image/')) {
-      return Image.memory(
-        base64Decode(path.split(',')[1]),
+    final cachedProvider = _imageCache[path];
+
+    if (cachedProvider != null) {
+      return Image(
+        image: cachedProvider,
         fit: fit,
         errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[300],
-            child: const Center(
-              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
-            ),
-          );
+          return _buildErrorImage();
         },
-      );
-    }
-
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return Image.network(
-        path,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[300],
-            child: const Center(
-              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
-            ),
-          );
-        },
-        loadingBuilder: (context, child, loadingProgress) {
-          if (isLoaded || loadingProgress == null) return child;
-
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          // Zapobiega mruganiu podczas ładowania
+          if (wasSynchronouslyLoaded || frame != null) {
+            return child;
+          }
           return Container(
             color: Colors.grey[200],
             child: const Center(
@@ -154,21 +137,60 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             ),
           );
         },
-        cacheWidth: MediaQuery.of(context).size.width.round(),
       );
     }
 
-    return Image.asset(
-      path,
-      fit: fit,
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
-          color: Colors.grey[300],
-          child: const Center(
-            child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
-          ),
+    // Fallback dla obrazów nie w cache
+    if (path.startsWith('data:image/')) {
+      try {
+        final base64String = path.split(',')[1];
+        final imageBytes = base64Decode(base64String);
+        return Image.memory(
+          imageBytes,
+          fit: fit,
+          errorBuilder: (context, error, stackTrace) => _buildErrorImage(),
         );
-      },
+      } catch (e) {
+        return _buildErrorImage();
+      }
+    }
+
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return Image.network(
+        path,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => _buildErrorImage(),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[200],
+            child: const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    if (path.startsWith('assets/')) {
+      return Image.asset(
+        path,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => _buildErrorImage(),
+      );
+    }
+
+    return _buildErrorImage();
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      color: Colors.grey[300],
+      child: Center(
+        child: Icon(Icons.pets, size: 50, color: Colors.grey[600]),
+      ),
     );
   }
 
@@ -335,7 +357,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     final text = 'Poznaj ${widget.pet.name}! ${widget.pet.gender == 'male' ? 'Czeka' : 'Czeka'} '
         'na adopcję w ${widget.pet.shelterName}. $link';
 
-    /// TODO: Użyć realne API do udostępniania dla każdej platformy
     switch (platform) {
       case 'facebook':
         Share.share('$text #adopcjazwierząt');
@@ -382,23 +403,26 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                PageView.builder(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentPhotoIndex = index;
-                    });
-                  },
-                  itemCount: allImages.length,
-                  itemBuilder: (context, index) {
-                    final imagePath = allImages[index];
+                // Używamy RepaintBoundary, żeby zapobiec niepotrzebnemu odświeżaniu
+                RepaintBoundary(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPhotoIndex = index;
+                      });
+                    },
+                    itemCount: allImages.length,
+                    itemBuilder: (context, index) {
+                      final imagePath = allImages[index];
 
-                    return Hero(
-                      tag: index == 0 ? 'pet_${widget.pet.id}' : 'pet_${widget.pet.id}_$index',
-                      child: _getImageWidget(imagePath),
-                    );
-                  },
+                      return Hero(
+                        tag: index == 0 ? 'pet_${widget.pet.id}' : 'pet_${widget.pet.id}_$index',
+                        child: _getImageWidget(imagePath),
+                      );
+                    },
+                  ),
                 ),
 
                 if (allImages.length > 1) ...[
@@ -711,26 +735,11 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  String _getSizeText(String size) {
-    switch (size.toLowerCase()) {
-      case 'small':
-        return 'Mały';
-      case 'medium':
-        return 'Średni';
-      case 'large':
-        return 'Duży';
-      case 'xlarge':
-        return 'Bardzo duży';
-      default:
-        return size;
-    }
-  }
-
   Future<void> _contactShelter() async {
     try {
       final conversations = await _messageService.getConversations();
       final existingConversation = conversations
-          .where((conv) => conv.petId == widget.pet.id)
+          .where((conv) => conv.petId == widget.pet.id.toString())
           .toList();
 
       String conversationId;
@@ -799,35 +808,32 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
-                          image: _isNetworkImage(widget.pet.imageUrl)
-                              ? NetworkImage(widget.pet.imageUrl) as ImageProvider
-                              : AssetImage(widget.pet.imageUrl),
-                          fit: BoxFit.cover,
-                        ),
                       ),
+                      clipBehavior: Clip.hardEdge,
+                      child: _getImageWidget(widget.pet.imageUrl, fit: BoxFit.cover),
                     ),
                     const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.pet.name,
-                          style: GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.pet.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(
-                          '${widget.pet.breed}, ${widget.pet.age} ${_formatAge(widget.pet.age)}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
+                          Text(
+                            '${widget.pet.breed}, ${widget.pet.age} ${_formatAge(widget.pet.age)}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
@@ -847,6 +853,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                 ElevatedButton(
                   onPressed: () {
+                    Navigator.pop(context);
                     _contactShelter();
                   },
                   style: ElevatedButton.styleFrom(
@@ -870,6 +877,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                 OutlinedButton.icon(
                   onPressed: () {
+                    Navigator.pop(context);
                     _shareProfile();
                   },
                   icon: const Icon(Icons.share),

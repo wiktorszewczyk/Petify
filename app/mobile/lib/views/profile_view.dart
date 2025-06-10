@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mobile/views/edit_profile_view.dart';
+import 'package:mobile/views/volunteer_application_view.dart';
 import '../models/user.dart';
 import '../models/achievement.dart';
 import '../services/user_service.dart';
@@ -12,7 +13,7 @@ import '../widgets/profile/achievement_progress.dart';
 import '../widgets/profile/quick_stats.dart';
 import '../widgets/profile/achievements.dart';
 import '../widgets/profile/active_achievements.dart';
-import '../widgets/profile/volutneer_status_card.dart';
+import '../widgets/profile/volunteer_status_card.dart';
 import 'auth/welcome_view.dart';
 
 class ProfileView extends StatefulWidget {
@@ -88,10 +89,11 @@ class _ProfileViewState extends State<ProfileView>
   }
 
   void _handleVolunteerSignup() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-          content:
-          Text('Wkrótce dostępne: Formularz zapisu dla wolontariuszy')),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const VolunteerApplicationView(),
+      ),
     );
   }
 
@@ -102,6 +104,20 @@ class _ProfileViewState extends State<ProfileView>
       MaterialPageRoute(builder: (_) => const WelcomeView()),
           (route) => false,
     );
+  }
+
+  Future<void> _navigateToEditProfile() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfileView(user: _user!),
+      ),
+    );
+
+    // Jeśli profil został zaktualizowany, odśwież dane
+    if (result == true) {
+      _loadUserProfile();
+    }
   }
 
   @override
@@ -194,9 +210,24 @@ class _ProfileViewState extends State<ProfileView>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProfileHeader(user: user),
-              VolunteerStatusCard(
-                  user: user, onVolunteerSignup: _handleVolunteerSignup),
-              // Dostosowane AchievementProgress
+
+              // Pokaż status wolontariusza tylko jeśli jest aktywnym wolontariuszem
+              if (user.volunteerStatus != null &&
+                  user.volunteerStatus != 'NONE' &&
+                  user.volunteerStatus == 'ACTIVE')
+                VolunteerStatusCard(
+                    user: user,
+                    onVolunteerSignup: _handleVolunteerSignup
+                ),
+
+              // Pokaż przycisk aplikacji tylko jeśli nie jest wolontariuszem
+              if (user.volunteerStatus == null || user.volunteerStatus == 'NONE')
+                _buildVolunteerApplicationCard(),
+
+              // Pokaż status pending jeśli oczekuje na akceptację
+              if (user.volunteerStatus == 'PENDING')
+                _buildPendingVolunteerCard(),
+
               AchievementProgress(
                 level: user.level,
                 xpPoints: user.xpPoints,
@@ -210,6 +241,140 @@ class _ProfileViewState extends State<ProfileView>
         ),
       ],
     );
+  }
+
+  Widget _buildVolunteerApplicationCard() {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.blue.shade400,
+            Colors.blue.shade600,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.volunteer_activism,
+                color: Colors.white,
+                size: 32,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Zostań wolontariuszem',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Pomóż zwierzętom w schroniskach poprzez spacery i opiekę. Złóż wniosek o zostanie wolontariuszem!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _handleVolunteerSignup,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.blue.shade600,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Złóż wniosek',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 300.ms).slideY(
+      begin: 0.2,
+      end: 0,
+      duration: 300.ms,
+    );
+  }
+
+  Widget _buildPendingVolunteerCard() {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.orange.shade200),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade100,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.schedule,
+              color: Colors.orange.shade600,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Wniosek w trakcie rozpatrywania',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange.shade800,
+                  ),
+                ),
+                Text(
+                  'Twój wniosek o zostanie wolontariuszem jest rozpatrywany przez administrację.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.orange.shade700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 300.ms);
   }
 
   Widget _buildAppBar() {
@@ -230,12 +395,7 @@ class _ProfileViewState extends State<ProfileView>
       actions: [
         IconButton(
           icon: const Icon(Icons.edit, color: Colors.black),
-          onPressed: () {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => EditProfileView(user: _user!)),
-                  (route) => false,
-            );
-          },
+          onPressed: _navigateToEditProfile,
           tooltip: 'Edytuj profil',
         ),
         IconButton(

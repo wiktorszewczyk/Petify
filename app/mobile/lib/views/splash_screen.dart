@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/api/initial_api.dart';
 import '../services/token_repository.dart';
@@ -97,7 +98,12 @@ class _SplashScreenState extends State<SplashScreen> {
               CircleAvatar(
                 radius: 50,
                 backgroundColor: AppColors.primaryColor,
-                child: const Icon(Icons.pets, color: Colors.white, size: 50),
+                child: SvgPicture.asset(
+                  'assets/logo.svg',
+                  width: 96,
+                  height: 96,
+                  fit: BoxFit.contain,
+                ),
               ).animate().fadeIn(duration: 800.ms, curve: Curves.easeOutBack).scale(duration: 800.ms, curve: Curves.elasticOut),
               const SizedBox(height: 20),
               Text(

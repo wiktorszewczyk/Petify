@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/pet.dart';
@@ -21,8 +22,105 @@ class PetMiniCard extends StatelessWidget {
     return 'lat';
   }
 
-  bool _isLocalImage(String path) {
-    return path.startsWith('assets/') || path.startsWith('images/');
+  Widget _buildPetImage() {
+    // Sprawdź czy mamy imageUrl
+    if (pet.imageUrl.isEmpty) {
+      return _buildPlaceholder();
+    }
+
+    // Obsługa Base64 images
+    if (pet.imageUrl.startsWith('data:image/')) {
+      try {
+        final base64String = pet.imageUrl.split(',')[1];
+        final imageBytes = base64Decode(base64String);
+        return Image.memory(
+          imageBytes,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _buildPlaceholder(),
+        );
+      } catch (e) {
+        return _buildPlaceholder();
+      }
+    }
+
+    // Obsługa URL images
+    if (pet.imageUrl.startsWith('http://') ||
+        pet.imageUrl.startsWith('https://')) {
+      return Image.network(
+        pet.imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _buildPlaceholder(),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[200],
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                      : null,
+                  valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    // Obsługa lokalnych assetów
+    if (pet.imageUrl.startsWith('assets/')) {
+      return Image.asset(
+        pet.imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _buildPlaceholder(),
+      );
+    }
+
+    // Fallback - spróbuj jako network image
+    return Image.network(
+      pet.imageUrl,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => _buildPlaceholder(),
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Container(
+          color: Colors.grey[200],
+          child: Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes!
+                    : null,
+                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+                strokeWidth: 2,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      color: Colors.grey[300],
+      child: Center(
+        child: Icon(
+          Icons.pets,
+          size: 40,
+          color: Colors.grey[600],
+        ),
+      ),
+    );
   }
 
   @override
@@ -111,17 +209,19 @@ class PetMiniCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 1),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on,
-                          size: 11, color: Colors.grey[600]),
-                      const SizedBox(width: 2),
-                      Text(
-                        '${pet.distance} km',
-                        style: TextStyle(fontSize: 10, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
+                  if (pet.distance != null)
+                    Row(
+                      children: [
+                        Icon(Icons.location_on,
+                            size: 11, color: Colors.grey[600]),
+                        const SizedBox(width: 2),
+                        Text(
+                          '${pet.distance} km',
+                          style: TextStyle(
+                              fontSize: 10, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -129,39 +229,5 @@ class PetMiniCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildPetImage() {
-    if (_isLocalImage(pet.imageUrl)) {
-      return Image.asset(
-        pet.imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
-          color: Colors.grey[300],
-          child: const Center(
-            child: Icon(Icons.error_outline, size: 30),
-          ),
-        ),
-      );
-    } else {
-      return Image.network(
-        pet.imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
-          color: Colors.grey[300],
-          child: const Center(
-            child: Icon(Icons.error_outline, size: 30),
-          ),
-        ),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-            ),
-          );
-        },
-      );
-    }
   }
 }

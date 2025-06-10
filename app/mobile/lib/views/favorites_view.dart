@@ -35,7 +35,7 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
     });
 
     try {
-      // Używamy nowej metody z API
+      // Używamy API endpoint do pobrania polubionych zwierząt
       final pets = await _petService.getFavoritePets();
       setState(() {
         _favoritePets = pets;
@@ -161,6 +161,17 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                     itemBuilder: (context, index) {
                       final pet = _favoritePets![index];
                       return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PetDetailsView(pet: pet),
+                            ),
+                          );
+                        },
+                        onLongPress: () {
+                          _showRemoveDialog(pet);
+                        },
                         child: PetMiniCard(
                           pet: pet,
                           onTap: () {
@@ -171,6 +182,7 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                               ),
                             );
                           },
+                          onRemove: () => _removeFavorite(pet),
                         ),
                       );
                     },
@@ -180,6 +192,29 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showRemoveDialog(Pet pet) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Usuń z ulubionych'),
+        content: Text('Czy na pewno chcesz usunąć ${pet.name} z ulubionych?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Anuluj'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _removeFavorite(pet);
+            },
+            child: Text('Usuń', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

@@ -295,7 +295,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     );
   }
 
-  /// Otwiera ustawienia filtrów i przeładowuje zwierzęta po zmianie
   void _showDiscoverySettings() async {
     final result = await DiscoverySettingsSheet.show<FilterPreferences>(
       context,
@@ -308,7 +307,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       setState(() {
         _currentFilters = result;
       });
-      await _loadPets(); // Przeładuj zwierzęta z nowymi filtrami
+      await _loadPets();
     }
   }
 
