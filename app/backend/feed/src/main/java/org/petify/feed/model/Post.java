@@ -26,19 +26,15 @@ public class Post extends FeedItem {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "main_image_id")
-    private Long mainImageId;
-
     @ElementCollection
     @CollectionTable(name = "post_image_ids", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "image_id")
     private List<Long> imageIds;
 
-    public Post(String title, String shortDescription, Long shelterId, Long fundraisingId, String content, Long mainImageId,
+    public Post(Long mainImageId, String title, String shortDescription, Long shelterId, Long fundraisingId, String content, 
                 List<Long> imageIds) {
-        super(title, shortDescription, shelterId, fundraisingId);
+        super(mainImageId, title, shortDescription, shelterId, fundraisingId);
         this.content = content;
-        this.mainImageId = mainImageId;
         this.imageIds = imageIds;
     }
 
@@ -53,7 +49,6 @@ public class Post extends FeedItem {
         return new EqualsBuilder()
                 .appendSuper(super.equals(o))
                 .append(content, post.content)
-                .append(mainImageId, post.mainImageId)
                 .append(imageIds, post.imageIds)
                 .isEquals();
     }
@@ -63,7 +58,6 @@ public class Post extends FeedItem {
         return new HashCodeBuilder(17, 37)
                 .appendSuper(super.hashCode())
                 .append(content)
-                .append(mainImageId)
                 .append(imageIds)
                 .toHashCode();
     }
@@ -73,7 +67,6 @@ public class Post extends FeedItem {
         return new ToStringBuilder(this)
                 .appendSuper(super.toString())
                 .append("content", content)
-                .append("mainImageId", mainImageId)
                 .append("imageIds", imageIds)
                 .toString();
     }

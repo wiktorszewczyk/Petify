@@ -34,6 +34,9 @@ public abstract class FeedItem {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "main_image_id")
+    private Long mainImageId;
+
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -51,7 +54,8 @@ public abstract class FeedItem {
         this.createdAt = LocalDateTime.now();
     }
 
-    public FeedItem(String title, String shortDescription, Long shelterId, Long fundraisingId) {
+    public FeedItem(Long mainImageId, String title, String shortDescription, Long shelterId, Long fundraisingId) {
+        this.mainImageId = mainImageId;
         this.title = title;
         this.shortDescription = shortDescription;
         this.shelterId = shelterId;
@@ -67,8 +71,8 @@ public abstract class FeedItem {
             return false;
         }
 
-        return new EqualsBuilder().append(getId(), feedItem.getId())
-                .append(getCreatedAt(), feedItem.getCreatedAt())
+        return new EqualsBuilder()
+                .append(getMainImageId(), feedItem.getMainImageId())
                 .append(getTitle(), feedItem.getTitle())
                 .append(getShortDescription(), feedItem.getShortDescription())
                 .append(getShelterId(), feedItem.getShelterId())
@@ -79,8 +83,7 @@ public abstract class FeedItem {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(getId())
-                .append(getCreatedAt())
+                .append(getMainImageId())
                 .append(getTitle())
                 .append(getShortDescription())
                 .append(getShelterId())
@@ -93,6 +96,7 @@ public abstract class FeedItem {
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("createdAt", createdAt)
+                .append("mainImageId", mainImageId)
                 .append("title", title)
                 .append("shortDescription", shortDescription)
                 .append("shelterId", shelterId)
