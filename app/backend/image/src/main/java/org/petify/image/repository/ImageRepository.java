@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
-    List<Image> findAllByEntityId(Long entityId);
+    List<Image> findAllByEntityIdAndEntityType(Long entityId, String entityType);
 
-    int countByEntityId(Long entityId);
+    int countByEntityIdAndEntityType(Long entityId, String entityType);
 }

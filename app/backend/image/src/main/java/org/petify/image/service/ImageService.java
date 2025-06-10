@@ -30,15 +30,15 @@ public class ImageService {
     }
 
     @Transactional(readOnly = true)
-    public List<ImageResponse> getImagesByEntityId(Long entityId) {
-        return imageRepository.findAllByEntityId(entityId).stream()
+    public List<ImageResponse> getImagesByEntityId(Long entityId, String entityType) {
+        return imageRepository.findAllByEntityIdAndEntityType(entityId, entityType).stream()
                 .map(imageMapper::toDto)
                 .toList();
     }
     
     @Transactional
-    public ImageResponse uploadImage(Long entityId, MultipartFile file) throws IOException {
-        int currentImageCount = imageRepository.countByEntityId(entityId);
+    public ImageResponse uploadImage(Long entityId, String entityType, MultipartFile file) throws IOException {
+        int currentImageCount = imageRepository.countByEntityIdAndEntityType(entityId, file.getContentType());
         if (currentImageCount >= 5) {
             throw new MaxImagesReachedException(entityId);
         }
@@ -48,16 +48,17 @@ public class ImageService {
         image.setImageType(file.getContentType());
         image.setImageData(file.getBytes());
         image.setEntityId(entityId);
+        image.setEntityType(entityType);
 
         Image savedImage = imageRepository.save(image);
         return imageMapper.toDto(savedImage);
     }
     
     @Transactional
-    public List<ImageResponse> uploadImages(Long entityId, List<MultipartFile> images) throws IOException {
+    public List<ImageResponse> uploadImages(Long entityId, String entityType, List<MultipartFile> images) throws IOException {
         List<ImageResponse> savedImages = new ArrayList<>();
         for (MultipartFile image : images) {
-            savedImages.add(uploadImage(entityId, image));
+            savedImages.add(uploadImage(entityId, entityType, image));
         }
         return savedImages;
     }

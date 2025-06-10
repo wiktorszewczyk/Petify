@@ -34,6 +34,9 @@ public class Image {
     
     @Column(name = "image_type")
     private String imageType;
+
+    @Column(name = "entity_type", nullable = false)
+    private String entityType;
     
     @Lob
     @Column(name = "image_data", nullable = false)

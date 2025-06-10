@@ -28,26 +28,30 @@ public class ImageController {
     private final ImageService imageService;
 
     @GetMapping("/{imageId}")
-    public ResponseEntity<ImageResponse> getImageById(@PathVariable Long imageId) {
+    public ResponseEntity<ImageResponse> getImageById(
+            @PathVariable Long imageId) {
         ImageResponse image = imageService.getImageById(imageId);
         return ResponseEntity.ok(image);
     }
 
-    @GetMapping("/{entityId}/images")
-    public ResponseEntity<List<ImageResponse>> getEntityImages(@PathVariable Long entityId) {
-        List<ImageResponse> images = imageService.getImagesByEntityId(entityId);
+    @GetMapping("/{entityType}/{entityId}/images")
+    public ResponseEntity<List<ImageResponse>> getEntityImages(
+            @PathVariable Long entityId,
+            @PathVariable String entityType) {
+        List<ImageResponse> images = imageService.getImagesByEntityId(entityId, entityType);
         return ResponseEntity.ok(images);
     }
 
-    @PostMapping("/{entityId}/images")
+    @PostMapping("/{entityType}/{entityId}/images")
     public ResponseEntity<?> uploadMultipleImages(
             @PathVariable Long entityId,
+            @PathVariable String entityType,
             @RequestParam("images") List<MultipartFile> files) throws IOException {
         if (files.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        imageService.uploadImages(entityId, files);
+        imageService.uploadImages(entityId, entityType, files);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
