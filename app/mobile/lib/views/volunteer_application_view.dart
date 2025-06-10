@@ -47,43 +47,64 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
         'skills': _skillsController.text.trim(),
       };
 
-      await volunteerService.submitApplication(applicationData);
+      final response = await volunteerService.submitApplication(applicationData);
 
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
 
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            title: Text(
-              'Wniosek wysłany!',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              'Twój wniosek o zostanie wolontariuszem został wysłany. '
-                  'Otrzymasz powiadomienie o statusie rozpatrzenia wniosku.',
-              style: GoogleFonts.poppins(),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Zamknij dialog
-                  Navigator.of(context).pop(); // Wróć do profilu
-                },
-                child: Text(
-                  'OK',
-                  style: GoogleFonts.poppins(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.w600,
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          // Sukces
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              title: Text(
+                'Wniosek wysłany!',
+                style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+              ),
+              content: Text(
+                'Twój wniosek o zostanie wolontariuszem został wysłany. '
+                    'Otrzymasz powiadomienie o statusie rozpatrzenia wniosku.',
+                style: GoogleFonts.poppins(),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Zamknij dialog
+                    Navigator.of(context).pop(); // Wróć do profilu
+                  },
+                  child: Text(
+                    'OK',
+                    style: GoogleFonts.poppins(
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        } else {
+          // Błąd z serwera
+          String errorMessage = 'Wystąpił błąd podczas wysyłania wniosku';
+
+          if (response.data is Map<String, dynamic>) {
+            final errorData = response.data as Map<String, dynamic>;
+            if (errorData.containsKey('error')) {
+              errorMessage = errorData['error'].toString();
+            }
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -93,8 +114,9 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Błąd podczas wysyłania wniosku: $e'),
+            content: Text('Wystąpił nieoczekiwany błąd: $e'),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -176,6 +198,9 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
                   if (value.trim().length < 20) {
                     return 'Opis powinien zawierać co najmniej 20 znaków';
                   }
+                  if (value.trim().length > 1000) {
+                    return 'Opis nie może przekraczać 1000 znaków';
+                  }
                   return null;
                 },
               ),
@@ -194,6 +219,9 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
                   if (value.trim().length < 30) {
                     return 'Opis powinien zawierać co najmniej 30 znaków';
                   }
+                  if (value.trim().length > 1000) {
+                    return 'Opis nie może przekraczać 1000 znaków';
+                  }
                   return null;
                 },
               ),
@@ -209,6 +237,12 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
                   if (value == null || value.trim().isEmpty) {
                     return 'To pole jest wymagane';
                   }
+                  if (value.trim().length < 10) {
+                    return 'Opis dostępności powinien zawierać co najmniej 10 znaków';
+                  }
+                  if (value.trim().length > 500) {
+                    return 'Opis nie może przekraczać 500 znaków';
+                  }
                   return null;
                 },
               ),
@@ -221,6 +255,12 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
                 hint: 'Jakie umiejętności posiadasz? Dodatkowe informacje o sobie...',
                 maxLines: 3,
                 required: false,
+                validator: (value) {
+                  if (value != null && value.trim().isNotEmpty && value.trim().length > 500) {
+                    return 'Opis nie może przekraczać 500 znaków';
+                  }
+                  return null;
+                },
               ),
 
               const SizedBox(height: 32),
@@ -261,13 +301,29 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  'Twój wniosek zostanie rozpatrzony przez administrację schroniska. '
-                      'Po akceptacji będziesz mógł umawiać się na spacery z psami w aplikacji.',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.grey[700],
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Informacje o wolontariacie:',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '• Twój wniosek zostanie rozpatrzony przez administrację schroniska\n'
+                          '• Po akceptacji będziesz mógł umawiać się na spacery z psami w aplikacji\n'
+                          '• Wolontariat to odpowiedzialne zadanie - wymagane jest regularne zaangażowanie',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: Colors.grey[700],
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -285,21 +341,36 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
     bool required = true,
     String? Function(String?)? validator,
   }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label + (required ? ' *' : ''),
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey[800],
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          maxLines: maxLines,
+          validator: validator,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
+            ),
+            counterText: maxLines > 1 ? '' : null,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

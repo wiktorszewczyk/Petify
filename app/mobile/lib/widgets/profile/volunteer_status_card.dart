@@ -15,22 +15,11 @@ class VolunteerStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Nie wyświetlaj karty jeśli użytkownik nie jest wolontariuszem w ogóle
-    if (_shouldShowVolunteerCard()) {
-      return _buildVolunteerStatusCard();
-    } else {
-      return _buildVolunteerSignupCard();
+    // Pokazuj kartę tylko gdy status jest różny od NONE lub null
+    if (user.volunteerStatus == null || user.volunteerStatus == 'NONE') {
+      return const SizedBox.shrink(); // Nie wyświetlaj nic
     }
-  }
 
-  /// Określa czy pokazać kartę statusu wolontariusza
-  bool _shouldShowVolunteerCard() {
-    return user.volunteerStatus != null &&
-        user.volunteerStatus != 'NONE';
-  }
-
-  /// Buduje kartę statusu wolontariusza
-  Widget _buildVolunteerStatusCard() {
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
@@ -107,7 +96,6 @@ class VolunteerStatusCard extends StatelessWidget {
               ),
             ],
           ),
-
           if (_getStatusDescription() != null) ...[
             const SizedBox(height: 12),
             Text(
@@ -119,100 +107,6 @@ class VolunteerStatusCard extends StatelessWidget {
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-
-  /// Buduje kartę zachęcającą do zostania wolontariuszem
-  Widget _buildVolunteerSignupCard() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primaryColor.withOpacity(0.1),
-            AppColors.primaryColor.withOpacity(0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primaryColor.withOpacity(0.3),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.volunteer_activism,
-                  color: AppColors.primaryColor,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Zostań wolontariuszem',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
-                    Text(
-                      'Pomóż zwierzakom w schroniskach',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Jako wolontariusz będziesz mógł rezerwować wizyty w schroniskach, '
-                'wyprowadzać psy na spacery i pomagać w opiece nad zwierzętami.',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: Colors.grey[700],
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: onVolunteerSignup,
-              icon: const Icon(Icons.volunteer_activism, size: 18),
-              label: const Text('Złóż wniosek o wolontariat'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );

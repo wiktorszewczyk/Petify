@@ -59,14 +59,6 @@ class ProfileHeader extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Status wolontariusza: ${user.volunteerStatus}',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
               ],
             ),
           ),

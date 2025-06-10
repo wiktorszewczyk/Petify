@@ -23,29 +23,82 @@ class VolunteerService {
       final status = e.response?.statusCode ?? 0;
       final data = e.response?.data;
 
-      if (status == 400 && data is Map<String, dynamic>) {
-        return BasicResponse(status, {'error': data['detail'] ?? 'Błąd walidacji danych'});
+      String errorMessage = 'Nie udało się wysłać wniosku';
+
+      if (status == 400) {
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('detail')) {
+            errorMessage = data['detail'].toString();
+          } else if (data.containsKey('error')) {
+            errorMessage = data['error'].toString();
+          } else {
+            errorMessage = 'Błąd walidacji danych';
+          }
+        } else if (data is String) {
+          errorMessage = data;
+        }
       } else if (status == 409) {
-        return BasicResponse(status, {'error': 'Już posiadasz aktywny wniosek o wolontariat'});
-      } else {
-        return BasicResponse(status, {'error': 'Nie udało się wysłać wniosku: $status'});
+        errorMessage = 'Już posiadasz aktywny wniosek o wolontariat';
+      } else if (status == 401) {
+        errorMessage = 'Sesja wygasła. Zaloguj się ponownie';
+      } else if (status == 403) {
+        errorMessage = 'Brak uprawnień do wykonania tej akcji';
+      } else if (status >= 500) {
+        errorMessage = 'Błąd serwera. Spróbuj ponownie później';
       }
+
+      return BasicResponse(status, {'error': errorMessage});
     } catch (e) {
-      return BasicResponse(0, {'error': 'Nieznany błąd: $e'});
+      dev.log('submitApplication unexpected error: $e');
+      return BasicResponse(0, {'error': 'Nieoczekiwany błąd: ${e.toString()}'});
     }
   }
 
-  /// Pobiera całą historię wniosków użytkownika
+  /// Pobiera status wniosku o wolontariat
+  Future<BasicResponse> getVolunteerStatus() async {
+    try {
+      final resp = await _api.get('/volunteer/status');
+      return BasicResponse(resp.statusCode ?? 0, resp.data);
+    } on DioException catch (e) {
+      dev.log('getVolunteerStatus error: ${e.message}');
+      final status = e.response?.statusCode ?? 0;
+
+      String errorMessage = 'Nie udało się pobrać statusu wolontariusza';
+
+      if (status == 404) {
+        errorMessage = 'Nie znaleziono informacji o statusie wolontariusza';
+      } else if (status == 401) {
+        errorMessage = 'Sesja wygasła. Zaloguj się ponownie';
+      }
+
+      return BasicResponse(status, {'error': errorMessage});
+    } catch (e) {
+      dev.log('getVolunteerStatus unexpected error: $e');
+      return BasicResponse(0, {'error': 'Nieoczekiwany błąd: ${e.toString()}'});
+    }
+  }
+
+  /// Pobiera historię wniosków o wolontariat
   Future<BasicResponse> getApplicationHistory() async {
     try {
-      final resp = await _api.get('/volunteer/apply');
+      final resp = await _api.get('/volunteer/status');
       return BasicResponse(resp.statusCode ?? 0, resp.data);
     } on DioException catch (e) {
       dev.log('getApplicationHistory error: ${e.message}');
       final status = e.response?.statusCode ?? 0;
-      return BasicResponse(status, {'error': 'Nie udało się pobrać historii: $status'});
+
+      String errorMessage = 'Nie udało się pobrać historii wniosków';
+
+      if (status == 404) {
+        errorMessage = 'Nie znaleziono historii wniosków';
+      } else if (status == 401) {
+        errorMessage = 'Sesja wygasła. Zaloguj się ponownie';
+      }
+
+      return BasicResponse(status, {'error': errorMessage});
     } catch (e) {
-      return BasicResponse(0, {'error': 'Nieznany błąd: $e'});
+      dev.log('getApplicationHistory unexpected error: $e');
+      return BasicResponse(0, {'error': 'Nieoczekiwany błąd: ${e.toString()}'});
     }
   }
 }

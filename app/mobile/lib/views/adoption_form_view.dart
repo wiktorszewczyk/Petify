@@ -74,7 +74,7 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
           _isLoading = false;
         });
 
-        if (response.statusCode == 201) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
           // Sukces
           showDialog(
             context: context,
@@ -107,10 +107,21 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
             ),
           );
         } else {
-          // Błąd
+          // Błąd z serwera
+          String errorMessage = 'Wystąpił błąd podczas wysyłania formularza';
+
+          if (response.data is Map<String, dynamic>) {
+            final errorData = response.data as Map<String, dynamic>;
+            if (errorData.containsKey('error')) {
+              errorMessage = errorData['error'].toString();
+            } else if (errorData.containsKey('message')) {
+              errorMessage = errorData['message'].toString();
+            }
+          }
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Wystąpił błąd podczas wysyłania formularza'),
+              content: Text(errorMessage),
               backgroundColor: Colors.red,
             ),
           );
@@ -122,9 +133,16 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
           _isLoading = false;
         });
 
+        String errorMessage = 'Wystąpił nieoczekiwany błąd';
+        if (e.toString().contains('już posiadasz')) {
+          errorMessage = 'Już wysłałeś formularz adopcji dla tego zwierzęcia';
+        } else if (e.toString().contains('archived')) {
+          errorMessage = 'To zwierzę zostało już zaadoptowane';
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Błąd: $e'),
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
           ),
         );
@@ -166,6 +184,14 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                   if (value == null || value.trim().isEmpty) {
                     return 'To pole jest wymagane';
                   }
+                  if (value.trim().length < 3) {
+                    return 'Imię i nazwisko musi mieć co najmniej 3 znaki';
+                  }
+                  // Sprawdź czy zawiera przynajmniej imię i nazwisko
+                  final parts = value.trim().split(' ');
+                  if (parts.length < 2) {
+                    return 'Podaj imię i nazwisko';
+                  }
                   return null;
                 },
               ),
@@ -181,6 +207,11 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                   if (value == null || value.trim().isEmpty) {
                     return 'To pole jest wymagane';
                   }
+                  // Sprawdź format numeru telefonu
+                  final phoneRegex = RegExp(r'^\+?[0-9\s\-]{9,15}$');
+                  if (!phoneRegex.hasMatch(value.trim())) {
+                    return 'Podaj prawidłowy numer telefonu';
+                  }
                   return null;
                 },
               ),
@@ -195,6 +226,9 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'To pole jest wymagane';
+                  }
+                  if (value.trim().length < 10) {
+                    return 'Podaj pełny adres (min. 10 znaków)';
                   }
                   return null;
                 },
@@ -214,6 +248,9 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                   if (value == null || value.trim().isEmpty) {
                     return 'To pole jest wymagane';
                   }
+                  if (value.trim().length < 3) {
+                    return 'Opis typu mieszkania musi mieć co najmniej 3 znaki';
+                  }
                   return null;
                 },
               ),
@@ -222,18 +259,21 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
 
               _buildCheckboxTile(
                 title: 'Jestem właścicielem mieszkania/domu',
+                subtitle: 'Czy jesteś właścicielem miejsca zamieszkania?',
                 value: _isHouseOwner,
                 onChanged: (value) => setState(() => _isHouseOwner = value ?? false),
               ),
 
               _buildCheckboxTile(
                 title: 'Mam ogród lub balkon',
+                subtitle: 'Dostęp do przestrzeni zewnętrznej dla zwierzęcia',
                 value: _hasYard,
                 onChanged: (value) => setState(() => _hasYard = value ?? false),
               ),
 
               _buildCheckboxTile(
                 title: 'Mam inne zwierzęta w domu',
+                subtitle: 'Czy w gospodarstwie domowym są już inne zwierzęta?',
                 value: _hasOtherPets,
                 onChanged: (value) => setState(() => _hasOtherPets = value ?? false),
               ),
@@ -256,6 +296,9 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                   if (value.trim().length < 50) {
                     return 'Opis powinien zawierać co najmniej 50 znaków';
                   }
+                  if (value.trim().length > 1000) {
+                    return 'Opis nie może przekraczać 1000 znaków';
+                  }
                   return null;
                 },
               ),
@@ -267,6 +310,12 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                 label: 'Dodatkowe informacje (opcjonalne)',
                 hint: 'Możesz dodać więcej informacji o sobie...',
                 maxLines: 3,
+                validator: (value) {
+                  if (value != null && value.trim().isNotEmpty && value.trim().length > 500) {
+                    return 'Dodatkowe informacje nie mogą przekraczać 500 znaków';
+                  }
+                  return null;
+                },
               ),
 
               const SizedBox(height: 32),
@@ -310,7 +359,7 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                 child: Text(
                   'Wysyłając formularz, wyrażasz chęć adopcji ${widget.pet.name}. '
                       'Schronisko skontaktuje się z Tobą w celu omówienia szczegółów i '
-                      'umówienia spotkania z zwierzęciem.',
+                      'umówienia spotkania z zwierzęciem. Pamiętaj, że adopcja to długoterminowe zobowiązanie.',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     color: Colors.grey[700],
@@ -422,20 +471,28 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
         ),
+        counterText: maxLines > 1 ? '' : null, // Ukryj licznik znaków dla wieloliniowych
       ),
     );
   }
 
   Widget _buildCheckboxTile({
     required String title,
+    String? subtitle,
     required bool value,
     required ValueChanged<bool?> onChanged,
   }) {
     return CheckboxListTile(
       title: Text(
         title,
-        style: GoogleFonts.poppins(fontSize: 14),
+        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500),
       ),
+      subtitle: subtitle != null
+          ? Text(
+        subtitle,
+        style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
+      )
+          : null,
       value: value,
       onChanged: onChanged,
       activeColor: AppColors.primaryColor,

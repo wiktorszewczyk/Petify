@@ -94,7 +94,10 @@ class _ProfileViewState extends State<ProfileView>
       MaterialPageRoute(
         builder: (context) => const VolunteerApplicationView(),
       ),
-    );
+    ).then((_) {
+      // Odśwież profil po powrocie z formularza aplikacji
+      _loadUserProfile();
+    });
   }
 
   Future<void> _onLogout() async {
@@ -118,6 +121,14 @@ class _ProfileViewState extends State<ProfileView>
     if (result == true) {
       _loadUserProfile();
     }
+  }
+
+  bool _isVolunteer() {
+    return _user?.volunteerStatus == 'ACTIVE';
+  }
+
+  bool _shouldShowVolunteerApplicationButton() {
+    return _user?.volunteerStatus == null || _user?.volunteerStatus == 'NONE';
   }
 
   @override
@@ -211,22 +222,13 @@ class _ProfileViewState extends State<ProfileView>
             children: [
               ProfileHeader(user: user),
 
-              // Pokaż status wolontariusza tylko jeśli jest aktywnym wolontariuszem
-              if (user.volunteerStatus != null &&
-                  user.volunteerStatus != 'NONE' &&
-                  user.volunteerStatus == 'ACTIVE')
-                VolunteerStatusCard(
-                    user: user,
-                    onVolunteerSignup: _handleVolunteerSignup
-                ),
+              VolunteerStatusCard(
+                user: user,
+                onVolunteerSignup: _handleVolunteerSignup,
+              ),
 
-              // Pokaż przycisk aplikacji tylko jeśli nie jest wolontariuszem
-              if (user.volunteerStatus == null || user.volunteerStatus == 'NONE')
+              if (_shouldShowVolunteerApplicationButton())
                 _buildVolunteerApplicationCard(),
-
-              // Pokaż status pending jeśli oczekuje na akceptację
-              if (user.volunteerStatus == 'PENDING')
-                _buildPendingVolunteerCard(),
 
               AchievementProgress(
                 level: user.level,
@@ -324,57 +326,6 @@ class _ProfileViewState extends State<ProfileView>
       end: 0,
       duration: 300.ms,
     );
-  }
-
-  Widget _buildPendingVolunteerCard() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.orange.shade50,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.orange.shade200),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.orange.shade100,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.schedule,
-              color: Colors.orange.shade600,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Wniosek w trakcie rozpatrywania',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange.shade800,
-                  ),
-                ),
-                Text(
-                  'Twój wniosek o zostanie wolontariuszem jest rozpatrywany przez administrację.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.orange.shade700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ).animate().fadeIn(duration: 300.ms);
   }
 
   Widget _buildAppBar() {

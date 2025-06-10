@@ -3,9 +3,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/shelter_posts_view.dart';
 import 'package:mobile/views/shelter_support_view.dart';
+import 'package:mobile/views/volunteer_application_view.dart';
+import 'package:mobile/views/volunteer_walks_view.dart';
 import '../../styles/colors.dart';
 import '../../widgets/buttons/action_button.dart';
 import '../../models/shelter_post.dart';
+import '../../services/user_service.dart';
 import 'events_view.dart';
 
 class CommunitySupportView extends StatefulWidget {
@@ -19,6 +22,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   bool _isLoading = false;
   List<ShelterPost> _shelterPosts = [];
   bool _isVolunteer = false;
+  String? _volunteerStatus;
 
   // Przykładowe zdjęcia dla schronisk - używamy zasobów zastępczych
   // do czasu implementacji backendu
@@ -37,10 +41,18 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   Future<void> _loadUserStatus() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    setState(() {
-      _isVolunteer = false;
-    });
+    try {
+      final user = await UserService().getCurrentUser();
+      setState(() {
+        _volunteerStatus = user.volunteerStatus;
+        _isVolunteer = user.volunteerStatus == 'ACTIVE';
+      });
+    } catch (e) {
+      setState(() {
+        _volunteerStatus = null;
+        _isVolunteer = false;
+      });
+    }
   }
 
   Future<void> _loadShelterPosts() async {
@@ -105,8 +117,10 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
 
   void _navigateToVolunteerWalk() {
     if (_isVolunteer) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Przejście do ekranu spacerów jako wolontariusz')),
+      // Przekieruj do ekranu spacerów/rezerwacji
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const VolunteerWalksView()),
       );
     } else {
       _showVolunteerApplicationPrompt();
@@ -128,6 +142,18 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   void _showVolunteerApplicationPrompt() {
+    String message = 'Chcesz pomagać zwierzakom w schroniskach poprzez wspólne spacery? Złóż wniosek o zostanie wolontariuszem!';
+    String buttonText = 'Złóż wniosek';
+
+    // Dostosuj komunikat w zależności od statusu
+    if (_volunteerStatus == 'PENDING') {
+      message = 'Twój wniosek o zostanie wolontariuszem jest w trakcie rozpatrywania. Poczekaj na decyzję administracji.';
+      buttonText = 'OK';
+    } else if (_volunteerStatus == 'INACTIVE') {
+      message = 'Twoje konto wolontariusza jest nieaktywne. Skontaktuj się z administracją aby je reaktywować.';
+      buttonText = 'OK';
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -139,35 +165,47 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
           textAlign: TextAlign.center,
         ),
         content: Text(
-          'Chcesz pomagać zwierzakom w schroniskach poprzez wspólne spacery? '
-              'Złóż wniosek o zostanie wolontariuszem!',
+          message,
           style: GoogleFonts.poppins(),
           textAlign: TextAlign.justify,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Anuluj'),
+            child: const Text('Anuluj'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _navigateToVolunteerApplication();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryColor,
-              foregroundColor: Colors.black,
+          if (_volunteerStatus == null || _volunteerStatus == 'NONE')
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _navigateToVolunteerApplication();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                foregroundColor: Colors.black,
+              ),
+              child: Text(buttonText),
+            )
+          else
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                foregroundColor: Colors.black,
+              ),
+              child: Text(buttonText),
             ),
-            child: Text('Złóż wniosek'),
-          ),
         ],
       ),
     );
   }
 
   void _navigateToVolunteerApplication() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Przejście do formularza aplikacji na wolontariusza')),
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) => const VolunteerApplicationView()
+      )
     );
   }
 
@@ -175,7 +213,10 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: _loadShelterPosts,
+        onRefresh: () async {
+          await _loadUserStatus();
+          await _loadShelterPosts();
+        },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
@@ -439,9 +480,9 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      'Dowiedz się więcej',
+                      'Tylko dla wolontariuszy',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
