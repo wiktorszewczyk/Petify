@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,10 +23,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Image {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "entity_id", nullable = false)
+    private Long entityId;
+
+    @Column(name = "entity_type", nullable = false)
+    private String entityType;
     
     @Column(name = "image_name")
     private String imageName;
@@ -35,31 +39,16 @@ public class Image {
     @Column(name = "image_type")
     private String imageType;
 
-    @Column(name = "entity_type", nullable = false)
-    private String entityType;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
     
     @Lob
     @Column(name = "image_data", nullable = false)
     private byte[] imageData;
 
-    @Column(name = "entity_id", nullable = false)
-    private Long entityId;
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 
     @Override
@@ -72,20 +61,20 @@ public class Image {
         }
         
         return new EqualsBuilder()
-                .append(getId(), image.getId())
+                .append(getEntityId(), image.getEntityId())
+                .append(getEntityType(), image.getEntityType())
                 .append(getImageName(), image.getImageName())
                 .append(getImageType(), image.getImageType())
-                .append(getEntityId(), image.getEntityId())
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new org.apache.commons.lang.builder.HashCodeBuilder(17, 37)
-                .append(getId())
+                .append(getEntityId())
+                .append(getEntityType())
                 .append(getImageName())
                 .append(getImageType())
-                .append(getEntityId())
                 .toHashCode();
     }
 
@@ -93,11 +82,11 @@ public class Image {
     public String toString() {
         return new org.apache.commons.lang.builder.ToStringBuilder(this)
                 .append("id", id)
+                .append("entityId", entityId)
+                .append("entityType", entityType)
                 .append("imageName", imageName)
                 .append("imageType", imageType)
-                .append("entityId", entityId)
                 .append("createdAt", createdAt)
-                .append("updatedAt", updatedAt)
                 .toString();
     }
 }

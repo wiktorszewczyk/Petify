@@ -5,11 +5,10 @@ import java.time.LocalDateTime;
 
 public record ImageResponse(
         Long id,
-        String imageName,
-        String imageType,
-        String imageData,
         Long entityId,
         String entityType,
+        String imageName,
+        String imageType,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        String imageData
 ) implements Serializable {}

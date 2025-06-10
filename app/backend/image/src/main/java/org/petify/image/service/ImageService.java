@@ -40,15 +40,15 @@ public class ImageService {
     public ImageResponse uploadImage(Long entityId, String entityType, MultipartFile file) throws IOException {
         int currentImageCount = imageRepository.countByEntityIdAndEntityType(entityId, file.getContentType());
         if (currentImageCount >= 5) {
-            throw new MaxImagesReachedException(entityId);
+            throw new MaxImagesReachedException(entityId, entityType);
         }
         
         Image image = new Image();
+        image.setEntityId(entityId);
+        image.setEntityType(entityType);
         image.setImageName(file.getOriginalFilename());
         image.setImageType(file.getContentType());
         image.setImageData(file.getBytes());
-        image.setEntityId(entityId);
-        image.setEntityType(entityType);
 
         Image savedImage = imageRepository.save(image);
         return imageMapper.toDto(savedImage);
