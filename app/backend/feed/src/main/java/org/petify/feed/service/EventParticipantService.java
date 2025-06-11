@@ -3,9 +3,12 @@ package org.petify.feed.service;
 import org.petify.feed.dto.EventParticipantResponse;
 import org.petify.feed.exception.AlreadyParticipatingException;
 import org.petify.feed.exception.FeedItemNotFoundException;
+import org.petify.feed.exception.MaxEventCapacityReachedException;
 import org.petify.feed.mapper.EventParticipantMapper;
+import org.petify.feed.model.Event;
 import org.petify.feed.model.EventParticipant;
 import org.petify.feed.repository.EventParticipantRepository;
+import org.petify.feed.repository.EventRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class EventParticipantService {
+    private final EventRepository eventRepository;
     private final EventParticipantRepository eventParticipantRepository;
     private final EventParticipantMapper eventParticipantMapper;
 
@@ -39,6 +43,13 @@ public class EventParticipantService {
     public EventParticipantResponse addParticipant(Long eventId, String username) {
         if (eventParticipantRepository.findByEventIdAndUsername(eventId, username).isPresent()) {
             throw new AlreadyParticipatingException(eventId, username);
+        }
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new FeedItemNotFoundException(eventId, "Event"));
+        if (event.getCapacity() != null && event.getCapacity() > 0
+                && eventParticipantRepository.countByEventId(eventId) >= event.getCapacity()) {
+            throw new MaxEventCapacityReachedException(eventId, event.getCapacity());
         }
 
         EventParticipant participant = new EventParticipant();
