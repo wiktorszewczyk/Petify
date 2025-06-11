@@ -43,13 +43,14 @@ public class PostService {
     @Transactional
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
         Post existingPost = postRepository.findById(postId)
-                .orElseThrow(() -> new FeedItemNotFoundException(postId));
-        existingPost.setMainImageId(postRequest.getMainImageId());
-        existingPost.setTitle(postRequest.getTitle());
-        existingPost.setShortDescription(postRequest.getShortDescription());
-        existingPost.setLongDescription(postRequest.getLongDescription());
-        existingPost.setFundraisingId(postRequest.getFundraisingId());
-        existingPost.setImageIds(postRequest.getImageIds());
+                .orElseThrow(() -> new FeedItemNotFoundException(postId, "Post"));
+        existingPost.setTitle(postRequest.title());
+        existingPost.setShortDescription(postRequest.shortDescription());
+
+        existingPost.setMainImageId(postRequest.mainImageId());
+        existingPost.setLongDescription(postRequest.longDescription());
+        existingPost.setFundraisingId(postRequest.fundraisingId());
+        existingPost.setImageIds(postRequest.imageIds());
 
         existingPost = postRepository.save(existingPost);
         return postMapper.toDto(existingPost);

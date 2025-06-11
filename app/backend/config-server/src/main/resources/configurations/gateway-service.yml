@@ -65,6 +65,13 @@ spring:
           filters:
             - PreserveHostHeader
 
+        - id: feed-service
+          uri: lb://FEED-SERVICE
+          predicates:
+            - Path=/posts/**, /posts, /events/**, /events
+          filters:
+            - PreserveHostHeader
+
 # Konfiguracja Eureka
 eureka:
   client:

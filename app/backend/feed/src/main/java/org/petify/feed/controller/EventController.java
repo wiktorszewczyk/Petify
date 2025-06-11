@@ -6,12 +6,13 @@ import org.petify.feed.dto.EventResponse;
 import org.petify.feed.service.EventParticipantService;
 import org.petify.feed.service.EventService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +47,7 @@ public class EventController {
     @PostMapping("/shelter/{shelterId}/events")
     public ResponseEntity<EventResponse> createEvent(
             @PathVariable Long shelterId,
-            @RequestBody EventRequest eventRequest,
+            @Valid @RequestBody EventRequest eventRequest,
             @AuthenticationPrincipal Jwt jwt) {
         if (eventRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -59,7 +60,7 @@ public class EventController {
     @PutMapping("/{eventId}")
     public ResponseEntity<EventResponse> updateEvent(
             @PathVariable Long eventId,
-            @RequestBody EventRequest eventRequest,
+            @Valid @RequestBody EventRequest eventRequest,
             @AuthenticationPrincipal Jwt jwt) {
         if (eventRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -110,7 +111,7 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(participant);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'SHELTER')")
     @DeleteMapping("/{eventId}/participants")
     public ResponseEntity<?> removeParticipant(
             @PathVariable Long eventId,

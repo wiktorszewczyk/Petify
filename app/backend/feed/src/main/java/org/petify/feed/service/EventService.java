@@ -44,17 +44,18 @@ public class EventService {
     public EventResponse updateEvent(Long eventId, EventRequest eventRequest) {
         Event existingEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new FeedItemNotFoundException(eventId, "Event"));
-        existingEvent.setMainImageId(eventRequest.getMainImageId());
-        existingEvent.setTitle(eventRequest.getTitle());
-        existingEvent.setShortDescription(eventRequest.getShortDescription());
-        existingEvent.setLongDescription(eventRequest.getLongDescription());
-        existingEvent.setFundraisingId(eventRequest.getFundraisingId());
-        existingEvent.setStartDate(eventRequest.getStartDate());
-        existingEvent.setEndDate(eventRequest.getEndDate());
-        existingEvent.setAddress(eventRequest.getAddress());
-        existingEvent.setLatitude(eventRequest.getLatitude());
-        existingEvent.setLongitude(eventRequest.getLongitude());
-        existingEvent.setCapacity(eventRequest.getCapacity());
+        existingEvent.setTitle(eventRequest.title());
+        existingEvent.setShortDescription(eventRequest.shortDescription());
+        existingEvent.setStartDate(eventRequest.startDate());
+        existingEvent.setEndDate(eventRequest.endDate());
+        existingEvent.setAddress(eventRequest.address());
+
+        existingEvent.setMainImageId(eventRequest.mainImageId());
+        existingEvent.setLongDescription(eventRequest.longDescription());
+        existingEvent.setFundraisingId(eventRequest.fundraisingId());
+        existingEvent.setLatitude(eventRequest.latitude());
+        existingEvent.setLongitude(eventRequest.longitude());
+        existingEvent.setCapacity(eventRequest.capacity());
 
         existingEvent = eventRepository.save(existingEvent);
         return eventMapper.toDto(existingEvent);

@@ -4,6 +4,7 @@ import org.petify.feed.dto.PostRequest;
 import org.petify.feed.dto.PostResponse;
 import org.petify.feed.service.PostService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class PostController {
     @PostMapping("/shelter/{shelterId}/posts")
     public ResponseEntity<PostResponse> createPost(
             @PathVariable Long shelterId,
-            @RequestBody PostRequest postRequest,
+            @Valid @RequestBody PostRequest postRequest,
             @AuthenticationPrincipal Jwt jwt) {
         if (postRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -56,7 +57,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
-            @RequestBody PostRequest postRequest,
+            @Valid @RequestBody PostRequest postRequest,
             @AuthenticationPrincipal Jwt jwt) {
         if (postRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

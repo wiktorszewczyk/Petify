@@ -6,14 +6,15 @@ import java.time.LocalDateTime;
 public record EventResponse(
         Long id,
         Long shelterId,
-        Long mainImageId,
         String title,
         String shortDescription,
-        String longDescription,
-        Long fundraisingId,
         LocalDateTime startDate,
         LocalDateTime endDate,
         String address,
+
+        Long mainImageId,
+        String longDescription,
+        Long fundraisingId,
         Double latitude,
         Double longitude,
         Integer capacity,

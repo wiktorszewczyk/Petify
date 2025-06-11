@@ -6,10 +6,11 @@ import java.util.List;
 
 public record PostResponse(
         Long id,
-        Long shelterId,
-        Long mainImageId,
+        Long shelterId, 
         String title,
         String shortDescription,
+
+        Long mainImageId,
         String longDescription,
         Long fundraisingId,
         List<Long> imageIds,
