@@ -51,25 +51,24 @@ spring:
           filters:
             - PreserveHostHeader
 
-
-        - id: shelter-service
-          uri: lb://SHELTER-SERVICE
-          predicates:
-            - Path=/shelters/**, /shelters, /pets/**, /pets, /adoptions/**, /adoptions
-          filters:
-            - PreserveHostHeader
-
-        - id: shelter-service
-          uri: lb://SHELTER-SERVICE
-          predicates:
-            - Path=/shelters/**, /shelters, /pets/**, /pets, /adoptions/**, /adoptions
-          filters:
-            - PreserveHostHeader
-
         - id: funding-service
           uri: lb://FUNDING-SERVICE
           predicates:
             - Path=/donations/**, /donations, /payments/**, /payments
+          filters:
+            - PreserveHostHeader
+
+        - id: image-service
+          uri: lb://IMAGE-SERVICE
+          predicates:
+            - Path=/images/**, /images
+          filters:
+            - PreserveHostHeader
+
+        - id: feed-service
+          uri: lb://FEED-SERVICE
+          predicates:
+            - Path=/posts/**, /posts, /events/**, /events
           filters:
             - PreserveHostHeader
 

@@ -15,6 +15,11 @@
 
   <name>auth-service</name>
 
+  <properties>
+    <checkstyle.config.location>${project.parent.basedir}/checkstyle.xml</checkstyle.config.location>
+    <checkstyle.suppressions.location>${project.parent.basedir}/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -72,7 +77,8 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <scope>provided</scope>
+      <version>1.18.32</version>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -105,6 +111,7 @@
             <path>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
+              <version>1.18.32</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
