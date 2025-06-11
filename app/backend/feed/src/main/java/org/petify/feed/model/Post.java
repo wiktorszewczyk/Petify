@@ -28,9 +28,9 @@ public class Post extends FeedItem {
     @Column(name = "image_id")
     private List<Long> imageIds;
 
-    public Post(Long mainImageId, String title, String shortDescription, String longDescription, Long shelterId, Long fundraisingId,
-                List<Long> imageIds) {
-        super(mainImageId, title, shortDescription, longDescription, shelterId, fundraisingId);
+    public Post(Long shelterId, String title, String shortDescription, Long mainImageId,
+                String longDescription, Long fundraisingId, List<Long> imageIds) {
+        super(shelterId, title, shortDescription, mainImageId, longDescription, fundraisingId);
         this.imageIds = imageIds;
     }
 

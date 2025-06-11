@@ -1,7 +1,7 @@
 package org.petify.feed.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record PostResponse(
@@ -14,6 +14,6 @@ public record PostResponse(
         String longDescription,
         Long fundraisingId,
         List<Long> imageIds,
-        LocalDate createdAt,
-        LocalDate updatedAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) implements Serializable {}

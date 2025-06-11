@@ -67,12 +67,12 @@ public abstract class FeedItem {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public FeedItem(Long mainImageId, String title, String shortDescription, String longDescription, Long shelterId, Long fundraisingId) {
-        this.mainImageId = mainImageId;
+    public FeedItem(Long shelterId, String title, String shortDescription, Long mainImageId, String longDescription, Long fundraisingId) {
+        this.shelterId = shelterId;
         this.title = title;
         this.shortDescription = shortDescription;
+        this.mainImageId = mainImageId;
         this.longDescription = longDescription;
-        this.shelterId = shelterId;
         this.fundraisingId = fundraisingId;
     }
 
@@ -86,9 +86,9 @@ public abstract class FeedItem {
         }
 
         return new EqualsBuilder()
-                .append(getMainImageId(), feedItem.getMainImageId())
                 .append(getTitle(), feedItem.getTitle())
                 .append(getShortDescription(), feedItem.getShortDescription())
+                .append(getMainImageId(), feedItem.getMainImageId())
                 .append(getLongDescription(), feedItem.getLongDescription())
                 .append(getShelterId(), feedItem.getShelterId())
                 .append(getFundraisingId(), feedItem.getFundraisingId())
@@ -98,9 +98,9 @@ public abstract class FeedItem {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(getMainImageId())
                 .append(getTitle())
                 .append(getShortDescription())
+                .append(getMainImageId())
                 .append(getLongDescription())
                 .append(getShelterId())
                 .append(getFundraisingId())
@@ -111,12 +111,12 @@ public abstract class FeedItem {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
+                .append("shelterId", shelterId)
                 .append("createdAt", createdAt)
-                .append("mainImageId", mainImageId)
                 .append("title", title)
                 .append("shortDescription", shortDescription)
+                .append("mainImageId", mainImageId)
                 .append("longDescription", longDescription)
-                .append("shelterId", shelterId)
                 .append("fundraisingId", fundraisingId)
                 .toString();
     }

@@ -37,8 +37,9 @@ public class EventParticipantService {
 
     @Transactional
     public EventParticipantResponse addParticipant(Long eventId, String username) {
-        eventParticipantRepository.findByEventIdAndUsername(eventId, username)
-                .orElseThrow(() -> new AlreadyParticipatingException(eventId, username));
+        if (eventParticipantRepository.findByEventIdAndUsername(eventId, username).isPresent()) {
+            throw new AlreadyParticipatingException(eventId, username);
+        }
 
         EventParticipant participant = new EventParticipant();
         participant.setEventId(eventId);
