@@ -50,12 +50,29 @@ public class AchievementController {
             @RequestParam int progress) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         String username = auth.getName();
 
         UserAchievement userAchievement = achievementService.trackAchievementProgress(
                 username, achievementId, progress);
 
         return ResponseEntity.ok(userAchievement);
+    }
+
+    @PostMapping("/track-like")
+    public ResponseEntity<Void> trackLikeProgress() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.trackLikeAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-support")
+    public ResponseEntity<Void> trackSupportProgress() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.trackSupportAchievements(username);
+        return ResponseEntity.ok().build();
     }
 }

@@ -23,6 +23,8 @@
     <module>reservations</module>
     <module>chat</module>
     <module>funding</module>
+    <module>image</module>
+    <module>feed</module>
   </modules>
 
   <distributionManagement>
@@ -40,8 +42,8 @@
     <java.version>21</java.version>
     <spring-cloud.version>2024.0.1</spring-cloud.version>
 
-    <checkstyle.config.location>${session.executionRootDirectory}/checkstyle.xml</checkstyle.config.location>
-    <checkstyle.suppressions.location>${session.executionRootDirectory}/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+    <checkstyle.config.location>${basedir}/checkstyle.xml</checkstyle.config.location>
+    <checkstyle.suppressions.location>${basedir}/checkstyle-suppressions.xml</checkstyle.suppressions.location>
   </properties>
 
   <dependencyManagement>
@@ -55,9 +57,56 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.32</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>1.6.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct-processor</artifactId>
+      <version>1.6.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok-mapstruct-binding</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+              <version>1.6.3</version>
+            </path>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.32</version>
+            </path>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok-mapstruct-binding</artifactId>
+              <version>0.2.0</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>

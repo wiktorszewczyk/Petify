@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class RegistrationDTO {
-    private String username; // Will be generated based on email or phone
+    private String username; // generated based on email or phone
 
     @NotBlank(message = "First name is required")
     private String firstName;

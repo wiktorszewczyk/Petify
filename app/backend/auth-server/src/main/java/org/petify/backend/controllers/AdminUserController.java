@@ -39,9 +39,6 @@ public class AdminUserController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    /**
-     * Get all users
-     */
     @GetMapping("/")
     public ResponseEntity<List<ApplicationUser>> getAllUsers() {
         List<ApplicationUser> users = userRepository.findAll();
@@ -49,9 +46,6 @@ public class AdminUserController {
         return ResponseEntity.ok(users);
     }
 
-    /**
-     * Get user by ID
-     */
     @GetMapping("/{id}")
     public ResponseEntity<ApplicationUser> getUserById(@PathVariable Integer id) {
         ApplicationUser user = userRepository.findById(id)
@@ -60,9 +54,6 @@ public class AdminUserController {
         return ResponseEntity.ok(user);
     }
 
-    /**
-     * Update user roles
-     */
     @PutMapping("/{id}/roles")
     public ResponseEntity<?> updateUserRoles(
             @PathVariable Integer id,
@@ -84,17 +75,11 @@ public class AdminUserController {
         }
     }
 
-    /**
-     * Get all roles
-     */
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getAllRoles() {
         return ResponseEntity.ok(roleRepository.findAll());
     }
 
-    /**
-     * Update volunteer status
-     */
     @PutMapping("/{id}/volunteer-status")
     public ResponseEntity<?> updateVolunteerStatus(
             @PathVariable Integer id,
@@ -116,9 +101,6 @@ public class AdminUserController {
         }
     }
 
-    /**
-     * Get all volunteers
-     */
     @GetMapping("/volunteers")
     public ResponseEntity<List<ApplicationUser>> getVolunteers() {
         List<ApplicationUser> volunteers = userRepository.findByVolunteerStatusNot(VolunteerStatus.NONE);
@@ -126,9 +108,6 @@ public class AdminUserController {
         return ResponseEntity.ok(volunteers);
     }
 
-    /**
-     * Get pending volunteers
-     */
     @GetMapping("/pending-volunteers")
     public ResponseEntity<List<ApplicationUser>> getPendingVolunteers() {
         List<ApplicationUser> pendingVolunteers = userRepository.findByVolunteerStatus(VolunteerStatus.PENDING);
@@ -136,9 +115,6 @@ public class AdminUserController {
         return ResponseEntity.ok(pendingVolunteers);
     }
 
-    /**
-     * Deactivate user account
-     */
     @PutMapping("/{id}/deactivate")
     public ResponseEntity<?> deactivateUser(
             @PathVariable Integer id,
@@ -163,9 +139,6 @@ public class AdminUserController {
         }
     }
 
-    /**
-     * Reactivate user account
-     */
     @PutMapping("/{id}/activate")
     public ResponseEntity<?> activateUser(@PathVariable Integer id) {
         try {
@@ -184,9 +157,6 @@ public class AdminUserController {
         }
     }
 
-    /**
-     * Get all inactive users
-     */
     @GetMapping("/inactive")
     public ResponseEntity<List<ApplicationUser>> getInactiveUsers() {
         List<ApplicationUser> inactiveUsers = userRepository.findByActiveIsFalse();
