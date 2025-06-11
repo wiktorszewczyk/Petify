@@ -29,6 +29,6 @@ mvn compile -f app/backend/pom.xml
 # Test Stage
 mvn test -f app/backend/pom.xml
 
-# Verify Stage (PMD, SpotBug, JaCoCo)
+# Verify Stage (PMD, SpotBugs, JaCoCo)
 mvn verify -f app/backend/pom.xml
 ```
