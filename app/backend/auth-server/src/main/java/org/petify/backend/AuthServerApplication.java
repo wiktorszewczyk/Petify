@@ -162,24 +162,6 @@ public class AuthServerApplication {
                 achievement6.setCategory(AchievementCategory.SUPPORT);
                 achievement6.setRequiredActions(25);
                 achievementRepository.save(achievement6);
-
-                Achievement achievement7 = new Achievement();
-                achievement7.setName("Wirtualny opiekun");
-                achievement7.setDescription("Wspieraj wybranego zwierzaka przez 5 kolejnych dni");
-                achievement7.setIconName("pet");
-                achievement7.setXpReward(100);
-                achievement7.setCategory(AchievementCategory.BADGE);
-                achievement7.setRequiredActions(5);
-                achievementRepository.save(achievement7);
-
-                Achievement achievement8 = new Achievement();
-                achievement8.setName("Charytatywna dusza");
-                achievement8.setDescription("Wpłać łączną sumę darowizn na sumę 100 zł");
-                achievement8.setIconName("money-bill");
-                achievement8.setXpReward(150);
-                achievement8.setCategory(AchievementCategory.BADGE);
-                achievement8.setRequiredActions(100);
-                achievementRepository.save(achievement8);
             }
         };
     }
