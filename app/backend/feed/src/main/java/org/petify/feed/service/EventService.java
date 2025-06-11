@@ -6,11 +6,14 @@ import org.petify.feed.exception.FeedItemNotFoundException;
 import org.petify.feed.mapper.EventMapper;
 import org.petify.feed.model.Event;
 import org.petify.feed.repository.EventRepository;
+import org.petify.feed.specification.FeedItemSpecification;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,6 +30,22 @@ public class EventService {
 
     public List<EventResponse> getEventsByShelterId(Long shelterId) {
         return eventRepository.findAllByShelterId(shelterId).stream()
+                .map(eventMapper::toDto)
+                .toList();
+    }
+
+    public List<EventResponse> getAllIncomingEvents(int days) {
+        LocalDateTime tillDate = LocalDateTime.now().plusDays(days);
+        return eventRepository.findAllIncomingEvents(tillDate, LocalDateTime.now()).stream()
+                .map(eventMapper::toDto)
+                .toList();
+    }
+
+    public List<EventResponse> searchIncomingEvents(int days, String content) {
+        LocalDateTime tillDate = LocalDateTime.now().plusDays(days);
+        Specification<Event> spec = FeedItemSpecification.hasContent(content);
+        return eventRepository.findAll(spec).stream()
+                .filter(event -> event.getStartDate().isBefore(tillDate) && event.getEndDate().isAfter(LocalDateTime.now()))
                 .map(eventMapper::toDto)
                 .toList();
     }

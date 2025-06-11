@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -40,6 +41,20 @@ public class EventController {
     @GetMapping("/shelter/{shelterId}/events")
     public ResponseEntity<List<EventResponse>> getEventsByShelterId(@PathVariable Long shelterId) {
         List<EventResponse> events = eventService.getEventsByShelterId(shelterId);
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/incoming/{days}")
+    public ResponseEntity<List<EventResponse>> getAllIncomingEvents(@PathVariable int days) {
+        List<EventResponse> events = eventService.getAllIncomingEvents(days);
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/incoming/{days}/search")
+    public ResponseEntity<List<EventResponse>> searchIncomingEvents(
+            @PathVariable int days,
+            @RequestParam String content) {
+        List<EventResponse> events = eventService.searchIncomingEvents(days, content);
         return ResponseEntity.ok(events);
     }
 

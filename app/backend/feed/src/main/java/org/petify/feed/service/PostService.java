@@ -6,11 +6,14 @@ import org.petify.feed.exception.FeedItemNotFoundException;
 import org.petify.feed.mapper.PostMapper;
 import org.petify.feed.model.Post;
 import org.petify.feed.repository.PostRepository;
+import org.petify.feed.specification.FeedItemSpecification;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,6 +30,22 @@ public class PostService {
 
     public List<PostResponse> getPostsByShelterId(Long shelterId) {
         return postRepository.findAllByShelterId(shelterId).stream()
+                .map(postMapper::toDto)
+                .toList();
+    }
+
+    public List<PostResponse> getAllRecentPosts(int days) {
+        LocalDateTime dateDaysAgo = LocalDateTime.now().minusDays(days);
+        return postRepository.findRecentPosts(dateDaysAgo).stream()
+                .map(postMapper::toDto)
+                .toList();
+    }
+
+    public List<PostResponse> searchRecentPosts(int days, String content) {
+        LocalDateTime dateDaysAgo = LocalDateTime.now().minusDays(days);
+        Specification<Post> spec = FeedItemSpecification.hasContent(content);
+        return postRepository.findAll(spec).stream()
+                .filter(post -> post.getCreatedAt().isAfter(dateDaysAgo))
                 .map(postMapper::toDto)
                 .toList();
     }

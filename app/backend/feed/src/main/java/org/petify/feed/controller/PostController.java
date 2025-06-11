@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -37,6 +38,20 @@ public class PostController {
     @GetMapping("/shelter/{shelterId}/posts")
     public ResponseEntity<List<PostResponse>> getPostsByShelterId(@PathVariable Long shelterId) {
         List<PostResponse> posts = postService.getPostsByShelterId(shelterId);
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/recent/{days}")
+    public ResponseEntity<List<PostResponse>> getAllRecentPosts(@PathVariable int days) {
+        List<PostResponse> posts = postService.getAllRecentPosts(days);
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/recent/{days}/search")
+    public ResponseEntity<List<PostResponse>> searchRecentPosts(
+            @PathVariable int days,
+            @RequestParam String content) {
+        List<PostResponse> posts = postService.searchRecentPosts(days, content);
         return ResponseEntity.ok(posts);
     }
 
