@@ -10,6 +10,7 @@ public record EventRequest(
         Long mainImageId,
         @NotBlank String title,
         @NotBlank String shortDescription,
+        String longDescription,
         Long fundraisingId,
         @NotNull LocalDateTime startDate,
         @NotNull LocalDateTime endDate,

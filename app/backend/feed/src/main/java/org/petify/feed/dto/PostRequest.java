@@ -9,7 +9,7 @@ public record PostRequest(
         Long mainImageId,
         @NotBlank String title,
         @NotBlank String shortDescription,
+        String longDescription,
         Long fundraisingId,
-        String content,
         List<Long> imageIds
 ) implements Serializable {}

@@ -22,14 +22,12 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final ImageMapper imageMapper;
 
-    @Transactional(readOnly = true)
     public ImageResponse getImageById(Long imageId) {
         Image image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(imageId));
         return imageMapper.toDto(image);
     }
 
-    @Transactional(readOnly = true)
     public List<ImageResponse> getImagesByEntityId(Long entityId, String entityType) {
         return imageRepository.findAllByEntityIdAndEntityType(entityId, entityType).stream()
                 .map(imageMapper::toDto)

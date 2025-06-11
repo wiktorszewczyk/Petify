@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
-    List<Post> findByShelterId(Long shelterId);
+    List<Post> findAllByShelterId(Long shelterId);
 }

@@ -23,18 +23,14 @@ import java.util.List;
 @Entity
 @Table(name = "posts")
 public class Post extends FeedItem {
-    @Column(name = "content")
-    private String content;
-
     @ElementCollection
     @CollectionTable(name = "post_image_ids", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "image_id")
     private List<Long> imageIds;
 
-    public Post(Long mainImageId, String title, String shortDescription, Long shelterId, Long fundraisingId, String content, 
+    public Post(Long mainImageId, String title, String shortDescription, String longDescription, Long shelterId, Long fundraisingId,
                 List<Long> imageIds) {
-        super(mainImageId, title, shortDescription, shelterId, fundraisingId);
-        this.content = content;
+        super(mainImageId, title, shortDescription, longDescription, shelterId, fundraisingId);
         this.imageIds = imageIds;
     }
 
@@ -48,7 +44,6 @@ public class Post extends FeedItem {
         }
         return new EqualsBuilder()
                 .appendSuper(super.equals(o))
-                .append(content, post.content)
                 .append(imageIds, post.imageIds)
                 .isEquals();
     }
@@ -57,7 +52,6 @@ public class Post extends FeedItem {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .appendSuper(super.hashCode())
-                .append(content)
                 .append(imageIds)
                 .toHashCode();
     }
@@ -66,7 +60,6 @@ public class Post extends FeedItem {
     public String toString() {
         return new ToStringBuilder(this)
                 .appendSuper(super.toString())
-                .append("content", content)
                 .append("imageIds", imageIds)
                 .toString();
     }

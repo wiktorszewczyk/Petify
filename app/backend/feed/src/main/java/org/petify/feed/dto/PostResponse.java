@@ -10,8 +10,9 @@ public record PostResponse(
         Long mainImageId,
         String title,
         String shortDescription,
+        String longDescription,
         Long fundraisingId,
-        String content,
         List<Long> imageIds,
-        LocalDate createdAt
+        LocalDate createdAt,
+        LocalDate updatedAt
 ) implements Serializable {}

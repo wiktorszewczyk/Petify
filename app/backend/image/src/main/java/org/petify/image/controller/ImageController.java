@@ -28,8 +28,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @GetMapping("/{imageId}")
-    public ResponseEntity<ImageResponse> getImageById(
-            @PathVariable Long imageId) {
+    public ResponseEntity<ImageResponse> getImageById(@PathVariable Long imageId) {
         ImageResponse image = imageService.getImageById(imageId);
         return ResponseEntity.ok(image);
     }
@@ -50,7 +49,6 @@ public class ImageController {
         if (files.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
         imageService.uploadImages(entityId, entityType, files);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -60,7 +58,6 @@ public class ImageController {
     public ResponseEntity<?> deleteImage(
             @PathVariable Long imageId,
             @AuthenticationPrincipal Jwt jwt) {
-
         imageService.deleteImage(imageId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,9 @@ public abstract class FeedItem {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
     @Column(name = "main_image_id")
     private Long mainImageId;
 
@@ -42,6 +46,9 @@ public abstract class FeedItem {
 
     @Column(name = "short_description", nullable = false)
     private String shortDescription;
+
+    @Column(name = "long_description")
+    private String longDescription;
 
     @Column(name = "shelter_id", nullable = false)
     private Long shelterId;
@@ -52,12 +59,19 @@ public abstract class FeedItem {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    public FeedItem(Long mainImageId, String title, String shortDescription, Long shelterId, Long fundraisingId) {
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public FeedItem(Long mainImageId, String title, String shortDescription, String longDescription, Long shelterId, Long fundraisingId) {
         this.mainImageId = mainImageId;
         this.title = title;
         this.shortDescription = shortDescription;
+        this.longDescription = longDescription;
         this.shelterId = shelterId;
         this.fundraisingId = fundraisingId;
     }
@@ -75,6 +89,7 @@ public abstract class FeedItem {
                 .append(getMainImageId(), feedItem.getMainImageId())
                 .append(getTitle(), feedItem.getTitle())
                 .append(getShortDescription(), feedItem.getShortDescription())
+                .append(getLongDescription(), feedItem.getLongDescription())
                 .append(getShelterId(), feedItem.getShelterId())
                 .append(getFundraisingId(), feedItem.getFundraisingId())
                 .isEquals();
@@ -86,6 +101,7 @@ public abstract class FeedItem {
                 .append(getMainImageId())
                 .append(getTitle())
                 .append(getShortDescription())
+                .append(getLongDescription())
                 .append(getShelterId())
                 .append(getFundraisingId())
                 .toHashCode();
@@ -99,6 +115,7 @@ public abstract class FeedItem {
                 .append("mainImageId", mainImageId)
                 .append("title", title)
                 .append("shortDescription", shortDescription)
+                .append("longDescription", longDescription)
                 .append("shelterId", shelterId)
                 .append("fundraisingId", fundraisingId)
                 .toString();

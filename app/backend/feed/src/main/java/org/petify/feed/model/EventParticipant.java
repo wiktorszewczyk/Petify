@@ -41,11 +41,6 @@ public class EventParticipant {
         createdAt = LocalDateTime.now();
     }
 
-    public EventParticipant(Long eventId, String username) {
-        this.eventId = eventId;
-        this.username = username;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

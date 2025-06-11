@@ -9,6 +9,7 @@ public record EventResponse(
         Long mainImageId,
         String title,
         String shortDescription,
+        String longDescription,
         Long fundraisingId,
         LocalDateTime startDate,
         LocalDateTime endDate,
@@ -16,5 +17,6 @@ public record EventResponse(
         Double latitude,
         Double longitude,
         Integer capacity,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) implements Serializable {}

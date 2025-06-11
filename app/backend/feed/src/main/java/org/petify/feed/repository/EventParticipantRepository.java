@@ -7,10 +7,15 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EventParticipantRepository extends JpaRepository<EventParticipant, Long>, JpaSpecificationExecutor<EventParticipant> {
-    List<EventParticipant> findByShelterId(Long shelterId);
+    List<EventParticipant> findAllByEventId(Long eventId);
 
-    List<EventParticipant> findByUsername(String username);
+    List<EventParticipant> findAllByUsername(String username);
+
+    Optional<EventParticipant> findByEventIdAndUsername(Long eventId, String username);
+
+    int countByEventId(Long eventId);
 }

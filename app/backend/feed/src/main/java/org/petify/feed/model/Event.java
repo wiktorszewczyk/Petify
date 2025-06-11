@@ -36,10 +36,10 @@ public class Event extends FeedItem {
     @Column(name = "capacity")
     private Integer capacity;
 
-    public Event(Long mainImageId, String title, String shortDescription, Long shelterId,
-                 Long fundraisingId, LocalDateTime startDate, LocalDateTime endDate,
+    public Event(Long mainImageId, String title, String shortDescription, String longDescription,
+                 Long shelterId, Long fundraisingId, LocalDateTime startDate, LocalDateTime endDate,
                  String address, Double latitude, Double longitude, Integer capacity) {
-        super(mainImageId, title, shortDescription, shelterId, fundraisingId);
+        super(mainImageId, title, shortDescription, longDescription, shelterId, fundraisingId);
         this.startDate = startDate;
         this.endDate = endDate;
         this.address = address;
