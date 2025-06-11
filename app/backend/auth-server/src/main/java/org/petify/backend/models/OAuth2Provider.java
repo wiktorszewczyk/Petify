@@ -13,10 +13,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Class representing the connection between a user account in our application
- * and their account with an external OAuth2 provider (e.g., Google)
- */
 @Getter
 @Setter
 @Entity
@@ -31,13 +27,8 @@ public class OAuth2Provider {
     private String providerId;  // e.g., "google", "github"
 
     @Column(nullable = false)
-    private String providerUserId;  // User ID at the provider
+    private String providerUserId;
 
-    /**
-     * Relation to the user in our application.
-     * Note: user must already be saved in the database (have an ID)
-     * before saving an OAuth2Provider object.
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_oauth2provider_user",
