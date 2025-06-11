@@ -79,6 +79,29 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.getShelterById(id));
     }
 
+    @GetMapping("/by-owner/{username}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<ShelterResponse> getShelterByOwner(@PathVariable String username) {
+        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+        return ResponseEntity.ok(shelter);
+    }
+
+    @GetMapping("/my-shelter")
+    @PreAuthorize("hasRole('SHELTER')")
+    public ResponseEntity<ShelterResponse> getMyShelter(@AuthenticationPrincipal Jwt jwt) {
+        String username = jwt.getSubject();
+        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+        return ResponseEntity.ok(shelter);
+    }
+
+    @GetMapping("/my-shelter/id")
+    @PreAuthorize("hasRole('SHELTER')")
+    public ResponseEntity<Long> getMyShelterIdAndVerifyOwnership(@AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+        ShelterResponse shelter = shelterService.getShelterByOwnerUsername(username);
+        return ResponseEntity.ok(shelter.id());
+    }
+
     @GetMapping("/{id}/pets")
     public ResponseEntity<?> getPetsByShelterId(
             @PathVariable("id") Long id,

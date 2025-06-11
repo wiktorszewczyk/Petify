@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -147,6 +148,12 @@ public class PetService {
                 .stream()
                 .map(Pet::getId)
                 .collect(Collectors.toList());
+    }
+
+    public boolean isPetArchived(Long petId) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new PetNotFoundException(petId));
+        return pet.isArchived();
     }
 
     public Page<PetResponseWithImages> getAllShelterPets(Long shelterId, Pageable pageable) {

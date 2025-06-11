@@ -39,6 +39,7 @@ public class ReservationService {
     public SlotResponse createSlot(SlotRequest r) {
         validateSlotRequest(r);
         validatePetExistence(r.petId());
+        validatePetNotArchived(r.petId());
 
         if (repo.existsByPetIdAndStartTimeAndEndTime(r.petId(), r.startTime(), r.endTime())) {
             throw new SlotAlreadyExistsException(
@@ -116,12 +117,20 @@ public class ReservationService {
         ReservationSlot slot = repo.findById(slotId)
                 .orElseThrow(() -> new SlotNotFoundException("Slot with ID " + slotId + " not found"));
 
-        boolean isAdminOrShelter = roles.stream()
-                .anyMatch(r -> r.equals("ADMIN") || r.equals("SHELTER"));
+        boolean isReservationOwner = username.equals(slot.getReservedBy());
 
-        boolean isOwner = username.equals(slot.getReservedBy());
+        boolean isAdmin = roles != null && roles.stream()
+                .anyMatch(r -> r.contains("ADMIN"));
 
-        if (!isAdminOrShelter && !isOwner) {
+        boolean isShelterOwnerOfPet = false;
+        try {
+            String shelterOwnerUsername = petClient.getOwnerByPetId(slot.getPetId());
+            isShelterOwnerOfPet = username.equals(shelterOwnerUsername);
+        } catch (Exception e) {
+            log.error("Could not verify pet ownership for petId {}. Error: {}", slot.getPetId(), e.getMessage());
+        }
+
+        if (!isReservationOwner && !isAdmin && !isShelterOwnerOfPet) {
             throw new UnauthorizedOperationException("You are not authorized to cancel this reservation");
         }
 
@@ -159,7 +168,19 @@ public class ReservationService {
 
         List<Long> targetPetIds;
         try {
-            targetPetIds = r.allPets() ? petClient.getAllPetIds() : r.petIds();
+            if (r.allPets()) {
+                try {
+                    Long shelterId = petClient.getMyShelterIdAndVerifyOwnership();
+                    targetPetIds = petClient.getPetIdsByShelterId(shelterId);
+                } catch (Exception e) {
+                    targetPetIds = petClient.getAllPetIds();
+                }
+            } else {
+                targetPetIds = r.petIds();
+            }
+
+            targetPetIds = filterArchivedPets(targetPetIds);
+
         } catch (Exception e) {
             log.error("Failed to fetch pet IDs from pet service", e);
             throw new PetServiceUnavailableException("Unable to fetch pet information. Please try again later.");
@@ -275,6 +296,38 @@ public class ReservationService {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
+    }
+
+    private void validatePetNotArchived(Long petId) {
+        try {
+            boolean isArchived = petClient.isPetArchived(petId);
+            if (isArchived) {
+                throw new IllegalArgumentException("Cannot create slots for archived pet with ID " + petId);
+            }
+        } catch (Exception e) {
+            log.error("Could not verify pet archive status for petId {}. Error: {}", petId, e.getMessage());
+            throw new PetServiceUnavailableException("Unable to verify pet status");
+        }
+    }
+
+    private List<Long> filterArchivedPets(List<Long> petIds) {
+        List<Long> activePetIds = new ArrayList<>();
+
+        for (Long petId : petIds) {
+            try {
+                boolean isArchived = petClient.isPetArchived(petId);
+                if (!isArchived) {
+                    activePetIds.add(petId);
+                } else {
+                    log.info("Skipping archived pet with ID {}", petId);
+                }
+            } catch (Exception e) {
+                log.warn("Could not check archive status for pet {}. Skipping. Error: {}", petId, e.getMessage());
+            }
+        }
+
+        log.info("Filtered {} active pets from {} total pets", activePetIds.size(), petIds.size());
+        return activePetIds;
     }
 
     private SlotResponse mapToResponse(ReservationSlot slot) {

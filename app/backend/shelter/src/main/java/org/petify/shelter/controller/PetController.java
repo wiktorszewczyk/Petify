@@ -118,6 +118,19 @@ public class PetController {
         return ResponseEntity.ok(petIds);
     }
 
+    @GetMapping("/shelter/{shelterId}/ids")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
+    public ResponseEntity<List<Long>> getPetIdsByShelterId(@PathVariable Long shelterId) {
+        List<Long> petIds = petService.getPetIdsByShelterId(shelterId);
+        return ResponseEntity.ok(petIds);
+    }
+
+    @GetMapping("/{petId}/archived")
+    public ResponseEntity<Boolean> isPetArchived(@PathVariable Long petId) {
+        boolean archived = petService.isPetArchived(petId);
+        return ResponseEntity.ok(archived);
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PutMapping("/{id}")
     public ResponseEntity<PetResponse> updatePet(
