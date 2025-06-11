@@ -1,9 +1,11 @@
 package org.petify.image.service;
 
 import org.petify.image.dto.ImageResponse;
+import org.petify.image.dto.ImageShortResponse;
 import org.petify.image.exception.ImageNotFoundException;
 import org.petify.image.exception.MaxImagesReachedException;
 import org.petify.image.mapper.ImageMapper;
+import org.petify.image.mapper.ImageSummaryMapper;
 import org.petify.image.model.Image;
 import org.petify.image.repository.ImageRepository;
 
@@ -21,6 +23,7 @@ import java.util.List;
 public class ImageService {
     private final ImageRepository imageRepository;
     private final ImageMapper imageMapper;
+    private final ImageSummaryMapper imageSummaryMapper;
 
     public ImageResponse getImageById(Long imageId) {
         Image image = imageRepository.findById(imageId)
@@ -35,7 +38,7 @@ public class ImageService {
     }
     
     @Transactional
-    public ImageResponse uploadImage(Long entityId, String entityType, MultipartFile file) throws IOException {
+    public ImageShortResponse uploadImage(Long entityId, String entityType, MultipartFile file) throws IOException {
         int currentImageCount = imageRepository.countByEntityIdAndEntityType(entityId, file.getContentType());
         if (currentImageCount >= 5) {
             throw new MaxImagesReachedException(entityId, entityType);
@@ -49,12 +52,12 @@ public class ImageService {
         image.setImageData(file.getBytes());
 
         Image savedImage = imageRepository.save(image);
-        return imageMapper.toDto(savedImage);
+        return imageSummaryMapper.toDto(savedImage);
     }
     
     @Transactional
-    public List<ImageResponse> uploadImages(Long entityId, String entityType, List<MultipartFile> images) throws IOException {
-        List<ImageResponse> savedImages = new ArrayList<>();
+    public List<ImageShortResponse> uploadImages(Long entityId, String entityType, List<MultipartFile> images) throws IOException {
+        List<ImageShortResponse> savedImages = new ArrayList<>();
         for (MultipartFile image : images) {
             savedImages.add(uploadImage(entityId, entityType, image));
         }

@@ -1,6 +1,7 @@
 package org.petify.image.controller;
 
 import org.petify.image.dto.ImageResponse;
+import org.petify.image.dto.ImageShortResponse;
 import org.petify.image.service.ImageService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,16 +42,17 @@ public class ImageController {
         return ResponseEntity.ok(images);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
     @PostMapping("/{entityType}/{entityId}/images")
-    public ResponseEntity<?> uploadMultipleImages(
+    public ResponseEntity<List<ImageShortResponse>> uploadMultipleImages(
             @PathVariable Long entityId,
             @PathVariable String entityType,
             @RequestParam("images") List<MultipartFile> files) throws IOException {
         if (files.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        imageService.uploadImages(entityId, entityType, files);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        List<ImageShortResponse> uploadedImages = imageService.uploadImages(entityId, entityType, files);
+        return new ResponseEntity<>(uploadedImages, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
