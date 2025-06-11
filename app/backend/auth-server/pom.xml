@@ -77,7 +77,8 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <scope>provided</scope>
+      <version>1.18.32</version>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -110,6 +111,7 @@
             <path>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
+              <version>1.18.32</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
