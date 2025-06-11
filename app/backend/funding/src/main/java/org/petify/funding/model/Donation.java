@@ -8,11 +8,14 @@ import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -63,6 +66,10 @@ public abstract class Donation {
 
     @Column(name = "pet_id")
     private Long petId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fundraiser_id")
+    private Fundraiser fundraiser;
 
     @Column(name = "donor_id")
     private Integer donorId;
