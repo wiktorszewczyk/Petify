@@ -1,8 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/api/initial_api.dart';
+import '../services/token_repository.dart';
 import '../styles/colors.dart';
 import 'auth/welcome_view.dart';
+import 'home_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,14 +20,52 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      precacheImage(const AssetImage('assets/images/dogs_collage.jpg'), context).then((_) {
-        Future.delayed(const Duration(seconds: 2), () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const WelcomeView()),
-          );
-        });
-      });
+      precacheImage(const AssetImage('assets/images/dogs_collage.jpg'), context);
+      _checkLoginStatus();
     });
+  }
+
+  Future<void> _checkLoginStatus() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    final token = await TokenRepository().getToken();
+    if (token == null) {
+      _goToWelcome();
+      return;
+    }
+
+    try {
+      final resp = await InitialApi().dio.post(
+        '/auth/token/validate',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+      if (resp.statusCode == 200 && resp.data['valid'] == true) {
+        _goToHome();
+      } else {
+        await TokenRepository().removeToken();
+        _goToWelcome();
+      }
+    } on DioException catch (e) {
+      // niepoprawny lub wygasły token
+      await TokenRepository().removeToken();
+      _goToWelcome();
+    }
+  }
+
+  void _goToHome() {
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const HomeView()),
+    );
+  }
+
+  void _goToWelcome() {
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const WelcomeView()),
+    );
   }
 
   @override

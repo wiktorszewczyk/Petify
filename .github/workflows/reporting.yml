@@ -1,0 +1,59 @@
+name: Publish Reports to GitHub Pages
+
+concurrency:
+  group: reporting
+  cancel-in-progress: false
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_PORT: 5432
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    name: Generate Reports
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'oracle'
+        cache: maven
+    
+    - name: Setup database
+      run: docker compose -f docker/database/compose.yml up -d
+
+    - name: Generate reports
+      run: mvn verify site site:stage -f app/backend/pom.xml
+
+    - name: Upload reports
+      id: deployment
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: app/backend/target/staging
+
+  deploy:
+    needs: generate
+    runs-on: ubuntu-latest
+    name: Deploy to GitHub Pages
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: GitHub Pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

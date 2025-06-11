@@ -12,6 +12,7 @@
   <groupId>org.petify</groupId>
   <artifactId>auth-server</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
   <name>auth-service</name>
 
   <dependencyManagement>
@@ -25,7 +26,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -88,6 +88,10 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-openfeign</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
     </dependency>
   </dependencies>
 
@@ -119,5 +123,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>
