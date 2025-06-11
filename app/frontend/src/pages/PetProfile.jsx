@@ -85,6 +85,15 @@ function PetProfile() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [showDonatePopup, setShowDonatePopup] = useState(false);
   const [showAdoptPopup, setShowAdoptPopup] = useState(false);
+  const [motivationText, setMotivationText] = useState('');
+const [fullName, setFullName] = useState('');
+const [phoneNumber, setPhoneNumber] = useState('');
+const [address, setAddress] = useState('');
+const [housingType, setHousingType] = useState('');
+const [isHouseOwner, setIsHouseOwner] = useState(false);
+const [hasYard, setHasYard] = useState(false);
+const [hasOtherPets, setHasOtherPets] = useState(false);
+const [description, setDescription] = useState('');
 
 
   const handlePrev = () => {
@@ -168,12 +177,70 @@ function PetProfile() {
       {showAdoptPopup && (
   <div className="donation-popup-overlay" onClick={() => setShowAdoptPopup(false)}>
     <div className="donation-popup" onClick={(e) => e.stopPropagation()}>
-      <h2>Chcesz adoptować {pet.name}?</h2>
-      <p>Skontaktujemy Cię ze schroniskiem, aby rozpocząć proces adopcji.</p>
-      <button className="confirm-donate-btn" onClick={() => window.location.href = '/adoption-form'}>
-        Wypełnij formularz
-      </button>
-      <button className="close-popup-btn" onClick={() => setShowAdoptPopup(false)}>X</button>
+      <h2>Formularz Adopcyjny – {pet.name}</h2>
+
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+
+          const payload = {
+            motivationText,
+            fullName,
+            phoneNumber,
+            address,
+            housingType,
+            isHouseOwner,
+            hasYard,
+            hasOtherPets,
+            description,
+          };
+
+          try {
+            const res = await fetch(`http://localhost:9000/pets/${pet.id}/adopt`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+              },
+              body: JSON.stringify(payload),
+            });
+
+            if (res.ok) {
+              alert("Formularz wysłany pomyślnie!");
+              setShowAdoptPopup(false);
+            } else {
+              alert("Błąd podczas wysyłania formularza.");
+            }
+          } catch (err) {
+            console.error("Adoption error:", err);
+            alert("Wystąpił błąd.");
+          }
+        }}
+      >
+        <input type="text" placeholder="Imię i nazwisko" required value={fullName} onChange={e => setFullName(e.target.value)} />
+        <input type="text" placeholder="Telefon" required value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
+        <input type="text" placeholder="Adres" required value={address} onChange={e => setAddress(e.target.value)} />
+        <input type="text" placeholder="Rodzaj mieszkania (np. Apartment)" required value={housingType} onChange={e => setHousingType(e.target.value)} />
+        
+        <textarea placeholder="Dlaczego chcesz adoptować?" required value={motivationText} onChange={e => setMotivationText(e.target.value)} />
+        <textarea placeholder="Dodatkowe informacje o sobie" value={description} onChange={e => setDescription(e.target.value)} />
+
+        <label>
+          <input type="checkbox" checked={isHouseOwner} onChange={e => setIsHouseOwner(e.target.checked)} />
+          Właściciel nieruchomości
+        </label>
+        <label>
+          <input type="checkbox" checked={hasYard} onChange={e => setHasYard(e.target.checked)} />
+          Posiada ogród
+        </label>
+        <label>
+          <input type="checkbox" checked={hasOtherPets} onChange={e => setHasOtherPets(e.target.checked)} />
+          Ma inne zwierzęta
+        </label>
+
+        <button type="submit" className="confirm-donate-btn">Wyślij formularz</button>
+        <button type="button" className="close-popup-btn" onClick={() => setShowAdoptPopup(false)}>X</button>
+      </form>
     </div>
   </div>
 )}

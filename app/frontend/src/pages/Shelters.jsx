@@ -28,19 +28,19 @@ const pawSteps = [
 
 const shelters = [
   {
-    id: 1,
+    id: 101,
     name: 'Schronisko na Paluchu',
     location: 'Warszawa',
     image: shelter1,
   },
   {
-    id: 2,
+    id: 102,
     name: 'Azyl Koci Świat',
     location: 'Kraków',
     image: shelter2,
   },
   {
-    id: 3,
+    id: 103,
     name: 'Psi Zakątek',
     location: 'Gdańsk',
     image: shelter3,
@@ -84,7 +84,7 @@ const Shelters = () => {
             <div
               key={shelter.id}
               className="shelter-card"
-              onClick={() => navigate(`/shelter/${shelter.id}`)}
+              onClick={() => navigate(`/shelterProfile/${shelter.id}`)}
             >
               <div className="shelter-card-image">
                 <img src={shelter.image} alt={shelter.name} />

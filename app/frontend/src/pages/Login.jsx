@@ -1,17 +1,24 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { login, handleGoogleLogin } from '../api/auth';
 import './Auth.css' 
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function Login() {
-  const [email, setEmail] = useState('')
+  const [username, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Login:', { email, password })
-    navigate('/home')
-  }
+ 
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(username, password);
+      navigate("/home"); 
+    } catch (err) {
+      alert("Błąd logowania: " + err.message);
+    }
+  };
 
   return (
     <div className="auth-bg d-flex justify-content-center align-items-center min-vh-100 ">
@@ -23,11 +30,11 @@ export default function Login() {
         <h2 className="mb-4 text-center">Logowanie</h2>
 
         <div className="mb-3">
-          <label className="form-label">Email</label>
+          <label className="form-label">Username</label>
           <input
-            type="email"
+            type="username"
             className="form-control"
-            value={email}
+            value={username}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -47,6 +54,15 @@ export default function Login() {
         <button type="submit" className="btn btn-primary w-100">
           Zaloguj się
         </button>
+        <GoogleLogin
+  onSuccess={(credentialResponse) => {
+    const idToken = credentialResponse.credential;
+    handleGoogleLogin(idToken); // tu wysyłasz do backendu
+  }}
+  onError={() => {
+    console.log('Logowanie przez Google nie powiodło się');
+  }}
+/>
       </form>
     </div>
   )

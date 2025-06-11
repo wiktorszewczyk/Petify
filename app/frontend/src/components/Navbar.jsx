@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import userCircle from '../assets/circle-user.svg';
-import logo from '../assets/logo-placeholder.png';
+import logo from '../assets/logo.svg';
 import { ArrowLeft, ArrowRight, Menu } from 'lucide-react';
 import './Navbar.css';
 

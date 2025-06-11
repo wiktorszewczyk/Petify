@@ -97,13 +97,13 @@
   background: rgb(255, 174, 0);
 }
 
-.slider-btn.left {
+.slider-btn .left {
   position: absolute;
-  left: 10px;
+  left: 28px; 
   top: 50%;
 }
 
-.slider-btn.right {
+.slider-btn .right {
   position: absolute;
   right: 28px;
   top: 50%;
@@ -388,4 +388,61 @@
     opacity: 0;
     transform: scale(0.5) rotate(var(--rotation));
   }
+}
+
+
+.donation-popup form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.donation-popup form input[type="text"],
+.donation-popup form textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  background-color: #f9f9f9;
+}
+
+.donation-popup form textarea {
+  min-height: 100px;
+}
+
+.donation-popup form label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.confirm-donate-btn {
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.confirm-donate-btn:hover {
+  background-color: #218838;
+}
+
+.close-popup-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #666;
+  cursor: pointer;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }

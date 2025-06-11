@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import './Landing.css';
-import logo from '../assets/logo-placeholder.png';
+import logo from '../assets/logo.svg';
 import heroBg from '../assets/dogs.jpg'; 
 import walk from '../assets/walk.gif';
 import profile from '../assets/profile.gif';

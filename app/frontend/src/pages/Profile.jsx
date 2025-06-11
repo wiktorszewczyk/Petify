@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useRef, useEffect } from 'react';
 import "./Profile.css";
 import {
   Heart,
@@ -11,6 +11,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
+import { fetchUserData } from "../api/auth"; 
 
 import profileP from "../assets/profileP.jpg";
 
@@ -34,83 +35,65 @@ const pawSteps = [
 
 ];
 
-const mockData = {
-  user: {
-    name: "Anna Kowalska",
-    rank: "Początkujący Wolontariusz",
-    location: "Warszawa",
-    profilePicture: profileP,
-  },
-  level: {
-    currentLevel: 4,
-    currentXp: 230,
-    xpToNext: 170,
-    progressPercent: 58,
-  },
-  stats: {
-    liked: 17,
-    supports: 3,
-    badges: 12,
-  },
-  achievementsEarned: [
-    "Szlachetny Darczyńca",
-    "Złoty Samarytanin",
-    "Wirtualny Opiekun",
-  ],
-  achievementsInProgress: [
-    {
-      title: "Wirtualny opiekun",
-      description: "Opiekuj się wybranym zwierzakiem online.",
-      progress: 60,
-      xp: 180,
-      done: 3,
-      total: 5,
-    },
-    {
-      title: "Złoty samarytanin",
-      description: "Wesprzyj 50 zwierząt w potrzebie.",
-      progress: 24,
-      xp: 0,
-      done: 12,
-      total: 50,
-    },
-  ],
-  activity: [
-    {
-      type: "achievement",
-      text: "Zdobyto odznakę \"Szlachetny Darczyńca\"",
-      icon: "🎖",
-      date: "10.05.2025",
-    },
-    {
-      type: "visit",
-      text: "Odwiedziłeś podopiecznego Burek",
-      icon: "🐕",
-      date: "02.04.2025",
-    },
-    {
-      type: "donation",
-      text: "Przekazano 10,00 zł na cel \"Azyl\"",
-      icon: "💰",
-      date: "10.05.2025",
-    },
-  ],
-  donations: [
-    { amount: "10,00 zł", date: "10.05.2025", to: "Azyl" },
-    { amount: "20,00 zł", date: "07.05.2023", to: "Szczęśliwy Opiekun" },
-  ],
-};
+
 
 function Profile() {
-  const {
-    user,
-    level,
-    stats,
-    achievementsEarned,
-    achievementsInProgress,
-    activity,
-    donations,
-  } = mockData;
+ const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUserData()
+      .then(data => {
+        setUserData(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Błąd podczas ładowania profilu:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Ładowanie profilu...</div>;
+  if (!userData) return <div>Błąd: brak danych użytkownika</div>;
+
+
+   const user = {
+    name: `${userData.firstName} ${userData.lastName}`,
+    rank: "Początkujący Wolontariusz",
+    location: "Polska",
+    profilePicture: profileP,
+  };
+
+  const level = {
+    currentLevel: userData.level,
+    currentXp: userData.xpPoints,
+    xpToNext: userData.xpToNextLevel,
+    progressPercent: Math.round((userData.xpPoints / (userData.xpPoints + userData.xpToNextLevel)) * 100),
+  };
+
+  const stats = {
+    liked: userData.likesCount,
+    supports: userData.supportCount,
+    badges: userData.badgesCount,
+  };
+
+  const achievementsEarned = userData.achievements
+    .filter(a => a.completed)
+    .map(a => a.achievement.name);
+
+  const achievementsInProgress = userData.achievements
+    .filter(a => !a.completed)
+    .map(a => ({
+      title: a.achievement.name,
+      description: a.achievement.description,
+      progress: a.progressPercentage,
+      xp: a.achievement.xpReward,
+      done: a.currentProgress,
+      total: a.achievement.requiredActions,
+    }));
+
+  const donations = []; // placeholder – chyba nie ma endpointu jeszcze?
+  const activity = [];
 
   return (
     <div className="profile-body">
