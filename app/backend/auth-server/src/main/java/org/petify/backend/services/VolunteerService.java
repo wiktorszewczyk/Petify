@@ -22,9 +22,6 @@ public class VolunteerService {
     @Autowired
     private VolunteerApplicationRepository volunteerApplicationRepository;
 
-    /**
-     * Submit a volunteer application
-     */
     @Transactional
     public VolunteerApplication applyForVolunteer(String username, VolunteerApplication application) {
         ApplicationUser user = userRepository.findByUsername(username)
@@ -44,9 +41,6 @@ public class VolunteerService {
         return volunteerApplicationRepository.save(application);
     }
 
-    /**
-     * Get a user's volunteer applications
-     */
     public List<VolunteerApplication> getUserApplications(String username) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -54,9 +48,6 @@ public class VolunteerService {
         return volunteerApplicationRepository.findByUserOrderByApplicationDateDesc(user);
     }
 
-    /**
-     * Approve a volunteer application
-     */
     @Transactional
     public VolunteerApplication approveApplication(Long applicationId) {
         VolunteerApplication application = volunteerApplicationRepository.findById(applicationId)
@@ -71,9 +62,6 @@ public class VolunteerService {
         return volunteerApplicationRepository.save(application);
     }
 
-    /**
-     * Reject a volunteer application
-     */
     @Transactional
     public VolunteerApplication rejectApplication(Long applicationId, String reason) {
         VolunteerApplication application = volunteerApplicationRepository.findById(applicationId)
@@ -89,9 +77,6 @@ public class VolunteerService {
         return volunteerApplicationRepository.save(application);
     }
 
-    /**
-     * Get applications by status
-     */
     public List<VolunteerApplication> getApplicationsByStatus(String status) {
         return volunteerApplicationRepository.findByStatus(status);
     }
