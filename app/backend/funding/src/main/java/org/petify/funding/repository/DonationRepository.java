@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -100,4 +101,43 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
                     + "ORDER BY SUM(d.amount) DESC"
     )
     List<Object[]> findTopSheltersByDonationAmount(Pageable pageable);
+
+    Page<Donation> findByFundraiserId(Long fundraiserId, Pageable pageable);
+
+    Long countByFundraiserId(Long fundraiserId);
+
+    @Query(
+            "SELECT COALESCE(SUM(d.amount), 0) "
+                    + "FROM Donation d "
+                    + "WHERE d.fundraiser.id = :fundraiserId "
+                    + "  AND d.status = 'COMPLETED'"
+    )
+    BigDecimal sumCompletedDonationsByFundraiserId(@Param("fundraiserId") Long fundraiserId);
+
+    @Query(
+            "SELECT COUNT(d) "
+                    + "FROM Donation d "
+                    + "WHERE d.fundraiser.id = :fundraiserId "
+                    + "  AND d.status = 'COMPLETED'"
+    )
+    Long countCompletedDonationsByFundraiserId(@Param("fundraiserId") Long fundraiserId);
+
+    @Query(
+            "SELECT COUNT(DISTINCT d.donorUsername) "
+                    + "FROM Donation d "
+                    + "WHERE d.fundraiser.id = :fundraiserId "
+                    + "  AND d.status = 'COMPLETED'"
+    )
+    Long countUniqueDonorsByFundraiserId(@Param("fundraiserId") Long fundraiserId);
+
+    @Query(
+            "SELECT COALESCE(SUM(d.amount), 0) "
+                    + "FROM Donation d "
+                    + "WHERE d.fundraiser.id = :fundraiserId "
+                    + "  AND d.status = 'COMPLETED' "
+                    + "  AND d.createdAt >= :dateAfter"
+    )
+    BigDecimal sumCompletedDonationsByFundraiserIdAndDateAfter(
+            @Param("fundraiserId") Long fundraiserId,
+            @Param("dateAfter") Instant dateAfter);
 }

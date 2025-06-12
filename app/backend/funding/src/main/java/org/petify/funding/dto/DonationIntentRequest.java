@@ -21,6 +21,8 @@ public class DonationIntentRequest {
 
     private Long petId;
 
+    private Long fundraiserId;
+
     @NotNull(message = "Donation type is required")
     private DonationType donationType;
 

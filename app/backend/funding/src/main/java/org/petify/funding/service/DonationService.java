@@ -9,9 +9,11 @@ import org.petify.funding.exception.ResourceNotFoundException;
 import org.petify.funding.model.Donation;
 import org.petify.funding.model.DonationStatus;
 import org.petify.funding.model.DonationType;
+import org.petify.funding.model.Fundraiser;
 import org.petify.funding.model.Payment;
 import org.petify.funding.model.PaymentStatus;
 import org.petify.funding.repository.DonationRepository;
+import org.petify.funding.repository.FundraiserRepository;
 import org.petify.funding.repository.PaymentRepository;
 
 import feign.FeignException;
@@ -35,6 +37,7 @@ public class DonationService {
 
     private final DonationRepository donationRepository;
     private final PaymentRepository paymentRepository;
+    private final FundraiserRepository fundraiserRepository;
     private final ShelterClient shelterClient;
 
     @Transactional
@@ -48,6 +51,10 @@ public class DonationService {
 
         if (donationRequest.getPetId() != null) {
             validatePetExists(donationRequest.getShelterId(), donationRequest.getPetId());
+        }
+
+        if (donationRequest.getFundraiserId() != null) {
+            validateFundraiserExists(donationRequest.getFundraiserId(), donationRequest.getShelterId());
         }
 
         Donation donation = donationRequest.toEntity();
@@ -82,6 +89,12 @@ public class DonationService {
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForPet(Long petId, Pageable pageable) {
         return donationRepository.findByPetId(petId, pageable)
+                .map(DonationResponse::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DonationResponse> getForFundraiser(Long fundraiserId, Pageable pageable) {
+        return donationRepository.findByFundraiserId(fundraiserId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
@@ -296,6 +309,22 @@ public class DonationService {
         }
     }
 
+    private void validateFundraiserExists(Long fundraiserId, Long shelterId) {
+        log.debug("Validating fundraiser {} for shelter {}", fundraiserId, shelterId);
+        Fundraiser fundraiser = fundraiserRepository.findById(fundraiserId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fundraiser not found: " + fundraiserId));
+
+        if (!fundraiser.getShelterId().equals(shelterId)) {
+            throw new RuntimeException("Fundraiser does not belong to the specified shelter");
+        }
+
+        if (!fundraiser.canAcceptDonations()) {
+            throw new RuntimeException("Fundraiser is not accepting donations in current state: " + fundraiser.getStatus());
+        }
+
+        log.debug("Fundraiser {} is valid for donations", fundraiserId);
+    }
+
     private String getCurrentUsername() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
@@ -308,6 +337,7 @@ public class DonationService {
         DonationRequest donationRequest = new DonationRequest();
         donationRequest.setShelterId(request.getShelterId());
         donationRequest.setPetId(request.getPetId());
+        donationRequest.setFundraiserId(request.getFundraiserId());
         donationRequest.setDonationType(request.getDonationType());
         donationRequest.setAmount(request.getAmount());
         donationRequest.setMessage(request.getMessage());

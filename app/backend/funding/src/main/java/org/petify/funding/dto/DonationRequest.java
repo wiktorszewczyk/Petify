@@ -1,10 +1,6 @@
 package org.petify.funding.dto;
 
-import org.petify.funding.model.Currency;
-import org.petify.funding.model.Donation;
-import org.petify.funding.model.DonationType;
-import org.petify.funding.model.MaterialDonation;
-import org.petify.funding.model.MonetaryDonation;
+import org.petify.funding.model.*;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -31,6 +27,8 @@ public class DonationRequest {
 
     private Long petId;
 
+    private Long fundraiserId;
+
     private Integer donorId;
 
     private String donorUsername;
@@ -54,29 +52,41 @@ public class DonationRequest {
 
     public Donation toEntity() {
         return switch (donationType) {
-            case MONEY -> MonetaryDonation.builder()
-                    .shelterId(shelterId)
-                    .petId(petId)
-                    .donorId(donorId)
-                    .donorUsername(donorUsername)
-                    .message(message)
-                    .anonymous(anonymous)
-                    .amount(amount)
-                    .currency(Currency.PLN) // Na razie tylko PLN
-                    .build();
+            case MONEY -> {
+                var donation = MonetaryDonation.builder()
+                        .shelterId(shelterId)
+                        .petId(petId)
+                        .donorId(donorId)
+                        .donorUsername(donorUsername)
+                        .message(message)
+                        .anonymous(anonymous)
+                        .amount(amount)
+                        .currency(Currency.PLN) // Na razie tylko PLN
+                        .build();
+                if (fundraiserId != null) {
+                    donation.setFundraiser(Fundraiser.builder().id(fundraiserId).build());
+                }
+                yield donation;
+            }
 
-            case MATERIAL -> MaterialDonation.builder()
-                    .shelterId(shelterId)
-                    .petId(petId)
-                    .donorId(donorId)
-                    .donorUsername(donorUsername)
-                    .message(message)
-                    .anonymous(anonymous)
-                    .itemName(itemName)
-                    .unitPrice(unitPrice)
-                    .quantity(quantity)
-                    .currency(Currency.PLN) // Na razie tylko PLN
-                    .build();
+            case MATERIAL -> {
+                var donation = MaterialDonation.builder()
+                        .shelterId(shelterId)
+                        .petId(petId)
+                        .donorId(donorId)
+                        .donorUsername(donorUsername)
+                        .message(message)
+                        .anonymous(anonymous)
+                        .itemName(itemName)
+                        .unitPrice(unitPrice)
+                        .quantity(quantity)
+                        .currency(Currency.PLN) // Na razie tylko PLN
+                        .build();
+                if (fundraiserId != null) {
+                    donation.setFundraiser(Fundraiser.builder().id(fundraiserId).build());
+                }
+                yield donation;
+            }
 
             default -> throw new IllegalStateException("Unexpected donationType: " + donationType);
         };

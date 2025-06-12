@@ -188,6 +188,17 @@ public class DonationController {
         return ResponseEntity.ok(stats);
     }
 
+    @GetMapping("/fundraiser/{fundraiserId}")
+    public ResponseEntity<Page<DonationResponse>> getDonationsByFundraiser(
+            @PathVariable Long fundraiserId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        Page<DonationResponse> donations = donationService.getForFundraiser(
+                fundraiserId, PageRequest.of(page, size, Sort.by("donatedAt").descending()));
+        return ResponseEntity.ok(donations);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
