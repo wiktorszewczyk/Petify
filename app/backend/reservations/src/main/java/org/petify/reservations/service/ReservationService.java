@@ -138,7 +138,6 @@ public class ReservationService {
             throw new SlotNotAvailableException("Slot is not currently reserved");
         }
 
-        slot.setReservedBy(null);
         slot.setStatus(ReservationStatus.CANCELLED);
 
         log.info("Reservation for slot {} cancelled by {}", slotId, username);
@@ -230,13 +229,6 @@ public class ReservationService {
 
         ReservationSlot slot = repo.findById(slotId)
                 .orElseThrow(() -> new SlotNotFoundException("Slot with ID " + slotId + " not found"));
-
-        boolean isAdminOrShelter = roles.stream()
-                .anyMatch(r -> r.equals("ADMIN") || r.equals("SHELTER"));
-
-        if (!isAdminOrShelter) {
-            throw new UnauthorizedOperationException("You are not authorized to reactivate this slot");
-        }
 
         if (slot.getStatus() != ReservationStatus.CANCELLED) {
             throw new SlotNotAvailableException("Slot is not currently cancelled");
