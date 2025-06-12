@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 
 @Getter
@@ -128,7 +129,7 @@ public class Fundraiser {
         if (goalAmount == null || goalAmount.compareTo(BigDecimal.ZERO) == 0) {
             return 0.0;
         }
-        return currentAmount.divide(goalAmount, 4, BigDecimal.ROUND_HALF_UP)
+        return currentAmount.divide(goalAmount, 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100))
                 .doubleValue();
     }

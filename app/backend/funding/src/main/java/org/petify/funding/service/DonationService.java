@@ -1,5 +1,7 @@
 package org.petify.funding.service;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.petify.funding.client.ShelterClient;
 import org.petify.funding.dto.DonationIntentRequest;
 import org.petify.funding.dto.DonationRequest;
@@ -33,6 +35,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Slf4j
+@Getter
+@Setter
 public class DonationService {
 
     private final DonationRepository donationRepository;

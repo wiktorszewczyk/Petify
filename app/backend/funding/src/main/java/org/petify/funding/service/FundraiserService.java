@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -132,7 +133,7 @@ public class FundraiserService {
         }
 
         BigDecimal averageDonation = totalDonations > 0 ?
-                currentAmount.divide(BigDecimal.valueOf(totalDonations), 2, BigDecimal.ROUND_HALF_UP) :
+                currentAmount.divide(BigDecimal.valueOf(totalDonations), 2, RoundingMode.HALF_UP) :
                 BigDecimal.ZERO;
 
         double progressPercentage = fundraiser.calculateProgress(currentAmount);

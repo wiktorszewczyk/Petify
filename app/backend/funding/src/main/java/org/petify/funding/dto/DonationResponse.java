@@ -11,6 +11,7 @@ import org.petify.funding.model.PaymentProvider;
 import org.petify.funding.model.PaymentStatus;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +22,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@lombok.Builder
+@Builder
 public class DonationResponse {
 
     private Long id;
