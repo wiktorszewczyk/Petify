@@ -30,7 +30,6 @@ public class DonationResponse {
     private Long petId;
     private Long fundraiserId;
     private String fundraiserTitle;
-    private Integer donorId;
     private String donorUsername;
     private String message;
     private Boolean anonymous;
@@ -66,13 +65,11 @@ public class DonationResponse {
                 .petId(d.getPetId())
                 .fundraiserId(d.getFundraiser() != null ? d.getFundraiser().getId() : null)
                 .fundraiserTitle(d.getFundraiser() != null ? d.getFundraiser().getTitle() : null)
-                .donorId(d.getDonorId())
                 .donorUsername(d.getDonorUsername())
                 .message(d.getMessage())
                 .anonymous(d.getAnonymous())
                 .donatedAt(d.getDonatedAt())
                 .createdAt(d.getCreatedAt())
-                .completedAt(d.getCompletedAt())
                 .cancelledAt(d.getCancelledAt())
                 .refundedAt(d.getRefundedAt())
                 .donationType(d.getDonationType())

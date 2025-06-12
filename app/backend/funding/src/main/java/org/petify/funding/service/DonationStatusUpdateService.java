@@ -47,7 +47,7 @@ public class DonationStatusUpdateService {
         donation.setStatus(newStatus);
 
         if (newStatus == DonationStatus.COMPLETED && oldStatus != DonationStatus.COMPLETED) {
-            donation.setCompletedAt(java.time.Instant.now());
+            donation.setDonatedAt(java.time.Instant.now());
         }
 
         donationRepository.save(donation);

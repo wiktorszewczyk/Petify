@@ -71,13 +71,10 @@ public abstract class Donation {
     @JoinColumn(name = "fundraiser_id")
     private Fundraiser fundraiser;
 
-    @Column(name = "donor_id")
-    private Integer donorId;
-
     @Column(name = "donor_username", nullable = false)
     private String donorUsername;
 
-    @Column(name = "donated_at", nullable = false)
+    @Column(name = "donated_at")
     private Instant donatedAt;
 
     @JsonProperty("donationType")
@@ -113,9 +110,6 @@ public abstract class Donation {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @Column(name = "completed_at")
-    private Instant completedAt;
-
     @Column(name = "cancelled_at")
     private Instant cancelledAt;
 
@@ -123,6 +117,7 @@ public abstract class Donation {
     private Instant refundedAt;
 
     @Column(name = "payment_attempts", nullable = false)
+    @Builder.Default
     private Integer paymentAttempts = 0;
 
     @PrePersist
@@ -130,8 +125,8 @@ public abstract class Donation {
         createdAt = Instant.now();
         updatedAt = Instant.now();
 
-        if (donatedAt == null) {
-            donatedAt = Instant.now();
+        if (paymentAttempts == null) {
+            paymentAttempts = 0;
         }
 
         if (this instanceof MaterialDonation) {
@@ -149,9 +144,10 @@ public abstract class Donation {
     protected void onUpdate() {
         updatedAt = Instant.now();
 
-        if (status == DonationStatus.COMPLETED && completedAt == null) {
-            completedAt = Instant.now();
+        if (status == DonationStatus.COMPLETED && donatedAt == null) {
+            donatedAt = Instant.now();
         }
+
         if (status == DonationStatus.CANCELLED && cancelledAt == null) {
             cancelledAt = Instant.now();
         }

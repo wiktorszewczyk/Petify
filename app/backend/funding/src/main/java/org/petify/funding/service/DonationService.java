@@ -240,9 +240,6 @@ public class DonationService {
             if (request.getDonorUsername() == null) {
                 request.setDonorUsername(jwt.getSubject());
             }
-            if (request.getDonorId() == null && jwt.getClaim("userId") != null) {
-                request.setDonorId(jwt.getClaim("userId"));
-            }
         }
     }
 
@@ -269,9 +266,6 @@ public class DonationService {
             }
             if (request.getQuantity() == null || request.getQuantity() <= 0) {
                 throw new RuntimeException("Quantity must be positive for material donations");
-            }
-            if (request.getAmount() != null) {
-                throw new RuntimeException("Amount should not be set manually for material donations - it will be calculated automatically");
             }
         }
     }
@@ -343,12 +337,19 @@ public class DonationService {
         donationRequest.setPetId(request.getPetId());
         donationRequest.setFundraiserId(request.getFundraiserId());
         donationRequest.setDonationType(request.getDonationType());
-        donationRequest.setAmount(request.getAmount());
         donationRequest.setMessage(request.getMessage());
         donationRequest.setAnonymous(request.getAnonymous());
-        donationRequest.setItemName(request.getItemName());
-        donationRequest.setUnitPrice(request.getUnitPrice());
-        donationRequest.setQuantity(request.getQuantity());
+
+        if (request.getDonationType() == DonationType.MONEY) {
+            donationRequest.setAmount(request.getAmount());
+        }
+
+        if (request.getDonationType() == DonationType.MATERIAL) {
+            donationRequest.setItemName(request.getItemName());
+            donationRequest.setUnitPrice(request.getUnitPrice());
+            donationRequest.setQuantity(request.getQuantity());
+        }
+
         return donationRequest;
     }
 }

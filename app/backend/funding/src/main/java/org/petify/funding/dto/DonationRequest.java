@@ -12,9 +12,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-/**
- * DTO dla tworzenia dotacji
- */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,8 +25,6 @@ public class DonationRequest {
     private Long petId;
 
     private Long fundraiserId;
-
-    private Integer donorId;
 
     private String donorUsername;
 
@@ -56,7 +51,6 @@ public class DonationRequest {
                 var donation = MonetaryDonation.builder()
                         .shelterId(shelterId)
                         .petId(petId)
-                        .donorId(donorId)
                         .donorUsername(donorUsername)
                         .message(message)
                         .anonymous(anonymous)
@@ -73,7 +67,6 @@ public class DonationRequest {
                 var donation = MaterialDonation.builder()
                         .shelterId(shelterId)
                         .petId(petId)
-                        .donorId(donorId)
                         .donorUsername(donorUsername)
                         .message(message)
                         .anonymous(anonymous)

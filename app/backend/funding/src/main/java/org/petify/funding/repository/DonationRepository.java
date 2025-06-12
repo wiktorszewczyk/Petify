@@ -25,8 +25,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
 
     Page<Donation> findByDonorUsernameOrderByCreatedAtDesc(String donorUsername, Pageable pageable);
 
-    Page<Donation> findByDonorIdOrderByCreatedAtDesc(Integer donorId, Pageable pageable);
-
     Long countByShelterId(Long shelterId);
 
     @Query(

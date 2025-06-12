@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@DonationIntentRequestValid
 public class DonationIntentRequest {
     @NotNull(message = "Shelter ID is required")
     private Long shelterId;
@@ -26,8 +27,6 @@ public class DonationIntentRequest {
     @NotNull(message = "Donation type is required")
     private DonationType donationType;
 
-    @NotNull(message = "Amount is required")
-    @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
 
     private String message;
