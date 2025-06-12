@@ -1,5 +1,6 @@
 package org.petify.funding.service.payment;
 
+import com.stripe.model.StripeObject;
 import org.petify.funding.dto.PaymentRequest;
 import org.petify.funding.dto.PaymentResponse;
 import org.petify.funding.dto.WebhookEventDto;
@@ -32,8 +33,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -180,18 +181,6 @@ public class StripePaymentService implements PaymentProviderService {
                     log.info("Handling checkout session expired");
                     handleCheckoutSessionExpired(event);
                 }
-                case "payment_intent.succeeded" -> {
-                    log.info("Handling payment intent succeeded");
-                    handlePaymentSucceeded(event);
-                }
-                case "payment_intent.payment_failed" -> {
-                    log.info("Handling payment intent failed");
-                    handlePaymentFailed(event);
-                }
-                case "payment_intent.canceled" -> {
-                    log.info("Handling payment intent canceled");
-                    handlePaymentCanceled(event);
-                }
                 default -> {
                     log.debug("Unhandled Stripe event type: {}", event.getType());
                 }
@@ -252,119 +241,113 @@ public class StripePaymentService implements PaymentProviderService {
     }
 
     private void handleCheckoutSessionCompleted(Event event) {
-        Session session = (Session) event.getDataObjectDeserializer()
-                .getObject().orElseThrow();
+        try {
+            Optional<StripeObject> stripeObjectOpt = event.getDataObjectDeserializer().getObject();
 
-        paymentRepository.findByExternalId(session.getId())
-                .ifPresent(payment -> {
-                    PaymentStatus oldStatus = payment.getStatus();
-                    payment.setStatus(PaymentStatus.SUCCEEDED);
-                    paymentRepository.save(payment);
+            Session session = null;
 
-                    if (oldStatus != PaymentStatus.SUCCEEDED) {
-                        statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.SUCCEEDED);
-                    }
+            if (stripeObjectOpt.isPresent() && stripeObjectOpt.get() instanceof Session) {
+                session = (Session) stripeObjectOpt.get();
+                log.info("Successfully deserialized session from event");
+            } else {
+                String sessionId = extractSessionIdFromRawData(event);
+                if (sessionId != null) {
+                    session = Session.retrieve(sessionId);
+                    log.info("Successfully retrieved session from Stripe API: {}", sessionId);
+                }
+            }
 
-                    log.info("Stripe checkout session {} completed for donation {}",
-                            payment.getId(), payment.getDonation().getId());
-                });
+            if (session == null) {
+                log.error("Could not get session data for event: {}", event.getId());
+                return;
+            }
+
+            processCompletedSession(session);
+
+        } catch (Exception e) {
+            log.error("Error processing checkout session completed event", e);
+        }
+    }
+
+    private String extractSessionIdFromRawData(Event event) {
+        try {
+            StripeObject rawObject = event.getData().getObject();
+            if (rawObject != null) {
+                String objectString = rawObject.toString();
+                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\"id\"\\s*:\\s*\"(cs_test_[^\"]+)\"");
+                java.util.regex.Matcher matcher = pattern.matcher(objectString);
+                if (matcher.find()) {
+                    return matcher.group(1);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error extracting session ID", e);
+        }
+        return null;
+    }
+
+    private void processCompletedSession(Session session) {
+        String sessionId = session.getId();
+        log.info("Processing completed session: {}", sessionId);
+
+        Optional<Payment> paymentOpt = paymentRepository.findByExternalId(sessionId);
+
+        if (paymentOpt.isEmpty()) {
+            log.error("Payment NOT FOUND for session ID: '{}'", sessionId);
+            return;
+        }
+
+        Payment payment = paymentOpt.get();
+        log.info("Found payment: ID={}, ExternalID='{}', DonationID={}",
+                payment.getId(), payment.getExternalId(), payment.getDonation().getId());
+
+        if (payment.getStatus() == PaymentStatus.SUCCEEDED) {
+            log.info("Payment {} already succeeded, skipping", payment.getId());
+            return;
+        }
+
+        payment.setStatus(PaymentStatus.SUCCEEDED);
+        paymentRepository.save(payment);
+
+        statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.SUCCEEDED);
+
+        log.info("Payment {} completed successfully for donation {}",
+                payment.getId(), payment.getDonation().getId());
     }
 
     private void handleCheckoutSessionExpired(Event event) {
-        Session session = (Session) event.getDataObjectDeserializer()
-                .getObject().orElseThrow();
-
-        paymentRepository.findByExternalId(session.getId())
-                .ifPresent(payment -> {
-                    PaymentStatus oldStatus = payment.getStatus();
-                    payment.setStatus(PaymentStatus.CANCELLED);
-                    paymentRepository.save(payment);
-
-                    if (oldStatus != PaymentStatus.CANCELLED) {
-                        statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.CANCELLED);
-                    }
-
-                    log.info("Stripe checkout session {} expired for donation {}",
-                            payment.getId(), payment.getDonation().getId());
-                });
-    }
-
-    private void handlePaymentSucceeded(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
-                .getObject().orElseThrow();
-
-        log.info("Processing payment_intent.succeeded for PaymentIntent: {}", paymentIntent.getId());
-
         try {
-            processStripeIntent(paymentIntent.getId(), payment -> {
-                PaymentStatus oldStatus = payment.getStatus();
-                payment.setStatus(PaymentStatus.SUCCEEDED);
-                paymentRepository.save(payment);
+            Optional<StripeObject> stripeObjectOpt = event.getDataObjectDeserializer().getObject();
 
-                if (oldStatus != PaymentStatus.SUCCEEDED) {
-                    statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.SUCCEEDED);
+            Session session = null;
+
+            if (stripeObjectOpt.isPresent() && stripeObjectOpt.get() instanceof Session) {
+                session = (Session) stripeObjectOpt.get();
+            } else {
+                String sessionId = extractSessionIdFromRawData(event);
+                if (sessionId != null) {
+                    session = Session.retrieve(sessionId);
                 }
+            }
 
-                log.info("Stripe payment {} succeeded for donation {}",
-                        payment.getId(), payment.getDonation().getId());
-            });
+            if (session == null) {
+                log.error("Could not get session data for expired event: {}", event.getId());
+                return;
+            }
+
+            paymentRepository.findByExternalId(session.getId())
+                    .ifPresent(payment -> {
+                        if (payment.getStatus() != PaymentStatus.CANCELLED) {
+                            payment.setStatus(PaymentStatus.CANCELLED);
+                            paymentRepository.save(payment);
+                            statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.CANCELLED);
+                            log.info("Payment {} expired for donation {}",
+                                    payment.getId(), payment.getDonation().getId());
+                        }
+                    });
 
         } catch (Exception e) {
-            log.warn("Could not process payment_intent.succeeded event: {}", e.getMessage());
-        }
-    }
-
-    private void handlePaymentFailed(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
-                .getObject().orElseThrow();
-
-        log.info("Processing payment_intent.payment_failed for PaymentIntent: {}", paymentIntent.getId());
-
-        try {
-            processStripeIntent(paymentIntent.getId(), payment -> {
-                PaymentStatus oldStatus = payment.getStatus();
-                payment.setStatus(PaymentStatus.FAILED);
-
-                if (paymentIntent.getLastPaymentError() != null) {
-                    payment.setFailureReason(paymentIntent.getLastPaymentError().getMessage());
-                    payment.setFailureCode(paymentIntent.getLastPaymentError().getCode());
-                }
-
-                paymentRepository.save(payment);
-
-                if (oldStatus != PaymentStatus.FAILED) {
-                    statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.FAILED);
-                }
-
-                log.info("Stripe payment {} failed for donation {}",
-                        payment.getId(), payment.getDonation().getId());
-            });
-        } catch (Exception e) {
-            log.warn("Could not process payment_intent.payment_failed event: {}", e.getMessage());
-        }
-    }
-
-    private void handlePaymentCanceled(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
-                .getObject().orElseThrow();
-
-        log.info("Processing payment_intent.canceled for PaymentIntent: {}", paymentIntent.getId());
-
-        try {
-            processStripeIntent(paymentIntent.getId(), payment -> {
-                PaymentStatus oldStatus = payment.getStatus();
-                payment.setStatus(PaymentStatus.CANCELLED);
-                paymentRepository.save(payment);
-
-                if (oldStatus != PaymentStatus.CANCELLED) {
-                    statusUpdateService.handlePaymentStatusChange(payment.getId(), PaymentStatus.CANCELLED);
-                }
-
-                log.info("Stripe payment {} cancelled for donation {}",
-                        payment.getId(), payment.getDonation().getId());
-            });
-        } catch (Exception e) {
-            log.warn("Could not process payment_intent.canceled event: {}", e.getMessage());
+            log.error("Error processing checkout session expired event", e);
         }
     }
 
@@ -505,23 +488,5 @@ public class StripePaymentService implements PaymentProviderService {
         }
 
         return metadata;
-    }
-
-    private void processStripeIntent(String intentId, Consumer<Payment> onMatch) {
-        log.info("Processing Stripe intent: {}", intentId);
-        paymentRepository.findAll().stream()
-                .filter(p -> p.getProvider() == PaymentProvider.STRIPE)
-                .filter(p -> p.getStatus() == PaymentStatus.PENDING
-                        || p.getStatus() == PaymentStatus.PROCESSING)
-                .forEach(p -> {
-                    try {
-                        Session session = Session.retrieve(p.getExternalId());
-                        if (intentId.equals(session.getPaymentIntent())) {
-                            onMatch.accept(p);
-                        }
-                    } catch (StripeException e) {
-                        log.debug("Could not retrieve session {}", p.getExternalId());
-                    }
-                });
     }
 }
