@@ -237,15 +237,18 @@ public class DonationService {
 
     private void enrichDonorInformation(DonationRequest request, Jwt jwt) {
         if (jwt != null) {
-            if (request.getDonorUsername() == null) {
+            if (request.getDonorUsername() == null && !Boolean.TRUE.equals(request.getAnonymous())) {
                 request.setDonorUsername(jwt.getSubject());
+            } else if (Boolean.TRUE.equals(request.getAnonymous())) {
+                request.setDonorUsername(null);
             }
         }
     }
 
     private void validateDonationRequest(DonationRequest request) {
-        if (request.getDonorUsername() == null || request.getDonorUsername().trim().isEmpty()) {
-            throw new RuntimeException("Donor username is required");
+        if (!Boolean.TRUE.equals(request.getAnonymous()) &&
+                (request.getDonorUsername() == null || request.getDonorUsername().trim().isEmpty())) {
+            throw new RuntimeException("Donor username is required for non-anonymous donations");
         }
 
         if (request.getDonationType() == DonationType.MONEY) {

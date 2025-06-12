@@ -71,7 +71,7 @@ public abstract class Donation {
     @JoinColumn(name = "fundraiser_id")
     private Fundraiser fundraiser;
 
-    @Column(name = "donor_username", nullable = false)
+    @Column(name = "donor_username")
     private String donorUsername;
 
     @Column(name = "donated_at")
