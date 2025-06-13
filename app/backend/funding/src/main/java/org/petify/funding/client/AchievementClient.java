@@ -1,6 +1,7 @@
 package org.petify.funding.client;
 
 import org.petify.funding.config.FeignJwtConfiguration;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
