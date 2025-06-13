@@ -149,7 +149,11 @@ public class ApplicationUser implements UserDetails {
     @Transient
     @JsonProperty("hasProfileImage")
     public boolean hasProfileImage() {
-        return profileImage != null && profileImage.length > 0;
+        try {
+            return profileImage != null && profileImage.length > 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public void setLocation(String city, Double latitude, Double longitude) {

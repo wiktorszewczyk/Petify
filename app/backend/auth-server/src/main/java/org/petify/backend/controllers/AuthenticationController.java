@@ -3,6 +3,7 @@ package org.petify.backend.controllers;
 import org.petify.backend.dto.LoginRequestDTO;
 import org.petify.backend.dto.LoginResponseDTO;
 import org.petify.backend.dto.RegistrationDTO;
+import org.petify.backend.dto.UserResponseDTO;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.repository.UserRepository;
 import org.petify.backend.services.AuthenticationService;
@@ -224,13 +225,19 @@ public class AuthenticationController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<?> getUserData(Authentication authentication) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<UserResponseDTO> getUserData(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return createUnauthorizedResponse();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        ApplicationUser user = getAuthenticatedUser(authentication);
-        return ResponseEntity.ok(user);
+        try {
+            ApplicationUser user = getAuthenticatedUser(authentication);
+            UserResponseDTO userResponse = UserResponseDTO.fromUser(user);
+            return ResponseEntity.ok(userResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/user")
