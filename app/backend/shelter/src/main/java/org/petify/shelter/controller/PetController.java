@@ -5,6 +5,7 @@ import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.dto.PetResponseWithImages;
 import org.petify.shelter.dto.ShelterResponse;
 import org.petify.shelter.enums.PetType;
 import org.petify.shelter.service.AdoptionService;
@@ -16,7 +17,6 @@ import org.petify.shelter.service.ShelterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,8 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -57,7 +55,7 @@ public class PetController {
 
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @GetMapping("/filter")
-    public ResponseEntity<List<PetResponse>> getFilteredPets(
+    public ResponseEntity<List<PetResponseWithImages>> getFilteredPets(
             @RequestParam(required = false) Boolean vaccinated,
             @RequestParam(required = false) Boolean urgent,
             @RequestParam(required = false) Boolean sterilized,
@@ -101,7 +99,7 @@ public class PetController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPetById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(petService.getPetById(id), HttpStatus.FOUND);
+        return new ResponseEntity<>(petService.getPetById(id), HttpStatus.OK);
     }
 
     @GetMapping("/ids")
@@ -124,16 +122,6 @@ public class PetController {
 
         PetResponse updatedPet = petService.updatePet(petRequest, id, shelterId, imageFile);
         return ResponseEntity.ok(updatedPet);
-    }
-
-    @GetMapping("/{id}/image")
-    public ResponseEntity<?> getPetImage(
-            @PathVariable("id") Long id) {
-        PetImageResponse petImageData = petService.getPetImage(id);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.valueOf(petImageData.imageType()))
-                .body(Base64.getEncoder().encodeToString(petImageData.imageData().getBytes(StandardCharsets.UTF_8)));
     }
 
     @GetMapping("/{petId}/images")

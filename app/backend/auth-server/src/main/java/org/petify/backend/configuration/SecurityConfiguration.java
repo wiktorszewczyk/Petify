@@ -120,6 +120,9 @@ public class SecurityConfiguration {
                             } catch (Exception e) {
                             }
                         })
+                        .failureHandler((request, response, exception) -> {
+                            response.sendRedirect("/auth/oauth2/error?error=" + exception.getMessage());
+                        })
                 );
 
         return http.build();
