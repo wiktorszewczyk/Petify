@@ -1,8 +1,10 @@
 package org.petify.backend.services;
 
 import org.petify.backend.models.ApplicationUser;
+import org.petify.backend.models.Role;
 import org.petify.backend.models.VolunteerApplication;
 import org.petify.backend.models.VolunteerStatus;
+import org.petify.backend.repository.RoleRepository;
 import org.petify.backend.repository.UserRepository;
 import org.petify.backend.repository.VolunteerApplicationRepository;
 
@@ -11,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class VolunteerService {
@@ -21,6 +25,9 @@ public class VolunteerService {
 
     @Autowired
     private VolunteerApplicationRepository volunteerApplicationRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Transactional
     public VolunteerApplication applyForVolunteer(String username, VolunteerApplication application) {
@@ -55,6 +62,13 @@ public class VolunteerService {
 
         ApplicationUser user = application.getUser();
         user.setVolunteerStatus(VolunteerStatus.ACTIVE);
+
+        Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
+                .orElseThrow(() -> new RuntimeException("VOLUNTEER role not found"));
+        
+        Set<Role> userRoles = new HashSet<>((Set<Role>) user.getAuthorities());
+        userRoles.add(volunteerRole);
+        user.setAuthorities(userRoles);
         userRepository.save(user);
 
         application.setStatus("APPROVED");
@@ -69,6 +83,13 @@ public class VolunteerService {
 
         ApplicationUser user = application.getUser();
         user.setVolunteerStatus(VolunteerStatus.INACTIVE);
+        
+        Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER").orElse(null);
+        if (volunteerRole != null) {
+            Set<Role> userRoles = new HashSet<>((Set<Role>) user.getAuthorities());
+            userRoles.remove(volunteerRole);
+            user.setAuthorities(userRoles);
+        }
         userRepository.save(user);
 
         application.setStatus("REJECTED");
