@@ -1,7 +1,9 @@
 package org.petify.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -111,6 +113,7 @@ public class ApplicationUser implements UserDetails {
 
     @Column(name = "profile_image")
     @Lob
+    @JsonIgnore
     private byte[] profileImage;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -144,6 +147,7 @@ public class ApplicationUser implements UserDetails {
     }
 
     @Transient
+    @JsonProperty("hasProfileImage")
     public boolean hasProfileImage() {
         return profileImage != null && profileImage.length > 0;
     }

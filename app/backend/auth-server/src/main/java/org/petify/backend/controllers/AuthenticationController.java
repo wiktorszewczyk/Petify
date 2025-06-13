@@ -12,6 +12,7 @@ import org.petify.backend.services.TokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,6 +78,16 @@ public class AuthenticationController {
     @PostMapping("/auth/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
         try {
+            if (userRepository.findByEmail(registrationDTO.getEmail()).isPresent()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Email już jest używany"));
+            }
+
+            if (userRepository.findByPhoneNumber(registrationDTO.getPhoneNumber()).isPresent()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Numer telefonu już jest używany"));
+            }
+
             ApplicationUser user = authenticationService.registerUser(registrationDTO);
 
             Map<String, Object> response = new HashMap<>();
@@ -84,6 +95,9 @@ public class AuthenticationController {
             response.put(MESSAGE_KEY, "User registered successfully");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Naruszenie ograniczeń bazy danych: " + e.getMessage()));
         } catch (IllegalArgumentException e) {
             Map<String, String> response = new HashMap<>();
             response.put(ERROR_KEY, e.getMessage());
