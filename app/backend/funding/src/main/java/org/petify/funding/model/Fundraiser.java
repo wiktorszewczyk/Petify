@@ -50,6 +50,7 @@ public class Fundraiser {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
+    @Builder.Default
     private FundraiserStatus status = FundraiserStatus.ACTIVE;
 
     @Enumerated(EnumType.STRING)
@@ -68,11 +69,8 @@ public class Fundraiser {
     @Column(name = "needs", length = 1000)
     private String needs;
 
-    @Column(name = "image_url", length = 500)
-    private String imageUrl;
-
     @Column(name = "created_by", nullable = false)
-    private Integer createdBy;
+    private String createdBy;
 
     @Column(name = "created_at")
     private Instant createdAt;
@@ -90,6 +88,10 @@ public class Fundraiser {
     protected void onCreate() {
         createdAt = Instant.now();
         updatedAt = Instant.now();
+
+        if (status == null) {
+            status = FundraiserStatus.ACTIVE;
+        }
 
         if (startDate == null) {
             startDate = Instant.now();

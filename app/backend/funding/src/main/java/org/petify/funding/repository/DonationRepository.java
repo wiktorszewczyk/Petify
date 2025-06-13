@@ -138,4 +138,12 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     BigDecimal sumCompletedDonationsByFundraiserIdAndDateAfter(
             @Param("fundraiserId") Long fundraiserId,
             @Param("dateAfter") Instant dateAfter);
+
+    @Query(
+            "SELECT MAX(d.donatedAt) "
+                    + "FROM Donation d "
+                    + "WHERE d.shelterId = :shelterId "
+                    + "  AND d.status = 'COMPLETED'"
+    )
+    Instant getLastDonationDateByShelterId(@Param("shelterId") Long shelterId);
 }

@@ -14,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,10 +56,13 @@ public class PaymentAnalyticsService {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusDays(days);
 
+        // POPRAWKA: Konwertujemy LocalDateTime na Instant
+        Instant startInstant = startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+        Instant endInstant = endDate.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+
         Map<String, Object> stats = new HashMap<>();
 
-        List<Object[]> overallStats = paymentRepository.getPaymentStatistics(
-                startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX));
+        List<Object[]> overallStats = paymentRepository.getPaymentStatistics(startInstant, endInstant);
 
         if (!overallStats.isEmpty()) {
             Object[] row = overallStats.get(0);
@@ -73,10 +74,11 @@ public class PaymentAnalyticsService {
             stats.put("successRate", calculateSuccessRate((Long) row[1], (Long) row[0]));
         }
 
+        // Poprawka dla providerStats
         Map<String, Object> providerStats = new HashMap<>();
         for (PaymentProvider provider : PaymentProvider.values()) {
             List<Object[]> providerData = paymentRepository.getPaymentStatisticsByProvider(
-                    startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX), provider);
+                    startInstant, endInstant, provider);
 
             if (!providerData.isEmpty()) {
                 Object[] row = providerData.get(0);
@@ -90,11 +92,14 @@ public class PaymentAnalyticsService {
         }
         stats.put("providerBreakdown", providerStats);
 
+        // Poprawka dla dailyTrends
         List<Map<String, Object>> dailyTrends = new ArrayList<>();
         for (int i = days - 1; i >= 0; i--) {
             LocalDate date = endDate.minusDays(i);
-            List<Object[]> dailyStats = paymentRepository.getPaymentStatistics(
-                    date.atStartOfDay(), date.atTime(LocalTime.MAX));
+            Instant dayStart = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+            Instant dayEnd = date.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+
+            List<Object[]> dailyStats = paymentRepository.getPaymentStatistics(dayStart, dayEnd);
 
             Map<String, Object> dayStats = new HashMap<>();
             dayStats.put("date", date);
@@ -114,12 +119,11 @@ public class PaymentAnalyticsService {
         }
         stats.put("dailyTrends", dailyTrends);
 
-        Map<String, Object> currencyStats = paymentRepository.getPaymentStatsByCurrency(
-                startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX));
+        // Poprawka dla pozostałych statystyk
+        Map<String, Object> currencyStats = paymentRepository.getPaymentStatsByCurrency(startInstant, endInstant);
         stats.put("currencyBreakdown", currencyStats);
 
-        Map<String, Object> methodStats = paymentRepository.getPaymentStatsByMethod(
-                startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX));
+        Map<String, Object> methodStats = paymentRepository.getPaymentStatsByMethod(startInstant, endInstant);
         stats.put("methodBreakdown", methodStats);
 
         return stats;
@@ -151,8 +155,8 @@ public class PaymentAnalyticsService {
             return;
         }
 
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        Instant startOfDay = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+        Instant endOfDay = date.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
 
         List<Object[]> stats = paymentRepository.getPaymentStatisticsByProvider(
                 startOfDay, endOfDay, provider);
@@ -181,6 +185,16 @@ public class PaymentAnalyticsService {
         log.debug("Analytics saved for {} and {}", date, provider);
     }
 
+    private BigDecimal calculateTotalFees(Instant startOfDay, Instant endOfDay,
+                                          PaymentProvider provider) {
+        List<BigDecimal> fees = paymentRepository.getFeeAmountsByDateRangeAndProvider(
+                startOfDay, endOfDay, provider);
+
+        return fees.stream()
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     private PaymentAnalyticsResponse toResponse(PaymentAnalytics analytics) {
         return PaymentAnalyticsResponse.builder()
                 .date(analytics.getDate())
@@ -202,15 +216,5 @@ public class PaymentAnalyticsService {
         return new BigDecimal(successful)
                 .divide(new BigDecimal(total), 4, RoundingMode.HALF_UP)
                 .multiply(new BigDecimal("100"));
-    }
-
-    private BigDecimal calculateTotalFees(LocalDateTime startOfDay, LocalDateTime endOfDay,
-                                          PaymentProvider provider) {
-        List<BigDecimal> fees = paymentRepository.getFeeAmountsByDateRangeAndProvider(
-                startOfDay, endOfDay, provider);
-
-        return fees.stream()
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

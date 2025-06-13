@@ -39,7 +39,7 @@ public class FundraiserController {
     private final FundraiserService fundraiserService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_SHELTER_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_SHELTER')")
     public ResponseEntity<FundraiserResponse> createFundraiser(
             @RequestBody @Valid FundraiserRequest request,
             @AuthenticationPrincipal Jwt jwt) {
@@ -84,7 +84,7 @@ public class FundraiserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_SHELTER_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_SHELTER')")
     public ResponseEntity<FundraiserResponse> updateFundraiser(
             @PathVariable Long id,
             @RequestBody @Valid FundraiserRequest request,
@@ -95,7 +95,7 @@ public class FundraiserController {
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('ROLE_SHELTER_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_SHELTER')")
     public ResponseEntity<FundraiserResponse> updateFundraiserStatus(
             @PathVariable Long id,
             @RequestParam FundraiserStatus status) {

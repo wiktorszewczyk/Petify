@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +40,8 @@ public class FundraiserService {
             throw new IllegalStateException("Shelter already has a main fundraiser");
         }
 
+        String username = jwt.getSubject();
+
         Fundraiser fundraiser = Fundraiser.builder()
                 .shelterId(request.getShelterId())
                 .title(request.getTitle())
@@ -51,8 +52,7 @@ public class FundraiserService {
                 .endDate(request.getEndDate())
                 .isMain(request.getIsMain())
                 .needs(request.getNeeds())
-                .imageUrl(request.getImageUrl())
-                .createdBy(Integer.valueOf(jwt.getSubject()))
+                .createdBy(username)
                 .build();
 
         fundraiser = fundraiserRepository.save(fundraiser);
@@ -98,7 +98,6 @@ public class FundraiserService {
         fundraiser.setEndDate(request.getEndDate());
         fundraiser.setIsMain(request.getIsMain());
         fundraiser.setNeeds(request.getNeeds());
-        fundraiser.setImageUrl(request.getImageUrl());
 
         fundraiser = fundraiserRepository.save(fundraiser);
         return mapToResponse(fundraiser);
@@ -189,7 +188,6 @@ public class FundraiserService {
                 .endDate(fundraiser.getEndDate())
                 .isMain(fundraiser.getIsMain())
                 .needs(fundraiser.getNeeds())
-                .imageUrl(fundraiser.getImageUrl())
                 .createdBy(fundraiser.getCreatedBy())
                 .createdAt(fundraiser.getCreatedAt())
                 .updatedAt(fundraiser.getUpdatedAt())

@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                     + "SUM(CASE WHEN p.status = 'SUCCEEDED' THEN p.feeAmount ELSE 0 END) "
                     + "FROM Payment p WHERE p.createdAt BETWEEN :startDate AND :endDate"
     )
-    List<Object[]> getPaymentStatistics(@Param("startDate") LocalDateTime startDate,
-                                        @Param("endDate") LocalDateTime endDate);
+    List<Object[]> getPaymentStatistics(@Param("startDate") Instant startDate,
+                                        @Param("endDate") Instant endDate);
 
     @Query(
             "SELECT COUNT(p), "
@@ -47,8 +48,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                     + "FROM Payment p WHERE p.createdAt BETWEEN :startDate AND :endDate "
                     + "AND p.provider = :provider"
     )
-    List<Object[]> getPaymentStatisticsByProvider(@Param("startDate") LocalDateTime startDate,
-                                                  @Param("endDate") LocalDateTime endDate,
+    List<Object[]> getPaymentStatisticsByProvider(@Param("startDate") Instant startDate,
+                                                  @Param("endDate") Instant endDate,
                                                   @Param("provider") PaymentProvider provider);
 
     @Query(
@@ -56,23 +57,23 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                     + "FROM Payment p WHERE p.createdAt BETWEEN :startDate AND :endDate "
                     + "AND p.status = 'SUCCEEDED' GROUP BY p.currency"
     )
-    Map<String, Object> getPaymentStatsByCurrency(@Param("startDate") LocalDateTime startDate,
-                                                  @Param("endDate") LocalDateTime endDate);
+    Map<String, Object> getPaymentStatsByCurrency(@Param("startDate") Instant startDate,
+                                                  @Param("endDate") Instant endDate);
 
     @Query(
             "SELECT p.paymentMethod as method, COUNT(p) as count, SUM(p.amount) as totalAmount "
                     + "FROM Payment p WHERE p.createdAt BETWEEN :startDate AND :endDate "
                     + "AND p.status = 'SUCCEEDED' GROUP BY p.paymentMethod"
     )
-    Map<String, Object> getPaymentStatsByMethod(@Param("startDate") LocalDateTime startDate,
-                                                @Param("endDate") LocalDateTime endDate);
+    Map<String, Object> getPaymentStatsByMethod(@Param("startDate") Instant startDate,
+                                                @Param("endDate") Instant endDate);
 
     @Query(
             "SELECT p.feeAmount FROM Payment p "
                     + "WHERE p.createdAt BETWEEN :startDate AND :endDate "
                     + "AND p.provider = :provider AND p.status = 'SUCCEEDED'"
     )
-    List<BigDecimal> getFeeAmountsByDateRangeAndProvider(@Param("startDate") LocalDateTime startDate,
-                                                         @Param("endDate") LocalDateTime endDate,
+    List<BigDecimal> getFeeAmountsByDateRangeAndProvider(@Param("startDate") Instant startDate,
+                                                         @Param("endDate") Instant endDate,
                                                          @Param("provider") PaymentProvider provider);
 }

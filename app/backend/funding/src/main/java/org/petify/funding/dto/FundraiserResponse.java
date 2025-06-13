@@ -31,8 +31,7 @@ public class FundraiserResponse {
     private Instant endDate;
     private Boolean isMain;
     private String needs;
-    private String imageUrl;
-    private Integer createdBy;
+    private String createdBy;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant completedAt;

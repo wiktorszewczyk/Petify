@@ -30,6 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -225,6 +228,13 @@ public class DonationService {
 
     @Transactional(readOnly = true)
     public DonationStatistics getShelterDonationStats(Long shelterId) {
+        Instant lastDonationInstant = donationRepository.getLastDonationDateByShelterId(shelterId);
+        LocalDate lastDonationDate = null;
+
+        if (lastDonationInstant != null) {
+            lastDonationDate = lastDonationInstant.atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+
         return DonationStatistics.builder()
                 .shelterId(shelterId)
                 .totalDonations(donationRepository.countByShelterId(shelterId))
@@ -232,6 +242,7 @@ public class DonationService {
                 .completedDonations(donationRepository.countCompletedByShelterId(shelterId))
                 .pendingDonations(donationRepository.countPendingByShelterId(shelterId))
                 .averageDonationAmount(donationRepository.averageAmountByShelterId(shelterId))
+                .lastDonationDate(lastDonationDate)
                 .build();
     }
 

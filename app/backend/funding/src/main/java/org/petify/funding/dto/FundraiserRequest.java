@@ -46,7 +46,4 @@ public class FundraiserRequest {
 
     @Size(max = 1000, message = "Needs cannot exceed 1000 characters")
     private String needs;
-
-    @Size(max = 500, message = "Image URL cannot exceed 500 characters")
-    private String imageUrl;
 }
