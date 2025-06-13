@@ -1,5 +1,6 @@
 package org.petify.funding.service;
 
+import org.petify.funding.client.AchievementClient;
 import org.petify.funding.client.ShelterClient;
 import org.petify.funding.dto.DonationIntentRequest;
 import org.petify.funding.dto.DonationRequest;
@@ -31,6 +32,7 @@ public class DonationService {
 
     private final DonationRepository donationRepository;
     private final ShelterClient shelterClient;
+    private final AchievementClient achievementClient;
 
     @Transactional
     public DonationResponse createDraft(DonationIntentRequest request, Jwt jwt) {
@@ -54,13 +56,13 @@ public class DonationService {
 
         Donation saved = donationRepository.save(donation);
 
+        // ZWIĘKSZ PROGRES PO UTWORZENIU DOTACJI
+        trackDonationAchievement(saved);
+
         log.info("Draft donation created successfully with ID: {}", saved.getId());
         return DonationResponse.fromEntity(saved);
     }
 
-    /**
-     * Pobiera wszystkie dotacje (z opcjonalnym filtrowaniem po typie)
-     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getAll(Pageable pageable, DonationType type) {
         Page<Donation> page = (type == null)
@@ -69,9 +71,6 @@ public class DonationService {
         return page.map(DonationResponse::fromEntity);
     }
 
-    /**
-     * Pobiera konkretną dotację po ID
-     */
     @Transactional(readOnly = true)
     public DonationResponse get(Long id) {
         Donation donation = donationRepository.findById(id)
@@ -79,27 +78,18 @@ public class DonationService {
         return DonationResponse.fromEntity(donation);
     }
 
-    /**
-     * Pobiera dotacje dla konkretnego schroniska
-     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForShelter(Long shelterId, Pageable pageable) {
         return donationRepository.findByShelterId(shelterId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
-    /**
-     * Pobiera dotacje dla konkretnego zwierzęcia
-     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForPet(Long petId, Pageable pageable) {
         return donationRepository.findByPetId(petId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
-    /**
-     * Pobiera dotacje konkretnego użytkownika
-     */
     @Transactional(readOnly = true)
     public Page<DonationResponse> getUserDonations(Pageable pageable) {
         String username = getCurrentUsername();
@@ -111,9 +101,6 @@ public class DonationService {
                 .map(DonationResponse::fromEntity);
     }
 
-    /**
-     * Usuwa dotację (tylko admin)
-     */
     @Transactional
     public void delete(Long id) {
         try {
@@ -132,9 +119,6 @@ public class DonationService {
         }
     }
 
-    /**
-     * Aktualizuje status dotacji (używane wewnętrznie po płatnościach)
-     */
     @Transactional
     public void updateDonationStatus(Long donationId, DonationStatus newStatus) {
         Donation donation = donationRepository.findById(donationId)
@@ -151,9 +135,20 @@ public class DonationService {
         log.info("Donation {} status updated from {} to {}", donationId, oldStatus, newStatus);
     }
 
-    /**
-     * Pobiera statystyki dotacji dla schroniska
-     */
+    private void trackDonationAchievement(Donation donation) {
+        try {
+            String donorUsername = donation.getDonorUsername();
+            if (donorUsername != null && !donorUsername.trim().isEmpty()) {
+                achievementClient.trackSupportProgress();
+                log.info("Tracked support achievement for donation {} by user: {}",
+                        donation.getId(), donorUsername);
+            }
+        } catch (Exception e) {
+            log.error("Failed to track achievement for donation {} by user: {}",
+                    donation.getId(), donation.getDonorUsername(), e);
+        }
+    }
+
     @Transactional(readOnly = true)
     public DonationStatistics getShelterDonationStats(Long shelterId) {
         return DonationStatistics.builder()

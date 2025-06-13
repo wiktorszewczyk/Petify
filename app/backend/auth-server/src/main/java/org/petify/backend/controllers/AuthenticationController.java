@@ -164,26 +164,23 @@ public class AuthenticationController {
     }
 
     @GetMapping("/auth/oauth2/success")
-    public ResponseEntity<Map<String, Object>> oauthLoginSuccess(
+    public void oauthLoginSuccess(
             @RequestParam String token,
-            @AuthenticationPrincipal OAuth2User oauth2User) {
+            @AuthenticationPrincipal OAuth2User oauth2User,
+            HttpServletResponse response) throws IOException {
 
         String email = oauth2User.getAttribute("email");
         ApplicationUser user = userRepository.findByUsername(email)
                 .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", user);
-        response.put("jwt", token);
-
-        return ResponseEntity.ok(response);
+        String frontendUrl = "http://localhost:5173/home?token=" + token + "&userId=" + user.getUserId();
+        response.sendRedirect(frontendUrl);
     }
 
     @GetMapping("/auth/oauth2/error")
-    public ResponseEntity<Map<String, String>> oauthLoginError() {
-        Map<String, String> response = new HashMap<>();
-        response.put(ERROR_KEY, "OAuth2 authentication failed");
-        return ResponseEntity.badRequest().body(response);
+    public void oauthLoginError(HttpServletResponse response) throws IOException {
+        String frontendUrl = "http://localhost:5173/home?error=OAuth2%20authentication%20failed";
+        response.sendRedirect(frontendUrl);
     }
 
     @PostMapping("/auth/oauth2/exchange")
