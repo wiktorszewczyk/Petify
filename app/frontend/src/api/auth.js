@@ -8,14 +8,54 @@ export async function login(loginIdentifier, password) {
     body: JSON.stringify({ loginIdentifier, password }),
   });
 
-  const data = await response.json();
+  let data;
+  try {
+    data = await response.json();
+  } catch (err) {
+    // ❌ brak JSON = prawdopodobnie konto nie istnieje
+    throw new Error("Nie znaleziono konta.");
+  }
+
   if (response.ok) {
-    localStorage.setItem("jwt", data.jwt); // zamiast data.token
-    return data;
+    if (data?.jwt) {
+      localStorage.setItem("jwt", data.jwt);
+      return data;
+    } else {
+      throw new Error("Brak tokenu w odpowiedzi.");
+    }
   } else {
-    throw new Error(data.error || "Logowanie nieudane");
+    // ❗ JSON istnieje, ale to nie 2xx – więc coś poszło źle
+    // zakładamy, że konto istnieje, ale np. hasło złe
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("Nieprawidłowe hasło.");
+    }
+
+    // fallback na inne błędy
+    throw new Error("Logowanie nieudane.");
   }
 }
+
+export async function uploadProfileImage(file) {
+  const token = getToken();
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch(`${API_URL}/user/profile-image`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Błąd podczas wysyłania zdjęcia");
+  }
+
+  return await response.json();
+}
+
+
 
 export async function register(userData) {
   const response = await fetch(`${API_URL}/auth/register`, {
@@ -45,29 +85,38 @@ export async function register(userData) {
 export async function fetchUserData() {
   const token = getToken();
 
-  const [achievementsRes, levelRes] = await Promise.all([
-    fetch(`${API_URL}/user/achievements/`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }),
-    fetch(`${API_URL}/user/achievements/level`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }),
-  ]);
+  const response = await fetch(`${API_URL}/user`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  const achievements = await achievementsRes.json();
-  const level = await levelRes.json();
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać danych użytkownika");
+  }
 
-  // 🔧 Połącz dane w jedną strukturę pod twoje potrzeby
+  const user = await response.json();
+
   return {
-    firstName: level.firstName ?? "Jan", // jeśli nie ma, dodaj fallback
-    lastName: level.lastName ?? "Kowalski",
-    level: level.level,
-    xpPoints: level.xpPoints,
-    xpToNextLevel: level.xpToNextLevel,
-    likesCount: level.likesCount,
-    supportCount: level.supportCount,
-    badgesCount: level.badgesCount,
-    achievements: achievements
+    firstName: user.firstName,
+    lastName: user.lastName,
+    birthDate: user.birthDate,
+    gender: user.gender,
+    phoneNumber: user.phoneNumber,
+    email: user.email,
+    city: user.city,
+    volunteerStatus: user.volunteerStatus,
+
+    level: user.level,
+    xpPoints: user.xpPoints,
+    xpToNextLevel: user.xpToNextLevel,
+    likesCount: user.likesCount,
+    supportCount: user.supportCount,
+    badgesCount: user.badgesCount,
+
+    achievements: user.achievements || [],
+
+    profileImageBase64: user.profileImage,
   };
 }
 
@@ -80,17 +129,62 @@ export function isAuthenticated() {
   return !!token;
 }
 
-async function handleGoogleLogin(idToken) {
-  const res = await fetch(`${API_URL}/auth/oauth2-login`, {
+export async function handleGoogleLogin(idToken) {
+  const res = await fetch(`${API_URL}/auth/oauth2/exchange`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token: idToken })
+    body: JSON.stringify({
+      provider: "google",
+      access_token: idToken
+    })
   });
 
   const data = await res.json();
-  if (res.ok) {
-    localStorage.setItem("jwt", data.jwt); // lub inne dane
+
+  if (res.ok && data?.jwt) {
+    localStorage.setItem("jwt", data.jwt);
+    return data;
   } else {
-    alert("Błąd logowania przez Google");
+    throw new Error(data?.error || "Błąd logowania przez Google");
   }
+}
+
+export function logout() {
+  localStorage.removeItem("jwt");
+  window.location.href = "/login"; // przekierowanie do strony logowania
+}
+
+export const updateUserData = async (data) => {
+  const response = await fetch(`${API_URL}/user`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Błąd podczas aktualizacji danych użytkownika");
+  }
+
+  return await response.json();
+};
+
+export async function fetchProfileImage() {
+  const token = getToken();
+
+  const response = await fetch(`${API_URL}/user/profile-image`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać zdjęcia profilowego");
+  }
+
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
 }

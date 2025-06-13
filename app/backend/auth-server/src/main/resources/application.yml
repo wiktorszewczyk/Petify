@@ -2,7 +2,9 @@ spring:
   application:
     name: auth-service
   config:
-    import: optional:configserver:http://localhost:8888
+    import: 
+    - optional:configserver:http://localhost:8888
+    - classpath:secrets.properties
   main:
     allow-circular-references: true
   security:

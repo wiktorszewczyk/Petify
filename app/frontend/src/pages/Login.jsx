@@ -1,27 +1,29 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login, handleGoogleLogin } from '../api/auth';
-import './Auth.css' 
+import './Auth.css'
 import { GoogleLogin } from '@react-oauth/google';
 
 export default function Login() {
-  const [username, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+  const [username, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState([]);
+  const navigate = useNavigate();
 
- 
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors([]); // wyczyść błędy przed nową próbą
+
     try {
       await login(username, password);
-      navigate("/home"); 
+      navigate("/home");
     } catch (err) {
-      alert("Błąd logowania: " + err.message);
+      setErrors([err.message]); // dodaj komunikat jako pojedynczy błąd
     }
   };
 
   return (
-    <div className="auth-bg d-flex justify-content-center align-items-center min-vh-100 ">
+    <div className="auth-bg d-flex justify-content-center align-items-center min-vh-100">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-4 rounded shadow w-100 bg-opacity-75 auth-hidden auth-bounce-in"
@@ -29,10 +31,20 @@ export default function Login() {
       >
         <h2 className="mb-4 text-center">Logowanie</h2>
 
+        {errors.length > 0 && (
+          <div className="alert alert-danger">
+            <ul className="mb-0">
+              {errors.map((err, i) => (
+                <li key={i}>{err}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="mb-3">
-          <label className="form-label">Username</label>
+          <label className="form-label">Email lub nr telefonu</label>
           <input
-            type="username"
+            type="text"
             className="form-control"
             value={username}
             onChange={(e) => setEmail(e.target.value)}
@@ -54,16 +66,18 @@ export default function Login() {
         <button type="submit" className="btn btn-primary w-100">
           Zaloguj się
         </button>
-        <GoogleLogin
-  onSuccess={(credentialResponse) => {
-    const idToken = credentialResponse.credential;
-    handleGoogleLogin(idToken); // tu wysyłasz do backendu
+
+        <div className="mt-3 text-center">
+          <button
+  className="btn btn-outline-dark w-100 mt-3"
+  onClick={() => {
+    window.location.href = "http://localhost:9000/auth/oauth2/google";
   }}
-  onError={() => {
-    console.log('Logowanie przez Google nie powiodło się');
-  }}
-/>
+>
+  Zaloguj się przez Google
+</button>
+        </div>
       </form>
     </div>
-  )
+  );
 }

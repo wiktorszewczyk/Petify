@@ -3,15 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import './Favourites.css';
 import {MapPin, Heart,PawPrint} from 'lucide-react';
+import { fetchFavoritePets } from "../api/shelter";
+import { useEffect, useState } from "react";
 
-// Import images
-import cat_1 from '../assets/cat_1.jpg';
-
-import dog1_1 from '../assets/dog1_1.jpg';
-
-import dog2_1 from '../assets/dog2_1.jpg';
-
-import dog3_1 from '../assets/dog1.jpg';
 
 const pawSteps = [
   { top: '55vh', left: '90vw', size: '8vw', rotate: '-100deg' },
@@ -34,48 +28,31 @@ const pawSteps = [
 ];
 
 
-// Mock data
-const favorites = [
-  {
-    id: 101,
-    name: 'Mila',
-    breed: 'Siberian Husky',
-    image: cat_1,
-    age: '2',
-    location: 'Warszawa',
-    shortDescription: 'Energiczna i przyjazna'
-  },
-  {
-    id: 105,
-    name: 'Luna',
-    breed: 'Siberian Husky',
-    image: dog2_1,
-    age: '2',
-    location: 'Warszawa',
-    shortDescription: 'Energiczna i przyjazna'
-  },
-  {
-    id: 102,
-    name: 'Burek',
-    breed: 'Labrador Retriever',
-    image: dog1_1,
-    age: '3',
-    location: 'Kraków',
-    shortDescription: 'Spokojny i łagodny'
-  },
-  {
-    id: 103,
-    name: 'Bella',
-    breed: 'Golden Retriever',
-    image: dog3_1,
-    age: '1',
-    location: 'Poznań',
-    shortDescription: 'Pełna miłości i radości'
-  }
-];
+
 
 const Favorites = () => {
   const navigate = useNavigate();
+  const [favorites, setFavorites] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+useEffect(() => {
+  const loadFavorites = async () => {
+    try {
+      const data = await fetchFavoritePets();
+      setFavorites(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadFavorites();
+}, []);
+
+if (loading) return <div className="loading-spinner">Ładowanie ulubionych...</div>;
+if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div>
@@ -104,7 +81,9 @@ const Favorites = () => {
           <h1>Twoje ulubione zwierzęta</h1>
           <p>Zwierzaki, które śledzisz i którym kibicujesz</p>
         </div>
-
+{favorites.length === 0 ? (
+  <p className="no-favorites">Nie masz jeszcze żadnych ulubionych zwierząt</p>
+) : (
         <div className="favorites-grid">
           {favorites.map((animal) => (
             <div
@@ -131,6 +110,7 @@ const Favorites = () => {
             </div>
           ))}
         </div>
+        )}
       </div>
     </div>
   );

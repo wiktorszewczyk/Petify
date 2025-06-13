@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import userCircle from '../assets/circle-user.svg';
+import userCircle from '../assets/default_avatar.jpg';
 import logo from '../assets/logo.svg';
 import { ArrowLeft, ArrowRight, Menu } from 'lucide-react';
 import './Navbar.css';
@@ -30,7 +30,12 @@ export default function Navbar() {
 
         <div className="profile-icon d-flex align-items-center">
           <Link to="/profile">
-            <img src={userCircle} width="50" height="50" style={{ cursor: 'pointer' }} alt="Profil" />
+            <img src={userCircle} width="50" height="50" style={{
+        cursor: 'pointer',
+        borderRadius: '50%',
+        objectFit: 'cover',
+        border: '3px solid #ffc107'
+      }} alt="Profil" />
           </Link>
         </div>
       </div>

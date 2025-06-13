@@ -425,70 +425,68 @@ font-size: 1.1rem;
   width: 100%;
 }
 
-.achievement-icons {
+.achievement-scroll-container {
   display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: 16px;
-  width: fit-content;  
-  padding: 20px;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 1rem 0;
+  scroll-behavior: smooth;
 }
 
-.achievement-circle {
- border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  margin: 0 auto 8px auto;
+.achievement-pill {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  margin-top: 10px;
-  margin-right: 30px;
+  font-size: 28px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  border: 3px solid transparent;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
 }
 
-
-.achievement-circle-text {
-  background-color: #97bcff;
-  border: 3px solid #5590ff;
-  box-shadow: 0 0 30px 10px #72a4ff;
-}
-
-.achievement-circle svg {
-  width: 50px;
-  height: 50px;
-}
-
-
-
-
-.achievement-circle-text svg {
-  color: #0059ff;
-}
-
-.achievement-circle-hand {
-  background-color: #baf8a7;
-  border: 3px solid #699765;
-  box-shadow: 0 0 30px 10px #85f36f;
-}
-
-.achievement-circle-hand svg {
-  color: #3a722c;
-}
-
-.achievement-circle-dollar {
-  background-color: #fff281;
-  border: 3px solid #ffbb00;
-  box-shadow: 0 0 30px 10px #ffc400;
-}
-
-.achievement-circle-dollar svg {
-  color: #ffae00;
-}
-
-.achievement-circle:hover {
+.achievement-pill:hover {
   transform: scale(1.1);
+}
+
+.achievement-pill.blue {
+  background: rgba(0, 123, 255, 0.1);
+  border-color: #007bff;
+}
+
+.achievement-pill.green {
+  background: rgba(40, 167, 69, 0.1);
+  border-color: #28a745;
+}
+
+.achievement-pill.yellow {
+  background: rgba(255, 193, 7, 0.1);
+  border-color: #ffc107;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.achievement-pill:hover .tooltip {
+  opacity: 1;
 }
 .achievements-progress h3 {
   font-size: 1.5rem;
@@ -547,54 +545,6 @@ font-size: 1.1rem;
   color: #2b751c;
   display: flex;
   justify-content: space-between;
-}
-
-
-/* Wpłaty */
-.donations {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-  width: 100%;
-}
-
-.donations h3 {
-  font-size: 1.5rem;
-  margin-bottom: 16px;
-  color: #2D3748;
-  font-weight: 700;
-}
-.donations-table {
-  font-size:1.2rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.donations-header {
-  font-weight: 700;
-  color: #2D3748;
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-radius: 8px;
-  display: contents;
-}
-
-.donations-row {
-  display: contents;
-}
-
-.donations-row span {
-  padding: 10px;
-  background: #F8FAFC;
-  color: #696969;
-}
-
-.donations-row span:nth-child(1) {
-  font-weight: 600;
-  color: #000;
 }
 
 
@@ -679,5 +629,43 @@ font-size: 1.1rem;
   80% {
     opacity: 0;
     transform: scale(0.5) rotate(var(--rotation));
+  }
+}
+
+.edit-profile-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+  background-color: #45a049;
+}
+
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-spinner {
+  border: 8px solid #eee;
+  border-top: 8px solid #4b9cdb;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
