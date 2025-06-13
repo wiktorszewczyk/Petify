@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -35,16 +34,9 @@ public class Image {
     
     @Column(name = "image_name")
     private String imageName;
-    
-    @Column(name = "image_type")
-    private String imageType;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
-    
-    @Lob
-    @Column(name = "image_data", nullable = false)
-    private byte[] imageData;
 
     @PrePersist
     protected void onCreate() {
@@ -64,7 +56,6 @@ public class Image {
                 .append(getEntityId(), image.getEntityId())
                 .append(getEntityType(), image.getEntityType())
                 .append(getImageName(), image.getImageName())
-                .append(getImageType(), image.getImageType())
                 .isEquals();
     }
 
@@ -74,7 +65,6 @@ public class Image {
                 .append(getEntityId())
                 .append(getEntityType())
                 .append(getImageName())
-                .append(getImageType())
                 .toHashCode();
     }
 
@@ -85,7 +75,6 @@ public class Image {
                 .append("entityId", entityId)
                 .append("entityType", entityType)
                 .append("imageName", imageName)
-                .append("imageType", imageType)
                 .append("createdAt", createdAt)
                 .toString();
     }
