@@ -7,8 +7,6 @@ public record ImageResponse(
         Long id,
         Long entityId,
         String entityType,
-        String imageName,
-        String imageType,
-        LocalDateTime createdAt,
-        String imageData
+        String imageUrl,
+        LocalDateTime createdAt
 ) implements Serializable {}
