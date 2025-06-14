@@ -25,7 +25,7 @@
     <module>image</module>
     <module>reservations</module>
     <module>shelter</module>
-
+    <module>load-tests</module>
     <module>gateway</module>
   </modules>
 
