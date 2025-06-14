@@ -237,7 +237,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: _getImageProvider(widget.pet.imageUrl),
+                image: _getImageProvider(widget.pet.imageUrlSafe),
                 fit: BoxFit.cover,
               ),
               border: Border.all(color: AppColors.primaryColor, width: 2),

@@ -64,16 +64,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   ImageProvider? _getImageProvider(String path) {
-    if (path.startsWith('data:image/')) {
-      try {
-        final base64String = path.split(',')[1];
-        final imageBytes = base64Decode(base64String);
-        return MemoryImage(imageBytes);
-      } catch (e) {
-        return null;
-      }
-    }
-
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return NetworkImage(path);
     }
@@ -110,7 +100,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   List<String> _getAllImages() {
-    return [widget.pet.imageUrl, ...widget.pet.galleryImages];
+    return [widget.pet.imageUrlSafe, ...widget.pet.galleryImages];
   }
 
   Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
@@ -141,20 +131,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     }
 
     // Fallback dla obrazów nie w cache
-    if (path.startsWith('data:image/')) {
-      try {
-        final base64String = path.split(',')[1];
-        final imageBytes = base64Decode(base64String);
-        return Image.memory(
-          imageBytes,
-          fit: fit,
-          errorBuilder: (context, error, stackTrace) => _buildErrorImage(),
-        );
-      } catch (e) {
-        return _buildErrorImage();
-      }
-    }
-
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return Image.network(
         path,
@@ -379,7 +355,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
 
-    final allImages = [widget.pet.imageUrl, ...widget.pet.galleryImages];
+    final allImages = [widget.pet.imageUrlSafe, ...widget.pet.galleryImages];
 
     return Container(
       width: double.infinity,
@@ -753,7 +729,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
           petName: widget.pet.name,
           shelterId: widget.pet.shelterId.toString(),
           shelterName: widget.pet.shelterName ?? 'Schronisko',
-          petImageUrl: widget.pet.imageUrl,
+          petImageUrl: widget.pet.imageUrlSafe,
         );
         isNewConversation = true;
       }
@@ -810,7 +786,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       clipBehavior: Clip.hardEdge,
-                      child: _getImageWidget(widget.pet.imageUrl, fit: BoxFit.cover),
+                      child: _getImageWidget(widget.pet.imageUrlSafe, fit: BoxFit.cover),
                     ),
                     const SizedBox(width: 16),
                     Expanded(

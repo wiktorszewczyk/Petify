@@ -94,7 +94,7 @@ class _ChatViewState extends State<ChatView> {
               id: widget.conversationId,
               petId: widget.pet!.id.toString(),
               petName: widget.pet!.name,
-              petImageUrl: widget.pet!.imageUrl,
+              petImageUrl: widget.pet!.imageUrl ?? 'assets/images/pet_placeholder.png',
               shelterName: widget.pet!.shelterName ?? 'Schronisko',
               lastMessage: '',
               lastMessageTime: DateTime.now(),

@@ -388,13 +388,17 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
             child: SizedBox(
               width: 60,
               height: 60,
-              child: widget.pet.imageUrl.startsWith('data:image/')
-                  ? Image.memory(
-                base64Decode(widget.pet.imageUrl.split(',')[1]),
+              child: widget.pet.imageUrlSafe.startsWith('http://') || widget.pet.imageUrlSafe.startsWith('https://')
+                  ? Image.network(
+                widget.pet.imageUrlSafe,
                 fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  color: Colors.grey[300],
+                  child: Icon(Icons.pets, color: Colors.grey[600]),
+                ),
               )
-                  : Image.network(
-                widget.pet.imageUrl,
+                  : Image.asset(
+                widget.pet.imageUrlSafe,
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Container(
                   color: Colors.grey[300],

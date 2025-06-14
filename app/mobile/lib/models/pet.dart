@@ -15,9 +15,8 @@ class Pet {
   final bool urgent;
   final bool sterilized;
   final bool kidFriendly;
-  final String? imageName;
-  final String? imageType;
-  final String? imageData; // Base64
+  final String? imageUrl; // Główne zdjęcie z backend
+  final List<String>? images; // Dodatkowe zdjęcia z backend
 
   // Dodatkowe pola dla kompatybilności z frontendem
   final String? shelterName;
@@ -39,9 +38,8 @@ class Pet {
     required this.urgent,
     required this.sterilized,
     required this.kidFriendly,
-    this.imageName,
-    this.imageType,
-    this.imageData,
+    this.imageUrl,
+    this.images,
     this.shelterName,
     this.shelterAddress,
     this.distance,
@@ -63,9 +61,10 @@ class Pet {
       urgent: json['urgent'] ?? false,
       sterilized: json['sterilized'] ?? false,
       kidFriendly: json['kidFriendly'] ?? false,
-      imageName: json['imageName'],
-      imageType: json['imageType'],
-      imageData: json['imageData'],
+      imageUrl: json['imageUrl'],
+      images: json['images'] != null
+          ? (json['images'] as List).map((img) => img['imageUrl'] as String).toList()
+          : null,
       shelterName: json['shelterName'],
       shelterAddress: json['shelterAddress'],
       distance: json['distance']?.toDouble(),
@@ -88,9 +87,8 @@ class Pet {
       'urgent': urgent,
       'sterilized': sterilized,
       'kidFriendly': kidFriendly,
-      'imageName': imageName,
-      'imageType': imageType,
-      'imageData': imageData,
+      'imageUrl': imageUrl,
+      'images': images,
       'shelterName': shelterName,
       'shelterAddress': shelterAddress,
       'distance': distance,
@@ -124,25 +122,17 @@ class Pet {
     }
   }
 
-  // Gettery dla kompatybilności z istniejącym kodem
-  String get imageUrl {
-    if (imageData != null && imageData!.isNotEmpty) {
-      // Sprawdź czy to już jest data URL
-      if (imageData!.startsWith('data:image')) {
-        return imageData!;
-      }
-      // Jeśli nie, dodaj prefix
-      final mimeType = imageType ?? 'image/jpeg';
-      return 'data:$mimeType;base64,$imageData';
+  // Getter dla URL zdjęcia z kontrolą błędów
+  String get imageUrlSafe {
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      return imageUrl!;
     }
     // Fallback do placeholder
-    return 'assets/images/pet_placeholder.png';
+    return 'assets/images/empty_pets.png';
   }
 
   List<String> get galleryImages {
-    // Na razie zwracamy pustą listę, bo backend nie ma galerii w tej wersji
-    // Można to rozszerzyć jeśli backend będzie obsługiwał wiele zdjęć
-    return [];
+    return images ?? [];
   }
 
   // Getter dla typu zwierzęcia po polsku

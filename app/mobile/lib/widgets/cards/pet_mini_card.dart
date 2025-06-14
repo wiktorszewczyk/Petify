@@ -23,31 +23,17 @@ class PetMiniCard extends StatelessWidget {
   }
 
   Widget _buildPetImage() {
+    final imageUrl = pet.imageUrlSafe;
+
     // Sprawdź czy mamy imageUrl
-    if (pet.imageUrl.isEmpty) {
+    if (imageUrl.isEmpty) {
       return _buildPlaceholder();
     }
 
-    // Obsługa Base64 images
-    if (pet.imageUrl.startsWith('data:image/')) {
-      try {
-        final base64String = pet.imageUrl.split(',')[1];
-        final imageBytes = base64Decode(base64String);
-        return Image.memory(
-          imageBytes,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _buildPlaceholder(),
-        );
-      } catch (e) {
-        return _buildPlaceholder();
-      }
-    }
-
-    // Obsługa URL images
-    if (pet.imageUrl.startsWith('http://') ||
-        pet.imageUrl.startsWith('https://')) {
+    // Obsługa URL images (nowy format z backend)
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return Image.network(
-        pet.imageUrl,
+        imageUrl,
         fit: BoxFit.cover,
         errorBuilder: (_, __, ___) => _buildPlaceholder(),
         loadingBuilder: (context, child, loadingProgress) {
@@ -73,41 +59,17 @@ class PetMiniCard extends StatelessWidget {
       );
     }
 
-    // Obsługa lokalnych assetów
-    if (pet.imageUrl.startsWith('assets/')) {
+    // Obsługa lokalnych assetów (placeholder)
+    if (imageUrl.startsWith('assets/')) {
       return Image.asset(
-        pet.imageUrl,
+        imageUrl,
         fit: BoxFit.cover,
         errorBuilder: (_, __, ___) => _buildPlaceholder(),
       );
     }
 
-    // Fallback - spróbuj jako network image
-    return Image.network(
-      pet.imageUrl,
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => _buildPlaceholder(),
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Container(
-          color: Colors.grey[200],
-          child: Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes!
-                    : null,
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-                strokeWidth: 2,
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    // Fallback
+    return _buildPlaceholder();
   }
 
   Widget _buildPlaceholder() {

@@ -32,35 +32,43 @@ class _PetDetailsViewState extends State<PetDetailsView> {
   }
 
   List<String> get _allImages {
-    // Zwracamy listę zdjęć - na razie tylko główne zdjęcie
-    return [widget.pet.imageUrl];
+    // Zwracamy listę zdjęć - główne zdjęcie + galeria
+    return [widget.pet.imageUrlSafe, ...widget.pet.galleryImages];
   }
 
   Widget _buildImage(String path, {BoxFit fit = BoxFit.cover}) {
-    if (path.startsWith('data:image/')) {
-      try {
-        final base64String = path.split(',')[1];
-        return Image.memory(
-          base64Decode(base64String),
-          fit: fit,
-          errorBuilder: (_, __, ___) => _buildErrorImage(),
-        );
-      } catch (e) {
-        return _buildErrorImage();
-      }
-    } else if (path.startsWith('http://') || path.startsWith('https://')) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
       return Image.network(
         path,
         fit: fit,
         errorBuilder: (_, __, ___) => _buildErrorImage(),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[200],
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes!
+                    : null,
+                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+              ),
+            ),
+          );
+        },
       );
-    } else {
+    }
+
+    if (path.startsWith('assets/')) {
       return Image.asset(
         path,
         fit: fit,
         errorBuilder: (_, __, ___) => _buildErrorImage(),
       );
     }
+
+    return _buildErrorImage();
   }
 
   Widget _buildErrorImage() {
@@ -486,7 +494,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
           petName: widget.pet.name,
           shelterId: widget.pet.shelterId.toString(),
           shelterName: widget.pet.shelterName ?? 'Schronisko',
-          petImageUrl: widget.pet.imageUrl,
+          petImageUrl: widget.pet.imageUrl!,
         );
         isNewConversation = true;
       }
