@@ -74,7 +74,7 @@ public class PetController {
             @RequestParam(required = false) Double userLng,
             @RequestParam(required = false) Double radiusKm,
             @RequestParam(required = false) Long cursor,
-            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "15") int limit,
             @AuthenticationPrincipal Jwt jwt
     ) {
         String username = jwt != null ? jwt.getSubject() : null;
