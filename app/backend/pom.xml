@@ -16,17 +16,16 @@
 
   <modules>
     <module>config-server</module>
-    <module>discovery</module>
     <module>auth-server</module>
-
+    <module>discovery</module>
+    <module>gateway</module>
+    <module>shelter</module>
+    <module>reservations</module>
     <module>chat</module>
-    <module>feed</module>
     <module>funding</module>
     <module>image</module>
-    <module>reservations</module>
-    <module>shelter</module>
+    <module>feed</module>
     <module>load-tests</module>
-    <module>gateway</module>
   </modules>
 
   <distributionManagement>
@@ -210,9 +209,9 @@
   <reporting>
     <plugins>
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jxr-plugin</artifactId>
-          <version>3.6.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>3.6.0</version>
       </plugin>
 
       <!-- Checkstyle Reports -->

@@ -16,7 +16,12 @@ public class PaymentConfiguration {
         return new RestTemplate();
     }
 
+    @Bean
     @ConfigurationProperties(prefix = "payment")
+    public PaymentProperties paymentProperties() {
+        return new PaymentProperties();
+    }
+
     @Data
     public static class PaymentProperties {
         private Stripe stripe = new Stripe();
