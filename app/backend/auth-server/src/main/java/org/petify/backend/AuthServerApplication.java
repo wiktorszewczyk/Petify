@@ -4,6 +4,7 @@ import org.petify.backend.models.Achievement;
 import org.petify.backend.models.AchievementCategory;
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.models.Role;
+import org.petify.backend.models.VolunteerStatus;
 import org.petify.backend.repository.AchievementRepository;
 import org.petify.backend.repository.RoleRepository;
 import org.petify.backend.repository.UserRepository;
@@ -15,7 +16,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication
@@ -32,44 +36,79 @@ public class AuthServerApplication {
             AchievementService achievementService,
             PasswordEncoder passwordEncoder) {
         return args -> {
-            boolean needToInitRoles = !roleRepository.findByAuthority("ADMIN").isPresent();
+            Role adminRole = roleRepository.findByAuthority("ADMIN")
+                    .orElseGet(() -> roleRepository.save(new Role("ADMIN")));
 
-            if (needToInitRoles) {
-                System.out.println("Inicjalizacja ról...");
-                final Role adminRole = roleRepository.save(new Role("ADMIN"));
-                roleRepository.save(new Role("USER"));
-                roleRepository.save(new Role("VOLUNTEER"));
-                roleRepository.save(new Role("SHELTER"));
+            Role userRole = roleRepository.findByAuthority("USER")
+                    .orElseGet(() -> roleRepository.save(new Role("USER")));
 
+            // Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
+            // .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
+
+            Role shelterRole = roleRepository.findByAuthority("SHELTER")
+                    .orElseGet(() -> roleRepository.save(new Role("SHELTER")));
+
+            Optional<ApplicationUser> existingAdmin = userRepository.findByUsername("admin");
+
+            if (existingAdmin.isEmpty()) {
                 Set<Role> adminRoles = new HashSet<>();
                 adminRoles.add(adminRole);
+                adminRoles.add(userRole);
 
                 ApplicationUser admin = new ApplicationUser();
                 admin.setUsername("admin");
                 admin.setPassword(passwordEncoder.encode("admin"));
                 admin.setEmail("admin@petify.org");
                 admin.setFirstName("Admin");
-                admin.setLastName("User");
+                admin.setLastName("Administrator");
+                admin.setBirthDate(LocalDate.of(1980, 1, 1));
+                admin.setGender("MALE");
+                admin.setPhoneNumber("+48123456789");
+                admin.setVolunteerStatus(VolunteerStatus.NONE);
+                admin.setActive(true);
+                admin.setCreatedAt(LocalDateTime.now());
                 admin.setAuthorities(adminRoles);
-
-                // Set XP and level for admin
-                admin.setXpPoints(500);
-                admin.setLevel(5);
+                admin.setXpPoints(1000);
+                admin.setLevel(10);
                 admin.setLikesCount(0);
                 admin.setSupportCount(0);
                 admin.setBadgesCount(0);
 
                 ApplicationUser savedAdmin = userRepository.save(admin);
-
-                // Initialize achievements for admin user
                 achievementService.initializeUserAchievements(savedAdmin);
+            }
+
+            Optional<ApplicationUser> existingShelterUser = userRepository.findByUsername("shelter");
+            if (existingShelterUser.isEmpty()) {
+                Set<Role> shelterRoles = new HashSet<>();
+                shelterRoles.add(shelterRole);
+                shelterRoles.add(userRole);
+
+                ApplicationUser shelterUser = new ApplicationUser();
+                shelterUser.setUsername("shelter");
+                shelterUser.setPassword(passwordEncoder.encode("shelter"));
+                shelterUser.setEmail("shelter@petify.org");
+                shelterUser.setFirstName("Schronisko");
+                shelterUser.setLastName("Testowe");
+                shelterUser.setBirthDate(LocalDate.of(1990, 1, 1));
+                shelterUser.setGender("OTHER");
+                shelterUser.setPhoneNumber("+48987654321");
+                shelterUser.setVolunteerStatus(VolunteerStatus.NONE);
+                shelterUser.setActive(true);
+                shelterUser.setCreatedAt(LocalDateTime.now());
+                shelterUser.setAuthorities(shelterRoles);
+                shelterUser.setXpPoints(0);
+                shelterUser.setLevel(1);
+                shelterUser.setLikesCount(0);
+                shelterUser.setSupportCount(0);
+                shelterUser.setBadgesCount(0);
+
+                ApplicationUser savedShelterUser = userRepository.save(shelterUser);
+                achievementService.initializeUserAchievements(savedShelterUser);
             }
 
             long achievementCount = achievementRepository.count();
             if (achievementCount == 0) {
-                System.out.println("Inicjalizacja osiągnięć...");
-
-                // LIKES category achievements
                 Achievement achievement1 = new Achievement();
                 achievement1.setName("Początkujący miłośnik");
                 achievement1.setDescription("Polub 10 zwierząt");
@@ -97,7 +136,6 @@ public class AuthServerApplication {
                 achievement3.setRequiredActions(100);
                 achievementRepository.save(achievement3);
 
-                // SUPPORT category achievements
                 Achievement achievement4 = new Achievement();
                 achievement4.setName("Początkujące wsparcie");
                 achievement4.setDescription("Wesprzyj 3 zwierzęta");
@@ -124,27 +162,6 @@ public class AuthServerApplication {
                 achievement6.setCategory(AchievementCategory.SUPPORT);
                 achievement6.setRequiredActions(25);
                 achievementRepository.save(achievement6);
-
-                // BADGE category achievements
-                Achievement achievement7 = new Achievement();
-                achievement7.setName("Wirtualny opiekun");
-                achievement7.setDescription("Wspieraj wybranego zwierzaka przez 5 kolejnych dni");
-                achievement7.setIconName("pet");
-                achievement7.setXpReward(100);
-                achievement7.setCategory(AchievementCategory.BADGE);
-                achievement7.setRequiredActions(5);
-                achievementRepository.save(achievement7);
-
-                Achievement achievement8 = new Achievement();
-                achievement8.setName("Charytatywna dusza");
-                achievement8.setDescription("Wpłać łączną sumę darowizn na sumę 100 zł");
-                achievement8.setIconName("money-bill");
-                achievement8.setXpReward(150);
-                achievement8.setCategory(AchievementCategory.BADGE);
-                achievement8.setRequiredActions(100);
-                achievementRepository.save(achievement8);
-
-                System.out.println("Osiągnięcia zainicjalizowane pomyślnie");
             }
         };
     }

@@ -10,8 +10,6 @@ import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.exception.ShelterNotFoundException;
 import org.petify.shelter.mapper.AdoptionMapper;
 import org.petify.shelter.model.Adoption;
-import org.petify.shelter.model.Pet;
-import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.AdoptionRepository;
 import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
@@ -34,7 +32,7 @@ public class AdoptionService {
 
     @Transactional
     public AdoptionResponse createAdoptionForm(Long petId, String username, AdoptionRequest adoptionRequest) {
-        Pet pet = petRepository.findById(petId)
+        var pet = petRepository.findById(petId)
                 .orElseThrow(() -> new PetNotFoundException(petId));
 
         if (pet.isArchived()) {
@@ -45,36 +43,36 @@ public class AdoptionService {
             throw new AdoptionAlreadyExistsException(petId, username);
         }
 
-        Adoption adoption = adoptionMapper.toEntity(adoptionRequest);
+        var adoption = adoptionMapper.toEntity(adoptionRequest);
         adoption.setUsername(username);
         adoption.setPet(pet);
-        Adoption savedForm = adoptionRepository.save(adoption);
+        var savedForm = adoptionRepository.save(adoption);
 
         return adoptionMapper.toDto(savedForm);
     }
 
     public List<AdoptionResponse> getUserAdoptionForms(String username) {
-        List<Adoption> adoptions = adoptionRepository.findByUsername(username);
+        var adoptions = adoptionRepository.findByUsername(username);
         return adoptions.stream()
                 .map(adoptionMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<AdoptionResponse> getShelterAdoptionForms(Long shelterId) {
-        Shelter shelter = shelterRepository.findById(shelterId)
+        var shelter = shelterRepository.findById(shelterId)
                 .orElseThrow(() -> new ShelterNotFoundException(shelterId));
 
-        List<Adoption> adoptions = adoptionRepository.findByPetShelter(shelter);
+        var adoptions = adoptionRepository.findByPetShelter(shelter);
         return adoptions.stream()
                 .map(adoptionMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<AdoptionResponse> getPetAdoptionForms(Long petId) {
-        Pet pet = petRepository.findById(petId)
+        var pet = petRepository.findById(petId)
                 .orElseThrow(() -> new PetNotFoundException(petId));
 
-        List<Adoption> adoptions = adoptionRepository.findByPet(pet);
+        var adoptions = adoptionRepository.findByPet(pet);
         return adoptions.stream()
                 .map(adoptionMapper::toDto)
                 .collect(Collectors.toList());
@@ -82,7 +80,7 @@ public class AdoptionService {
 
     @Transactional
     public AdoptionResponse updateAdoptionStatus(Long formId, AdoptionStatus newStatus, String username) {
-        Adoption form = adoptionRepository.findById(formId)
+        var form = adoptionRepository.findById(formId)
                 .orElseThrow(() -> new AdoptionFormNotFoundException(formId));
 
         if (!form.getPet().getShelter().getOwnerUsername().equals(username)) {
@@ -90,7 +88,7 @@ public class AdoptionService {
         }
 
         if (newStatus == AdoptionStatus.ACCEPTED) {
-            List<Adoption> otherPendingForms = adoptionRepository
+            var otherPendingForms = adoptionRepository
                     .findByPetAndAdoptionStatusAndIdNot(form.getPet(), AdoptionStatus.PENDING, formId);
 
             for (Adoption otherForm : otherPendingForms) {
@@ -98,20 +96,20 @@ public class AdoptionService {
                 adoptionRepository.save(otherForm);
             }
 
-            Pet pet = form.getPet();
+            var pet = form.getPet();
             pet.setArchived(true);
             petRepository.save(pet);
         }
 
         form.setAdoptionStatus(newStatus);
-        Adoption updatedForm = adoptionRepository.save(form);
+        var updatedForm = adoptionRepository.save(form);
 
         return adoptionMapper.toDto(updatedForm);
     }
 
     @Transactional
     public AdoptionResponse cancelAdoptionForm(Long formId, String username) {
-        Adoption form = adoptionRepository.findById(formId)
+        var form = adoptionRepository.findById(formId)
                 .orElseThrow(() -> new AdoptionFormNotFoundException(formId));
 
         if (!form.getUsername().equals(username)) {
@@ -123,13 +121,13 @@ public class AdoptionService {
         }
 
         form.setAdoptionStatus(AdoptionStatus.CANCELLED);
-        Adoption updatedForm = adoptionRepository.save(form);
+        var updatedForm = adoptionRepository.save(form);
 
         return adoptionMapper.toDto(updatedForm);
     }
 
     public AdoptionResponse getAdoptionFormById(Long formId) {
-        Adoption form = adoptionRepository.findById(formId)
+        var form = adoptionRepository.findById(formId)
                 .orElseThrow(() -> new AdoptionFormNotFoundException(formId));
 
         return adoptionMapper.toDto(form);

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: image-service
+  config:
+    import: optional:configserver:http://localhost:8888
+
+s3:
+  access-key: ${s3.access.key}
+  secret-key: ${s3.secret.key}

@@ -11,6 +11,7 @@ import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.ShelterRepository;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 public class ShelterService {
     private final ShelterRepository shelterRepository;
     private final ShelterMapper shelterMapper;
+    private final StorageService storageService;
 
     public List<ShelterResponse> getShelters() {
         List<Shelter> shelters = shelterRepository.findAll();
@@ -79,9 +81,8 @@ public class ShelterService {
 
     private ShelterResponse setIfImageIncluded(MultipartFile file, Shelter existingShelter) throws IOException {
         if (file != null && !file.isEmpty()) {
-            existingShelter.setImageName(file.getOriginalFilename());
-            existingShelter.setImageType(file.getContentType());
-            existingShelter.setImageData(file.getBytes());
+            String imageName = storageService.uploadImage(file);
+            existingShelter.setImageName(imageName);
         }
 
         Shelter updatedShelter = shelterRepository.save(existingShelter);
@@ -154,6 +155,21 @@ public class ShelterService {
             throw new RoutingException("OSRM request timed out", e);
         } catch (IOException e) {
             throw new RoutingException("Network error while contacting OSRM", e);
+        }
+    }
+
+    public HttpStatus validateShelterForDonations(Long shelterId) {
+        try {
+            ShelterResponse shelter = getShelterById(shelterId);
+
+            if (!shelter.isActive()) {
+                return HttpStatus.FORBIDDEN;
+            }
+
+            return HttpStatus.OK;
+
+        } catch (ShelterNotFoundException ex) {
+            return HttpStatus.NOT_FOUND;
         }
     }
 }

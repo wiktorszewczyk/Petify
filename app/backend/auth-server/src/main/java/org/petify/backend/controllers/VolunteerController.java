@@ -37,9 +37,6 @@ public class VolunteerController {
     @Autowired
     private VolunteerService volunteerService;
 
-    /**
-     * Apply to become a volunteer
-     */
     @PostMapping("/apply")
     public ResponseEntity<?> applyForVolunteer(@RequestBody VolunteerApplication application) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -56,9 +53,6 @@ public class VolunteerController {
         }
     }
 
-    /**
-     * Get volunteer status and application history
-     */
     @GetMapping("/status")
     public ResponseEntity<?> getVolunteerStatus() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -70,7 +64,6 @@ public class VolunteerController {
         Map<String, Object> response = new HashMap<>();
         response.put("volunteerStatus", user.getVolunteerStatus());
 
-        // If user is a volunteer or has applied, add application history
         if (user.getVolunteerStatus() != VolunteerStatus.NONE) {
             List<VolunteerApplication> applications = volunteerService.getUserApplications(username);
 
@@ -82,9 +75,6 @@ public class VolunteerController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Admin endpoint to approve a volunteer application
-     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/applications/{id}/approve")
     public ResponseEntity<?> approveVolunteerApplication(@PathVariable Long id) {
@@ -96,9 +86,6 @@ public class VolunteerController {
         }
     }
 
-    /**
-     * Admin endpoint to reject a volunteer application
-     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/applications/{id}/reject")
     public ResponseEntity<?> rejectVolunteerApplication(
@@ -113,9 +100,6 @@ public class VolunteerController {
         }
     }
 
-    /**
-     * Admin endpoint to get applications by status
-     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/applications/status/{status}")
     public ResponseEntity<List<VolunteerApplication>> getApplicationsByStatus(

@@ -24,6 +24,4 @@ public record PetResponse(
         boolean urgent,
         boolean sterilized,
         boolean kidFriendly,
-        String imageName,
-        String imageType,
-        String imageData) implements Serializable {}
+        String imageUrl) implements Serializable {}

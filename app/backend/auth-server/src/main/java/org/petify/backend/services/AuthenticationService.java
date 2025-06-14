@@ -81,11 +81,16 @@ public class AuthenticationService {
         newUser.setActive(true);
         newUser.setCreatedAt(LocalDateTime.now());
 
+        // XP and gamification
         newUser.setXpPoints(0);
         newUser.setLevel(1);
         newUser.setLikesCount(0);
         newUser.setSupportCount(0);
         newUser.setBadgesCount(0);
+
+        // Domyślne ustawienia lokalizacji
+        newUser.setPreferredSearchDistanceKm(20.0);
+        newUser.setAutoLocationEnabled(false);
 
         if (registrationDTO.isApplyAsVolunteer()) {
             newUser.setVolunteerStatus(VolunteerStatus.PENDING);
@@ -170,12 +175,17 @@ public class AuthenticationService {
             user.setGender(updatedUser.getGender());
         }
 
+        if (updatedUser.getPreferredSearchDistanceKm() != null) {
+            user.setPreferredSearchDistanceKm(updatedUser.getPreferredSearchDistanceKm());
+        }
+
+        if (updatedUser.getAutoLocationEnabled() != null) {
+            user.setAutoLocationEnabled(updatedUser.getAutoLocationEnabled());
+        }
+
         return userRepository.save(user);
     }
 
-    /**
-     * Deletes a user account
-     */
     public void deleteUserAccount(String username) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -183,9 +193,6 @@ public class AuthenticationService {
         userRepository.delete(user);
     }
 
-    /**
-     * Updates a user's volunteer status
-     */
     public ApplicationUser updateVolunteerStatus(Integer userId, VolunteerStatus status) {
         ApplicationUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -194,9 +201,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Assigns roles to a user
-     */
     public ApplicationUser assignRolesToUser(Integer userId, Set<String> roleNames) {
         ApplicationUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -212,9 +216,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Deactivate user account (by admin)
-     */
     @Transactional
     public ApplicationUser deactivateUserAccount(Integer userId, String reason) {
         ApplicationUser user = userRepository.findById(userId)
@@ -226,9 +227,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Reactivate user account (by admin)
-     */
     @Transactional
     public ApplicationUser reactivateUserAccount(Integer userId) {
         ApplicationUser user = userRepository.findById(userId)
@@ -240,9 +238,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    /**
-     * Self-deactivate account (by user)
-     */
     @Transactional
     public ApplicationUser selfDeactivateAccount(String username, String reason) {
         ApplicationUser user = userRepository.findByUsername(username)

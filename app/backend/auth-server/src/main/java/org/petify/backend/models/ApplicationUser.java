@@ -1,5 +1,6 @@
 package org.petify.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -32,6 +34,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ApplicationUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,6 +91,28 @@ public class ApplicationUser implements UserDetails {
     @Column(name = "badges_count")
     private Integer badgesCount = 0;
 
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "preferred_search_distance_km")
+    private Double preferredSearchDistanceKm = 20.0;
+
+    @Column(name = "auto_location_enabled")
+    private Boolean autoLocationEnabled = false;
+
+    @Column(name = "location_updated_at")
+    private LocalDateTime locationUpdatedAt;
+
+    @Column(name = "profile_image")
+    @Lob
+    private byte[] profileImage;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<UserAchievement> achievements = new HashSet<>();
@@ -106,6 +131,35 @@ public class ApplicationUser implements UserDetails {
     @Transient
     public Integer getXpToNextLevel() {
         return 100 + (this.level * 50);
+    }
+
+    @Transient
+    public boolean hasLocation() {
+        return latitude != null && longitude != null;
+    }
+
+    @Transient
+    public boolean hasCompleteLocationProfile() {
+        return city != null && !city.trim().isEmpty() && hasLocation();
+    }
+
+    @Transient
+    public boolean hasProfileImage() {
+        return profileImage != null && profileImage.length > 0;
+    }
+
+    public void setLocation(String city, Double latitude, Double longitude) {
+        this.city = city;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.locationUpdatedAt = LocalDateTime.now();
+    }
+
+    public void clearLocation() {
+        this.city = null;
+        this.latitude = null;
+        this.longitude = null;
+        this.locationUpdatedAt = null;
     }
 
     public ApplicationUser() {
