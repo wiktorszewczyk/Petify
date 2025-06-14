@@ -14,6 +14,10 @@ import org.petify.shelter.exception.ShelterNotFoundException;
 import org.petify.shelter.mapper.ShelterMapper;
 import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.ShelterRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -87,13 +91,12 @@ class ShelterServiceTest {
 
     @Test
     void testGetShelters() {
-        when(shelterRepository.findAll()).thenReturn(List.of(shelter));
-        when(shelterMapper.toDto(any(Shelter.class))).thenReturn(shelterResponse);
+        List<Shelter> shelters = List.of(new Shelter(), new Shelter());
+        when(shelterRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(shelters));
 
-        List<ShelterResponse> result = shelterService.getShelters();
+        Page<ShelterResponse> result = shelterService.getShelters(PageRequest.of(0, 10));
 
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0)).isEqualTo(shelterResponse);
+        assertThat(result).hasSize(2);
     }
 
     @Test

@@ -5,7 +5,6 @@ import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
-import org.petify.shelter.dto.PetResponseWithImages;
 import org.petify.shelter.dto.ShelterResponse;
 import org.petify.shelter.enums.PetType;
 import org.petify.shelter.service.AdoptionService;
@@ -16,6 +15,8 @@ import org.petify.shelter.service.ShelterService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -49,38 +50,19 @@ public class PetController {
     private final PetImageService petImageService;
 
     @GetMapping()
-    public ResponseEntity<?> getAllPets() {
-        return ResponseEntity.ok(petService.getPets());
-    }
-
-    // to delete
-    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
-    @GetMapping("/filter")
-    public ResponseEntity<List<PetResponseWithImages>> getFilteredPets(
-            @RequestParam(required = false) Boolean vaccinated,
-            @RequestParam(required = false) Boolean urgent,
-            @RequestParam(required = false) Boolean sterilized,
-            @RequestParam(required = false) Boolean kidFriendly,
-            @RequestParam(required = false) Integer minAge,
-            @RequestParam(required = false) Integer maxAge,
-            @RequestParam(required = false) PetType type,
-            @RequestParam(required = false) Double userLat,
-            @RequestParam(required = false) Double userLng,
-            @RequestParam(required = false) Double radiusKm,
-            @AuthenticationPrincipal Jwt jwt
+    public ResponseEntity<?> getAllPets(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size
     ) {
-        String username = jwt != null ? jwt.getSubject() : null;
 
-        return ResponseEntity.ok(
-                petService.getFilteredPets(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
-                        type, userLat, userLng, radiusKm, username)
-        );
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(petService.getPets(pageable));
     }
 
     // implements cursor-based pagination
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
-    @GetMapping("/swipe")
-    public ResponseEntity<?> swipe(
+    @GetMapping("/filter")
+    public ResponseEntity<?> getFilteredPets(
             @RequestParam(required = false) Boolean vaccinated,
             @RequestParam(required = false) Boolean urgent,
             @RequestParam(required = false) Boolean sterilized,

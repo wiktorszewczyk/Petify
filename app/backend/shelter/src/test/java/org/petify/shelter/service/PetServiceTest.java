@@ -16,6 +16,10 @@ import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.FavoritePetRepository;
 import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,7 +68,6 @@ class PetServiceTest {
 
     @Test
     void getOwnerUsernameByPetId_WhenPetExists_ShouldReturnUsername() {
-        // Arrange
         Long petId = 1L;
         String expectedUsername = "owner1";
         Pet pet = new Pet();
@@ -74,20 +77,16 @@ class PetServiceTest {
 
         when(petRepository.findById(petId)).thenReturn(Optional.of(pet));
 
-        // Act
         String result = petService.getOwnerUsernameByPetId(petId);
 
-        // Assert
         assertThat(result).isEqualTo(expectedUsername);
     }
 
     @Test
     void getOwnerUsernameByPetId_WhenPetNotExists_ShouldThrowException() {
-        // Arrange
         Long petId = 1L;
         when(petRepository.findById(petId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThatThrownBy(() -> petService.getOwnerUsernameByPetId(petId))
                 .isInstanceOf(PetNotFoundException.class)
                 .hasMessageContaining(petId.toString());
@@ -95,7 +94,6 @@ class PetServiceTest {
 
     @Test
     void getPets_ShouldReturnListOfPetResponsesWithImages() {
-        // Arrange
         Pet pet1 = createTestPet(1L, "Pet1", PetType.DOG);
         Pet pet2 = createTestPet(2L, "Pet2", PetType.CAT);
         List<Pet> pets = List.of(pet1, pet2);
@@ -103,14 +101,13 @@ class PetServiceTest {
         PetResponseWithImages response1 = createPetResponseWithImages(1L, "Pet1", PetType.DOG);
         PetResponseWithImages response2 = createPetResponseWithImages(2L, "Pet2", PetType.CAT);
 
-        when(petRepository.findAll()).thenReturn(pets);
+        when(petRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(pets));
         when(petMapper.toDtoWithImages(pet1)).thenReturn(response1);
         when(petMapper.toDtoWithImages(pet2)).thenReturn(response2);
 
-        // Act
-        List<PetResponseWithImages> result = petService.getPets();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<PetResponseWithImages> result = petService.getPets(pageable);
 
-        // Assert
         assertThat(result)
                 .hasSize(2)
                 .containsExactly(response1, response2);
@@ -118,22 +115,18 @@ class PetServiceTest {
 
     @Test
     void getFilteredPets_WhenNoPetsMatchCriteria_ShouldReturnEmptyList() {
-        // Arrange
         when(favoritePetRepository.findByUsername(anyString())).thenReturn(Collections.emptyList());
-        when(petRepository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
+        when(petRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        // Act
-        var result = petService.getFilteredPets(
+        var result = petService.getFilteredPetsWithCursor(
                 true, false, true, true,
-                1, 5, PetType.DOG, 50.0, 20.0, 10.0, "user1");
+                1, 5, PetType.DOG, 50.0, 20.0, 10.0, 0L,10,"user1");
 
-        // Assert
-        assertThat(result).isEmpty();
+        assertThat(result.pets()).isEmpty();
     }
 
     @Test
     void getPetById_WhenPetExists_ShouldReturnPetResponseWithImages() {
-        // Arrange
         Long petId = 1L;
         Pet pet = createTestPet(petId, "Test Pet", PetType.DOG);
         PetResponseWithImages expectedResponse = createPetResponseWithImages(petId, "Test Pet", PetType.DOG);
@@ -141,10 +134,8 @@ class PetServiceTest {
         when(petRepository.findById(petId)).thenReturn(Optional.of(pet));
         when(petMapper.toDtoWithImages(pet)).thenReturn(expectedResponse);
 
-        // Act
         PetResponseWithImages result = petService.getPetById(petId);
 
-        // Assert
         assertThat(result)
                 .isNotNull()
                 .isEqualTo(expectedResponse);

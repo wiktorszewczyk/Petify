@@ -11,6 +11,8 @@ import org.petify.shelter.model.Shelter;
 import org.petify.shelter.repository.ShelterRepository;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +25,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -34,10 +34,9 @@ public class ShelterService {
     private final ShelterMapper shelterMapper;
     private final StorageService storageService;
 
-    public List<ShelterResponse> getShelters() {
-        List<Shelter> shelters = shelterRepository.findAll();
-
-        return shelters.stream().map(shelterMapper::toDto).collect(Collectors.toList());
+    public Page<ShelterResponse> getShelters(Pageable pageable) {
+        Page<Shelter> shelters = shelterRepository.findAll(pageable);
+        return shelters.map(shelterMapper::toDto);
     }
 
     public ShelterResponse getShelterById(Long shelterId) {

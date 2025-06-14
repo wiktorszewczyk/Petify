@@ -13,6 +13,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +47,12 @@ public class ShelterController {
     private final AdoptionService adoptionService;
 
     @GetMapping()
-    public ResponseEntity<List<?>> getShelters() {
-        return ResponseEntity.ok(shelterService.getShelters());
+    public ResponseEntity<Page<ShelterResponse>> getShelters(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(shelterService.getShelters(pageable));
     }
 
     @GetMapping("/{id}/owner")
@@ -74,8 +81,13 @@ public class ShelterController {
     }
 
     @GetMapping("/{id}/pets")
-    public ResponseEntity<?> getPetsByShelterId(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(petService.getAllShelterPets(id));
+    public ResponseEntity<?> getPetsByShelterId(
+            @PathVariable("id") Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(petService.getAllShelterPets(id, pageable));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")

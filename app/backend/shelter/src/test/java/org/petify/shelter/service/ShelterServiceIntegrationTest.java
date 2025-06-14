@@ -8,11 +8,13 @@ import org.petify.shelter.exception.ShelterByOwnerNotFoundException;
 import org.petify.shelter.exception.ShelterNotFoundException;
 import org.petify.shelter.integration.BaseIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -189,7 +191,8 @@ class ShelterServiceIntegrationTest extends BaseIntegrationTest {
         shelterService.createShelter(request1, null, "user1");
         shelterService.createShelter(request2, null, "user2");
 
-        List<ShelterResponse> shelters = shelterService.getShelters();
-        assertTrue(shelters.size() >= 2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ShelterResponse> shelters = shelterService.getShelters(pageable);
+        assertTrue(shelters.getSize() >= 2);
     }
 }

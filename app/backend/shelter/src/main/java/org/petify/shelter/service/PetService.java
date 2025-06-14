@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,11 +48,9 @@ public class PetService {
         return pet.getShelter().getOwnerUsername();
     }
 
-    public List<PetResponseWithImages> getPets() {
-        return petRepository.findAll()
-                .stream()
-                .map(petMapper::toDtoWithImages)
-                .collect(Collectors.toList());
+    public Page<PetResponseWithImages> getPets(Pageable pageable) {
+        return petRepository.findAll(pageable)
+                .map(petMapper::toDtoWithImages);
     }
 
     @Transactional(readOnly = true)
@@ -78,25 +75,6 @@ public class PetService {
         Long nextCursor = results.isEmpty() ? null : page.getContent().getLast().getId();
 
         return new SwipeResponse(results, nextCursor);
-    }
-
-    @Transactional(readOnly = true)
-    public List<PetResponseWithImages> getFilteredPets(Boolean vaccinated, Boolean urgent, Boolean sterilized,
-                                                       Boolean kidFriendly, Integer minAge, Integer maxAge,
-                                                       PetType type, Double userLat, Double userLng, Double radiusKm,
-                                                       String username) {
-
-        List<Long> favoritePetIds = favoritePetRepository.findByUsername(username)
-                .stream()
-                .map(fp -> fp.getPet().getId())
-                .toList();
-
-        Specification<Pet> spec = buildPetSpecification(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
-                type, favoritePetIds, null);
-
-        List<Pet> filteredPets = petRepository.findAll(spec);
-
-        return filterAndMapPets(filteredPets, userLat, userLng, radiusKm);
     }
 
     private Specification<Pet> buildPetSpecification(Boolean vaccinated, Boolean urgent, Boolean sterilized,
@@ -159,12 +137,9 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
-    public List<PetResponse> getAllShelterPets(Long shelterId) {
-        return petRepository.findByShelterId(shelterId)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(petMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<PetResponseWithImages> getAllShelterPets(Long shelterId, Pageable pageable) {
+        return petRepository.findByShelterId(shelterId, pageable)
+                .map(petMapper::toDtoWithImages);
     }
 
     @Transactional
