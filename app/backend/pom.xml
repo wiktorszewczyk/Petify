@@ -155,9 +155,9 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.26.0</version>
         <configuration>
-          <excludes>
-            <exclude>**/target/generated-sources/**</exclude>
-          </excludes>
+          <excludeRoots>
+            <excludeRoot>${project.build.directory}/generated-sources</excludeRoot>
+          </excludeRoots>
         </configuration>
         <executions>
           <execution>
