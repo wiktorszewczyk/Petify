@@ -16,17 +16,15 @@
 
   <modules>
     <module>config-server</module>
-    <module>discovery</module>
     <module>auth-server</module>
-
+    <module>discovery</module>
+    <module>gateway</module>
+    <module>shelter</module>
+    <module>reservations</module>
     <module>chat</module>
-    <module>feed</module>
     <module>funding</module>
     <module>image</module>
-    <module>reservations</module>
-    <module>shelter</module>
-
-    <module>gateway</module>
+    <module>feed</module>
   </modules>
 
   <distributionManagement>

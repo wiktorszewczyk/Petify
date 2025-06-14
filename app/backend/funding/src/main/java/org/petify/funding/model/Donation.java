@@ -8,11 +8,14 @@ import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -64,13 +67,14 @@ public abstract class Donation {
     @Column(name = "pet_id")
     private Long petId;
 
-    @Column(name = "donor_id")
-    private Integer donorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fundraiser_id")
+    private Fundraiser fundraiser;
 
-    @Column(name = "donor_username", nullable = false)
+    @Column(name = "donor_username")
     private String donorUsername;
 
-    @Column(name = "donated_at", nullable = false)
+    @Column(name = "donated_at")
     private Instant donatedAt;
 
     @JsonProperty("donationType")
@@ -106,16 +110,23 @@ public abstract class Donation {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @Column(name = "completed_at")
-    private Instant completedAt;
+    @Column(name = "cancelled_at")
+    private Instant cancelledAt;
+
+    @Column(name = "refunded_at")
+    private Instant refundedAt;
+
+    @Column(name = "payment_attempts", nullable = false)
+    @Builder.Default
+    private Integer paymentAttempts = 0;
 
     @PrePersist
     protected void onCreate() {
         createdAt = Instant.now();
         updatedAt = Instant.now();
 
-        if (donatedAt == null) {
-            donatedAt = Instant.now();
+        if (paymentAttempts == null) {
+            paymentAttempts = 0;
         }
 
         if (this instanceof MaterialDonation) {
@@ -133,8 +144,15 @@ public abstract class Donation {
     protected void onUpdate() {
         updatedAt = Instant.now();
 
-        if (status == DonationStatus.COMPLETED && completedAt == null) {
-            completedAt = Instant.now();
+        if (status == DonationStatus.COMPLETED && donatedAt == null) {
+            donatedAt = Instant.now();
+        }
+
+        if (status == DonationStatus.CANCELLED && cancelledAt == null) {
+            cancelledAt = Instant.now();
+        }
+        if (status == DonationStatus.REFUNDED && refundedAt == null) {
+            refundedAt = Instant.now();
         }
 
         if (this instanceof MaterialDonation) {
@@ -152,6 +170,18 @@ public abstract class Donation {
         return status == DonationStatus.COMPLETED;
     }
 
+    public boolean isCancelled() {
+        return status == DonationStatus.CANCELLED;
+    }
+
+    public boolean isFailed() {
+        return status == DonationStatus.FAILED;
+    }
+
+    public boolean isRefunded() {
+        return status == DonationStatus.REFUNDED;
+    }
+
     public boolean hasPendingPayments() {
         if (payments == null) {
             return false;
@@ -167,6 +197,35 @@ public abstract class Donation {
         }
         return payments.stream()
                 .anyMatch(payment -> payment.getStatus() == PaymentStatus.SUCCEEDED);
+    }
+
+    public boolean canAcceptNewPayment() {
+        if (status == DonationStatus.COMPLETED || status == DonationStatus.CANCELLED
+                || status == DonationStatus.REFUNDED) {
+            return false;
+        }
+
+        if (paymentAttempts >= 3) {
+            return false;
+        }
+
+        return !hasPendingPayments();
+    }
+
+    public boolean canBeCancelled() {
+        return status == DonationStatus.PENDING && !hasSuccessfulPayment();
+    }
+
+    public boolean canBeRefunded() {
+        return status == DonationStatus.COMPLETED && hasSuccessfulPayment();
+    }
+
+    public void incrementPaymentAttempts() {
+        this.paymentAttempts = (this.paymentAttempts == null ? 0 : this.paymentAttempts) + 1;
+    }
+
+    public boolean hasReachedMaxPaymentAttempts() {
+        return this.paymentAttempts != null && this.paymentAttempts >= 3;
     }
 
     public BigDecimal getTotalPaidAmount() {
