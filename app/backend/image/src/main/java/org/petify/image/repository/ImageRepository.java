@@ -1,4 +1,3 @@
-
 package org.petify.image.repository;
 
 import org.petify.image.model.Image;

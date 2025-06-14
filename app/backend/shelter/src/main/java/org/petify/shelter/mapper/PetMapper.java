@@ -5,23 +5,26 @@ import org.petify.shelter.dto.PetResponse;
 import org.petify.shelter.dto.PetResponseWithImages;
 import org.petify.shelter.model.Pet;
 import org.petify.shelter.model.Shelter;
+import org.petify.shelter.util.ImageUrlConverter;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = PetImageMapper.class)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = PetImageMapper.class,
+        imports = ImageUrlConverter.class)
 public interface PetMapper {
+
     @Mapping(source = "shelter.id", target = "shelterId")
-    @Mapping(target = "imageData", expression = "java(pet.getImageData() != null ?"
-            + " java.util.Base64.getEncoder().encodeToString(pet.getImageData()) : null)")
+    @Mapping(target = "imageUrl", expression = "java(ImageUrlConverter.toFullImageUrl(pet.getImageName()))")
     PetResponse toDto(Pet pet);
 
     @Mapping(source = "shelter.id", target = "shelterId")
     @Mapping(target = "images", source = "images")
-    @Mapping(target = "imageData", expression = "java(pet.getImageData() != null ?"
-            + " java.util.Base64.getEncoder().encodeToString(pet.getImageData()) : null)")
+    @Mapping(target = "imageUrl", expression = "java(ImageUrlConverter.toFullImageUrl(pet.getImageName()))")
     PetResponseWithImages toDtoWithImages(Pet pet);
 
     @Mapping(target = "id", ignore = true)

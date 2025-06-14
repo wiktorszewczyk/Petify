@@ -36,6 +36,9 @@ class ShelterServiceTest {
     private ShelterMapper shelterMapper;
 
     @Mock
+    private StorageService storageService;
+
+    @Mock
     private MultipartFile multipartFile;
 
     @InjectMocks
@@ -48,9 +51,7 @@ class ShelterServiceTest {
     @BeforeEach
     void setUp() throws IOException {
         byte[] imageBytes = "dummy image".getBytes(StandardCharsets.UTF_8);
-        when(multipartFile.getBytes()).thenReturn(imageBytes);
         when(multipartFile.getOriginalFilename()).thenReturn("image.jpg");
-        when(multipartFile.getContentType()).thenReturn("image/jpeg");
 
         shelter = new Shelter();
         shelter.setId(1L);
@@ -80,9 +81,7 @@ class ShelterServiceTest {
                 52.2297,
                 21.0122,
                 true,
-                multipartFile.getOriginalFilename(),
-                multipartFile.getContentType(),
-                Base64.getEncoder().encodeToString(multipartFile.getBytes())
+                multipartFile.getOriginalFilename()
         );
     }
 
@@ -137,9 +136,7 @@ class ShelterServiceTest {
     void testCreateShelterWithFile() throws IOException {
         when(shelterRepository.getShelterByOwnerUsername("ownerUsername")).thenReturn(Optional.empty());
         when(shelterMapper.toEntity(any(ShelterRequest.class))).thenReturn(shelter);
-        when(multipartFile.getOriginalFilename()).thenReturn("image.jpg");
-        when(multipartFile.getContentType()).thenReturn("image/jpeg");
-        when(multipartFile.getBytes()).thenReturn(new byte[]{1, 2, 3});
+        when(storageService.uploadImage(any(MultipartFile.class))).thenReturn("uploaded_image.jpg");
         when(shelterRepository.save(any(Shelter.class))).thenReturn(shelter);
         when(shelterMapper.toDto(any(Shelter.class))).thenReturn(shelterResponse);
 
@@ -147,6 +144,21 @@ class ShelterServiceTest {
 
         assertThat(result).isEqualTo(shelterResponse);
         verify(shelterRepository).save(any(Shelter.class));
+        verify(storageService).uploadImage(any(MultipartFile.class));
+    }
+
+    @Test
+    void testUpdateShelter() throws IOException {
+        when(shelterRepository.findById(1L)).thenReturn(Optional.of(shelter));
+        when(storageService.uploadImage(any(MultipartFile.class))).thenReturn("updated_image.jpg");
+        when(shelterRepository.save(any(Shelter.class))).thenReturn(shelter);
+        when(shelterMapper.toDto(any(Shelter.class))).thenReturn(shelterResponse);
+
+        ShelterResponse result = shelterService.updateShelter(shelterRequest, multipartFile, 1L);
+
+        assertThat(result).isEqualTo(shelterResponse);
+        verify(shelterRepository, times(1)).save(shelter);
+        verify(storageService).uploadImage(any(MultipartFile.class));
     }
 
     @Test
@@ -155,18 +167,6 @@ class ShelterServiceTest {
 
         assertThatThrownBy(() -> shelterService.createShelter(shelterRequest, multipartFile, "ownerUsername"))
                 .isInstanceOf(ShelterAlreadyExistsException.class);
-    }
-
-    @Test
-    void testUpdateShelter() throws IOException {
-        when(shelterRepository.findById(1L)).thenReturn(Optional.of(shelter));
-        when(shelterRepository.save(any(Shelter.class))).thenReturn(shelter);
-        when(shelterMapper.toDto(any(Shelter.class))).thenReturn(shelterResponse);
-
-        ShelterResponse result = shelterService.updateShelter(shelterRequest, multipartFile, 1L);
-
-        assertThat(result).isEqualTo(shelterResponse);
-        verify(shelterRepository, times(1)).save(shelter);
     }
 
     @Test

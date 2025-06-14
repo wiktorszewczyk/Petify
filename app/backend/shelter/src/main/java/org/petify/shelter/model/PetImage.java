@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -31,13 +30,6 @@ public class PetImage {
     @Column(name = "image_name")
     private String imageName;
 
-    @Column(name = "image_extension")
-    private String imageType;
-
-    @Lob
-    @Column(name = "image_data", nullable = false)
-    private byte[] imageData;
-
     @ManyToOne
     @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
@@ -53,24 +45,21 @@ public class PetImage {
         }
 
         return new EqualsBuilder().append(getId(), petImage.getId()).append(getImageName(),
-                petImage.getImageName()).append(getImageType(), petImage.getImageType()).append(getPet(),
-                petImage.getPet()).isEquals();
+                petImage.getImageName()).append(getPet(), petImage.getPet()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getId()).append(getImageName())
-                .append(getImageType()).append(getPet()).toHashCode();
+        return new HashCodeBuilder(17, 37).append(getId())
+                .append(getImageName()).append(getPet()).toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("pet", pet)
-                .append("imageData", imageData)
-                .append("imageType", imageType)
-                .append("imageName", imageName)
                 .append("id", id)
+                .append("imageUrl", imageName)
+                .append("pet", pet)
                 .toString();
     }
 }
