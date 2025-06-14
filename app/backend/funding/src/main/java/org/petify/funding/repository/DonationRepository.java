@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -23,8 +24,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     Page<Donation> findByPetId(Long petId, Pageable pageable);
 
     Page<Donation> findByDonorUsernameOrderByCreatedAtDesc(String donorUsername, Pageable pageable);
-
-    Page<Donation> findByDonorIdOrderByCreatedAtDesc(Integer donorId, Pageable pageable);
 
     Long countByShelterId(Long shelterId);
 
@@ -68,8 +67,8 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
                     + "  AND d.createdAt >= :startDate "
                     + "  AND d.createdAt <= :endDate"
     )
-    Long countCompletedBetweenDates(@Param("startDate") java.time.Instant startDate,
-                                    @Param("endDate") java.time.Instant endDate);
+    Long countCompletedBetweenDates(@Param("startDate") Instant startDate,
+                                    @Param("endDate") Instant endDate);
 
     @Query(
             "SELECT COALESCE(SUM(d.amount), 0) "
@@ -78,8 +77,8 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
                     + "  AND d.createdAt >= :startDate "
                     + "  AND d.createdAt <= :endDate"
     )
-    BigDecimal sumAmountBetweenDates(@Param("startDate") java.time.Instant startDate,
-                                     @Param("endDate") java.time.Instant endDate);
+    BigDecimal sumAmountBetweenDates(@Param("startDate") Instant startDate,
+                                     @Param("endDate") Instant endDate);
 
     @Query(
             "SELECT d.donorUsername, COUNT(d), "
@@ -100,4 +99,51 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
                     + "ORDER BY SUM(d.amount) DESC"
     )
     List<Object[]> findTopSheltersByDonationAmount(Pageable pageable);
+
+    Page<Donation> findByFundraiserId(Long fundraiserId, Pageable pageable);
+
+    Long countByFundraiserId(Long fundraiserId);
+
+    @Query(
+            "SELECT COALESCE(SUM(d.amount), 0) "
+                    + "FROM Donation d "
+                    + "WHERE d.fundraiser.id = :fundraiserId "
+                    + "  AND d.status = 'COMPLETED'"
+    )
+    BigDecimal sumCompletedDonationsByFundraiserId(@Param("fundraiserId") Long fundraiserId);
+
+    @Query(
+            "SELECT COUNT(d) "
+                    + "FROM Donation d "
+                    + "WHERE d.fundraiser.id = :fundraiserId "
+                    + "  AND d.status = 'COMPLETED'"
+    )
+    Long countCompletedDonationsByFundraiserId(@Param("fundraiserId") Long fundraiserId);
+
+    @Query(
+            "SELECT COUNT(DISTINCT d.donorUsername) "
+                    + "FROM Donation d "
+                    + "WHERE d.fundraiser.id = :fundraiserId "
+                    + "  AND d.status = 'COMPLETED'"
+    )
+    Long countUniqueDonorsByFundraiserId(@Param("fundraiserId") Long fundraiserId);
+
+    @Query(
+            "SELECT COALESCE(SUM(d.amount), 0) "
+                    + "FROM Donation d "
+                    + "WHERE d.fundraiser.id = :fundraiserId "
+                    + "  AND d.status = 'COMPLETED' "
+                    + "  AND d.createdAt >= :dateAfter"
+    )
+    BigDecimal sumCompletedDonationsByFundraiserIdAndDateAfter(
+            @Param("fundraiserId") Long fundraiserId,
+            @Param("dateAfter") Instant dateAfter);
+
+    @Query(
+            "SELECT MAX(d.donatedAt) "
+                    + "FROM Donation d "
+                    + "WHERE d.shelterId = :shelterId "
+                    + "  AND d.status = 'COMPLETED'"
+    )
+    Instant getLastDonationDateByShelterId(@Param("shelterId") Long shelterId);
 }
