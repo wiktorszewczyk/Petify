@@ -2,6 +2,7 @@ package org.petify.funding.repository;
 
 import org.petify.funding.model.Fundraiser;
 import org.petify.funding.model.FundraiserStatus;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,10 +24,15 @@ public interface FundraiserRepository extends JpaRepository<Fundraiser, Long> {
 
     Optional<Fundraiser> findByShelterIdAndIsMainTrue(Long shelterId);
 
-    @Query("SELECT f FROM Fundraiser f WHERE f.status = :status AND f.endDate IS NULL OR f.endDate > CURRENT_TIMESTAMP")
+    @Query(
+            "SELECT f FROM Fundraiser f WHERE f.status = :status AND f.endDate IS NULL"
+                    + " OR f.endDate > CURRENT_TIMESTAMP")
     Page<Fundraiser> findActiveByStatus(@Param("status") FundraiserStatus status, Pageable pageable);
 
-    @Query("SELECT f FROM Fundraiser f WHERE f.shelterId = :shelterId AND f.status = 'ACTIVE' AND (f.endDate IS NULL OR f.endDate > CURRENT_TIMESTAMP)")
+    @Query(
+            "SELECT f FROM Fundraiser f WHERE f.shelterId = :shelterId AND f.status = 'ACTIVE'"
+                    + " AND (f.endDate IS NULL OR f.endDate > CURRENT_TIMESTAMP)"
+    )
     List<Fundraiser> findActiveByShelter(@Param("shelterId") Long shelterId);
 
     boolean existsByShelterIdAndIsMainTrue(Long shelterId);

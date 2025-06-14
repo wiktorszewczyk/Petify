@@ -1,7 +1,5 @@
 package org.petify.funding.service;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.petify.funding.client.AchievementClient;
 import org.petify.funding.client.ShelterClient;
 import org.petify.funding.dto.DonationIntentRequest;
@@ -20,7 +18,9 @@ import org.petify.funding.repository.FundraiserRepository;
 import org.petify.funding.repository.PaymentRepository;
 
 import feign.FeignException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -101,6 +101,12 @@ public class DonationService {
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForPet(Long petId, Pageable pageable) {
         return donationRepository.findByPetId(petId, pageable)
+                .map(DonationResponse::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DonationResponse> getForFundraiser(Long fundraiserId, Pageable pageable) {
+        return donationRepository.findByFundraiserId(fundraiserId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
@@ -256,8 +262,8 @@ public class DonationService {
     }
 
     private void validateDonationRequest(DonationRequest request) {
-        if (!Boolean.TRUE.equals(request.getAnonymous()) &&
-                (request.getDonorUsername() == null || request.getDonorUsername().trim().isEmpty())) {
+        if (!Boolean.TRUE.equals(request.getAnonymous())
+                && (request.getDonorUsername() == null || request.getDonorUsername().trim().isEmpty())) {
             throw new RuntimeException("Donor username is required for non-anonymous donations");
         }
 

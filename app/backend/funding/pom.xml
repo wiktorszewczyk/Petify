@@ -15,6 +15,11 @@
 
     <name>funding</name>
 
+    <properties>
+        <checkstyle.config.location>${project.parent.basedir}/checkstyle.xml</checkstyle.config.location>
+        <checkstyle.suppressions.location>${project.parent.basedir}/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

@@ -111,8 +111,8 @@ public class Fundraiser {
     }
 
     public boolean isActive() {
-        return status == FundraiserStatus.ACTIVE &&
-                (endDate == null || Instant.now().isBefore(endDate));
+        return status == FundraiserStatus.ACTIVE
+                && (endDate == null || Instant.now().isBefore(endDate));
     }
 
     public boolean isCompleted() {

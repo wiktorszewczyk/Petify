@@ -105,7 +105,7 @@ public class DonationResponse {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @lombok.Builder
+    @Builder
     public static class PaymentSummary {
         private Long id;
         private PaymentStatus status;

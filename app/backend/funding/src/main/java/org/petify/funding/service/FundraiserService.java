@@ -4,7 +4,6 @@ import org.petify.funding.dto.FundraiserRequest;
 import org.petify.funding.dto.FundraiserResponse;
 import org.petify.funding.dto.FundraiserStats;
 import org.petify.funding.exception.ResourceNotFoundException;
-import org.petify.funding.model.DonationStatus;
 import org.petify.funding.model.Fundraiser;
 import org.petify.funding.model.FundraiserStatus;
 import org.petify.funding.repository.DonationRepository;
@@ -85,8 +84,8 @@ public class FundraiserService {
         Fundraiser fundraiser = fundraiserRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Fundraiser not found with id: " + id));
 
-        if (request.getIsMain() && !fundraiser.getIsMain() &&
-                fundraiserRepository.existsByShelterIdAndIsMainTrue(request.getShelterId())) {
+        if (request.getIsMain() && !fundraiser.getIsMain()
+                && fundraiserRepository.existsByShelterIdAndIsMainTrue(request.getShelterId())) {
             throw new IllegalStateException("Shelter already has a main fundraiser");
         }
 
@@ -131,8 +130,8 @@ public class FundraiserService {
             lastWeekAmount = BigDecimal.ZERO;
         }
 
-        BigDecimal averageDonation = totalDonations > 0 ?
-                currentAmount.divide(BigDecimal.valueOf(totalDonations), 2, RoundingMode.HALF_UP) :
+        BigDecimal averageDonation = totalDonations > 0
+                ? currentAmount.divide(BigDecimal.valueOf(totalDonations), 2, RoundingMode.HALF_UP) :
                 BigDecimal.ZERO;
 
         double progressPercentage = fundraiser.calculateProgress(currentAmount);

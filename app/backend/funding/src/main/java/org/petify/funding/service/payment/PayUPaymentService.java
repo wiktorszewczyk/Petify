@@ -5,7 +5,6 @@ import org.petify.funding.dto.PaymentResponse;
 import org.petify.funding.dto.WebhookEventDto;
 import org.petify.funding.model.Currency;
 import org.petify.funding.model.Donation;
-import org.petify.funding.model.DonationStatus;
 import org.petify.funding.model.MaterialDonation;
 import org.petify.funding.model.Payment;
 import org.petify.funding.model.PaymentMethod;

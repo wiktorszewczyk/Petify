@@ -34,7 +34,8 @@ class DonationIntentRequestValidator implements ConstraintValidator<DonationInte
             case MATERIAL -> {
                 if (request.getAmount() != null) {
                     valid = false;
-                    context.buildConstraintViolationWithTemplate("Amount should not be set for material donations - it will be calculated automatically")
+                    context.buildConstraintViolationWithTemplate("Amount should not be set for material donations"
+                                    + " - it will be calculated automatically")
                             .addPropertyNode("amount").addConstraintViolation();
                 }
 
@@ -55,6 +56,11 @@ class DonationIntentRequestValidator implements ConstraintValidator<DonationInte
                     context.buildConstraintViolationWithTemplate("Quantity is required and must be positive for material donations")
                             .addPropertyNode("quantity").addConstraintViolation();
                 }
+            }
+            default -> {
+                valid = false;
+                context.buildConstraintViolationWithTemplate("Invalid donation type")
+                        .addConstraintViolation();
             }
         }
 
