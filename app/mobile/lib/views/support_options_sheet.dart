@@ -101,13 +101,14 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
     });
 
     try {
-      final donation = await _donationService.addMaterialDonation(
-        shelterName: widget.pet.shelterName.toString(),
-        petId: widget.pet.id.toString(),
-        item: _selectedItem!,
-        quantity: _quantity,
-        message: 'Wsparcie dla ${widget.pet.name}',
-      );
+      // TODO: Dodawanei platnosci material zgodnie z API
+      // final donation = await _donationService.addMaterialDonation(
+      //   shelterName: widget.pet.shelterName.toString(),
+      //   petId: widget.pet.id.toString(),
+      //   item: _selectedItem!,
+      //   quantity: _quantity,
+      //   message: 'Wsparcie dla ${widget.pet.name}',
+      // );
 
       if (mounted) {
         setState(() {

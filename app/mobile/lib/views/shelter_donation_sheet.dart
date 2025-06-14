@@ -4,8 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../styles/colors.dart';
 import '../../models/shelter.dart';
-import '../../models/donation.dart';
 import '../../services/donation_service.dart';
+import '../../services/shelter_service.dart';
+import 'payment_view.dart';
 
 class ShelterDonationSheet extends StatefulWidget {
   final Shelter shelter;
@@ -30,10 +31,12 @@ class ShelterDonationSheet extends StatefulWidget {
 
 class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
   final DonationService _donationService = DonationService();
+  final ShelterService _shelterService = ShelterService();
   final TextEditingController _customAmountController = TextEditingController();
   bool _isLoading = false;
   double? _selectedAmount;
   bool _isCustomAmount = false;
+  Map<String, dynamic>? _mainFundraiser;
 
   final List<Map<String, dynamic>> _donationOptions = [
     {
@@ -69,9 +72,28 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _loadMainFundraiser();
+  }
+
+  @override
   void dispose() {
     _customAmountController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadMainFundraiser() async {
+    try {
+      final fundraiser = await _shelterService.getShelterMainFundraiser(widget.shelter.id);
+      if (mounted) {
+        setState(() {
+          _mainFundraiser = fundraiser;
+        });
+      }
+    } catch (e) {
+      print('Błąd podczas ładowania głównej zbiórki: $e');
+    }
   }
 
   void _selectAmount(double? amount) {
@@ -129,10 +151,12 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
     }
 
     try {
+      // Utwórz donację używając backend API
       final donation = await _donationService.addMonetaryDonation(
-        shelterName: widget.shelter.name,
+        shelterId: widget.shelter.id,
         amount: donationAmount,
         message: 'Wsparcie dla schroniska ${widget.shelter.name}',
+        fundraiserId: _mainFundraiser?['id'],
       );
 
       if (mounted) {
@@ -140,14 +164,22 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
           _isLoading = false;
         });
 
-        // Pokazujemy potwierdzenie i zamykamy sheet
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Dziękujemy za wsparcie kwotą ${donationAmount?.toStringAsFixed(2)} zł!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.of(context).pop();
+        // TODO: Przejdź do widoku płatności
+        final result = true;
+
+        // final result = await Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => PaymentView(
+        //       amount: donationAmount!,
+        //       shelterName: widget.shelter.name,
+        //     ),
+        //   ),
+        // );
+
+        // Jeśli płatność była udana, zamknij sheet
+        if (result == true) {
+          Navigator.of(context).pop();
+        }
       }
     } catch (e) {
       if (mounted) {

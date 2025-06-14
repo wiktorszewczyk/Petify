@@ -173,6 +173,40 @@ class ShelterService {
     };
   }
 
+  /// Pobiera główną zbiórkę schroniska (MAIN fundraiser)
+  Future<Map<String, dynamic>?> getShelterMainFundraiser(int shelterId) async {
+    try {
+      final response = await _api.get('/fundraisers/shelter/$shelterId/main');
+
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data;
+      }
+
+      return null;
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pobierania głównej zbiórki schroniska: ${e.message}');
+      return null;
+    }
+  }
+
+  /// Pobiera wszystkie zbiórki schroniska
+  Future<List<Map<String, dynamic>>> getShelterFundraisers(int shelterId) async {
+    try {
+      final response = await _api.get('/fundraisers/shelter/$shelterId');
+
+      if (response.statusCode == 200 && response.data != null) {
+        final data = response.data;
+        final content = data['content'] as List? ?? [];
+        return content.cast<Map<String, dynamic>>();
+      }
+
+      return [];
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pobierania zbiórek schroniska: ${e.message}');
+      return [];
+    }
+  }
+
   /// Symulacja wsparcia schroniska (tymczasowo)
   Future<bool> donateShelter(String shelterId, double amount) async {
     try {

@@ -92,4 +92,20 @@ class LocationService {
       'city_name': prefs.getString('saved_city'),
     };
   }
+
+  /// Oblicza odległość między dwoma punktami w kilometrach
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    return Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000.0; // Convert to km
+  }
+
+  /// Formatuje odległość do wyświetlenia
+  String formatDistance(double distanceKm) {
+    if (distanceKm < 1) {
+      return '${(distanceKm * 1000).round()} m';
+    } else if (distanceKm < 10) {
+      return '${distanceKm.toStringAsFixed(1)} km';
+    } else {
+      return '${distanceKm.round()} km';
+    }
+  }
 }

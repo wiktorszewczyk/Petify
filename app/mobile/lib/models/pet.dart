@@ -22,7 +22,7 @@ class Pet {
   // Dodatkowe pola dla kompatybilności z frontendem
   final String? shelterName;
   final String? shelterAddress;
-  final int? distance; // obliczane po stronie frontu
+  final double? distance; // obliczane po stronie frontu, w kilometrach
 
   Pet({
     required this.id,
@@ -68,7 +68,7 @@ class Pet {
       imageData: json['imageData'],
       shelterName: json['shelterName'],
       shelterAddress: json['shelterAddress'],
-      distance: json['distance'],
+      distance: json['distance']?.toDouble(),
     );
   }
 
@@ -191,4 +191,17 @@ class Pet {
   bool get isNeutered => sterilized;
   bool get isChildFriendly => kidFriendly;
   bool get isUrgent => urgent;
+
+  // Getter dla sformatowanej odległości
+  String get formattedDistance {
+    if (distance == null) return 'Nieznana odległość';
+
+    if (distance! < 1) {
+      return '${(distance! * 1000).round()} m';
+    } else if (distance! < 10) {
+      return '${distance!.toStringAsFixed(1)} km';
+    } else {
+      return '${distance!.round()} km';
+    }
+  }
 }

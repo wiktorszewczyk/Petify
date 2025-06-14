@@ -57,6 +57,11 @@ class Donation {
   final String? petId; // ID zwierzaka (tylko gdy type == material)
   final MaterialDonationItem? materialItem; // Przedmiot (tylko gdy type == material)
   final int? quantity; // Ilość (tylko gdy type == material)
+  final String? status; // Status donacji z backendu
+  final int? shelterId; // ID schroniska
+  final int? fundraiserId; // ID zbiórki
+  final double? serviceFee; // Opłata serwisowa
+  final double? netAmount; // Kwota netto
 
   const Donation({
     required this.id,
@@ -68,6 +73,11 @@ class Donation {
     this.petId,
     this.materialItem,
     this.quantity = 1,
+    this.status,
+    this.shelterId,
+    this.fundraiserId,
+    this.serviceFee,
+    this.netAmount,
   });
 
   /// Prosta metoda generująca dane mockowe do widoków list / historii.
@@ -85,6 +95,48 @@ class Donation {
       petId: isMaterial ? 'pet_${i * 2}' : null,
       materialItem: isMaterial ? item : null,
       quantity: isMaterial ? qty : null,
+    );
+  }
+
+  // Factory constructor z danych backendu
+  factory Donation.fromBackendJson(Map<String, dynamic> json) {
+    final donationType = json['donationType'] == 'MATERIAL'
+        ? DonationType.material
+        : DonationType.monetary;
+
+    MaterialDonationItem? materialItem;
+    if (donationType == DonationType.material && json['itemName'] != null) {
+      // Znajdź odpowiedni MaterialDonationItem na podstawie nazwy i ceny
+      final availableItems = MaterialDonationItem.getAvailableItems();
+      materialItem = availableItems.firstWhere(
+            (item) => item.name == json['itemName'],
+        orElse: () => MaterialDonationItem(
+          name: json['itemName'] ?? 'Nieznany przedmiot',
+          price: (json['unitPrice'] ?? 0.0).toDouble(),
+          iconPath: 'assets/icons/pet_food.png', // Default icon
+        ),
+      );
+    }
+
+    return Donation(
+      id: json['id'].toString(),
+      amount: (json['amount'] ?? 0.0).toDouble(),
+      date: json['donatedAt'] != null
+          ? DateTime.parse(json['donatedAt'])
+          : (json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now()),
+      shelterName: 'Schronisko ${json['shelterId'] ?? 'Nieznane'}', // TODO: Get actual shelter name
+      message: json['message'],
+      type: donationType,
+      petId: json['petId']?.toString(),
+      materialItem: materialItem,
+      quantity: json['quantity'],
+      status: json['status'],
+      shelterId: json['shelterId'],
+      fundraiserId: json['fundraiserId'],
+      serviceFee: (json['totalFeeAmount'] ?? 0.0).toDouble(),
+      netAmount: (json['netAmount'] ?? 0.0).toDouble(),
     );
   }
 

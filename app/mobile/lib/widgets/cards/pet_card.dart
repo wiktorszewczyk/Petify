@@ -592,7 +592,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                           const SizedBox(width: 4),
                           Text(
                             widget.pet.distance != null
-                                ? 'Odległość: ${widget.pet.distance} km'
+                                ? widget.pet.formattedDistance
                                 : 'Lokalizacja nieznana',
                             style: const TextStyle(
                               color: Colors.white70,
@@ -847,7 +847,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                 _buildDetailSection('Schronisko', widget.pet.shelterName),
 
-                _buildDetailSection('Adres', widget.pet.shelterAddress),
+                _buildDetailSection('Adres schroniska', widget.pet.shelterAddress),
 
                 const SizedBox(height: 20),
 
