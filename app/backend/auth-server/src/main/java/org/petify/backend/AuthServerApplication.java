@@ -189,6 +189,15 @@ public class AuthServerApplication {
                 locationSet.setCategory(AchievementCategory.PROFILE);
                 locationSet.setRequiredActions(1);
                 achievementRepository.save(locationSet);
+
+                Achievement volunteerAchievement = new Achievement();
+                volunteerAchievement.setName("Ochotnik");
+                volunteerAchievement.setDescription("Zgłoś się jako wolontariusz");
+                volunteerAchievement.setIconName("hand-holding-heart");
+                volunteerAchievement.setXpReward(75);
+                volunteerAchievement.setCategory(AchievementCategory.VOLUNTEER);
+                volunteerAchievement.setRequiredActions(1);
+                achievementRepository.save(volunteerAchievement);
             }
         };
     }

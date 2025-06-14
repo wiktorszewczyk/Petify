@@ -139,6 +139,7 @@ public class AchievementService {
                 break;
             case BADGE:
             case PROFILE:
+            case VOLUNTEER:
                 user.setBadgesCount(user.getBadgesCount() + 1);
                 break;
             default:
@@ -185,6 +186,43 @@ public class AchievementService {
             userAchievement.setCompleted(false);
 
             userAchievementRepository.save(userAchievement);
+        }
+    }
+
+    @Transactional
+    public void trackVolunteerAchievements(String username) {
+        List<Achievement> volunteerAchievements = achievementRepository.findByCategory(AchievementCategory.VOLUNTEER);
+
+        for (Achievement achievement : volunteerAchievements) {
+            trackAchievementProgress(username, achievement.getId(), 1);
+        }
+    }
+
+    @Transactional
+    public void trackVolunteerAchievementByName(String username, String achievementName) {
+        try {
+            List<Achievement> volunteerAchievements = achievementRepository.findByCategory(AchievementCategory.VOLUNTEER);
+
+            Optional<Achievement> achievement = volunteerAchievements.stream()
+                    .filter(a -> a.getName().equals(achievementName))
+                    .findFirst();
+
+            if (achievement.isPresent()) {
+                ApplicationUser user = userRepository.findByUsername(username)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+                Optional<UserAchievement> existingUserAchievement = userAchievementRepository
+                        .findByUserAndAchievementId(user, achievement.get().getId());
+
+                if (existingUserAchievement.isEmpty() || !existingUserAchievement.get().getCompleted()) {
+                    trackAchievementProgress(username, achievement.get().getId(), 1);
+                }
+            } else {
+                log.warn("Achievement with name '{}' not found in VOLUNTEER category", achievementName);
+            }
+        } catch (Exception e) {
+            log.error("Error tracking volunteer achievement '{}' for user {}: {}",
+                    achievementName, username, e.getMessage());
         }
     }
 }

@@ -75,4 +75,13 @@ public class AchievementController {
         achievementService.trackSupportAchievements(username);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/track-volunteer")
+    public ResponseEntity<Void> trackVolunteerProgress() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.trackVolunteerAchievements(username);
+        return ResponseEntity.ok().build();
+    }
 }
