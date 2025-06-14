@@ -53,6 +53,7 @@ public class PetController {
         return ResponseEntity.ok(petService.getPets());
     }
 
+    // to delete
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @GetMapping("/filter")
     public ResponseEntity<List<PetResponseWithImages>> getFilteredPets(
@@ -73,6 +74,32 @@ public class PetController {
         return ResponseEntity.ok(
                 petService.getFilteredPets(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
                         type, userLat, userLng, radiusKm, username)
+        );
+    }
+
+    // implements cursor-based pagination
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
+    @GetMapping("/swipe")
+    public ResponseEntity<?> swipe(
+            @RequestParam(required = false) Boolean vaccinated,
+            @RequestParam(required = false) Boolean urgent,
+            @RequestParam(required = false) Boolean sterilized,
+            @RequestParam(required = false) Boolean kidFriendly,
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge,
+            @RequestParam(required = false) PetType type,
+            @RequestParam(required = false) Double userLat,
+            @RequestParam(required = false) Double userLng,
+            @RequestParam(required = false) Double radiusKm,
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "10") int limit,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        return ResponseEntity.ok(
+                petService.getFilteredPetsWithCursor(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
+                        type, userLat, userLng, radiusKm, cursor, limit, username)
         );
     }
 

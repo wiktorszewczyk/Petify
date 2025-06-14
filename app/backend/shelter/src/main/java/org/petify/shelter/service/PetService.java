@@ -1,9 +1,6 @@
 package org.petify.shelter.service;
 
-import org.petify.shelter.dto.PetImageResponse;
-import org.petify.shelter.dto.PetRequest;
-import org.petify.shelter.dto.PetResponse;
-import org.petify.shelter.dto.PetResponseWithImages;
+import org.petify.shelter.dto.*;
 import org.petify.shelter.enums.PetType;
 import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.exception.ShelterNotFoundException;
@@ -16,6 +13,10 @@ import org.petify.shelter.repository.ShelterRepository;
 import org.petify.shelter.specification.PetSpecification;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -52,16 +53,51 @@ public class PetService {
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponseWithImages> getFilteredPets(Boolean vaccinated, Boolean urgent, Boolean sterilized,
-                                             Boolean kidFriendly, Integer minAge, Integer maxAge,
-                                             PetType type, Double userLat, Double userLng, Double radiusKm,
-                                             String username) {
+    public SwipeResponse getFilteredPetsWithCursor(Boolean vaccinated, Boolean urgent, Boolean sterilized,
+                                                   Boolean kidFriendly, Integer minAge, Integer maxAge,
+                                                   PetType type, Double userLat, Double userLng, Double radiusKm,
+                                                   Long cursor, int limit, String username) {
 
         List<Long> favoritePetIds = favoritePetRepository.findByUsername(username)
                 .stream()
                 .map(fp -> fp.getPet().getId())
                 .toList();
 
+        Specification<Pet> spec = buildPetSpecification(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
+                type, favoritePetIds, cursor);
+
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("id").ascending());
+        Page<Pet> page = petRepository.findAll(spec, pageable);
+
+        List<PetResponseWithImages> results = filterAndMapPets(page.getContent(), userLat, userLng, radiusKm);
+
+        Long nextCursor = results.isEmpty() ? null : page.getContent().getLast().getId();
+
+        return new SwipeResponse(results, nextCursor);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PetResponseWithImages> getFilteredPets(Boolean vaccinated, Boolean urgent, Boolean sterilized,
+                                                       Boolean kidFriendly, Integer minAge, Integer maxAge,
+                                                       PetType type, Double userLat, Double userLng, Double radiusKm,
+                                                       String username) {
+
+        List<Long> favoritePetIds = favoritePetRepository.findByUsername(username)
+                .stream()
+                .map(fp -> fp.getPet().getId())
+                .toList();
+
+        Specification<Pet> spec = buildPetSpecification(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
+                type, favoritePetIds, null);
+
+        List<Pet> filteredPets = petRepository.findAll(spec);
+
+        return filterAndMapPets(filteredPets, userLat, userLng, radiusKm);
+    }
+
+    private Specification<Pet> buildPetSpecification(Boolean vaccinated, Boolean urgent, Boolean sterilized,
+                                                     Boolean kidFriendly, Integer minAge, Integer maxAge,
+                                                     PetType type, List<Long> favoritePetIds, Long cursor) {
         Specification<Pet> spec = Specification.where(PetSpecification.hasVaccinated(vaccinated))
                 .and(PetSpecification.isUrgent(urgent))
                 .and(PetSpecification.isSterilized(sterilized))
@@ -72,9 +108,15 @@ public class PetService {
                 .and(PetSpecification.hasActiveShelter())
                 .and(PetSpecification.notInFavorites(favoritePetIds));
 
-        List<Pet> filteredPets = petRepository.findAll(spec);
+        if (cursor != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThan(root.get("id"), cursor));
+        }
 
-        Stream<Pet> stream = filteredPets.stream();
+        return spec;
+    }
+
+    private List<PetResponseWithImages> filterAndMapPets(List<Pet> pets, Double userLat, Double userLng, Double radiusKm) {
+        Stream<Pet> stream = pets.stream();
 
         if (userLat != null && userLng != null && radiusKm != null) {
             stream = stream.filter(p -> {
