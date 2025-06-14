@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import './Favourites.css';
 import {MapPin, Heart,PawPrint} from 'lucide-react';
-import { fetchFavoritePets } from "../api/shelter";
+import { fetchFavoritePets, fetchShelterById } from "../api/shelter";
 import { useEffect, useState } from "react";
 
 
@@ -39,19 +39,35 @@ const [error, setError] = useState(null);
 useEffect(() => {
   const loadFavorites = async () => {
     try {
-      const data = await fetchFavoritePets();
-      setFavorites(data);
+      const pets = await fetchFavoritePets();
+
+      const favoritesWithShelter = await Promise.all(
+        pets.map(async (pet) => {
+          let shelterName = "Nieznane schronisko";
+
+          try {
+            const shelter = await fetchShelterById(pet.shelterId);
+            shelterName = shelter.name;
+          } catch (_) {}
+
+          return {
+            ...pet,
+            shelterName,
+          };
+        })
+      );
+
+      setFavorites(favoritesWithShelter);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
-
-  loadFavorites();
+    loadFavorites();
 }, []);
 
-if (loading) return <div className="loading-spinner">Ładowanie ulubionych...</div>;
+if (loading) return <div className="loading-spinner"></div>;
 if (error) return <div className="error-message">{error}</div>;
 
   return (
@@ -103,7 +119,7 @@ if (error) return <div className="error-message">{error}</div>;
                  
                   <span className="animal-location">
                     <MapPin className="detail-icon" />
-                    <span className="detail-icon"></span> {animal.location}
+                    <span className="detail-icon"></span> {animal.shelterName}
                   </span>
                 </div>
               </div>

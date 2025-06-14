@@ -1,9 +1,14 @@
-const API_URL = "http://localhost:9000";
+const API_URL = "";
+
+export function getToken() {
+  return localStorage.getItem("jwt");
+}
 
 export const fetchFavoritePets = async () => {
-  const token = localStorage.getItem("jwt");
+  const token = getToken();
 
   const response = await fetch(`${API_URL}/pets/favorites`, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -21,9 +26,10 @@ export const fetchFavoritePets = async () => {
 };
 
 export const fetchShelters = async () => {
-  const token = localStorage.getItem("jwt");
+  const token = getToken();
 
   const response = await fetch(`${API_URL}/shelters`, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -35,6 +41,22 @@ export const fetchShelters = async () => {
 
   if (!response.ok) {
     throw new Error("Błąd podczas pobierania schronisk");
+  }
+
+  return await response.json();
+};
+
+export const fetchShelterById = async (shelterId) => {
+  const token = getToken();
+
+  const response = await fetch(`/shelters/${shelterId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się pobrać danych schroniska");
   }
 
   return await response.json();

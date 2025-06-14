@@ -42,8 +42,8 @@ INSERT INTO users (
 
 INSERT INTO user_role_junction (user_id, role_id)
 VALUES
-    ((SELECT user_id FROM users WHERE username = 'shelter1'), 4),
-    ((SELECT user_id FROM users WHERE username = 'shelter2'), 4),
+    ((SELECT user_id FROM users WHERE username = 'shelter1'), 3),
+    ((SELECT user_id FROM users WHERE username = 'shelter2'), 3),
     ((SELECT user_id FROM users WHERE username = 'user1'), 2);
 
 -- Tworzymy schroniska
