@@ -67,8 +67,8 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
                     + "  AND d.createdAt >= :startDate "
                     + "  AND d.createdAt <= :endDate"
     )
-    Long countCompletedBetweenDates(@Param("startDate") java.time.Instant startDate,
-                                    @Param("endDate") java.time.Instant endDate);
+    Long countCompletedBetweenDates(@Param("startDate") Instant startDate,
+                                    @Param("endDate") Instant endDate);
 
     @Query(
             "SELECT COALESCE(SUM(d.amount), 0) "
@@ -77,8 +77,8 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
                     + "  AND d.createdAt >= :startDate "
                     + "  AND d.createdAt <= :endDate"
     )
-    BigDecimal sumAmountBetweenDates(@Param("startDate") java.time.Instant startDate,
-                                     @Param("endDate") java.time.Instant endDate);
+    BigDecimal sumAmountBetweenDates(@Param("startDate") Instant startDate,
+                                     @Param("endDate") Instant endDate);
 
     @Query(
             "SELECT d.donorUsername, COUNT(d), "

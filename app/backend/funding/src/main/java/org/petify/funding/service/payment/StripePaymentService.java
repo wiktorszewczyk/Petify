@@ -1,6 +1,5 @@
 package org.petify.funding.service.payment;
 
-import com.stripe.model.StripeObject;
 import org.petify.funding.dto.PaymentRequest;
 import org.petify.funding.dto.PaymentResponse;
 import org.petify.funding.dto.WebhookEventDto;
@@ -20,6 +19,7 @@ import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.StripeObject;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;

@@ -40,7 +40,6 @@ public class DonationStatusUpdateService {
         } else if (newStatus == PaymentStatus.FAILED || newStatus == PaymentStatus.CANCELLED) {
             log.info("Payment failed/cancelled for donation {}", donation.getId());
 
-            // Odśwież donation żeby mieć aktualny stan payments
             donation = donationRepository.findById(donation.getId())
                     .orElseThrow(() -> new RuntimeException("Donation not found"));
 
@@ -61,11 +60,10 @@ public class DonationStatusUpdateService {
         DonationStatus oldStatus = donation.getStatus();
         donation.setStatus(newStatus);
 
-        if (newStatus == DonationStatus.COMPLETED && oldStatus != DonationStatus.COMPLETED) {
-            if (donation.getDonatedAt() == null) {
-                donation.setDonatedAt(java.time.Instant.now());
-                log.info("Set donatedAt for donation {}", donationId);
-            }
+        if (newStatus == DonationStatus.COMPLETED && oldStatus != DonationStatus.COMPLETED
+                && donation.getDonatedAt() == null) {
+            donation.setDonatedAt(java.time.Instant.now());
+            log.info("Set donatedAt for donation {}", donationId);
         }
 
         Donation saved = donationRepository.save(donation);

@@ -70,7 +70,7 @@ public class PaymentService {
         }
 
         PaymentProviderService providerService = providerFactory.getProvider(payment.getProvider());
-        PaymentResponse response = providerService.cancelPayment(payment.getExternalId());
+        final PaymentResponse response = providerService.cancelPayment(payment.getExternalId());
 
         payment.setStatus(PaymentStatus.CANCELLED);
         paymentRepository.save(payment);
@@ -228,7 +228,7 @@ public class PaymentService {
         }
 
         PaymentProviderService providerService = providerFactory.getProvider(payment.getProvider());
-        PaymentResponse response = providerService.refundPayment(payment.getExternalId(), refundAmount);
+        final PaymentResponse response = providerService.refundPayment(payment.getExternalId(), refundAmount);
 
         PaymentStatus newStatus = refundAmount.compareTo(payment.getAmount()) == 0
                 ? PaymentStatus.REFUNDED
@@ -248,7 +248,7 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-        PaymentStatus oldStatus = payment.getStatus();
+        final PaymentStatus oldStatus = payment.getStatus();
         payment.setStatus(newStatus);
         paymentRepository.save(payment);
 
