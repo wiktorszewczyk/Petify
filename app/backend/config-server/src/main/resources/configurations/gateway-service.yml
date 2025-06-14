@@ -54,7 +54,7 @@ spring:
         - id: funding-service
           uri: lb://FUNDING-SERVICE
           predicates:
-            - Path=/donations/**, /donations, /payments/**, /payments
+            - Path=/donations/**, /donations, /payments/**, /payments, /fundraisers/**, /fundraisers
           filters:
             - PreserveHostHeader
 
@@ -69,13 +69,6 @@ spring:
           uri: lb://FEED-SERVICE
           predicates:
             - Path=/posts/**, /posts, /events/**, /events
-          filters:
-            - PreserveHostHeader
-
-        - id: funding-service
-          uri: lb://FUNDING-SERVICE
-          predicates:
-            - Path=/donations/**, /donations, /payments/**, /payments
           filters:
             - PreserveHostHeader
 
