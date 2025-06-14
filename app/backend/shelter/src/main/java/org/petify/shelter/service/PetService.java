@@ -1,6 +1,10 @@
 package org.petify.shelter.service;
 
-import org.petify.shelter.dto.*;
+import org.petify.shelter.dto.PetImageResponse;
+import org.petify.shelter.dto.PetRequest;
+import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.dto.PetResponseWithImages;
+import org.petify.shelter.dto.SwipeResponse;
 import org.petify.shelter.enums.PetType;
 import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.exception.ShelterNotFoundException;
