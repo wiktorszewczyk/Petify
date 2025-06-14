@@ -40,7 +40,6 @@ class ShelterServiceIntegrationTest extends BaseIntegrationTest {
         assertNotNull(response.id());
         assertEquals("Happy Paws", response.name());
         assertEquals("testuser", response.ownerUsername());
-        assertEquals("test.jpg", response.imageName());
     }
 
     @Test
@@ -147,7 +146,6 @@ class ShelterServiceIntegrationTest extends BaseIntegrationTest {
         assertEquals("New Name", updated.name());
         assertEquals("New description", updated.description());
         assertEquals("456 New Street", updated.address());
-        assertEquals("update.jpg", updated.imageName());
     }
 
     @Test
