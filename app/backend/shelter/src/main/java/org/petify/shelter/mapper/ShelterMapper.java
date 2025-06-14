@@ -3,17 +3,19 @@ package org.petify.shelter.mapper;
 import org.petify.shelter.dto.ShelterRequest;
 import org.petify.shelter.dto.ShelterResponse;
 import org.petify.shelter.model.Shelter;
+import org.petify.shelter.util.ImageUrlConverter;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.Base64;
-
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        imports = ImageUrlConverter.class)
 public interface ShelterMapper {
-    @Mapping(target = "imageData", expression = "java(map(shelter.getImageData()))")
+
+    @Mapping(target = "imageUrl", expression = "java(ImageUrlConverter.toFullImageUrl(shelter.getImageName()))")
     ShelterResponse toDto(Shelter shelter);
 
     @Mapping(target = "id", ignore = true)
@@ -21,8 +23,4 @@ public interface ShelterMapper {
     @Mapping(target = "pets", ignore = true)
     @Mapping(target = "isActive", ignore = true)
     Shelter toEntity(ShelterRequest request);
-
-    default String map(byte[] value) {
-        return value != null ? Base64.getEncoder().encodeToString(value) : null;
-    }
 }

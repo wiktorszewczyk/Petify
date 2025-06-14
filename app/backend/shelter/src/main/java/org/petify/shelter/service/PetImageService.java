@@ -24,6 +24,7 @@ public class PetImageService {
     private final PetImageRepository petImageRepository;
     private final PetRepository petRepository;
     private final PetImageMapper petImageMapper;
+    private final StorageService storageService;
 
     @Transactional
     public List<PetImageResponse> getImagesByPetId(Long petId) {
@@ -50,9 +51,11 @@ public class PetImageService {
 
         PetImage petImage = new PetImage();
         petImage.setPet(pet);
-        petImage.setImageName(file.getOriginalFilename());
-        petImage.setImageType(file.getContentType());
-        petImage.setImageData(file.getBytes());
+
+        if (file != null && !file.isEmpty()) {
+            String imageName = storageService.uploadImage(file);
+            petImage.setImageName(imageName);
+        }
 
         petImageRepository.save(petImage);
     }
@@ -64,7 +67,9 @@ public class PetImageService {
 
         Pet pet = image.getPet();
 
-        pet.getImages().remove(image);
+        if (storageService.deleteImage(pet.getImageName())) {
+            pet.getImages().remove(image);
+        }
 
         petRepository.save(pet);
     }

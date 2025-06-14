@@ -15,6 +15,5 @@ public record ShelterResponse(
         Double latitude,
         Double longitude,
         Boolean isActive,
-        String imageName,
-        String imageType,
-        String imageData) implements Serializable {}
+        String imageUrl
+) implements Serializable {}
