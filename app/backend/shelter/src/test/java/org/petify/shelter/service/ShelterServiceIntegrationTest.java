@@ -7,18 +7,26 @@ import org.petify.shelter.exception.ShelterAlreadyExistsException;
 import org.petify.shelter.exception.ShelterByOwnerNotFoundException;
 import org.petify.shelter.exception.ShelterNotFoundException;
 import org.petify.shelter.integration.BaseIntegrationTest;
+import org.petify.shelter.repository.ShelterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ShelterServiceIntegrationTest extends BaseIntegrationTest {
+
+    @Autowired
+    private ShelterRepository shelterRepository;
 
     @Autowired
     private ShelterService shelterService;
@@ -34,10 +42,7 @@ class ShelterServiceIntegrationTest extends BaseIntegrationTest {
                 21.0122
         );
 
-        MultipartFile mockFile = new MockMultipartFile(
-                "image", "test.jpg", "image/jpeg", "test image content".getBytes());
-
-        ShelterResponse response = shelterService.createShelter(request, mockFile, "testuser");
+        ShelterResponse response = shelterService.createShelter(request, null, "testuser");
 
         assertNotNull(response.id());
         assertEquals("Happy Paws", response.name());
@@ -139,10 +144,7 @@ class ShelterServiceIntegrationTest extends BaseIntegrationTest {
                 21.0123
         );
 
-        MultipartFile mockFile = new MockMultipartFile(
-                "image", "update.jpg", "image/jpeg", "updated image".getBytes());
-
-        ShelterResponse updated = shelterService.updateShelter(updateRequest, mockFile, created.id());
+        ShelterResponse updated = shelterService.updateShelter(updateRequest, null, created.id());
 
         assertEquals(created.id(), updated.id());
         assertEquals("New Name", updated.name());
