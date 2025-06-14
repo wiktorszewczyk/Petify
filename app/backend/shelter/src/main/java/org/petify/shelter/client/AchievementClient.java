@@ -19,4 +19,10 @@ public interface AchievementClient {
 
     @PostMapping("/track-support")
     void trackSupportProgress();
+
+    @PostMapping("/track-adoption")
+    void trackAdoptionProgress();
+
+    @PostMapping("/track-adoption/{username}")
+    void trackAdoptionProgressForUser(@PathVariable String username);
 }

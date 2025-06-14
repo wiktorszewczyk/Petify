@@ -103,30 +103,7 @@ public class AchievementService {
 
     @Transactional
     public void trackProfileAchievementByName(String username, String achievementName) {
-        try {
-            List<Achievement> profileAchievements = achievementRepository.findByCategory(AchievementCategory.PROFILE);
-
-            Optional<Achievement> achievement = profileAchievements.stream()
-                    .filter(a -> a.getName().equals(achievementName))
-                    .findFirst();
-
-            if (achievement.isPresent()) {
-                ApplicationUser user = userRepository.findByUsername(username)
-                        .orElseThrow(() -> new RuntimeException("User not found"));
-
-                Optional<UserAchievement> existingUserAchievement = userAchievementRepository
-                        .findByUserAndAchievementId(user, achievement.get().getId());
-
-                if (existingUserAchievement.isEmpty() || !existingUserAchievement.get().getCompleted()) {
-                    trackAchievementProgress(username, achievement.get().getId(), 1);
-                }
-            } else {
-                log.warn("Achievement with name '{}' not found in PROFILE category", achievementName);
-            }
-        } catch (Exception e) {
-            log.error("Error tracking profile achievement '{}' for user {}: {}",
-                    achievementName, username, e.getMessage());
-        }
+        trackAchievementByNameAndCategory(username, achievementName, AchievementCategory.PROFILE);
     }
 
     private void updateBadgeCounts(ApplicationUser user, AchievementCategory category) {
@@ -136,6 +113,10 @@ public class AchievementService {
                 break;
             case SUPPORT:
                 user.setSupportCount(user.getSupportCount() + 1);
+                break;
+            case ADOPTION:
+                user.setAdoptionCount(user.getAdoptionCount() + 1);
+                user.setBadgesCount(user.getBadgesCount() + 1);
                 break;
             case BADGE:
             case PROFILE:
@@ -170,6 +151,7 @@ public class AchievementService {
         levelInfo.put("likesCount", user.getLikesCount());
         levelInfo.put("supportCount", user.getSupportCount());
         levelInfo.put("badgesCount", user.getBadgesCount());
+        levelInfo.put("adoptionCount", user.getAdoptionCount());
 
         return levelInfo;
     }
@@ -200,10 +182,14 @@ public class AchievementService {
 
     @Transactional
     public void trackVolunteerAchievementByName(String username, String achievementName) {
-        try {
-            List<Achievement> volunteerAchievements = achievementRepository.findByCategory(AchievementCategory.VOLUNTEER);
+        trackAchievementByNameAndCategory(username, achievementName, AchievementCategory.VOLUNTEER);
+    }
 
-            Optional<Achievement> achievement = volunteerAchievements.stream()
+    private void trackAchievementByNameAndCategory(String username, String achievementName, AchievementCategory category) {
+        try {
+            List<Achievement> achievements = achievementRepository.findByCategory(category);
+
+            Optional<Achievement> achievement = achievements.stream()
                     .filter(a -> a.getName().equals(achievementName))
                     .findFirst();
 
@@ -218,11 +204,20 @@ public class AchievementService {
                     trackAchievementProgress(username, achievement.get().getId(), 1);
                 }
             } else {
-                log.warn("Achievement with name '{}' not found in VOLUNTEER category", achievementName);
+                log.warn("Achievement with name '{}' not found in {} category", achievementName, category);
             }
         } catch (Exception e) {
-            log.error("Error tracking volunteer achievement '{}' for user {}: {}",
-                    achievementName, username, e.getMessage());
+            log.error("Error tracking {} achievement '{}' for user {}: {}",
+                    category, achievementName, username, e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void trackAdoptionAchievements(String username) {
+        List<Achievement> adoptionAchievements = achievementRepository.findByCategory(AchievementCategory.ADOPTION);
+
+        for (Achievement achievement : adoptionAchievements) {
+            trackAchievementProgress(username, achievement.getId(), 1);
         }
     }
 }

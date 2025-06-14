@@ -33,6 +33,7 @@ public class UserResponseDTO {
     private Integer likesCount;
     private Integer supportCount;
     private Integer badgesCount;
+    private Integer adoptionCount;
     private String city;
     private Double latitude;
     private Double longitude;
@@ -68,6 +69,7 @@ public class UserResponseDTO {
         this.likesCount = user.getLikesCount();
         this.supportCount = user.getSupportCount();
         this.badgesCount = user.getBadgesCount();
+        this.adoptionCount = user.getAdoptionCount();
         this.city = user.getCity();
         this.latitude = user.getLatitude();
         this.longitude = user.getLongitude();

@@ -73,6 +73,7 @@ public class AuthServerApplication {
                 admin.setLikesCount(0);
                 admin.setSupportCount(0);
                 admin.setBadgesCount(0);
+                admin.setAdoptionCount(0);
 
                 ApplicationUser savedAdmin = userRepository.save(admin);
                 achievementService.initializeUserAchievements(savedAdmin);
@@ -102,6 +103,7 @@ public class AuthServerApplication {
                 shelterUser.setLikesCount(0);
                 shelterUser.setSupportCount(0);
                 shelterUser.setBadgesCount(0);
+                shelterUser.setAdoptionCount(0);
 
                 ApplicationUser savedShelterUser = userRepository.save(shelterUser);
                 achievementService.initializeUserAchievements(savedShelterUser);
@@ -198,6 +200,33 @@ public class AuthServerApplication {
                 volunteerAchievement.setCategory(AchievementCategory.VOLUNTEER);
                 volunteerAchievement.setRequiredActions(1);
                 achievementRepository.save(volunteerAchievement);
+
+                Achievement firstAdoption = new Achievement();
+                firstAdoption.setName("Pierwszy przyjaciel");
+                firstAdoption.setDescription("Gratulacje za pierwszą adopcję zwierzęcia! Zmieniłeś czyjeś życie na lepsze.");
+                firstAdoption.setIconName("heart-handshake");
+                firstAdoption.setXpReward(200);
+                firstAdoption.setCategory(AchievementCategory.ADOPTION);
+                firstAdoption.setRequiredActions(1);
+                achievementRepository.save(firstAdoption);
+
+                Achievement animalRescuer = new Achievement();
+                animalRescuer.setName("Ratownik zwierząt");
+                animalRescuer.setDescription("Adoptowałeś już 5 zwierząt! Jesteś prawdziwym ratownikiem czworonogów.");
+                animalRescuer.setIconName("shield-heart");
+                animalRescuer.setXpReward(500);
+                animalRescuer.setCategory(AchievementCategory.ADOPTION);
+                animalRescuer.setRequiredActions(5);
+                achievementRepository.save(animalRescuer);
+
+                Achievement adoptionAngel = new Achievement();
+                adoptionAngel.setName("Anioł adopcji");
+                adoptionAngel.setDescription("Niesamowite! 10 adopcji za Tobą. Jesteś prawdziwym aniołem dla bezdomnych zwierząt.");
+                adoptionAngel.setIconName("crown");
+                adoptionAngel.setXpReward(1000);
+                adoptionAngel.setCategory(AchievementCategory.ADOPTION);
+                adoptionAngel.setRequiredActions(10);
+                achievementRepository.save(adoptionAngel);
             }
         };
     }

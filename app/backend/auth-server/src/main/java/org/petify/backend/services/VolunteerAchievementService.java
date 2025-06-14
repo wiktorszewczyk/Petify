@@ -1,6 +1,5 @@
 package org.petify.backend.services;
 
-import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +20,6 @@ public class VolunteerAchievementService {
     @Transactional
     public void onVolunteerApplicationSubmitted(String username) {
         try {
-            ApplicationUser user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found: " + username));
-
             achievementService.trackVolunteerAchievementByName(username, "Ochotnik");
 
             log.info("Volunteer achievement awarded to user: {}", username);
@@ -35,9 +31,6 @@ public class VolunteerAchievementService {
     @Transactional
     public void onVolunteerApproved(String username) {
         try {
-            ApplicationUser user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found: " + username));
-
             log.info("Volunteer approved for user: {}", username);
         } catch (Exception e) {
             log.error("Error processing volunteer approval for user {}: {}", username, e.getMessage());

@@ -5,5 +5,6 @@ public enum AchievementCategory {
     SUPPORT,
     BADGE,
     PROFILE,
-    VOLUNTEER
+    VOLUNTEER,
+    ADOPTION
 }

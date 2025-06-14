@@ -93,6 +93,9 @@ public class ApplicationUser implements UserDetails {
     @Column(name = "badges_count")
     private Integer badgesCount = 0;
 
+    @Column(name = "adoption_count")
+    private Integer adoptionCount = 0;
+
     @Column(name = "city")
     private String city;
 
