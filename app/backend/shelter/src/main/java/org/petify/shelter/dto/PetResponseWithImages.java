@@ -24,4 +24,5 @@ public record PetResponseWithImages(
         boolean sterilized,
         boolean kidFriendly,
         String imageUrl,
-        List<PetImageResponse> images) implements Serializable {}
+        List<PetImageResponse> images,
+        Double distance) implements Serializable {}

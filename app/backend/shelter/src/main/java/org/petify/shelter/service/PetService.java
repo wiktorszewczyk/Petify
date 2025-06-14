@@ -47,15 +47,15 @@ public class PetService {
     public List<PetResponseWithImages> getPets() {
         return petRepository.findAll()
                 .stream()
-                .map(petMapper::toDtoWithImages)
+                .map(pet -> toDtoWithDistance(pet, null))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<PetResponseWithImages> getFilteredPets(Boolean vaccinated, Boolean urgent, Boolean sterilized,
-                                             Boolean kidFriendly, Integer minAge, Integer maxAge,
-                                             PetType type, Double userLat, Double userLng, Double radiusKm,
-                                             String username) {
+                                                       Boolean kidFriendly, Integer minAge, Integer maxAge,
+                                                       PetType type, Double userLat, Double userLng, Double radiusKm,
+                                                       String username) {
 
         List<Long> favoritePetIds = favoritePetRepository.findByUsername(username)
                 .stream()
@@ -86,7 +86,16 @@ public class PetService {
             });
         }
 
-        return stream.map(petMapper::toDtoWithImages).toList();
+        return stream.map(pet -> {
+            Double calculatedDistance = null;
+            if (userLat != null && userLng != null) {
+                Shelter shelter = pet.getShelter();
+                if (shelter != null && shelter.getLatitude() != null && shelter.getLongitude() != null) {
+                    calculatedDistance = distance(userLat, userLng, shelter.getLatitude(), shelter.getLongitude());
+                }
+            }
+            return toDtoWithDistance(pet, calculatedDistance);
+        }).toList();
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -100,9 +109,31 @@ public class PetService {
         return R * c;
     }
 
+    private PetResponseWithImages toDtoWithDistance(Pet pet, Double distance) {
+        PetResponseWithImages baseDto = petMapper.toDtoWithImages(pet);
+        return new PetResponseWithImages(
+                baseDto.id(),
+                baseDto.name(),
+                baseDto.type(),
+                baseDto.breed(),
+                baseDto.age(),
+                baseDto.archived(),
+                baseDto.description(),
+                baseDto.shelterId(),
+                baseDto.gender(),
+                baseDto.vaccinated(),
+                baseDto.urgent(),
+                baseDto.sterilized(),
+                baseDto.kidFriendly(),
+                baseDto.imageUrl(),
+                baseDto.images(),
+                distance
+        );
+    }
+
     public PetResponseWithImages getPetById(Long petId) {
         return petRepository.findById(petId)
-                .map(petMapper::toDtoWithImages)
+                .map(pet -> toDtoWithDistance(pet, null))
                 .orElseThrow(() -> new PetNotFoundException(petId));
     }
 
