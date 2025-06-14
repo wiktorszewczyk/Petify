@@ -3,5 +3,6 @@ package org.petify.backend.models;
 public enum AchievementCategory {
     LIKES,
     SUPPORT,
-    BADGE
+    BADGE,
+    PROFILE
 }

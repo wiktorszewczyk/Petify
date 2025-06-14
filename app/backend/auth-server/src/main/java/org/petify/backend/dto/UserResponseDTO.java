@@ -2,6 +2,7 @@ package org.petify.backend.dto;
 
 import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.models.Role;
+import org.petify.backend.models.UserAchievement;
 import org.petify.backend.models.VolunteerStatus;
 
 import lombok.Getter;
@@ -9,8 +10,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -41,6 +42,8 @@ public class UserResponseDTO {
     private boolean hasProfileImage;
     private Set<Role> authorities;
     private Integer version;
+
+    private Set<UserAchievement> achievements;
 
     private Integer xpToNextLevel;
     private boolean hasLocation;
@@ -73,12 +76,15 @@ public class UserResponseDTO {
         this.locationUpdatedAt = user.getLocationUpdatedAt();
         this.hasProfileImage = user.hasProfileImage();
 
-        this.authorities = user.getAuthorities() != null ?
-                user.getAuthorities().stream()
+        this.authorities = user.getAuthorities() != null
+                ? user.getAuthorities().stream()
                         .filter(Role.class::isInstance)
                         .map(Role.class::cast)
                         .collect(Collectors.toSet()) :
                 new HashSet<>();
+
+        this.achievements = user.getAchievements() != null
+                ? user.getAchievements() : new HashSet<>();
 
         this.version = user.getVersion();
 

@@ -133,7 +133,12 @@ public class ApplicationUser implements UserDetails {
 
     @Transient
     public Integer getXpToNextLevel() {
-        return 100 + (this.level * 50);
+        int currentLevel = this.level != null ? this.level : 1;
+        int currentXp = this.xpPoints != null ? this.xpPoints : 0;
+
+        int xpRequiredForNextLevel = currentLevel * 100;
+
+        return Math.max(0, xpRequiredForNextLevel - currentXp);
     }
 
     @Transient

@@ -158,10 +158,37 @@ public class AuthServerApplication {
                 achievement6.setName("Super wsparcie");
                 achievement6.setDescription("Wesprzyj 25 zwierząt");
                 achievement6.setIconName("hands-helping");
-                achievement6.setXpReward(200);
+                achievement6.setXpReward(250);
                 achievement6.setCategory(AchievementCategory.SUPPORT);
                 achievement6.setRequiredActions(25);
                 achievementRepository.save(achievement6);
+
+                Achievement profilePicture = new Achievement();
+                profilePicture.setName("Pierwsza fotka");
+                profilePicture.setDescription("Dodaj zdjęcie profilowe");
+                profilePicture.setIconName("camera");
+                profilePicture.setXpReward(50);
+                profilePicture.setCategory(AchievementCategory.PROFILE);
+                profilePicture.setRequiredActions(1);
+                achievementRepository.save(profilePicture);
+
+                Achievement completeProfile = new Achievement();
+                completeProfile.setName("Kompletny profil");
+                completeProfile.setDescription("Wypełnij wszystkie dane w profilu");
+                completeProfile.setIconName("user-check");
+                completeProfile.setXpReward(100);
+                completeProfile.setCategory(AchievementCategory.PROFILE);
+                completeProfile.setRequiredActions(1);
+                achievementRepository.save(completeProfile);
+
+                Achievement locationSet = new Achievement();
+                locationSet.setName("Lokalizacja ustawiona");
+                locationSet.setDescription("Dodaj swoją lokalizację");
+                locationSet.setIconName("map-pin");
+                locationSet.setXpReward(25);
+                locationSet.setCategory(AchievementCategory.PROFILE);
+                locationSet.setRequiredActions(1);
+                achievementRepository.save(locationSet);
             }
         };
     }

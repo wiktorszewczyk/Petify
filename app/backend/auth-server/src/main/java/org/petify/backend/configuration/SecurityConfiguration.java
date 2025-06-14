@@ -1,9 +1,9 @@
 package org.petify.backend.configuration;
 
+import org.petify.backend.repository.UserRepository;
 import org.petify.backend.services.CustomOAuth2UserService;
 import org.petify.backend.services.TokenService;
 import org.petify.backend.utils.RSAKeyProperties;
-import org.petify.backend.repository.UserRepository;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -118,6 +118,7 @@ public class SecurityConfiguration {
                             try {
                                 response.sendRedirect("http://localhost:5173/home?error=OAuth2%20authentication%20failed");
                             } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         })
                         .failureHandler((request, response, exception) -> {

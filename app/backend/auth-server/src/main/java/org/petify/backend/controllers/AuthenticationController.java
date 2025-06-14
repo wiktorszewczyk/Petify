@@ -8,6 +8,7 @@ import org.petify.backend.models.ApplicationUser;
 import org.petify.backend.repository.UserRepository;
 import org.petify.backend.services.AuthenticationService;
 import org.petify.backend.services.OAuth2TokenService;
+import org.petify.backend.services.ProfileAchievementService;
 import org.petify.backend.services.TokenService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -64,6 +65,9 @@ public class AuthenticationController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProfileAchievementService profileAchievementService;
 
     private ResponseEntity<?> createUnauthorizedResponse() {
         Map<String, String> errorResponse = new HashMap<>();
@@ -241,27 +245,26 @@ public class AuthenticationController {
     }
 
     @PutMapping("/user")
-    public ResponseEntity<?> updateUserData(
+    public ResponseEntity<UserResponseDTO> updateUserData(
             Authentication authentication,
             @RequestBody ApplicationUser userData) {
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            return createUnauthorizedResponse();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         try {
             ApplicationUser updatedUser = authenticationService.updateUserProfile(
                     authentication.getName(), userData);
 
-            return ResponseEntity.ok(updatedUser);
+            profileAchievementService.onProfileUpdated(authentication.getName());
+
+            UserResponseDTO userResponse = UserResponseDTO.fromUser(updatedUser);
+            return ResponseEntity.ok(userResponse);
         } catch (IllegalArgumentException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put(ERROR_KEY, e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put(ERROR_KEY, "Failed to update user data: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -339,6 +342,8 @@ public class AuthenticationController {
 
             user.setProfileImage(image.getBytes());
             userRepository.save(user);
+
+            profileAchievementService.onProfileImageAdded(authentication.getName());
 
             return ResponseEntity.ok(Map.of(
                     MESSAGE_KEY, "Profile image uploaded successfully",
