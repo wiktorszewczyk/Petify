@@ -33,16 +33,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final RoleRepository roleRepository;
     private final OAuth2ProviderRepository oauth2ProviderRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AchievementService achievementService;
 
     public CustomOAuth2UserService(
             UserRepository userRepository,
             RoleRepository roleRepository,
             OAuth2ProviderRepository oauth2ProviderRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            AchievementService achievementService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.oauth2ProviderRepository = oauth2ProviderRepository;
         this.passwordEncoder = passwordEncoder;
+        this.achievementService = achievementService;
     }
 
     @Override
@@ -97,6 +100,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 user.setAuthorities(authorities);
 
                 user = userRepository.save(user);
+
+                achievementService.initializeUserAchievements(user);
 
                 OAuth2Provider provider = new OAuth2Provider(
                         providerId,
