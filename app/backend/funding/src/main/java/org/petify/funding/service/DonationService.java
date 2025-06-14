@@ -2,6 +2,7 @@ package org.petify.funding.service;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.petify.funding.client.AchievementClient;
 import org.petify.funding.client.ShelterClient;
 import org.petify.funding.dto.DonationIntentRequest;
 import org.petify.funding.dto.DonationRequest;
@@ -46,6 +47,7 @@ public class DonationService {
     private final PaymentRepository paymentRepository;
     private final FundraiserRepository fundraiserRepository;
     private final ShelterClient shelterClient;
+    private final AchievementClient achievementClient;
 
     @Transactional
     public DonationResponse createDraft(DonationIntentRequest request, Jwt jwt) {
@@ -67,6 +69,9 @@ public class DonationService {
         Donation donation = donationRequest.toEntity();
         donation.setStatus(DonationStatus.PENDING);
         Donation saved = donationRepository.save(donation);
+
+        // ZWIĘKSZ PROGRES PO UTWORZENIU DOTACJI
+        trackDonationAchievement(saved);
 
         log.info("Draft donation created successfully with ID: {}", saved.getId());
         return DonationResponse.fromEntity(saved);
@@ -96,12 +101,6 @@ public class DonationService {
     @Transactional(readOnly = true)
     public Page<DonationResponse> getForPet(Long petId, Pageable pageable) {
         return donationRepository.findByPetId(petId, pageable)
-                .map(DonationResponse::fromEntity);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<DonationResponse> getForFundraiser(Long fundraiserId, Pageable pageable) {
-        return donationRepository.findByFundraiserId(fundraiserId, pageable)
                 .map(DonationResponse::fromEntity);
     }
 
@@ -365,5 +364,19 @@ public class DonationService {
         }
 
         return donationRequest;
+    }
+
+    private void trackDonationAchievement(Donation donation) {
+        try {
+            String donorUsername = donation.getDonorUsername();
+            if (donorUsername != null && !donorUsername.trim().isEmpty()) {
+                achievementClient.trackSupportProgress();
+                log.info("Tracked support achievement for donation {} by user: {}",
+                        donation.getId(), donorUsername);
+            }
+        } catch (Exception e) {
+            log.error("Failed to track achievement for donation {} by user: {}",
+                    donation.getId(), donation.getDonorUsername(), e);
+        }
     }
 }

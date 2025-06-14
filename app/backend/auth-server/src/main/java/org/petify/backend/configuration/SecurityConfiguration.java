@@ -97,6 +97,9 @@ public class SecurityConfiguration {
                             String token = tokenService.generateJwt(authentication);
                             response.sendRedirect("/auth/oauth2/success?token=" + token);
                         })
+                        .failureHandler((request, response, exception) -> {
+                            response.sendRedirect("/auth/oauth2/error?error=" + exception.getMessage());
+                        })
                 );
 
         return http.build();

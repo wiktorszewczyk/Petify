@@ -23,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +36,7 @@ public class PetService {
     private final ShelterRepository shelterRepository;
     private final FavoritePetRepository favoritePetRepository;
     private final PetMapper petMapper;
+    private final StorageService storageService;
 
     public String getOwnerUsernameByPetId(Long petId) {
         Pet pet = petRepository.findById(petId)
@@ -45,18 +44,15 @@ public class PetService {
         return pet.getShelter().getOwnerUsername();
     }
 
-    public List<PetResponse> getPets() {
-        List<Pet> pets = petRepository.findAll();
-        List<PetResponse> petsList = new ArrayList<>();
-        for (Pet pet : pets) {
-            petsList.add(petMapper.toDto(pet));
-        }
-
-        return petsList;
+    public List<PetResponseWithImages> getPets() {
+        return petRepository.findAll()
+                .stream()
+                .map(petMapper::toDtoWithImages)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponse> getFilteredPets(Boolean vaccinated, Boolean urgent, Boolean sterilized,
+    public List<PetResponseWithImages> getFilteredPets(Boolean vaccinated, Boolean urgent, Boolean sterilized,
                                              Boolean kidFriendly, Integer minAge, Integer maxAge,
                                              PetType type, Double userLat, Double userLng, Double radiusKm,
                                              String username) {
@@ -90,7 +86,7 @@ public class PetService {
             });
         }
 
-        return stream.map(petMapper::toDto).toList();
+        return stream.map(petMapper::toDtoWithImages).toList();
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -131,9 +127,11 @@ public class PetService {
                 .orElseThrow(() -> new ShelterNotFoundException(shelterId));
 
         Pet pet = petMapper.toEntityWithShelter(petRequest, shelter);
-        pet.setImageName(imageFile.getOriginalFilename());
-        pet.setImageType(imageFile.getContentType());
-        pet.setImageData(imageFile.getBytes());
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageName = storageService.uploadImage(imageFile);
+            pet.setImageName(imageName);
+        }
 
         Pet savedPet = petRepository.save(pet);
 
@@ -144,8 +142,7 @@ public class PetService {
     public PetImageResponse getPetImage(Long id) {
         Optional<Pet> pet = petRepository.findById(id);
         if (pet.isPresent()) {
-            return new PetImageResponse(pet.get().getImageName(), pet.get().getImageType(),
-                    Base64.getEncoder().encodeToString(pet.get().getImageData()));
+            return new PetImageResponse(pet.get().getImageName());
         } else {
             throw new PetNotFoundException(id);
         }
@@ -173,9 +170,8 @@ public class PetService {
         existingPet.setSize(petRequest.size());
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            existingPet.setImageName(imageFile.getOriginalFilename());
-            existingPet.setImageType(imageFile.getContentType());
-            existingPet.setImageData(imageFile.getBytes());
+            String imageName = storageService.uploadImage(imageFile);
+            existingPet.setImageName(imageName);
         }
 
         Pet updatedPet = petRepository.save(existingPet);
