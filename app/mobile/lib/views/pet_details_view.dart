@@ -184,7 +184,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                   _iconText(
                       Icons.location_on,
                       widget.pet.distance != null
-                          ? 'Odległość: ${widget.pet.distance} km'
+                          ? 'Odległość: ${widget.pet.formattedDistance}'
                           : 'Lokalizacja nieznana'
                   ),
 
