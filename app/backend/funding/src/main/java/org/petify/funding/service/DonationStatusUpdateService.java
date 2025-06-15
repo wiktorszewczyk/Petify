@@ -1,5 +1,6 @@
 package org.petify.funding.service;
 
+import org.petify.funding.client.AchievementClient;
 import org.petify.funding.model.Donation;
 import org.petify.funding.model.DonationStatus;
 import org.petify.funding.model.Payment;
@@ -19,6 +20,7 @@ public class DonationStatusUpdateService {
 
     private final DonationRepository donationRepository;
     private final PaymentRepository paymentRepository;
+    private final AchievementClient achievementClient;
 
     @Transactional
     public void handlePaymentStatusChange(Long paymentId, PaymentStatus newStatus) {
@@ -34,6 +36,8 @@ public class DonationStatusUpdateService {
             if (donation.getStatus() != DonationStatus.COMPLETED) {
                 log.info("Payment succeeded - updating donation {} status to COMPLETED", donation.getId());
                 updateDonationStatus(donation.getId(), DonationStatus.COMPLETED);
+
+                addExperiencePointsForDonation(donation);
             } else {
                 log.info("Donation {} already completed", donation.getId());
             }
@@ -69,5 +73,23 @@ public class DonationStatusUpdateService {
         Donation saved = donationRepository.save(donation);
         log.info("Donation {} status updated from {} to {} (saved status: {})",
                 donationId, oldStatus, newStatus, saved.getStatus());
+    }
+
+    private void addExperiencePointsForDonation(Donation donation) {
+        try {
+            String donorUsername = donation.getDonorUsername();
+            if (donorUsername != null && !donorUsername.trim().isEmpty()) {
+                int xpPoints = donation.getAmount().intValue();
+                
+                achievementClient.addDonationExperiencePoints(xpPoints);
+                log.info("Added {} XP points for donation {} (amount: {} PLN) to user: {}",
+                        xpPoints, donation.getId(), donation.getAmount(), donorUsername);
+            } else {
+                log.info("Skipping XP award for anonymous donation {}", donation.getId());
+            }
+        } catch (Exception e) {
+            log.error("Failed to add XP points for donation {} by user: {}",
+                    donation.getId(), donation.getDonorUsername(), e);
+        }
     }
 }

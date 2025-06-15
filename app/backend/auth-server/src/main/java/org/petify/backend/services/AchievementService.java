@@ -220,4 +220,17 @@ public class AchievementService {
             trackAchievementProgress(username, achievement.getId(), 1);
         }
     }
+
+    @Transactional
+    public void addExperiencePointsForDonation(String username, int xpPoints) {
+        ApplicationUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setXpPoints(user.getXpPoints() + xpPoints);
+        updateUserLevel(user);
+        userRepository.save(user);
+
+        log.info("Added {} XP to user {} for donation (Total XP: {})", 
+                xpPoints, username, user.getXpPoints());
+    }
 }

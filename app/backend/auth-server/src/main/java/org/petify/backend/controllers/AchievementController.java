@@ -99,4 +99,13 @@ public class AchievementController {
         achievementService.trackAdoptionAchievements(username);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/add-donation-xp")
+    public ResponseEntity<Void> addDonationExperiencePoints(@RequestParam int xpPoints) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.addExperiencePointsForDonation(username, xpPoints);
+        return ResponseEntity.ok().build();
+    }
 }
