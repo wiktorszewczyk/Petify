@@ -5,6 +5,7 @@ import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.dto.PetResponseWithImages;
 import org.petify.shelter.dto.ShelterResponse;
 import org.petify.shelter.enums.PetType;
 import org.petify.shelter.service.AdoptionService;
@@ -265,7 +266,7 @@ public class PetController {
     public ResponseEntity<?> getFavoritePets(@AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
 
-        List<PetResponse> favoritePets = favoritePetService.getFavoritePets(username);
+        List<PetResponseWithImages> favoritePets = favoritePetService.getFavoritePets(username);
         return ResponseEntity.ok(favoritePets);
     }
 
@@ -274,7 +275,7 @@ public class PetController {
     public ResponseEntity<?> getSupportedPets(@AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
 
-        List<PetResponse> favoritePets = favoritePetService.getSupportedPets(username);
+        List<PetResponseWithImages> favoritePets = favoritePetService.getSupportedPets(username);
         return ResponseEntity.ok(favoritePets);
     }
 
