@@ -178,7 +178,7 @@ class PetMiniCard extends StatelessWidget {
                             size: 11, color: Colors.grey[600]),
                         const SizedBox(width: 2),
                         Text(
-                          '${pet.distance} km',
+                          pet.formattedDistance,
                           style: TextStyle(
                               fontSize: 10, color: Colors.grey[600]),
                         ),

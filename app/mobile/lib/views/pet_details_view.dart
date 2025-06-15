@@ -23,17 +23,39 @@ class _PetDetailsViewState extends State<PetDetailsView> {
   final PageController _pageController = PageController();
   int _currentPhoto = 0;
   bool _busy = false;
+  Pet? _refreshedPet; // Pet z odświeżonymi danymi (w tym distance)
 
   @override
   void initState() {
     super.initState();
     _petService = PetService();
     _messageService = MessageService();
+    // Sprawdź czy pet ma odległość, jeśli nie - pobierz aktualne dane
+    if (widget.pet.distance == null) {
+      _loadPetDetails();
+    }
   }
+
+  Future<void> _loadPetDetails() async {
+    try {
+      final refreshedPet = await _petService.getPetById(widget.pet.id);
+      if (mounted) {
+        setState(() {
+          _refreshedPet = refreshedPet;
+        });
+      }
+    } catch (e) {
+      print('Failed to refresh pet details: $e');
+      // Jeśli się nie uda, zostaniemy z oryginalnym pet object
+    }
+  }
+
+  // Getter który zwraca odświeżone dane jeśli dostępne, w przeciwnym razie oryginalne
+  Pet get currentPet => _refreshedPet ?? widget.pet;
 
   List<String> get _allImages {
     // Zwracamy listę zdjęć - główne zdjęcie + galeria
-    return [widget.pet.imageUrlSafe, ...widget.pet.galleryImages];
+    return [currentPet.imageUrlSafe, ...currentPet.galleryImages];
   }
 
   Widget _buildImage(String path, {BoxFit fit = BoxFit.cover}) {
@@ -82,11 +104,11 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    final shelterName = widget.pet.shelterName?.isNotEmpty == true
-        ? widget.pet.shelterName!
+    final shelterName = currentPet.shelterName?.isNotEmpty == true
+        ? currentPet.shelterName!
         : 'Schronisko';
-    final shelterAddr = widget.pet.shelterAddress?.isNotEmpty == true
-        ? widget.pet.shelterAddress!
+    final shelterAddr = currentPet.shelterAddress?.isNotEmpty == true
+        ? currentPet.shelterAddress!
         : 'brak adresu';
 
     return Scaffold(
@@ -110,7 +132,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                     itemCount: _allImages.length,
                     itemBuilder: (_, i) => i == 0
                         ? Hero(
-                        tag: 'pet_mini_${widget.pet.id}',
+                        tag: 'pet_mini_${currentPet.id}',
                         child: _buildImage(_allImages[i])
                     )
                         : _buildImage(_allImages[i]),
@@ -155,7 +177,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                     children: [
                       Expanded(
                         child: Text(
-                            widget.pet.name,
+                            currentPet.name,
                             style: GoogleFonts.poppins(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold
@@ -169,7 +191,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                             borderRadius: BorderRadius.circular(12)
                         ),
                         child: Text(
-                            '${widget.pet.age} ${_y(widget.pet.age)}',
+                            '${currentPet.age} ${_y(currentPet.age)}',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primaryColor
@@ -179,16 +201,16 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _iconText(Icons.pets, widget.pet.breed ?? widget.pet.typeDisplayName),
+                  _iconText(Icons.pets, currentPet.breed ?? currentPet.typeDisplayName),
                   const SizedBox(height: 6),
                   _iconText(
                       Icons.location_on,
-                      widget.pet.distance != null
-                          ? 'Odległość: ${widget.pet.formattedDistance}'
+                      currentPet.distance != null
+                          ? 'Odległość: ${currentPet.formattedDistance}'
                           : 'Lokalizacja nieznana'
                   ),
 
-                  if (widget.pet.isUrgent) ...[
+                  if (currentPet.isUrgent) ...[
                     const SizedBox(height: 16),
                     _urgent(),
                   ],
@@ -196,7 +218,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                   const SizedBox(height: 24),
                   _section('O zwierzaku'),
                   Text(
-                    widget.pet.description ?? 'Brak opisu. Skontaktuj się ze schroniskiem, aby dowiedzieć się więcej.',
+                    currentPet.description ?? 'Brak opisu. Skontaktuj się ze schroniskiem, aby dowiedzieć się więcej.',
                     style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
 
@@ -306,7 +328,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (context) => SupportOptionsSheet(pet: widget.pet),
+                      builder: (context) => SupportOptionsSheet(pet: currentPet),
                     ),
                     style: _btnStyle(
                       Colors.white,
@@ -413,8 +435,9 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                           name,
                           style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)
                       ),
-                      const SizedBox(height: 2),
-                      Text(addr, style: TextStyle(color: Colors.grey[600]))
+                      const SizedBox(height: 4),
+                      if (addr.isNotEmpty)
+                        Text(addr, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
                     ]
                 )
             )
@@ -465,12 +488,12 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
   List<String> get _traits {
     final t = <String>[
-      widget.pet.genderDisplayName,
-      widget.pet.sizeDisplayName
+      currentPet.genderDisplayName,
+      currentPet.sizeDisplayName
     ];
-    if (widget.pet.isVaccinated) t.add('Zaszczepiony');
-    if (widget.pet.isNeutered) t.add('Sterylizowany');
-    if (widget.pet.isChildFriendly) t.add('Przyjazny dzieciom');
+    if (currentPet.isVaccinated) t.add('Zaszczepiony');
+    if (currentPet.isNeutered) t.add('Sterylizowany');
+    if (currentPet.isChildFriendly) t.add('Przyjazny dzieciom');
     return t;
   }
 
@@ -480,7 +503,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     try {
       final conversations = await _messageService.getConversations();
       final existingConversation = conversations
-          .where((conv) => conv.petId == widget.pet.id.toString())
+          .where((conv) => conv.petId == currentPet.id.toString())
           .toList();
 
       String conversationId;
@@ -490,11 +513,11 @@ class _PetDetailsViewState extends State<PetDetailsView> {
         conversationId = existingConversation.first.id;
       } else {
         conversationId = await _messageService.createConversation(
-          petId: widget.pet.id.toString(),
-          petName: widget.pet.name,
-          shelterId: widget.pet.shelterId.toString(),
-          shelterName: widget.pet.shelterName ?? 'Schronisko',
-          petImageUrl: widget.pet.imageUrl!,
+          petId: currentPet.id.toString(),
+          petName: currentPet.name,
+          shelterId: currentPet.shelterId.toString(),
+          shelterName: currentPet.shelterName ?? 'Schronisko',
+          petImageUrl: currentPet.imageUrl!,
         );
         isNewConversation = true;
       }
@@ -509,7 +532,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
           builder: (context) => ChatView(
             conversationId: conversationId,
             isNewConversation: isNewConversation,
-            pet: widget.pet,
+            pet: currentPet,
           ),
         ),
       );
@@ -530,17 +553,18 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AdoptionFormView(pet: widget.pet),
+        builder: (context) => AdoptionFormView(pet: currentPet),
       ),
     );
   }
+
 
   Future<void> _confirmRemove() async {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Usuń z ulubionych'),
-        content: Text('Na pewno chcesz usunąć ${widget.pet.name}?'),
+        content: Text('Na pewno chcesz usunąć ${currentPet.name}?'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -558,14 +582,14 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
     setState(() => _busy = true);
     try {
-      final response = await _petService.unlikePet(widget.pet.id);
+      final response = await _petService.unlikePet(currentPet.id);
       if (!mounted) return;
 
       if (response.statusCode == 200) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('${widget.pet.name} usunięty z ulubionych'),
+                content: Text('${currentPet.name} usunięty z ulubionych'),
                 backgroundColor: Colors.grey
             )
         );
