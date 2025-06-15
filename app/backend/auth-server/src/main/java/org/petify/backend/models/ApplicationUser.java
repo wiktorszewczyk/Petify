@@ -1,7 +1,9 @@
 package org.petify.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -91,6 +93,9 @@ public class ApplicationUser implements UserDetails {
     @Column(name = "badges_count")
     private Integer badgesCount = 0;
 
+    @Column(name = "adoption_count")
+    private Integer adoptionCount = 0;
+
     @Column(name = "city")
     private String city;
 
@@ -111,6 +116,7 @@ public class ApplicationUser implements UserDetails {
 
     @Column(name = "profile_image")
     @Lob
+    @JsonIgnore
     private byte[] profileImage;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -130,7 +136,12 @@ public class ApplicationUser implements UserDetails {
 
     @Transient
     public Integer getXpToNextLevel() {
-        return 100 + (this.level * 50);
+        int currentLevel = this.level != null ? this.level : 1;
+        int currentXp = this.xpPoints != null ? this.xpPoints : 0;
+
+        int xpRequiredForNextLevel = currentLevel * 100;
+
+        return Math.max(0, xpRequiredForNextLevel - currentXp);
     }
 
     @Transient
@@ -144,8 +155,13 @@ public class ApplicationUser implements UserDetails {
     }
 
     @Transient
+    @JsonProperty("hasProfileImage")
     public boolean hasProfileImage() {
-        return profileImage != null && profileImage.length > 0;
+        try {
+            return profileImage != null && profileImage.length > 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public void setLocation(String city, Double latitude, Double longitude) {

@@ -45,9 +45,6 @@ public class AuthenticationService {
     @Autowired
     private AchievementService achievementService;
 
-    /**
-     * Registers a new user with the provided information
-     */
     public ApplicationUser registerUser(final RegistrationDTO registrationDTO) {
         String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty())
                 ? registrationDTO.getUsername()
@@ -81,14 +78,12 @@ public class AuthenticationService {
         newUser.setActive(true);
         newUser.setCreatedAt(LocalDateTime.now());
 
-        // XP and gamification
         newUser.setXpPoints(0);
         newUser.setLevel(1);
         newUser.setLikesCount(0);
         newUser.setSupportCount(0);
         newUser.setBadgesCount(0);
 
-        // Domyślne ustawienia lokalizacji
         newUser.setPreferredSearchDistanceKm(20.0);
         newUser.setAutoLocationEnabled(false);
 
@@ -107,9 +102,6 @@ public class AuthenticationService {
         return savedUser;
     }
 
-    /**
-     * Authenticates a user and returns a JWT token if successful
-     */
     public LoginResponseDTO loginUser(final LoginRequestDTO loginRequest) {
         try {
             ApplicationUser user = userRepository.findByEmailOrPhoneNumber(
@@ -138,9 +130,6 @@ public class AuthenticationService {
         }
     }
 
-    /**
-     * Updates user profile information
-     */
     public ApplicationUser updateUserProfile(String username, ApplicationUser updatedUser) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
