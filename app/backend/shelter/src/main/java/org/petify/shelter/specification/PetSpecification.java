@@ -54,4 +54,8 @@ public class PetSpecification {
     public static Specification<Pet> notInFavorites(List<Long> favoriteIds) {
         return (root, query, cb) -> favoriteIds.isEmpty() ? null : cb.not(root.get("id").in(favoriteIds));
     }
+
+    public static Specification<Pet> idGreaterThan(Long id) {
+        return (root, query, cb) -> cb.greaterThan(root.get("id"), id);
+    }
 }

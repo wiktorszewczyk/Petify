@@ -27,7 +27,7 @@ public record PetRequest(
 
         @PositiveOrZero(message = "Age of pet cannot be negative!")
         Integer age,
-        @Length(message = "Description must be a string between 3 and 50 characters long!", min = 3, max = 20)
+        @Length(message = "Description must be a string between 3 and 250 characters long!", min = 3, max = 250)
         String description,
 
         @NotNull

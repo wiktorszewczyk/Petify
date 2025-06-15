@@ -4,6 +4,7 @@ import org.petify.shelter.dto.PetImageResponse;
 import org.petify.shelter.dto.PetRequest;
 import org.petify.shelter.dto.PetResponse;
 import org.petify.shelter.dto.PetResponseWithImages;
+import org.petify.shelter.dto.SwipeResponse;
 import org.petify.shelter.enums.PetType;
 import org.petify.shelter.exception.PetNotFoundException;
 import org.petify.shelter.exception.ShelterNotFoundException;
@@ -16,6 +17,10 @@ import org.petify.shelter.repository.ShelterRepository;
 import org.petify.shelter.specification.PetSpecification;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,24 +48,38 @@ public class PetService {
         return pet.getShelter().getOwnerUsername();
     }
 
-    public List<PetResponseWithImages> getPets() {
-        return petRepository.findAll()
-                .stream()
-                .map(pet -> toDtoWithDistance(pet, null))
-                .collect(Collectors.toList());
+    public Page<PetResponseWithImages> getPets(Pageable pageable) {
+        return petRepository.findAll(pageable)
+                .map(petMapper::toDtoWithImages);
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponseWithImages> getFilteredPets(Boolean vaccinated, Boolean urgent, Boolean sterilized,
-                                                       Boolean kidFriendly, Integer minAge, Integer maxAge,
-                                                       PetType type, Double userLat, Double userLng, Double radiusKm,
-                                                       String username) {
+    public SwipeResponse getFilteredPetsWithCursor(Boolean vaccinated, Boolean urgent, Boolean sterilized,
+                                                   Boolean kidFriendly, Integer minAge, Integer maxAge,
+                                                   PetType type, Double userLat, Double userLng, Double radiusKm,
+                                                   Long cursor, int limit, String username) {
 
         List<Long> favoritePetIds = favoritePetRepository.findByUsername(username)
                 .stream()
                 .map(fp -> fp.getPet().getId())
                 .toList();
 
+        Specification<Pet> spec = buildPetSpecification(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
+                type, favoritePetIds, cursor);
+
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("id").ascending());
+        Page<Pet> page = petRepository.findAll(spec, pageable);
+
+        List<PetResponseWithImages> results = filterAndMapPets(page.getContent(), userLat, userLng, radiusKm);
+
+        Long nextCursor = results.isEmpty() ? null : page.getContent().getLast().getId();
+
+        return new SwipeResponse(results, nextCursor);
+    }
+
+    private Specification<Pet> buildPetSpecification(Boolean vaccinated, Boolean urgent, Boolean sterilized,
+                                                     Boolean kidFriendly, Integer minAge, Integer maxAge,
+                                                     PetType type, List<Long> favoritePetIds, Long cursor) {
         Specification<Pet> spec = Specification.where(PetSpecification.hasVaccinated(vaccinated))
                 .and(PetSpecification.isUrgent(urgent))
                 .and(PetSpecification.isSterilized(sterilized))
@@ -72,9 +90,15 @@ public class PetService {
                 .and(PetSpecification.hasActiveShelter())
                 .and(PetSpecification.notInFavorites(favoritePetIds));
 
-        List<Pet> filteredPets = petRepository.findAll(spec);
+        if (cursor != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThan(root.get("id"), cursor));
+        }
 
-        Stream<Pet> stream = filteredPets.stream();
+        return spec;
+    }
+
+    private List<PetResponseWithImages> filterAndMapPets(List<Pet> pets, Double userLat, Double userLng, Double radiusKm) {
+        Stream<Pet> stream = pets.stream();
 
         if (userLat != null && userLng != null && radiusKm != null) {
             stream = stream.filter(p -> {
@@ -86,16 +110,7 @@ public class PetService {
             });
         }
 
-        return stream.map(pet -> {
-            Double calculatedDistance = null;
-            if (userLat != null && userLng != null) {
-                Shelter shelter = pet.getShelter();
-                if (shelter != null && shelter.getLatitude() != null && shelter.getLongitude() != null) {
-                    calculatedDistance = distance(userLat, userLng, shelter.getLatitude(), shelter.getLongitude());
-                }
-            }
-            return toDtoWithDistance(pet, calculatedDistance);
-        }).toList();
+        return stream.map(petMapper::toDtoWithImages).toList();
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -109,31 +124,9 @@ public class PetService {
         return R * c;
     }
 
-    private PetResponseWithImages toDtoWithDistance(Pet pet, Double distance) {
-        PetResponseWithImages baseDto = petMapper.toDtoWithImages(pet);
-        return new PetResponseWithImages(
-                baseDto.id(),
-                baseDto.name(),
-                baseDto.type(),
-                baseDto.breed(),
-                baseDto.age(),
-                baseDto.archived(),
-                baseDto.description(),
-                baseDto.shelterId(),
-                baseDto.gender(),
-                baseDto.vaccinated(),
-                baseDto.urgent(),
-                baseDto.sterilized(),
-                baseDto.kidFriendly(),
-                baseDto.imageUrl(),
-                baseDto.images(),
-                distance
-        );
-    }
-
     public PetResponseWithImages getPetById(Long petId) {
         return petRepository.findById(petId)
-                .map(pet -> toDtoWithDistance(pet, null))
+                .map(petMapper::toDtoWithImages)
                 .orElseThrow(() -> new PetNotFoundException(petId));
     }
 
@@ -144,12 +137,9 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
-    public List<PetResponse> getAllShelterPets(Long shelterId) {
-        return petRepository.findByShelterId(shelterId)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(petMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<PetResponseWithImages> getAllShelterPets(Long shelterId, Pageable pageable) {
+        return petRepository.findByShelterId(shelterId, pageable)
+                .map(petMapper::toDtoWithImages);
     }
 
     @Transactional
