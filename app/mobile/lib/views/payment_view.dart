@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:developer' as dev;
 import '../models/donation.dart';
+import '../models/shelter.dart';
 import '../services/payment_service.dart';
 import '../styles/colors.dart';
 
@@ -15,6 +16,9 @@ class PaymentView extends StatefulWidget {
   final double? initialAmount;
   final String? title;
   final String? description;
+  final Shelter? shelter;
+  final MaterialDonationItem? materialItem;
+  final int? quantity;
 
   const PaymentView({
     Key? key,
@@ -24,6 +28,9 @@ class PaymentView extends StatefulWidget {
     this.initialAmount,
     this.title,
     this.description,
+    this.shelter,
+    this.materialItem,
+    this.quantity,
   }) : super(key: key);
 
   @override
@@ -43,14 +50,39 @@ class _PaymentViewState extends State<PaymentView> {
   PaymentMethodOption? _selectedMethod;
   bool _anonymous = false;
 
-  // Predefined amounts
-  final List<double> _quickAmounts = [5, 10, 20, 50, 100];
+  final List<Map<String, dynamic>> _quickAmounts = [
+    {'amount': 5.0, 'icon': 'assets/icons/donation_5.png'},
+    {'amount': 10.0, 'icon': 'assets/icons/donation_10.png'},
+    {'amount': 20.0, 'icon': 'assets/icons/donation_20.png'},
+    {'amount': 50.0, 'icon': 'assets/icons/donation_50.png'},
+    {'amount': 100.0, 'icon': 'assets/icons/donation_100.png'},
+    {
+      'amount': null,
+      'icon': 'assets/icons/donation_custom.png',
+      'label': 'Dowolna kwota'
+    },
+  ];
+  double? _selectedQuickAmount;
+  bool _useCustomAmount = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.initialAmount != null) {
+    if (widget.materialItem != null) {
+      final amount = widget.materialItem!.price * (widget.quantity ?? 1);
+      _amountController.text = amount.toStringAsFixed(0);
+      _selectedQuickAmount = amount;
+      _useCustomAmount = false;
+    } else if (widget.initialAmount != null) {
       _amountController.text = widget.initialAmount!.toStringAsFixed(0);
+      final preset = _quickAmounts
+          .where((e) => e['amount'] != null)
+          .any((e) => (e['amount'] as num).toDouble() == widget.initialAmount);
+      if (preset) {
+        _selectedQuickAmount = widget.initialAmount;
+      } else {
+        _useCustomAmount = true;
+      }
     }
   }
 
@@ -76,10 +108,13 @@ class _PaymentViewState extends State<PaymentView> {
         shelterId: widget.shelterId,
         petId: widget.petId,
         fundraiserId: widget.fundraiserId,
-        donationType: 'MONEY',
-        amount: amount,
+        donationType: widget.materialItem != null ? 'MATERIAL' : 'MONEY',
+        amount: widget.materialItem != null ? null : amount,
         message: _messageController.text.isNotEmpty ? _messageController.text : null,
         anonymous: _anonymous,
+        itemName: widget.materialItem?.apiName,
+        unitPrice: widget.materialItem?.price,
+        quantity: widget.quantity,
       );
 
       setState(() {
@@ -256,6 +291,31 @@ class _PaymentViewState extends State<PaymentView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (widget.shelter != null) ...[
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: widget.shelter!.finalImageUrl.startsWith('http')
+                      ? Image.network(widget.shelter!.finalImageUrl,
+                      width: 60, height: 60, fit: BoxFit.cover)
+                      : Image.asset(widget.shelter!.finalImageUrl,
+                      width: 60, height: 60, fit: BoxFit.cover),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    widget.shelter!.name,
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+          ],
           if (widget.description != null) ...[
             Container(
               padding: const EdgeInsets.all(16),
@@ -275,66 +335,147 @@ class _PaymentViewState extends State<PaymentView> {
             const SizedBox(height: 24),
           ],
 
-          Text(
-            'Kwota donacji',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          if (widget.materialItem == null) ...[
+            Text(
+              'Kwota donacji',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
+            const SizedBox(height: 12),
 
-          // Quick amount buttons
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _quickAmounts.map((amount) {
-              return GestureDetector(
-                onTap: () {
-                  _amountController.text = amount.toStringAsFixed(0);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primaryColor),
-                    borderRadius: BorderRadius.circular(25),
-                    color: _amountController.text == amount.toStringAsFixed(0)
-                        ? AppColors.primaryColor
-                        : Colors.transparent,
-                  ),
-                  child: Text(
-                    '${amount.toInt()} PLN',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      color: _amountController.text == amount.toStringAsFixed(0)
-                          ? Colors.white
-                          : AppColors.primaryColor,
+            // Quick amount buttons
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 2.2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemCount: _quickAmounts.length,
+              itemBuilder: (context, index) {
+                final opt = _quickAmounts[index];
+                final amountValue = (opt['amount'] as num?)?.toDouble();
+                final isCustom = amountValue == null;
+                final isSelected =
+                isCustom ? _useCustomAmount : _selectedQuickAmount == amountValue;
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (isCustom) {
+                        _selectedQuickAmount = null;
+                        _useCustomAmount = true;
+                        _amountController.clear();
+                      } else {
+                        _useCustomAmount = false;
+                        _selectedQuickAmount = amountValue;
+                        _amountController.text = amountValue!.toStringAsFixed(0);
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color:
+                        isSelected ? AppColors.primaryColor : Colors.grey[300]!,
+                        width: isSelected ? 2 : 1,
+                      ),
+                      color: isSelected
+                          ? AppColors.primaryColor.withOpacity(0.1)
+                          : Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          opt['icon'],
+                          width: 32,
+                          height: 32,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            isCustom
+                                ? (opt['label'] ?? 'Dowolna kwota')
+                                : '${amountValue!.toInt()} PLN',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ),
+                        if (isSelected)
+                          const Icon(Icons.check_circle,
+                              color: AppColors.primaryColor, size: 20),
+                      ],
                     ),
                   ),
+                );
+              },
+            ),
+
+            if (_useCustomAmount) ...[
+              const SizedBox(height: 16),
+
+              // Custom amount input
+              TextField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onChanged: (_) => setState(() => _selectedQuickAmount = null),
+                decoration: InputDecoration(
+                  labelText: 'Inna kwota (PLN)',
+                  labelStyle: GoogleFonts.poppins(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppColors.primaryColor),
+                  ),
                 ),
-              );
-            }).toList(),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Custom amount input
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(
-              labelText: 'Inna kwota (PLN)',
-              labelStyle: GoogleFonts.poppins(),
-              border: OutlineInputBorder(
+              ),
+            ],
+          ] else ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(12),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.primaryColor),
+              child: Row(
+                children: [
+                  Image.asset(
+                    widget.materialItem!.iconPath,
+                    width: 40,
+                    height: 40,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      '${widget.materialItem!.name} x${widget.quantity ?? 1}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${_amountController.text} PLN',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
+            const SizedBox(height: 24),
+          ],
 
           const SizedBox(height: 24),
 
@@ -476,6 +617,18 @@ class _PaymentViewState extends State<PaymentView> {
             return _buildSimpleProviderCard(provider);
           }).toList(),
 
+          if (_selectedProvider != null) ...[
+            const SizedBox(height: 16),
+            Text(
+              'Schronisko otrzyma: '
+                  '${(_selectedProvider!.fees.netAmount).toStringAsFixed(2)} PLN',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ],
+
           const SizedBox(height: 32),
 
           SizedBox(
@@ -535,12 +688,13 @@ class _PaymentViewState extends State<PaymentView> {
               color: isSelected ? AppColors.primaryColor : Colors.grey[600],
             ),
             const SizedBox(width: 12),
-            Text(
-              provider.displayName,
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                color: isSelected ? AppColors.primaryColor : Colors.black,
-              ),
+            Image.asset(
+              provider.provider == 'PAYU'
+                  ? 'assets/icons/payu.png'
+                  : 'assets/icons/stripe.png',
+              width: 40,
+              height: 40,
+              color: isSelected ? AppColors.primaryColor : null,
             ),
             if (provider.recommended) ...[
               const SizedBox(width: 8),

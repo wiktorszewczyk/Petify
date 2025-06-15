@@ -7,11 +7,13 @@ class MaterialDonationItem {
   final String name;
   final double price;
   final String iconPath;
+  final String apiName;
 
   const MaterialDonationItem({
     required this.name,
     required this.price,
     required this.iconPath,
+    required this.apiName,
   });
 
   /// Lista aktualnie "dostępnych" przedmiotów – jeśli w przyszłości
@@ -22,26 +24,31 @@ class MaterialDonationItem {
         name: 'Smakołyk',
         price: 5.0,
         iconPath: 'assets/icons/pet_snack.png',
+        apiName: 'Pet Snack',
       ),
       MaterialDonationItem(
         name: 'Pełna miska',
         price: 10.0,
         iconPath: 'assets/icons/pet_bowl.png',
+        apiName: 'Pet Bowl',
       ),
       MaterialDonationItem(
         name: 'Zabawka',
         price: 15.0,
         iconPath: 'assets/icons/pet_toy.png',
+        apiName: 'Pet Toy',
       ),
       MaterialDonationItem(
         name: 'Zapas karmy',
         price: 25.0,
         iconPath: 'assets/icons/pet_food.png',
+        apiName: 'Pet Food',
       ),
       MaterialDonationItem(
         name: 'Legowisko',
         price: 50.0,
         iconPath: 'assets/icons/pet_bed.png',
+        apiName: 'Pet Bed',
       ),
     ];
   }
@@ -109,11 +116,12 @@ class Donation {
       // Znajdź odpowiedni MaterialDonationItem na podstawie nazwy i ceny
       final availableItems = MaterialDonationItem.getAvailableItems();
       materialItem = availableItems.firstWhere(
-            (item) => item.name == json['itemName'],
+              (item) => item.apiName == json['itemName'],
         orElse: () => MaterialDonationItem(
           name: json['itemName'] ?? 'Nieznany przedmiot',
           price: (json['unitPrice'] ?? 0.0).toDouble(),
-          iconPath: 'assets/icons/pet_food.png', // Default icon
+          iconPath: 'assets/icons/pet_food.png',
+          apiName: json['itemName'] ?? 'Unknown', // Default icon
         ),
       );
     }

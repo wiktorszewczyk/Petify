@@ -104,20 +104,8 @@ class ShelterService {
       // Pobierz liczbę zwierząt w schronisku
       final petsCount = await _getPetsCount(shelter.id);
 
-      // Generuj dodatkowe dane dla UI (tymczasowo)
-      final enrichedData = _generateAdditionalShelterData(shelter);
+      return shelter.copyWith(petsCount: petsCount);
 
-      return shelter.copyWith(
-        petsCount: petsCount,
-        volunteersCount: enrichedData['volunteersCount'],
-        needs: enrichedData['needs'],
-        email: enrichedData['email'],
-        website: enrichedData['website'],
-        isUrgent: enrichedData['isUrgent'],
-        donationGoal: enrichedData['donationGoal'],
-        donationCurrent: enrichedData['donationCurrent'],
-        city: enrichedData['city'],
-      );
     } catch (e) {
       dev.log('Błąd podczas wzbogacania danych schroniska: $e');
       return shelter;
@@ -132,47 +120,6 @@ class ShelterService {
     } catch (e) {
       return 0;
     }
-  }
-
-  /// Generuje dodatkowe dane dla schroniska (tymczasowo, dopóki backend ich nie obsługuje)
-  Map<String, dynamic> _generateAdditionalShelterData(Shelter shelter) {
-    // Tymczasowe dane - można je zastąpić prawdziwymi z backendu gdy będą dostępne
-    final random = DateTime.now().millisecondsSinceEpoch % 100;
-
-    final needsList = [
-      'Karma sucha i mokra dla psów i kotów',
-      'Koce, poduszki i legowiska',
-      'Środki czystości',
-      'Zabawki dla zwierząt',
-      'Smycze i obroże',
-      'Leki i środki medyczne',
-      'Kuwety i żwirek dla kotów',
-      'Wsparcie finansowe na leczenie weterynaryjne',
-    ];
-
-    // Wybierz losowe potrzeby
-    final shuffledNeeds = List<String>.from(needsList)..shuffle();
-    final selectedNeeds = shuffledNeeds.take(3 + (random % 3)).toList();
-
-    // Wyciągnij miasto z adresu
-    String? city;
-    if (shelter.address != null) {
-      final addressParts = shelter.address!.split(',');
-      if (addressParts.length > 1) {
-        city = addressParts.last.trim();
-      }
-    }
-
-    return {
-      'volunteersCount': 10 + (random % 20),
-      'needs': selectedNeeds,
-      'email': '${shelter.name.toLowerCase().replaceAll(' ', '')}@schronisko.pl',
-      'website': 'www.${shelter.name.toLowerCase().replaceAll(' ', '')}.pl',
-      'isUrgent': random % 10 < 3, // 30% szans na pilność
-      'donationGoal': (5 + (random % 10)) * 1000.0, // 5000-15000
-      'donationCurrent': (random % 5) * 1000.0, // 0-5000
-      'city': city ?? 'Nieznane',
-    };
   }
 
   /// Pobiera główną zbiórkę schroniska (MAIN fundraiser)

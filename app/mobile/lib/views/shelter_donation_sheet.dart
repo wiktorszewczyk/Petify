@@ -155,6 +155,7 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
         MaterialPageRoute(
           builder: (context) => PaymentView(
             shelterId: widget.shelter.id,
+            shelter: widget.shelter,
             fundraiserId: _mainFundraiser!.id,
             initialAmount: donationAmount!,
             title: 'Wspieraj: ${_mainFundraiser!.title}',
@@ -278,7 +279,9 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: NetworkImage(widget.shelter.finalImageUrl),
+                image: widget.shelter.finalImageUrl.startsWith('http')
+                    ? NetworkImage(widget.shelter.finalImageUrl)
+                    : AssetImage(widget.shelter.finalImageUrl) as ImageProvider,
                 fit: BoxFit.cover,
               ),
               border: Border.all(color: AppColors.primaryColor, width: 2),

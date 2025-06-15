@@ -64,17 +64,13 @@ class _ShelterViewState extends State<ShelterView> {
     });
 
     try {
-      // Load fundraiser data
       final fundraiser = await _paymentService.getShelterMainFundraiser(widget.shelter.id);
 
-      // Extract shelter images from the shelter model
       final images = <String>[];
 
-      // Priority 1: imageUrl from backend
       if (widget.shelter.imageUrl != null && widget.shelter.imageUrl!.isNotEmpty) {
         images.add(widget.shelter.imageUrl!);
       }
-      // Priority 2: imageData (base64)
       else if (widget.shelter.imageData != null && widget.shelter.imageData!.isNotEmpty) {
         final mimeType = widget.shelter.imageType ?? 'image/jpeg';
         if (widget.shelter.imageData!.startsWith('data:image')) {
@@ -85,7 +81,7 @@ class _ShelterViewState extends State<ShelterView> {
       }
 
       // TODO: Add support for shelter image gallery when backend provides it
-      // For now we only have the main image
+      // For now: only main image
 
       if (mounted) {
         setState(() {
@@ -128,6 +124,7 @@ class _ShelterViewState extends State<ShelterView> {
         MaterialPageRoute(
           builder: (context) => PaymentView(
             shelterId: widget.shelter.id,
+            shelter: widget.shelter,
             fundraiserId: _mainFundraiser!.id,
             initialAmount: 20.0,
             title: 'Wspieraj: ${_mainFundraiser!.title}',
@@ -136,7 +133,6 @@ class _ShelterViewState extends State<ShelterView> {
         ),
       );
 
-      // Refresh data after successful donation
       if (result == true) {
         await _refreshShelterData();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -155,6 +151,7 @@ class _ShelterViewState extends State<ShelterView> {
       MaterialPageRoute(
         builder: (context) => PaymentView(
           shelterId: widget.shelter.id,
+          shelter: widget.shelter,
           initialAmount: 20.0,
           title: 'Wspieraj schronisko: ${widget.shelter.name}',
           description: 'Ogólne wsparcie dla schroniska na bieżące potrzeby',
@@ -162,7 +159,6 @@ class _ShelterViewState extends State<ShelterView> {
       ),
     );
 
-    // Refresh data after successful donation
     if (result == true) {
       await _refreshShelterData();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -223,7 +219,6 @@ class _ShelterViewState extends State<ShelterView> {
                             ),
                           ).animate().fadeIn(duration: 400.ms).moveY(begin: 20, end: 0, duration: 400.ms, curve: Curves.easeOutCubic),
 
-                        // Shelter basic info
                         Text(
                           widget.shelter.name,
                           style: GoogleFonts.poppins(
@@ -233,7 +228,6 @@ class _ShelterViewState extends State<ShelterView> {
                         ).animate().fadeIn(duration: 500.ms).moveY(begin: 20, end: 0, duration: 500.ms, curve: Curves.easeOutCubic),
                         const SizedBox(height: 8),
 
-                        // Real data only - no placeholders
                         _buildInfoRow(Icons.location_on_outlined, widget.shelter.address),
                         _buildInfoRow(Icons.phone_outlined, widget.shelter.phoneNumber),
                         _buildInfoRow(Icons.email_outlined, widget.shelter.email),
@@ -246,7 +240,6 @@ class _ShelterViewState extends State<ShelterView> {
 
                         const SizedBox(height: 24),
 
-                        // Improved stats section with better styling
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
@@ -299,13 +292,11 @@ class _ShelterViewState extends State<ShelterView> {
 
                         const SizedBox(height: 24),
 
-                        // Main fundraiser card - only if exists
                         if (_mainFundraiser != null) ...[
                           _buildMainFundraiserCard(),
                           const SizedBox(height: 24),
                         ],
 
-                        // About section
                         if (widget.shelter.description != null && widget.shelter.description!.isNotEmpty) ...[
                           Text(
                             'O schronisku',
@@ -326,13 +317,11 @@ class _ShelterViewState extends State<ShelterView> {
                           const SizedBox(height: 24),
                         ],
 
-                        // Needs list - only if exists
                         _buildNeedsList(),
 
-                        // Contact section
                         _buildContactSection(),
 
-                        const SizedBox(height: 120), // More space for bottom buttons
+                        const SizedBox(height: 120),
                       ],
                     ),
                   ),
@@ -340,7 +329,6 @@ class _ShelterViewState extends State<ShelterView> {
               ],
             ),
           ),
-          // Always visible back button
           Positioned(
             top: MediaQuery.of(context).padding.top + 8,
             left: 16,
@@ -355,13 +343,12 @@ class _ShelterViewState extends State<ShelterView> {
               ),
             ),
           ),
-          // Fixed bottom buttons
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 12),
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -373,41 +360,14 @@ class _ShelterViewState extends State<ShelterView> {
                 ],
               ),
               child: SafeArea(
+                top: false,
                 child: Row(
                   children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: _donateToShelter,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.favorite, color: Colors.white, size: 20),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Wesprzyj',
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
                     ElevatedButton(
                       onPressed: _shareShelter,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                           side: BorderSide(color: AppColors.primaryColor),
@@ -429,6 +389,34 @@ class _ShelterViewState extends State<ShelterView> {
                         ],
                       ),
                     ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _donateToShelter,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.favorite, color: Colors.white, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Wesprzyj',
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -444,16 +432,22 @@ class _ShelterViewState extends State<ShelterView> {
       expandedHeight: 220,
       pinned: true,
       title: _showTitle
-          ? Text(
-        widget.shelter.name,
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+          ? Padding(
+        padding: const EdgeInsets.only(left: 60),
+        child: Text(
+          widget.shelter.name,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          overflow: TextOverflow.ellipsis,
         ),
       )
           : null,
+      centerTitle: false,
+      titleSpacing: 0,
       backgroundColor: AppColors.primaryColor,
-      automaticallyImplyLeading: false, // Remove default back button
+      automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
@@ -474,7 +468,6 @@ class _ShelterViewState extends State<ShelterView> {
                 ),
               ),
             ),
-            // Image gallery indicator (if multiple images)
             if (_shelterImages.length > 1)
               Positioned(
                 bottom: 16,
@@ -509,11 +502,9 @@ class _ShelterViewState extends State<ShelterView> {
   }
 
   Widget _buildShelterImage() {
-    // Use images from backend if available
     if (_shelterImages.isNotEmpty) {
       final imageUrl = _shelterImages.first;
 
-      // Handle Base64 images from backend
       if (imageUrl.startsWith('data:image/')) {
         try {
           final base64String = imageUrl.split(',')[1];
@@ -530,7 +521,6 @@ class _ShelterViewState extends State<ShelterView> {
         }
       }
 
-      // Handle network URLs
       if (imageUrl.startsWith('http')) {
         return GestureDetector(
           onTap: _shelterImages.length > 1 ? _showImageGallery : null,
@@ -554,6 +544,12 @@ class _ShelterViewState extends State<ShelterView> {
           ),
         );
       }
+      if (imageUrl.startsWith('assets/')) {
+        return Image.asset(
+          imageUrl,
+          fit: BoxFit.cover,
+        );
+      }
     }
 
     return _buildPlaceholderImage();
@@ -567,39 +563,13 @@ class _ShelterViewState extends State<ShelterView> {
   }
 
   Widget _buildPlaceholderImage() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.grey[200]!,
-            Colors.grey[300]!,
-          ],
-        ),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.home_work_outlined, size: 60, color: Colors.grey[600]),
-            const SizedBox(height: 8),
-            Text(
-              'Brak zdjęcia schroniska',
-              style: GoogleFonts.poppins(
-                color: Colors.grey[600],
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return Image.asset(
+      'assets/images/default_shelter.jpg',
+      fit: BoxFit.cover,
     );
   }
 
   Widget _buildInfoRow(IconData icon, String? text, {VoidCallback? onTap}) {
-    // Jeśli text jest null lub pusty, nie wyświetlaj wiersza
     if (text == null || text.isEmpty) {
       return const SizedBox.shrink();
     }

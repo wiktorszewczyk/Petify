@@ -123,7 +123,7 @@ class Shelter {
     }
 
     // Fallback do placeholder
-    return 'https://images.pexels.com/photos/1634840/pexels-photo-1634840.jpeg';
+    return 'assets/images/default_shelter.jpg';
   }
 
   // Getter dla postępu donacji

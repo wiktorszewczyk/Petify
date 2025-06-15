@@ -17,7 +17,7 @@ class PaymentService {
     int? petId,
     int? fundraiserId,
     required String donationType, // 'MONEY' lub 'MATERIAL'
-    required double amount,
+    double? amount,
     String? message,
     bool anonymous = false,
     String? itemName,
@@ -25,13 +25,17 @@ class PaymentService {
     int? quantity,
   }) async {
     try {
+      if (donationType == 'MONEY' && amount == null) {
+        throw Exception('Amount is required for monetary donations');
+      }
+
       final requestData = <String, dynamic>{
         'shelterId': shelterId,
         'donationType': donationType,
-        'amount': amount,
         'anonymous': anonymous,
       };
 
+      if (amount != null) requestData['amount'] = amount;
       if (petId != null) requestData['petId'] = petId;
       if (fundraiserId != null) requestData['fundraiserId'] = fundraiserId;
       if (message != null) requestData['message'] = message;

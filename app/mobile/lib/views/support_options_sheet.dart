@@ -5,6 +5,7 @@ import '../../styles/colors.dart';
 import '../../models/pet.dart';
 import '../../models/donation.dart';
 import '../../services/donation_service.dart';
+import 'payment_view.dart';
 
 class SupportOptionsSheet extends StatefulWidget {
   final Pet pet;
@@ -94,35 +95,39 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
       return;
     }
 
-    // Tutaj będzie później nawigacja do ekranu płatności
-    // Na razie tylko symulacja
     setState(() {
       _isLoading = true;
     });
 
     try {
-      // TODO: Dodawanei platnosci material zgodnie z API
-      // final donation = await _donationService.addMaterialDonation(
-      //   shelterName: widget.pet.shelterName.toString(),
-      //   petId: widget.pet.id.toString(),
-      //   item: _selectedItem!,
-      //   quantity: _quantity,
-      //   message: 'Wsparcie dla ${widget.pet.name}',
-      // );
+      final result = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentView(
+            shelterId: widget.pet.shelterId,
+            petId: widget.pet.id,
+            materialItem: _selectedItem!,
+            quantity: _quantity,
+            title: 'Wspieraj: ${widget.pet.name}',
+            description: 'Zakup przedmiotu dla zwierzaka',
+            initialAmount: _selectedItem!.price * _quantity,
+          ),
+        ),
+      );
 
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
-
-        // Pokazujemy potwierdzenie i zamykamy sheet
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Dziękujemy za wsparcie ${widget.pet.name}!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.of(context).pop();
+        if (result == true) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Dziękujemy za wsparcie ${widget.pet.name}!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {

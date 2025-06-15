@@ -47,7 +47,7 @@ class DonationService {
         'amount': item.price * quantity,
         'message': message,
         'anonymous': false,
-        'itemName': item.name,
+        'itemName': item.apiName,
         'unitPrice': item.price,
         'quantity': quantity,
       });

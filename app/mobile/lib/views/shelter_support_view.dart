@@ -80,211 +80,35 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
 
   void _supportShelter(Shelter shelter) async {
     final fundraiser = _shelterFundraisers[shelter.id];
-    if (fundraiser != null) {
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PaymentView(
-            shelterId: shelter.id,
-            fundraiserId: fundraiser.id,
-            initialAmount: 20.0,
-            title: 'Wspieraj: ${fundraiser.title}',
-            description: fundraiser.description,
-          ),
-        ),
-      );
+    final useFundraiser = fundraiser?.canAcceptDonations == true;
 
-      // Refresh data after successful donation
-      if (result == true) {
-        await _loadSheltersAndFundraisers();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Dziękujemy za wsparcie!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('To schronisko nie ma aktywnej zbiórki'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-    }
-  }
-
-  Widget _buildDonationBottomSheet(Shelter shelter) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      builder: (_, controller) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Wesprzyj schronisko',
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          shelter.name,
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primaryColor,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
-                    splashRadius: 24,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Wybierz sposób wsparcia:',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: ListView(
-                  controller: controller,
-                  children: [
-                    _buildSupportOption(
-                      icon: Icons.attach_money,
-                      title: 'Wsparcie finansowe',
-                      description: 'Przekaż darowiznę na rzecz schroniska',
-                      onTap: () async {
-                        Navigator.pop(context);
-                        final result = await ShelterDonationSheet.show(context, shelter);
-
-                        // Refresh data after successful donation
-                        if (result == true) {
-                          await _loadSheltersAndFundraisers();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Dziękujemy za wsparcie!'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    const Divider(height: 32),
-                    _buildSupportOption(
-                      icon: Icons.volunteer_activism,
-                      title: 'Wolontariat',
-                      description: 'Zostań wolontariuszem i pomagaj na miejscu',
-                      onTap: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Przejście do formularza wolontariatu dla schroniska ${shelter.name}')),
-                        );
-                      },
-                    ),
-                    const Divider(height: 32),
-                    _buildSupportOption(
-                      icon: Icons.shopping_cart,
-                      title: 'Przekaż dary rzeczowe',
-                      description: 'Sprawdź listę potrzebnych przedmiotów',
-                      onTap: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Przejście do listy potrzeb schroniska ${shelter.name}')),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSupportOption({
-    required IconData icon,
-    required String title,
-    required String description,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        child: Row(
-          children: [
-            Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                icon,
-                size: 30,
-                color: AppColors.primaryColor,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right),
-          ],
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentView(
+          shelterId: shelter.id,
+          shelter: shelter,
+          fundraiserId: useFundraiser ? fundraiser!.id : null,
+          initialAmount: 20.0,
+          title: useFundraiser
+              ? 'Wspieraj: ${fundraiser!.title}'
+              : 'Wspieraj schronisko: ${shelter.name}',
+          description: useFundraiser
+              ? fundraiser!.description
+              : 'Ogólne wsparcie dla schroniska na bieżące potrzeby',
         ),
       ),
     );
+
+    if (result == true) {
+      await _loadSheltersAndFundraisers();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Dziękujemy za wsparcie!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   @override
@@ -661,7 +485,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: fundraiser?.canAcceptDonations == true ? () => _supportShelter(shelter) : null,
+                      onPressed: () => _supportShelter(shelter),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
                         foregroundColor: Colors.black,
@@ -671,7 +495,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: Text(
-                        fundraiser?.canAcceptDonations == true ? 'Wesprzyj' : 'Brak zbiórki',
+                        'Wesprzyj',
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
@@ -732,16 +556,20 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
       );
     }
 
+    if (imageUrl.startsWith('assets/')) {
+      return Image.asset(
+        imageUrl,
+        fit: BoxFit.cover,
+      );
+    }
+
     return _buildPlaceholderImage();
   }
 
   Widget _buildPlaceholderImage() {
-    return Container(
-      color: Colors.grey[300],
-      child: Center(
-        child: Icon(Icons.home_work_outlined,
-            color: Colors.grey[400], size: 30),
-      ),
+    return Image.asset(
+      'assets/images/default_shelter.jpg',
+      fit: BoxFit.cover,
     );
   }
 }
