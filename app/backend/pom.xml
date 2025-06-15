@@ -25,6 +25,7 @@
     <module>funding</module>
     <module>image</module>
     <module>feed</module>
+    <module>load-tests</module>
   </modules>
 
   <distributionManagement>
@@ -153,6 +154,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.26.0</version>
+        <configuration>
+          <excludeRoots>
+            <excludeRoot>${project.build.directory}/generated-sources</excludeRoot>
+          </excludeRoots>
+        </configuration>
         <executions>
           <execution>
             <phase>verify</phase>
@@ -208,9 +214,9 @@
   <reporting>
     <plugins>
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jxr-plugin</artifactId>
-          <version>3.6.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>3.6.0</version>
       </plugin>
 
       <!-- Checkstyle Reports -->

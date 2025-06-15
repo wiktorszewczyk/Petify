@@ -85,9 +85,7 @@ INSERT INTO pets (
     breed,
     description,
     gender,
-    image_data,
     image_name,
-    image_extension,
     is_kid_friendly,
     name,
     size,
@@ -98,15 +96,15 @@ INSERT INTO pets (
     shelter_id
 ) VALUES
       (
-          2, false, 'Owczarek niemiecki', 'Przyjazny i energiczny pies.', 'MALE', NULL, NULL, NULL, true, 'Max', 'BIG', true, 'DOG', false, true,
+          2, false, 'Owczarek niemiecki', 'Przyjazny i energiczny pies.', 'MALE',  NULL, true, 'Max', 'BIG', true, 'DOG', false, true,
           (SELECT id FROM shelters WHERE owner_username = 'shelter1')
       ),
       (
-          1, false, 'Kot perski', 'Łagodny kot.', 'FEMALE', NULL, NULL, NULL, true, 'Luna', 'SMALL', true, 'CAT', false, true,
+          1, false, 'Kot perski', 'Łagodny kot.', 'FEMALE',  NULL, true, 'Luna', 'SMALL', true, 'CAT', false, true,
           (SELECT id FROM shelters WHERE owner_username = 'shelter1')
       ),
       (
-          4, false, 'Królik europejski', 'Idealny do domu z dziećmi.', 'FEMALE', NULL, NULL, NULL, true, 'Bunny', 'SMALL', false, 'OTHER', false, false,
+          4, false, 'Królik europejski', 'Idealny do domu z dziećmi.', 'FEMALE',  NULL, true, 'Bunny', 'SMALL', false, 'OTHER', false, false,
           (SELECT id FROM shelters WHERE owner_username = 'shelter1')
       );
 
@@ -117,9 +115,7 @@ INSERT INTO pets (
     breed,
     description,
     gender,
-    image_data,
     image_name,
-    image_extension,
     is_kid_friendly,
     name,
     size,
@@ -130,18 +126,18 @@ INSERT INTO pets (
     shelter_id
 ) VALUES
       (
-          3, false, 'Beagle', 'Aktywny i przyjazny pies.', 'MALE', NULL, NULL, NULL, true, 'Rocky', 'MEDIUM', true, 'DOG', true, true,
+          3, false, 'Beagle', 'Aktywny i przyjazny pies.', 'MALE',  NULL, true, 'Rocky', 'MEDIUM', true, 'DOG', true, true,
           (SELECT id FROM shelters WHERE owner_username = 'shelter2')
       ),
       (
-          2, false, 'Kot dachowiec', 'Niezależny kot.', 'FEMALE', NULL, NULL, NULL, false, 'Mila', 'SMALL', false, 'CAT', false, false,
+          2, false, 'Kot dachowiec', 'Niezależny kot.', 'FEMALE', NULL, false, 'Mila', 'SMALL', false, 'CAT', false, false,
           (SELECT id FROM shelters WHERE owner_username = 'shelter2')
       ),
       (
-          1, false, 'Kot brytyjski', 'Elegancki.', 'FEMALE', NULL, NULL, NULL, false, 'Kiki', 'SMALL', true, 'CAT', false, true,
+          1, false, 'Kot brytyjski', 'Elegancki.', 'FEMALE', NULL, false, 'Kiki', 'SMALL', true, 'CAT', false, true,
           (SELECT id FROM shelters WHERE owner_username = 'shelter2')
       ),
       (
-          5, false, 'Świnka morska', 'Łagodna i cicha.', 'MALE', NULL, NULL, NULL, true, 'Porky', 'SMALL', false, 'OTHER', false, true,
+          5, false, 'Świnka morska', 'Łagodna i cicha.', 'MALE',  NULL, true, 'Porky', 'SMALL', false, 'OTHER', false, true,
           (SELECT id FROM shelters WHERE owner_username = 'shelter2')
       );
