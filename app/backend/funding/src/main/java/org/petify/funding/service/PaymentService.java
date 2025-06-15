@@ -281,7 +281,7 @@ public class PaymentService {
         return switch (provider) {
             case PAYU -> PaymentUiConfig.builder()
                     .provider(PaymentProvider.PAYU)
-                    .hasNativeSDK(true)
+                    .hasNativeSDK(false) // Use web checkout for better compatibility
                     .sdkConfiguration(String.format("""
                         {
                             "merchantPosId": "300746",
@@ -293,7 +293,7 @@ public class PaymentService {
 
             case STRIPE -> PaymentUiConfig.builder()
                     .provider(PaymentProvider.STRIPE)
-                    .hasNativeSDK(true)
+                    .hasNativeSDK(false) // Use web checkout for better compatibility
                     .sdkConfiguration(String.format("""
                         {
                             "publishableKey": "pk_test_...",
@@ -302,7 +302,7 @@ public class PaymentService {
                                 "theme": "stripe"
                             }
                         }
-                        """, payment.getClientSecret()))
+                        """, payment.getClientSecret() != null ? payment.getClientSecret() : ""))
                     .build();
         };
     }
