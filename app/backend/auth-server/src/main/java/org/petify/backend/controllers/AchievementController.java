@@ -75,4 +75,37 @@ public class AchievementController {
         achievementService.trackSupportAchievements(username);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/track-volunteer")
+    public ResponseEntity<Void> trackVolunteerProgress() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.trackVolunteerAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-adoption")
+    public ResponseEntity<Void> trackAdoptionProgress() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.trackAdoptionAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-adoption/{username}")
+    public ResponseEntity<Void> trackAdoptionProgressForUser(@PathVariable String username) {
+        achievementService.trackAdoptionAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add-donation-xp")
+    public ResponseEntity<Void> addDonationExperiencePoints(@RequestParam int xpPoints) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.addExperiencePointsForDonation(username, xpPoints);
+        return ResponseEntity.ok().build();
+    }
 }

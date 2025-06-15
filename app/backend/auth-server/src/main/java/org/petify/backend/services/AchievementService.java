@@ -8,6 +8,7 @@ import org.petify.backend.repository.AchievementRepository;
 import org.petify.backend.repository.UserAchievementRepository;
 import org.petify.backend.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +17,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class AchievementService {
 
     @Autowired
@@ -72,6 +75,9 @@ public class AchievementService {
             updateUserLevel(user);
 
             userRepository.save(user);
+
+            log.info("User {} completed achievement: {} (+{} XP)",
+                    username, achievement.getName(), achievement.getXpReward());
         }
 
         return userAchievementRepository.save(userAchievement);
@@ -95,6 +101,11 @@ public class AchievementService {
         }
     }
 
+    @Transactional
+    public void trackProfileAchievementByName(String username, String achievementName) {
+        trackAchievementByNameAndCategory(username, achievementName, AchievementCategory.PROFILE);
+    }
+
     private void updateBadgeCounts(ApplicationUser user, AchievementCategory category) {
         switch (category) {
             case LIKES:
@@ -103,7 +114,13 @@ public class AchievementService {
             case SUPPORT:
                 user.setSupportCount(user.getSupportCount() + 1);
                 break;
+            case ADOPTION:
+                user.setAdoptionCount(user.getAdoptionCount() + 1);
+                user.setBadgesCount(user.getBadgesCount() + 1);
+                break;
             case BADGE:
+            case PROFILE:
+            case VOLUNTEER:
                 user.setBadgesCount(user.getBadgesCount() + 1);
                 break;
             default:
@@ -113,11 +130,13 @@ public class AchievementService {
 
     private void updateUserLevel(ApplicationUser user) {
         int xp = user.getXpPoints();
-
-        int newLevel = 1 + (xp / 250);
+        int newLevel = (xp / 100) + 1;
 
         if (newLevel > user.getLevel()) {
+            int oldLevel = user.getLevel();
             user.setLevel(newLevel);
+            log.info("User {} leveled up from {} to {}! (Total XP: {})",
+                    user.getUsername(), oldLevel, newLevel, xp);
         }
     }
 
@@ -132,6 +151,7 @@ public class AchievementService {
         levelInfo.put("likesCount", user.getLikesCount());
         levelInfo.put("supportCount", user.getSupportCount());
         levelInfo.put("badgesCount", user.getBadgesCount());
+        levelInfo.put("adoptionCount", user.getAdoptionCount());
 
         return levelInfo;
     }
@@ -149,5 +169,68 @@ public class AchievementService {
 
             userAchievementRepository.save(userAchievement);
         }
+    }
+
+    @Transactional
+    public void trackVolunteerAchievements(String username) {
+        List<Achievement> volunteerAchievements = achievementRepository.findByCategory(AchievementCategory.VOLUNTEER);
+
+        for (Achievement achievement : volunteerAchievements) {
+            trackAchievementProgress(username, achievement.getId(), 1);
+        }
+    }
+
+    @Transactional
+    public void trackVolunteerAchievementByName(String username, String achievementName) {
+        trackAchievementByNameAndCategory(username, achievementName, AchievementCategory.VOLUNTEER);
+    }
+
+    private void trackAchievementByNameAndCategory(String username, String achievementName, AchievementCategory category) {
+        try {
+            List<Achievement> achievements = achievementRepository.findByCategory(category);
+
+            Optional<Achievement> achievement = achievements.stream()
+                    .filter(a -> a.getName().equals(achievementName))
+                    .findFirst();
+
+            if (achievement.isPresent()) {
+                ApplicationUser user = userRepository.findByUsername(username)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+                Optional<UserAchievement> existingUserAchievement = userAchievementRepository
+                        .findByUserAndAchievementId(user, achievement.get().getId());
+
+                if (existingUserAchievement.isEmpty() || !existingUserAchievement.get().getCompleted()) {
+                    trackAchievementProgress(username, achievement.get().getId(), 1);
+                }
+            } else {
+                log.warn("Achievement with name '{}' not found in {} category", achievementName, category);
+            }
+        } catch (Exception e) {
+            log.error("Error tracking {} achievement '{}' for user {}: {}",
+                    category, achievementName, username, e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void trackAdoptionAchievements(String username) {
+        List<Achievement> adoptionAchievements = achievementRepository.findByCategory(AchievementCategory.ADOPTION);
+
+        for (Achievement achievement : adoptionAchievements) {
+            trackAchievementProgress(username, achievement.getId(), 1);
+        }
+    }
+
+    @Transactional
+    public void addExperiencePointsForDonation(String username, int xpPoints) {
+        ApplicationUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setXpPoints(user.getXpPoints() + xpPoints);
+        updateUserLevel(user);
+        userRepository.save(user);
+
+        log.info("Added {} XP to user {} for donation (Total XP: {})", 
+                xpPoints, username, user.getXpPoints());
     }
 }
