@@ -11,6 +11,7 @@ class Shelter {
   final String? imageName;
   final String? imageType;
   final String? imageData; // Base64
+  final String? imageUrl; // Direct URL from backend
 
   // Dodatkowe pola dla kompatybilności (będą wypełniane lokalnie)
   final int? petsCount;
@@ -36,6 +37,7 @@ class Shelter {
     this.imageName,
     this.imageType,
     this.imageData,
+    this.imageUrl,
     this.petsCount,
     this.volunteersCount,
     this.needs,
@@ -61,6 +63,7 @@ class Shelter {
       imageName: json['imageName'],
       imageType: json['imageType'],
       imageData: json['imageData'],
+      imageUrl: json['imageUrl'],
       // Dodatkowe pola będą wypełniane później
       petsCount: json['petsCount'],
       volunteersCount: json['volunteersCount'],
@@ -88,6 +91,7 @@ class Shelter {
       'imageName': imageName,
       'imageType': imageType,
       'imageData': imageData,
+      'imageUrl': imageUrl,
       'petsCount': petsCount,
       'volunteersCount': volunteersCount,
       'needs': needs,
@@ -101,7 +105,13 @@ class Shelter {
   }
 
   // Getter dla obrazka
-  String get imageUrl {
+  String get finalImageUrl {
+    // Priorytet: imageUrl z backendu
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      return imageUrl!;
+    }
+
+    // Fallback: imageData (base64)
     if (imageData != null && imageData!.isNotEmpty) {
       // Sprawdź czy to już jest data URL
       if (imageData!.startsWith('data:image')) {
@@ -111,6 +121,7 @@ class Shelter {
       final mimeType = imageType ?? 'image/jpeg';
       return 'data:$mimeType;base64,$imageData';
     }
+
     // Fallback do placeholder
     return 'https://images.pexels.com/photos/1634840/pexels-photo-1634840.jpeg';
   }
@@ -136,6 +147,7 @@ class Shelter {
     String? imageName,
     String? imageType,
     String? imageData,
+    String? imageUrl,
     int? petsCount,
     int? volunteersCount,
     List<String>? needs,
@@ -159,6 +171,7 @@ class Shelter {
       imageName: imageName ?? this.imageName,
       imageType: imageType ?? this.imageType,
       imageData: imageData ?? this.imageData,
+      imageUrl: imageUrl ?? this.imageUrl,
       petsCount: petsCount ?? this.petsCount,
       volunteersCount: volunteersCount ?? this.volunteersCount,
       needs: needs ?? this.needs,

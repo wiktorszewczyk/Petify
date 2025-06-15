@@ -17,8 +17,9 @@ class ShelterService {
     try {
       final response = await _api.get('/shelters');
 
-      if (response.statusCode == 200 && response.data is List) {
-        final sheltersData = response.data as List;
+      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        final sheltersData = data['content'] as List? ?? [];
         List<Shelter> shelters = [];
 
         for (var shelterJson in sheltersData) {
@@ -61,8 +62,9 @@ class ShelterService {
     try {
       final response = await _api.get('/shelters/$shelterId/pets');
 
-      if (response.statusCode == 200 && response.data is List) {
-        final petsData = response.data as List;
+      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        final petsData = data['content'] as List? ?? [];
         return petsData.map((petJson) => Pet.fromJson(petJson)).toList();
       }
 

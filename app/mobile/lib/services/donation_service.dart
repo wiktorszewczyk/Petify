@@ -81,7 +81,7 @@ class DonationService {
     try {
       final requestData = {
         'shelterId': shelterId,
-        'donationType': 'MONETARY',
+        'donationType': 'MONEY',
         'amount': amount,
         'message': message,
         'anonymous': false,

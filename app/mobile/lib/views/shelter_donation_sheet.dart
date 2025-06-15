@@ -286,7 +286,7 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: NetworkImage(widget.shelter.imageUrl),
+                image: NetworkImage(widget.shelter.finalImageUrl),
                 fit: BoxFit.cover,
               ),
               border: Border.all(color: AppColors.primaryColor, width: 2),

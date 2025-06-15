@@ -438,6 +438,14 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                       const SizedBox(height: 4),
                       if (addr.isNotEmpty)
                         Text(addr, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                      // Dodajemy informacje kontaktowe jeśli są dostępne
+                      if (currentPet.shelterName?.isNotEmpty == true) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          'Kliknij "Skontaktuj się" aby uzyskać więcej informacji',
+                          style: TextStyle(color: Colors.grey[500], fontSize: 12, fontStyle: FontStyle.italic),
+                        ),
+                      ]
                     ]
                 )
             )

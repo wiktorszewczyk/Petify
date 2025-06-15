@@ -6,6 +6,9 @@ import 'package:mobile/views/shelter_donation_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/shelter.dart';
+import '../models/donation.dart';
+import '../services/payment_service.dart';
+import '../views/payment_view.dart';
 import '../styles/colors.dart';
 
 class ShelterView extends StatefulWidget {
@@ -23,11 +26,15 @@ class ShelterView extends StatefulWidget {
 class _ShelterViewState extends State<ShelterView> {
   final ScrollController _scrollController = ScrollController();
   bool _showTitle = false;
+  final PaymentService _paymentService = PaymentService();
+  FundraiserResponse? _mainFundraiser;
+  bool _isLoadingFundraiser = true;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
+    _loadMainFundraiser();
   }
 
   @override
@@ -46,6 +53,24 @@ class _ShelterViewState extends State<ShelterView> {
       setState(() {
         _showTitle = false;
       });
+    }
+  }
+
+  Future<void> _loadMainFundraiser() async {
+    try {
+      final fundraiser = await _paymentService.getShelterMainFundraiser(widget.shelter.id);
+      if (mounted) {
+        setState(() {
+          _mainFundraiser = fundraiser;
+          _isLoadingFundraiser = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoadingFundraiser = false;
+        });
+      }
     }
   }
 
@@ -100,6 +125,23 @@ class _ShelterViewState extends State<ShelterView> {
     );
   }
 
+  void _donateToFundraiser() {
+    if (_mainFundraiser != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentView(
+            shelterId: widget.shelter.id,
+            fundraiserId: _mainFundraiser!.id,
+            initialAmount: 20.0,
+            title: 'Wspieraj: ${_mainFundraiser!.title}',
+            description: _mainFundraiser!.description,
+          ),
+        ),
+      );
+    }
+  }
+
   Widget _buildDonationBottomSheet() {
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -147,11 +189,17 @@ class _ShelterViewState extends State<ShelterView> {
                   children: [
                     _buildSupportOption(
                       icon: Icons.attach_money,
-                      title: 'Wsparcie finansowe',
-                      description: 'Przekaż darowiznę na rzecz schroniska',
+                      title: _mainFundraiser != null ? 'Wspieraj zbiórkę' : 'Wsparcie finansowe',
+                      description: _mainFundraiser != null
+                          ? 'Przekaż darowiznę na ${_mainFundraiser!.title}'
+                          : 'Przekaż darowiznę na rzecz schroniska',
                       onTap: () {
                         Navigator.pop(context);
-                        ShelterDonationSheet.show(context, widget.shelter);
+                        if (_mainFundraiser != null) {
+                          _donateToFundraiser();
+                        } else {
+                          ShelterDonationSheet.show(context, widget.shelter);
+                        }
                       },
                     ),
                     const Divider(height: 32),
@@ -319,7 +367,10 @@ class _ShelterViewState extends State<ShelterView> {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  if (widget.shelter.donationGoal != null && widget.shelter.donationGoal! > 0) ...[
+                  if (_mainFundraiser != null) ...[
+                    _buildMainFundraiserCard(),
+                    const SizedBox(height: 24),
+                  ] else if (widget.shelter.donationGoal != null && widget.shelter.donationGoal! > 0) ...[
                     _buildDonationProgress(),
                     const SizedBox(height: 24),
                   ],
@@ -407,7 +458,7 @@ class _ShelterViewState extends State<ShelterView> {
   }
 
   Widget _buildShelterImage() {
-    final imageUrl = widget.shelter.imageUrl;
+    final imageUrl = widget.shelter.finalImageUrl;
 
     // Obsługa Base64 z backendu
     if (imageUrl.startsWith('data:image/')) {
@@ -521,6 +572,212 @@ class _ShelterViewState extends State<ShelterView> {
       duration: 600.ms,
       curve: Curves.easeOutCubic,
     );
+  }
+
+  Widget _buildMainFundraiserCard() {
+    if (_isLoadingFundraiser) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.primaryColor.withOpacity(0.8),
+            AppColors.primaryColor,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryColor.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.campaign, color: Colors.white, size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+                      'GŁÓWNA ZBIÓRKA',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _mainFundraiser!.title,
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _mainFundraiser!.description,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: Colors.white.withOpacity(0.9),
+              height: 1.4,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Zebrano',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.8),
+                    ),
+                  ),
+                  Text(
+                    '${_mainFundraiser!.currentAmount.toInt()} PLN',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Cel',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.8),
+                    ),
+                  ),
+                  Text(
+                    '${_mainFundraiser!.goalAmount.toInt()} PLN',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Stack(
+            children: [
+              Container(
+                height: 8,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: _mainFundraiser!.progressPercentage / 100,
+                child: Container(
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${_mainFundraiser!.progressPercentage.toInt()}% celu',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.9),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              if (_mainFundraiser!.canAcceptDonations)
+                GestureDetector(
+                  onTap: _donateToFundraiser,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.favorite, color: AppColors.primaryColor, size: 16),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Wspieram',
+                          style: GoogleFonts.poppins(
+                            color: AppColors.primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 700.ms).moveY(begin: 20, end: 0, duration: 700.ms, curve: Curves.easeOutCubic);
   }
 
   Widget _buildDonationProgress() {

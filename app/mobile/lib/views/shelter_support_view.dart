@@ -419,7 +419,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                     child: SizedBox(
                       width: 80,
                       height: 80,
-                      child: _buildShelterImage(shelter.imageUrl),
+                      child: _buildShelterImage(shelter.finalImageUrl),
                     ),
                   ),
                   const SizedBox(width: 16),
