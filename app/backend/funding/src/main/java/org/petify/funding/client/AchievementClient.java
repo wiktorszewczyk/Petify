@@ -3,6 +3,7 @@ package org.petify.funding.client;
 import org.petify.funding.config.FeignJwtConfiguration;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,4 +22,7 @@ public interface AchievementClient {
 
     @PostMapping("/add-donation-xp")
     void addDonationExperiencePoints(@RequestParam("xpPoints") int xpPoints);
+
+    @PostMapping("/add-donation-xp/{username}")
+    void addDonationExperiencePointsForUser(@PathVariable("username") String username, @RequestParam("xpPoints") int xpPoints);
 }
