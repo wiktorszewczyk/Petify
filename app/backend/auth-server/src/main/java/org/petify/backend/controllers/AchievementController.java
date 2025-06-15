@@ -108,4 +108,12 @@ public class AchievementController {
         achievementService.addExperiencePointsForDonation(username, xpPoints);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/add-donation-xp/{username}")
+    public ResponseEntity<Void> addDonationExperiencePointsForUser(
+            @PathVariable String username,
+            @RequestParam int xpPoints) {
+        achievementService.addExperiencePointsForDonation(username, xpPoints);
+        return ResponseEntity.ok().build();
+    }
 }

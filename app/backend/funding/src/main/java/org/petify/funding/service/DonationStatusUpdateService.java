@@ -80,8 +80,8 @@ public class DonationStatusUpdateService {
             String donorUsername = donation.getDonorUsername();
             if (donorUsername != null && !donorUsername.trim().isEmpty()) {
                 int xpPoints = donation.getAmount().intValue();
-                
-                achievementClient.addDonationExperiencePoints(xpPoints);
+
+                achievementClient.addDonationExperiencePointsForUser(donorUsername, xpPoints);
                 log.info("Added {} XP points for donation {} (amount: {} PLN) to user: {}",
                         xpPoints, donation.getId(), donation.getAmount(), donorUsername);
             } else {
