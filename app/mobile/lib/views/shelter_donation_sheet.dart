@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../styles/colors.dart';
-import '../../models/shelter.dart';
-import '../../services/donation_service.dart';
-import '../../services/shelter_service.dart';
+import '../styles/colors.dart';
+import '../models/shelter.dart';
+import '../models/donation.dart';
+import '../services/payment_service.dart';
 import 'payment_view.dart';
 
 class ShelterDonationSheet extends StatefulWidget {
@@ -16,8 +16,8 @@ class ShelterDonationSheet extends StatefulWidget {
     required this.shelter,
   }) : super(key: key);
 
-  static Future<void> show(BuildContext context, Shelter shelter) {
-    return showModalBottomSheet(
+  static Future<bool?> show(BuildContext context, Shelter shelter) {
+    return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -30,43 +30,42 @@ class ShelterDonationSheet extends StatefulWidget {
 }
 
 class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
-  final DonationService _donationService = DonationService();
-  final ShelterService _shelterService = ShelterService();
+  final PaymentService _paymentService = PaymentService();
   final TextEditingController _customAmountController = TextEditingController();
   bool _isLoading = false;
   double? _selectedAmount;
   bool _isCustomAmount = false;
-  Map<String, dynamic>? _mainFundraiser;
+  FundraiserResponse? _mainFundraiser;
 
   final List<Map<String, dynamic>> _donationOptions = [
     {
       'amount': 5.0,
-      'icon': 'assets/icons/donation_5.png',
+      'icon': Icons.attach_money,
       'label': '5 zł',
     },
     {
       'amount': 10.0,
-      'icon': 'assets/icons/donation_10.png',
+      'icon': Icons.favorite,
       'label': '10 zł',
     },
     {
       'amount': 20.0,
-      'icon': 'assets/icons/donation_20.png',
+      'icon': Icons.favorite_border,
       'label': '20 zł',
     },
     {
       'amount': 50.0,
-      'icon': 'assets/icons/donation_50.png',
+      'icon': Icons.pets,
       'label': '50 zł',
     },
     {
       'amount': 100.0,
-      'icon': 'assets/icons/donation_100.png',
+      'icon': Icons.card_giftcard,
       'label': '100 zł',
     },
     {
       'amount': null,
-      'icon': 'assets/icons/donation_custom.png',
+      'icon': Icons.edit,
       'label': 'Inna kwota',
     },
   ];
@@ -85,7 +84,7 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
 
   Future<void> _loadMainFundraiser() async {
     try {
-      final fundraiser = await _shelterService.getShelterMainFundraiser(widget.shelter.id);
+      final fundraiser = await _paymentService.getShelterMainFundraiser(widget.shelter.id);
       if (mounted) {
         setState(() {
           _mainFundraiser = fundraiser;
@@ -138,25 +137,30 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
       return;
     }
 
+    if (_mainFundraiser == null || !_mainFundraiser!.canAcceptDonations) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Schronisko nie ma aktywnej zbiórki')),
+      );
+      return;
+    }
+
     // Rozpoczynamy proces płatności
     setState(() {
       _isLoading = true;
     });
 
-    if (donationAmount == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Podaj kwotę darowizny')),
-      );
-      return;
-    }
-
     try {
-      // Utwórz donację używając backend API
-      final donation = await _donationService.addMonetaryDonation(
-        shelterId: widget.shelter.id,
-        amount: donationAmount,
-        message: 'Wsparcie dla schroniska ${widget.shelter.name}',
-        fundraiserId: _mainFundraiser?['id'],
+      // Navigate to PaymentView
+      final result = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PaymentView(
+            shelterId: widget.shelter.id,
+            fundraiserId: _mainFundraiser!.id,
+            initialAmount: donationAmount!,
+            title: 'Wspieraj: ${_mainFundraiser!.title}',
+            description: _mainFundraiser!.description,
+          ),
+        ),
       );
 
       if (mounted) {
@@ -164,21 +168,9 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
           _isLoading = false;
         });
 
-        // TODO: Przejdź do widoku płatności
-        final result = true;
-
-        // final result = await Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (context) => PaymentView(
-        //       amount: donationAmount!,
-        //       shelterName: widget.shelter.name,
-        //     ),
-        //   ),
-        // );
-
-        // Jeśli płatność była udana, zamknij sheet
+        // Jeśli płatność była udana, zamknij sheet i zwróć sukces
         if (result == true) {
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(true);
         }
       }
     } catch (e) {
@@ -366,10 +358,10 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Image.asset(
+                      Icon(
                         option['icon'],
-                        width: 32,
-                        height: 32,
+                        size: 32,
+                        color: isSelected ? AppColors.primaryColor : Colors.grey[600],
                       ),
                       const SizedBox(width: 10),
                       Expanded(

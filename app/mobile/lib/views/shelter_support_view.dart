@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile/views/shelter_donation_sheet.dart';
 import 'package:mobile/views/shelter_view.dart';
+import 'package:mobile/views/payment_view.dart';
+import 'package:mobile/views/shelter_donation_sheet.dart';
 import '../models/shelter.dart';
+import '../models/donation.dart';
 import '../services/shelter_service.dart';
+import '../services/payment_service.dart';
 import '../styles/colors.dart';
 
 class ShelterSupportView extends StatefulWidget {
@@ -18,17 +21,19 @@ class ShelterSupportView extends StatefulWidget {
 
 class _ShelterSupportViewState extends State<ShelterSupportView> {
   final ShelterService _shelterService = ShelterService();
+  final PaymentService _paymentService = PaymentService();
   bool _isLoading = true;
   List<Shelter> _shelters = [];
+  Map<int, FundraiserResponse?> _shelterFundraisers = {};
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _loadShelters();
+    _loadSheltersAndFundraisers();
   }
 
-  Future<void> _loadShelters() async {
+  Future<void> _loadSheltersAndFundraisers() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -36,8 +41,21 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
 
     try {
       final shelters = await _shelterService.getShelters();
+      final fundraisers = <int, FundraiserResponse?>{};
+
+      // Load main fundraiser for each shelter
+      for (final shelter in shelters) {
+        try {
+          final fundraiser = await _paymentService.getShelterMainFundraiser(shelter.id);
+          fundraisers[shelter.id] = fundraiser;
+        } catch (e) {
+          fundraisers[shelter.id] = null;
+        }
+      }
+
       setState(() {
         _shelters = shelters;
+        _shelterFundraisers = fundraisers;
         _isLoading = false;
       });
     } catch (e) {
@@ -48,20 +66,52 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
     }
   }
 
-  void _navigateToShelterDetails(Shelter shelter) {
-    Navigator.push(
+  void _navigateToShelterDetails(Shelter shelter) async {
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ShelterView(shelter: shelter)),
     );
+
+    // Refresh data if user made a donation
+    if (result == true) {
+      _loadSheltersAndFundraisers();
+    }
   }
 
-  void _supportShelter(Shelter shelter) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildDonationBottomSheet(shelter),
-    );
+  void _supportShelter(Shelter shelter) async {
+    final fundraiser = _shelterFundraisers[shelter.id];
+    if (fundraiser != null) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentView(
+            shelterId: shelter.id,
+            fundraiserId: fundraiser.id,
+            initialAmount: 20.0,
+            title: 'Wspieraj: ${fundraiser.title}',
+            description: fundraiser.description,
+          ),
+        ),
+      );
+
+      // Refresh data after successful donation
+      if (result == true) {
+        await _loadSheltersAndFundraisers();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Dziękujemy za wsparcie!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('To schronisko nie ma aktywnej zbiórki'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
   }
 
   Widget _buildDonationBottomSheet(Shelter shelter) {
@@ -131,9 +181,20 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                       icon: Icons.attach_money,
                       title: 'Wsparcie finansowe',
                       description: 'Przekaż darowiznę na rzecz schroniska',
-                      onTap: () {
+                      onTap: () async {
                         Navigator.pop(context);
-                        ShelterDonationSheet.show(context, shelter);
+                        final result = await ShelterDonationSheet.show(context, shelter);
+
+                        // Refresh data after successful donation
+                        if (result == true) {
+                          await _loadSheltersAndFundraisers();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Dziękujemy za wsparcie!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
                       },
                     ),
                     const Divider(height: 32),
@@ -240,7 +301,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
         elevation: 0.5,
       ),
       body: RefreshIndicator(
-        onRefresh: _loadShelters,
+        onRefresh: _loadSheltersAndFundraisers,
         color: AppColors.primaryColor,
         child: _buildContent(),
       ),
@@ -306,7 +367,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: _loadShelters,
+              onPressed: _loadSheltersAndFundraisers,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,
                 foregroundColor: Colors.black,
@@ -376,6 +437,8 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
   }
 
   Widget _buildShelterCard(Shelter shelter, int index) {
+    final fundraiser = _shelterFundraisers[shelter.id];
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -469,17 +532,6 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                                 color: Colors.grey[600],
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            Icon(Icons.volunteer_activism,
-                                size: 14, color: Colors.grey[600]),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${shelter.volunteersCount ?? 0} wolontariuszy',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                              ),
-                            ),
                           ],
                         ),
                       ],
@@ -489,18 +541,27 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
               ),
             ),
 
-            // Pasek postępu donacji
-            if (shelter.donationGoal != null && shelter.donationGoal! > 0) ...[
+            // Real fundraiser progress from backend
+            if (fundraiser != null) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      fundraiser.title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Cel zbiórki: ${shelter.donationGoal!.toInt()} PLN',
+                          'Zebrano: ${fundraiser.currentAmount.toInt()} PLN',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: Colors.grey[700],
@@ -508,11 +569,11 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                           ),
                         ),
                         Text(
-                          '${shelter.donationPercentage.toInt()}%',
+                          'Cel: ${fundraiser.goalAmount.toInt()} PLN',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
-                            color: AppColors.primaryColor,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -521,25 +582,35 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: LinearProgressIndicator(
-                        value: shelter.donationPercentage / 100,
+                        value: fundraiser.progressPercentage / 100,
                         backgroundColor: Colors.grey[200],
                         valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.primaryColor),
                         minHeight: 8,
                       ),
                     ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${fundraiser.progressPercentage.toInt()}% celu',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
             ],
 
-            // Potrzeby i przyciski akcji
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (shelter.needs != null && shelter.needs!.isNotEmpty) ...[
+            // Needs list - only real data from backend
+            if (shelter.needs != null && shelter.needs!.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
                       'Potrzeby:',
                       style: GoogleFonts.poppins(
@@ -548,89 +619,65 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: shelter.needs!
-                          .take(3)
-                          .map(
-                            (need) => Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: AppColors.primaryColor.withOpacity(0.3),
-                            ),
-                          ),
-                          child: Text(
-                            need,
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                      )
-                          .toList(),
+                    Text(
+                      shelter.needs!.take(3).join(', '),
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: Colors.grey[700],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    if (shelter.needs!.length > 3) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        '+ ${shelter.needs!.length - 3} więcej...',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 16),
                   ],
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => _navigateToShelterDetails(shelter),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: AppColors.primaryColor),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                          child: Text(
-                            'Szczegóły',
-                            style: GoogleFonts.poppins(
-                              color: AppColors.primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            // Action buttons
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => _navigateToShelterDetails(shelter),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.primaryColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: Text(
+                        'Szczegóły',
+                        style: GoogleFonts.poppins(
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _supportShelter(shelter),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColor,
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                          child: Text(
-                            'Wesprzyj',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: fundraiser?.canAcceptDonations == true ? () => _supportShelter(shelter) : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: Text(
+                        fundraiser?.canAcceptDonations == true ? 'Wesprzyj' : 'Brak zbiórki',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),

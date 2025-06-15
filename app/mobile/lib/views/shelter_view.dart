@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mobile/views/shelter_donation_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
 import '../models/shelter.dart';
 import '../models/donation.dart';
 import '../services/payment_service.dart';
+import '../services/shelter_service.dart';
 import '../views/payment_view.dart';
 import '../styles/colors.dart';
 
@@ -27,14 +26,17 @@ class _ShelterViewState extends State<ShelterView> {
   final ScrollController _scrollController = ScrollController();
   bool _showTitle = false;
   final PaymentService _paymentService = PaymentService();
+  final ShelterService _shelterService = ShelterService();
   FundraiserResponse? _mainFundraiser;
   bool _isLoadingFundraiser = true;
+  bool _isRefreshing = false;
+  List<String> _shelterImages = [];
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    _loadMainFundraiser();
+    _loadShelterData();
   }
 
   @override
@@ -56,22 +58,58 @@ class _ShelterViewState extends State<ShelterView> {
     }
   }
 
-  Future<void> _loadMainFundraiser() async {
+  Future<void> _loadShelterData() async {
+    setState(() {
+      _isLoadingFundraiser = true;
+    });
+
     try {
+      // Load fundraiser data
       final fundraiser = await _paymentService.getShelterMainFundraiser(widget.shelter.id);
+
+      // Extract shelter images from the shelter model
+      final images = <String>[];
+
+      // Priority 1: imageUrl from backend
+      if (widget.shelter.imageUrl != null && widget.shelter.imageUrl!.isNotEmpty) {
+        images.add(widget.shelter.imageUrl!);
+      }
+      // Priority 2: imageData (base64)
+      else if (widget.shelter.imageData != null && widget.shelter.imageData!.isNotEmpty) {
+        final mimeType = widget.shelter.imageType ?? 'image/jpeg';
+        if (widget.shelter.imageData!.startsWith('data:image')) {
+          images.add(widget.shelter.imageData!);
+        } else {
+          images.add('data:$mimeType;base64,${widget.shelter.imageData}');
+        }
+      }
+
+      // TODO: Add support for shelter image gallery when backend provides it
+      // For now we only have the main image
+
       if (mounted) {
         setState(() {
           _mainFundraiser = fundraiser;
+          _shelterImages = images;
           _isLoadingFundraiser = false;
+          _isRefreshing = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _isLoadingFundraiser = false;
+          _isRefreshing = false;
         });
       }
     }
+  }
+
+  Future<void> _refreshShelterData() async {
+    setState(() {
+      _isRefreshing = true;
+    });
+    await _loadShelterData();
   }
 
   Future<void> _launchUrl(String url) async {
@@ -83,51 +121,9 @@ class _ShelterViewState extends State<ShelterView> {
     }
   }
 
-  void _shareShelter() {
-    final String shareText = 'Pomóż schronisku ${widget.shelter.name}!\n'
-        '${widget.shelter.address != null ? 'Adres: ${widget.shelter.address}\n' : ''}'
-        '${widget.shelter.phoneNumber != null ? 'Kontakt: ${widget.shelter.phoneNumber}\n' : ''}'
-        '${widget.shelter.needs?.isNotEmpty == true ? 'Potrzeby: ${widget.shelter.needs!.join(", ")}\n' : ''}\n'
-        'Dowiedz się więcej: https://schroniska-app.pl/shelter/${widget.shelter.id}';
-
-    Share.share(shareText, subject: 'Wesprzyj schronisko ${widget.shelter.name}');
-  }
-
-  void _shareOnSocialMedia(String platform) {
-    final String shelterUrl = 'https://schroniska-app.pl/shelter/${widget.shelter.id}';
-    String url;
-
-    switch (platform) {
-      case 'facebook':
-        url = 'https://www.facebook.com/sharer/sharer.php?u=$shelterUrl';
-        break;
-      case 'instagram':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Skopiuj link i udostępnij na Instagramie')),
-        );
-        return;
-      case 'whatsapp':
-        url = 'https://wa.me/?text=Pomóż schronisku ${widget.shelter.name}! $shelterUrl';
-        break;
-      default:
-        url = shelterUrl;
-    }
-
-    _launchUrl(url);
-  }
-
-  void _supportShelter() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildDonationBottomSheet(),
-    );
-  }
-
-  void _donateToFundraiser() {
+  void _donateToFundraiser() async {
     if (_mainFundraiser != null) {
-      Navigator.push(
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => PaymentView(
@@ -139,271 +135,307 @@ class _ShelterViewState extends State<ShelterView> {
           ),
         ),
       );
+
+      // Refresh data after successful donation
+      if (result == true) {
+        await _refreshShelterData();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Dziękujemy za wsparcie!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     }
   }
 
-  Widget _buildDonationBottomSheet() {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      builder: (_, controller) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Wesprzyj schronisko',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
-                    splashRadius: 24,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Wybierz sposób wsparcia:',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: ListView(
-                  controller: controller,
-                  children: [
-                    _buildSupportOption(
-                      icon: Icons.attach_money,
-                      title: _mainFundraiser != null ? 'Wspieraj zbiórkę' : 'Wsparcie finansowe',
-                      description: _mainFundraiser != null
-                          ? 'Przekaż darowiznę na ${_mainFundraiser!.title}'
-                          : 'Przekaż darowiznę na rzecz schroniska',
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (_mainFundraiser != null) {
-                          _donateToFundraiser();
-                        } else {
-                          ShelterDonationSheet.show(context, widget.shelter);
-                        }
-                      },
-                    ),
-                    const Divider(height: 32),
-                    _buildSupportOption(
-                      icon: Icons.volunteer_activism,
-                      title: 'Wolontariat',
-                      description: 'Zostań wolontariuszem i pomagaj na miejscu',
-                      onTap: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Przejście do formularza wolontariatu')),
-                        );
-                      },
-                    ),
-                    const Divider(height: 32),
-                    _buildSupportOption(
-                      icon: Icons.shopping_cart,
-                      title: 'Przekaż dary rzeczowe',
-                      description: 'Sprawdź listę potrzebnych przedmiotów',
-                      onTap: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Przejście do listy potrzeb')),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSupportOption({
-    required IconData icon,
-    required String title,
-    required String description,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        child: Row(
-          children: [
-            Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                icon,
-                size: 30,
-                color: AppColors.primaryColor,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right),
-          ],
+  void _donateToShelter() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentView(
+          shelterId: widget.shelter.id,
+          initialAmount: 20.0,
+          title: 'Wspieraj schronisko: ${widget.shelter.name}',
+          description: 'Ogólne wsparcie dla schroniska na bieżące potrzeby',
         ),
       ),
+    );
+
+    // Refresh data after successful donation
+    if (result == true) {
+      await _refreshShelterData();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Dziękujemy za wsparcie!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  void _shareShelter() {
+    // TODO: Implement sharing functionality
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Funkcja udostępniania będzie dostępna wkrótce')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          _buildAppBar(),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 16, left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (widget.shelter.isUrgent == true)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.red[400],
-                        borderRadius: BorderRadius.circular(20),
+      body: Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: _refreshShelterData,
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                _buildAppBar(),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 20, right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.shelter.isUrgent == true)
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.red[400],
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.warning_amber_rounded, color: Colors.white, size: 18),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'PILNA POTRZEBA POMOCY',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ).animate().fadeIn(duration: 400.ms).moveY(begin: 20, end: 0, duration: 400.ms, curve: Curves.easeOutCubic),
+
+                        // Shelter basic info
+                        Text(
+                          widget.shelter.name,
+                          style: GoogleFonts.poppins(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ).animate().fadeIn(duration: 500.ms).moveY(begin: 20, end: 0, duration: 500.ms, curve: Curves.easeOutCubic),
+                        const SizedBox(height: 8),
+
+                        // Real data only - no placeholders
+                        _buildInfoRow(Icons.location_on_outlined, widget.shelter.address),
+                        _buildInfoRow(Icons.phone_outlined, widget.shelter.phoneNumber),
+                        _buildInfoRow(Icons.email_outlined, widget.shelter.email),
+                        if (widget.shelter.website != null)
+                          _buildInfoRow(
+                            Icons.language_outlined,
+                            widget.shelter.website!,
+                            onTap: () => _launchUrl('https://${widget.shelter.website}'),
+                          ),
+
+                        const SizedBox(height: 24),
+
+                        // Improved stats section with better styling
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppColors.primaryColor.withOpacity(0.1),
+                                AppColors.primaryColor.withOpacity(0.05),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: AppColors.primaryColor.withOpacity(0.2)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.pets, size: 32, color: AppColors.primaryColor),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${widget.shelter.petsCount ?? 0}',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryColor,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Zwierząt czeka na dom',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ).animate().fadeIn(duration: 600.ms).scale(
+                          begin: const Offset(0.9, 0.9),
+                          end: const Offset(1, 1),
+                          duration: 600.ms,
+                          curve: Curves.easeOutCubic,
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // Main fundraiser card - only if exists
+                        if (_mainFundraiser != null) ...[
+                          _buildMainFundraiserCard(),
+                          const SizedBox(height: 24),
+                        ],
+
+                        // About section
+                        if (widget.shelter.description != null && widget.shelter.description!.isNotEmpty) ...[
+                          Text(
+                            'O schronisku',
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.shelter.description!,
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              color: Colors.grey[800],
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+
+                        // Needs list - only if exists
+                        _buildNeedsList(),
+
+                        // Contact section
+                        _buildContactSection(),
+
+                        const SizedBox(height: 120), // More space for bottom buttons
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Always visible back button
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            left: 16,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+              ),
+            ),
+          ),
+          // Fixed bottom buttons
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: SafeArea(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _donateToShelter,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.favorite, color: Colors.white, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Wesprzyj',
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    ElevatedButton(
+                      onPressed: _shareShelter,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: AppColors.primaryColor),
+                        ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.warning_amber_rounded, color: Colors.white, size: 18),
+                          Icon(Icons.share, color: AppColors.primaryColor, size: 20),
                           const SizedBox(width: 8),
                           Text(
-                            'PILNA POTRZEBA POMOCY',
+                            'Udostępnij',
                             style: GoogleFonts.poppins(
-                              color: Colors.white,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              fontSize: 12,
+                              color: AppColors.primaryColor,
                             ),
                           ),
                         ],
                       ),
-                    ).animate().fadeIn(duration: 400.ms).moveY(begin: 20, end: 0, duration: 400.ms, curve: Curves.easeOutCubic),
-                  Text(
-                    widget.shelter.name,
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ).animate().fadeIn(duration: 500.ms).moveY(begin: 20, end: 0, duration: 500.ms, curve: Curves.easeOutCubic),
-                  const SizedBox(height: 8),
-                  _buildInfoRow(Icons.location_on_outlined, widget.shelter.address),
-                  const SizedBox(height: 4),
-                  _buildInfoRow(Icons.phone_outlined, widget.shelter.phoneNumber),
-                  const SizedBox(height: 4),
-                  _buildInfoRow(Icons.email_outlined, widget.shelter.email),
-                  if (widget.shelter.website != null) ...[
-                    const SizedBox(height: 4),
-                    _buildInfoRow(
-                      Icons.language_outlined,
-                      widget.shelter.website!,
-                      onTap: () => _launchUrl('https://${widget.shelter.website}'),
                     ),
                   ],
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      _buildStatBox(
-                        Icons.pets,
-                        '${widget.shelter.petsCount ?? 0}',
-                        'Zwierzęta',
-                      ),
-                      const SizedBox(width: 16),
-                      _buildStatBox(
-                        Icons.volunteer_activism,
-                        '${widget.shelter.volunteersCount ?? 0}',
-                        'Wolontariusze',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  if (_mainFundraiser != null) ...[
-                    _buildMainFundraiserCard(),
-                    const SizedBox(height: 24),
-                  ] else if (widget.shelter.donationGoal != null && widget.shelter.donationGoal! > 0) ...[
-                    _buildDonationProgress(),
-                    const SizedBox(height: 24),
-                  ],
-                  Text(
-                    'O schronisku',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    widget.shelter.description ?? 'Brak opisu schroniska.',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: Colors.grey[800],
-                      height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  _buildNeedsList(),
-                  const SizedBox(height: 24),
-                  _buildContactSection(),
-                  const SizedBox(height: 24),
-                  _buildShareSection(),
-                  const SizedBox(height: 80),
-                ],
+                ),
               ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomButtons(),
     );
   }
 
@@ -421,6 +453,7 @@ class _ShelterViewState extends State<ShelterView> {
       )
           : null,
       backgroundColor: AppColors.primaryColor,
+      automaticallyImplyLeading: false, // Remove default back button
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
@@ -441,56 +474,126 @@ class _ShelterViewState extends State<ShelterView> {
                 ),
               ),
             ),
+            // Image gallery indicator (if multiple images)
+            if (_shelterImages.length > 1)
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.photo_library, color: Colors.white, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${_shelterImages.length}',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),
-      actions: [
-        IconButton(
-          icon: const CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 16,
-            child: Icon(Icons.share_outlined, size: 18, color: Colors.black),
-          ),
-          onPressed: _shareShelter,
-        ),
-      ],
     );
   }
 
   Widget _buildShelterImage() {
-    final imageUrl = widget.shelter.finalImageUrl;
+    // Use images from backend if available
+    if (_shelterImages.isNotEmpty) {
+      final imageUrl = _shelterImages.first;
 
-    // Obsługa Base64 z backendu
-    if (imageUrl.startsWith('data:image/')) {
-      try {
-        final base64String = imageUrl.split(',')[1];
-        return Image.memory(
-          base64Decode(base64String),
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
-        );
-      } catch (e) {
-        return _buildPlaceholderImage();
+      // Handle Base64 images from backend
+      if (imageUrl.startsWith('data:image/')) {
+        try {
+          final base64String = imageUrl.split(',')[1];
+          return GestureDetector(
+            onTap: _shelterImages.length > 1 ? _showImageGallery : null,
+            child: Image.memory(
+              base64Decode(base64String),
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+            ),
+          );
+        } catch (e) {
+          return _buildPlaceholderImage();
+        }
       }
-    }
 
-    // Obsługa URL sieciowych
-    if (imageUrl.startsWith('http')) {
-      return Image.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
-      );
+      // Handle network URLs
+      if (imageUrl.startsWith('http')) {
+        return GestureDetector(
+          onTap: _shelterImages.length > 1 ? _showImageGallery : null,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                color: Colors.grey[300],
+                child: Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+          ),
+        );
+      }
     }
 
     return _buildPlaceholderImage();
   }
 
+  void _showImageGallery() {
+    // TODO: Implement image gallery when backend provides multiple images
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Galeria zdjęć będzie dostępna wkrótce')),
+    );
+  }
+
   Widget _buildPlaceholderImage() {
     return Container(
-      color: Colors.grey[300],
-      child: const Center(
-        child: Icon(Icons.home_work_outlined, size: 50, color: Colors.grey),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.grey[200]!,
+            Colors.grey[300]!,
+          ],
+        ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.home_work_outlined, size: 60, color: Colors.grey[600]),
+            const SizedBox(height: 8),
+            Text(
+              'Brak zdjęcia schroniska',
+              style: GoogleFonts.poppins(
+                color: Colors.grey[600],
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -538,33 +641,31 @@ class _ShelterViewState extends State<ShelterView> {
   }
 
   Widget _buildStatBox(IconData icon, String value, String label) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: AppColors.primaryColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 28, color: AppColors.primaryColor),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      decoration: BoxDecoration(
+        color: AppColors.primaryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 28, color: AppColors.primaryColor),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-            Text(
-              label,
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                color: Colors.grey[700],
-              ),
+          ),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              color: Colors.grey[700],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     ).animate().fadeIn(duration: 600.ms).scale(
       begin: const Offset(0.9, 0.9),
@@ -780,92 +881,6 @@ class _ShelterViewState extends State<ShelterView> {
     ).animate().fadeIn(duration: 700.ms).moveY(begin: 20, end: 0, duration: 700.ms, curve: Curves.easeOutCubic);
   }
 
-  Widget _buildDonationProgress() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Cel zbiórki',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${(widget.shelter.donationCurrent ?? 0).toInt()} PLN',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primaryColor,
-                ),
-              ),
-              Text(
-                '${(widget.shelter.donationGoal ?? 0).toInt()} PLN',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Stack(
-            children: [
-              Container(
-                height: 10,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              FractionallySizedBox(
-                widthFactor: widget.shelter.donationPercentage / 100,
-                child: Container(
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                '${widget.shelter.donationPercentage.toInt()}% celu',
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: Colors.grey[700],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ).animate().fadeIn(duration: 700.ms).moveY(begin: 20, end: 0, duration: 700.ms, curve: Curves.easeOutCubic);
-  }
 
   Widget _buildNeedsList() {
     if (widget.shelter.needs == null || widget.shelter.needs!.isEmpty) {
@@ -1026,152 +1041,4 @@ class _ShelterViewState extends State<ShelterView> {
     );
   }
 
-  Widget _buildShareSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Udostępnij',
-          style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildSocialButton(
-              icon: Icons.facebook,
-              color: const Color(0xFF1877F2),
-              label: 'Facebook',
-              onTap: () => _shareOnSocialMedia('facebook'),
-            ),
-            const SizedBox(width: 20),
-            _buildSocialButton(
-              icon: Icons.camera_alt,
-              color: const Color(0xFFE4405F),
-              label: 'Instagram',
-              onTap: () => _shareOnSocialMedia('instagram'),
-            ),
-            const SizedBox(width: 20),
-            _buildSocialButton(
-              icon: Icons.chat_bubble,
-              color: const Color(0xFF25D366),
-              label: 'WhatsApp',
-              onTap: () => _shareOnSocialMedia('whatsapp'),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialButton({
-    required IconData icon,
-    required Color color,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              shape: BoxShape.circle,
-              border: Border.all(color: color.withOpacity(0.3), width: 1),
-            ),
-            child: Icon(icon, color: color, size: 26),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey[700],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomButtons() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: _shareShelter,
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.primaryColor),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.share, size: 20, color: AppColors.primaryColor),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Udostępnij',
-                    style: GoogleFonts.poppins(
-                      color: AppColors.primaryColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: _supportShelter,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.favorite, size: 20),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Wesprzyj',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
