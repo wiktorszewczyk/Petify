@@ -1,3 +1,5 @@
+import '../settings.dart';
+
 class Event {
   final String id;
   final String title;
@@ -50,7 +52,7 @@ class Event {
   }
 
   factory Event.fromBackendJson(Map<String, dynamic> json) {
-    final baseUrl = 'http://192.168.1.12:8222';
+    final baseUrl = Settings.getServerUrl();
 
     return Event(
       id: json['id'].toString(),
@@ -85,5 +87,25 @@ class Event {
       'eventType': eventType,
       'requiresRegistration': requiresRegistration,
     };
+  }
+
+  Event copyWith({String? imageUrl}) {
+    return Event(
+      id: id,
+      title: title,
+      organizerName: organizerName,
+      description: description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      date: date,
+      endDate: endDate,
+      location: location,
+      participantsCount: participantsCount,
+      eventType: eventType,
+      requiresRegistration: requiresRegistration,
+      capacity: capacity,
+      shelterId: shelterId,
+      mainImageId: mainImageId,
+      fundraisingId: fundraisingId,
+    );
   }
 }

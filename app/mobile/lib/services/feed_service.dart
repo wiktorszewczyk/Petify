@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../models/event.dart';
 import '../models/shelter_post.dart';
 import 'api/initial_api.dart';
+import 'image_service.dart';
 
 class FeedService {
   final _api = InitialApi().dio;
@@ -17,7 +18,17 @@ class FeedService {
 
       if (response.statusCode == 200 && response.data is List) {
         final eventsData = response.data as List;
-        return eventsData.map((eventJson) => Event.fromBackendJson(eventJson)).toList();
+        final imageService = ImageService();
+        return Future.wait(eventsData.map((eventJson) async {
+          var event = Event.fromBackendJson(eventJson);
+          if (event.mainImageId != null) {
+            try {
+              final img = await imageService.getImageById(event.mainImageId!);
+              event = event.copyWith(imageUrl: img.imageUrl);
+            } catch (_) {}
+          }
+          return event;
+        }));
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');
@@ -37,7 +48,17 @@ class FeedService {
 
       if (response.statusCode == 200 && response.data is List) {
         final eventsData = response.data as List;
-        return eventsData.map((eventJson) => Event.fromBackendJson(eventJson)).toList();
+        final imageService = ImageService();
+        return Future.wait(eventsData.map((eventJson) async {
+          var event = Event.fromBackendJson(eventJson);
+          if (event.mainImageId != null) {
+            try {
+              final img = await imageService.getImageById(event.mainImageId!);
+              event = event.copyWith(imageUrl: img.imageUrl);
+            } catch (_) {}
+          }
+          return event;
+        }));
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');
@@ -53,7 +74,14 @@ class FeedService {
       final response = await _api.get('/events/$eventId');
 
       if (response.statusCode == 200) {
-        return Event.fromBackendJson(response.data);
+        var event = Event.fromBackendJson(response.data);
+        if (event.mainImageId != null) {
+          try {
+            final img = await ImageService().getImageById(event.mainImageId!);
+            event = event.copyWith(imageUrl: img.imageUrl);
+          } catch (_) {}
+        }
+        return event;
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');
@@ -108,7 +136,17 @@ class FeedService {
 
       if (response.statusCode == 200 && response.data is List) {
         final postsData = response.data as List;
-        return postsData.map((postJson) => ShelterPost.fromBackendJson(postJson)).toList();
+        final imageService = ImageService();
+        return Future.wait(postsData.map((postJson) async {
+          var post = ShelterPost.fromBackendJson(postJson);
+          if (post.mainImageId != null) {
+            try {
+              final img = await imageService.getImageById(post.mainImageId!);
+              post = post.copyWith(imageUrl: img.imageUrl);
+            } catch (_) {}
+          }
+          return post;
+        }));
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');
@@ -128,7 +166,17 @@ class FeedService {
 
       if (response.statusCode == 200 && response.data is List) {
         final postsData = response.data as List;
-        return postsData.map((postJson) => ShelterPost.fromBackendJson(postJson)).toList();
+        final imageService = ImageService();
+        return Future.wait(postsData.map((postJson) async {
+          var post = ShelterPost.fromBackendJson(postJson);
+          if (post.mainImageId != null) {
+            try {
+              final img = await imageService.getImageById(post.mainImageId!);
+              post = post.copyWith(imageUrl: img.imageUrl);
+            } catch (_) {}
+          }
+          return post;
+        }));
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');
@@ -144,7 +192,14 @@ class FeedService {
       final response = await _api.get('/posts/$postId');
 
       if (response.statusCode == 200) {
-        return ShelterPost.fromBackendJson(response.data);
+        var post = ShelterPost.fromBackendJson(response.data);
+        if (post.mainImageId != null) {
+          try {
+            final img = await ImageService().getImageById(post.mainImageId!);
+            post = post.copyWith(imageUrl: img.imageUrl);
+          } catch (_) {}
+        }
+        return post;
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');

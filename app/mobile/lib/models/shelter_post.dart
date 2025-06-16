@@ -1,3 +1,5 @@
+import '../settings.dart';
+
 class ShelterPost {
   final String id;
   final String title;
@@ -41,7 +43,7 @@ class ShelterPost {
   }
 
   factory ShelterPost.fromBackendJson(Map<String, dynamic> json) {
-    final baseUrl = 'http://192.168.1.12:8222';
+    final baseUrl = Settings.getServerUrl();
 
     print('🔍 ShelterPost fromBackendJson: $json');
 
@@ -68,7 +70,8 @@ class ShelterPost {
     } else if (json['imageUrl'] != null && json['imageUrl'].toString().isNotEmpty) {
       String directUrl = json['imageUrl'].toString();
       if (directUrl.contains('localhost')) {
-        directUrl = directUrl.replaceAll('localhost', '192.168.1.12');
+        final host = Uri.parse(Settings.getServerUrl()).host;
+        directUrl = directUrl.replaceAll('localhost', host);
       }
       postImageUrl = directUrl;
       print('📸 Using direct imageUrl: $postImageUrl');
@@ -103,5 +106,22 @@ class ShelterPost {
       'location': location,
       'supportOptions': supportOptions,
     };
+  }
+
+  ShelterPost copyWith({String? imageUrl}) {
+    return ShelterPost(
+      id: id,
+      title: title,
+      shelterName: shelterName,
+      description: description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      date: date,
+      location: location,
+      supportOptions: supportOptions,
+      shelterId: shelterId,
+      mainImageId: mainImageId,
+      fundraisingId: fundraisingId,
+      imageIds: imageIds,
+    );
   }
 }

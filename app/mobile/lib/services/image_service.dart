@@ -1,6 +1,7 @@
 import 'dart:developer' as dev;
 import 'package:dio/dio.dart';
 import 'api/initial_api.dart';
+import '../settings.dart';
 
 class ImageResponse {
   final int id;
@@ -18,10 +19,10 @@ class ImageResponse {
   });
 
   factory ImageResponse.fromJson(Map<String, dynamic> json) {
-    // Handle image URL and replace localhost with proper IP
     String imageUrl = json['imageUrl']?.toString() ?? '';
     if (imageUrl.contains('localhost')) {
-      imageUrl = imageUrl.replaceAll('localhost', '192.168.1.12');
+      final host = Uri.parse(Settings.getServerUrl()).host;
+      imageUrl = imageUrl.replaceAll('localhost', host);
     }
 
     return ImageResponse(

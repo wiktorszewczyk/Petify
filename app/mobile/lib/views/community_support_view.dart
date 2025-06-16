@@ -7,7 +7,6 @@ import 'package:mobile/views/volunteer_walks_view.dart';
 import 'package:mobile/views/my_applications_view.dart';
 import 'package:mobile/views/announcements_view.dart';
 import '../../styles/colors.dart';
-import '../../widgets/buttons/action_button.dart';
 import '../../models/shelter_post.dart';
 import '../../services/user_service.dart';
 import '../../services/feed_service.dart';
@@ -30,7 +29,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   void initState() {
     super.initState();
     _loadUserStatus();
-    _loadRecentPosts();
   }
 
   Future<void> _loadUserStatus() async {
@@ -45,29 +43,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
         _volunteerStatus = null;
         _isVolunteer = false;
       });
-    }
-  }
-
-  Future<void> _loadRecentPosts() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final posts = await FeedService().getRecentPosts(7); // Get posts from last 7 days
-      setState(() {
-        _recentPosts = posts.take(3).toList(); // Show only first 3 posts
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Nie udało się pobrać ogłoszeń: $e')),
-        );
-      }
     }
   }
 
@@ -185,7 +160,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
       body: RefreshIndicator(
         onRefresh: () async {
           await _loadUserStatus();
-          await _loadRecentPosts();
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -214,7 +188,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
                 const SizedBox(height: 24),
                 _buildNewActionGrid(),
                 const SizedBox(height: 24),
-                _buildRecentPostsPreview(),
               ],
             ),
           ),
@@ -373,38 +346,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
             ),
           ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildRecentPostsPreview() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Najnowsze ogłoszenia',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextButton(
-              onPressed: _navigateToAnnouncements,
-              child: Text(
-                'Zobacz wszystkie',
-                style: GoogleFonts.poppins(
-                  color: AppColors.primaryColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        _buildPostsList(),
       ],
     );
   }
