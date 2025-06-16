@@ -19,6 +19,7 @@ class User {
   final int likesCount;
   final int supportCount;
   final int badgesCount;
+  final bool hasProfileImage;
   final List<Achievement> achievements;
 
   User.fromJson(Map<String, dynamic> j)
@@ -40,6 +41,7 @@ class User {
         likesCount = j['likesCount'] as int,
         supportCount = j['supportCount'] as int,
         badgesCount = j['badgesCount'] as int,
+        hasProfileImage = j['hasProfileImage'] == true,
         achievements = (j['achievements'] as List)
             .map((a) => Achievement.fromJson(a as Map<String, dynamic>))
             .toList();

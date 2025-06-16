@@ -43,11 +43,7 @@ class QuickStats extends StatelessWidget {
               icon: Icons.emoji_events,
               iconColor: Colors.amber,
               title: 'Odznaki',
-              // teraz z user.badgesCount
-              value: user.achievements
-                  .where((a) => a.isUnlocked)
-                  .length
-                  .toString(),
+              value: user.badgesCount.toString(),
             ),
           ),
         ],

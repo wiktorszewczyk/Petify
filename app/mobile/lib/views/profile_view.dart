@@ -123,6 +123,41 @@ class _ProfileViewState extends State<ProfileView>
     }
   }
 
+  Future<void> _confirmDeactivate() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Dezaktywacja konta'),
+        content: const Text('Czy na pewno chcesz dezaktywować swoje konto?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Anuluj'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Tak'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      final resp = await UserService().deactivateAccount();
+      if (!mounted) return;
+      if (resp.statusCode == 200) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const WelcomeView()),
+              (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Błąd: ${resp.data}')),
+        );
+      }
+    }
+  }
+
   bool _isVolunteer() {
     return _user?.volunteerStatus == 'ACTIVE';
   }
@@ -238,6 +273,16 @@ class _ProfileViewState extends State<ProfileView>
               QuickStats(user: user),
               Achievements(achievements: _recentAchievements),
               ActiveAchievements(user: user),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: TextButton(
+                  onPressed: _confirmDeactivate,
+                  child: Text(
+                    'Dezaktywuj konto',
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

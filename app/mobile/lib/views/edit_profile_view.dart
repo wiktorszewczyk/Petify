@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../models/user.dart';
 import '../services/user_service.dart';
-import '../styles/colors.dart';
+import '../styles/colors.dart ';
 
 class EditProfileView extends StatefulWidget {
   final User user;
@@ -19,6 +21,13 @@ class _EditProfileViewState extends State<EditProfileView> {
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
+
+  String? _profileImage;
+  bool _isImageLoading = false;
+  late final bool _canEditFirstName;
+  late final bool _canEditLastName;
+  late final bool _canEditBirthDate;
+  late final bool _canEditGender;
 
   bool _isLoading = false;
   String? _selectedGender;
@@ -37,6 +46,24 @@ class _EditProfileViewState extends State<EditProfileView> {
     _phoneController.text = widget.user.phoneNumber ?? '';
     _selectedGender = widget.user.gender;
     _selectedBirthDate = widget.user.birthDate;
+    _canEditFirstName = widget.user.firstName == null;
+    _canEditLastName = widget.user.lastName == null;
+    _canEditBirthDate = widget.user.birthDate == null;
+    _canEditGender = widget.user.gender == null;
+    if (widget.user.hasProfileImage) {
+      _loadProfileImage();
+    }
+  }
+
+  Future<void> _loadProfileImage() async {
+    setState(() => _isImageLoading = true);
+    final url = await UserService().getProfileImage();
+    if (mounted) {
+      setState(() {
+        _profileImage = url;
+        _isImageLoading = false;
+      });
+    }
   }
 
   @override
@@ -76,8 +103,32 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
   }
 
+  Future<void> _changeProfileImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+    if (picked == null) return;
+    setState(() => _isImageLoading = true);
+    final success = await UserService().uploadProfileImage(picked.path);
+    if (success) {
+      await _loadProfileImage();
+    } else if (mounted) {
+      setState(() => _isImageLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nie udało się przesłać zdjęcia')),
+      );
+    }
+  }
+
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
+
+    if (_emailController.text.trim().isEmpty &&
+        _phoneController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Podaj email lub numer telefonu')),
+      );
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -86,22 +137,28 @@ class _EditProfileViewState extends State<EditProfileView> {
     try {
       final userService = UserService();
 
-      // Przygotuj dane do aktualizacji - tylko te pola które backend obsługuje
-      final updateData = <String, dynamic>{
-        'firstName': _firstNameController.text.trim(),
-        'lastName': _lastNameController.text.trim(),
-        'email': _emailController.text.trim(),
-        'gender': _selectedGender,
-      };
+      final updateData = <String, dynamic>{};
 
-      // Dodaj opcjonalne pola tylko jeśli są wypełnione
-      if (_phoneController.text.trim().isNotEmpty) {
-        updateData['phoneNumber'] = _phoneController.text.trim();
+      if (_canEditFirstName) {
+        updateData['firstName'] = _firstNameController.text.trim();
+      }
+      if (_canEditLastName) {
+        updateData['lastName'] = _lastNameController.text.trim();
+      }
+      if (_canEditGender && _selectedGender != null) {
+        updateData['gender'] = _selectedGender;
+      }
+      if (_canEditBirthDate && _selectedBirthDate != null) {
+        updateData['birthDate'] =
+        _selectedBirthDate!.toIso8601String().split('T')[0];
       }
 
-      if (_selectedBirthDate != null) {
-        // Format daty zgodny z backendem (LocalDate w Javie)
-        updateData['birthDate'] = _selectedBirthDate!.toIso8601String().split('T')[0];
+      if (_emailController.text.trim().isNotEmpty) {
+        updateData['email'] = _emailController.text.trim();
+      }
+
+      if (_phoneController.text.trim().isNotEmpty) {
+        updateData['phoneNumber'] = _phoneController.text.trim();
       }
 
       final response = await userService.updateUserProfile(updateData);
@@ -193,12 +250,25 @@ class _EditProfileViewState extends State<EditProfileView> {
                     CircleAvatar(
                       radius: 50,
                       backgroundColor: AppColors.primaryColor.withOpacity(0.1),
-                      child: Icon(
+                      backgroundImage: _profileImage != null
+                          ? (_profileImage!.startsWith('http') || _profileImage!.startsWith('data:'))
+                          ? NetworkImage(_profileImage!) as ImageProvider
+                          : FileImage(File(_profileImage!))
+                          : null,
+                      child: _profileImage == null
+                          ? Icon(
                         Icons.person,
                         size: 50,
                         color: AppColors.primaryColor,
-                      ),
+                      )
+                          : null,
                     ),
+                    if (_isImageLoading)
+                      const Positioned.fill(
+                        child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
                     Positioned(
                       bottom: 0,
                       right: 0,
@@ -210,12 +280,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         ),
                         child: IconButton(
                           icon: const Icon(Icons.camera_alt, color: Colors.white, size: 20),
-                          onPressed: () {
-                            // Implementacja zmiany zdjęcia
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Funkcja zmiany zdjęcia będzie dostępna wkrótce')),
-                            );
-                          },
+                          onPressed: _changeProfileImage,
                         ),
                       ),
                     ),
@@ -232,7 +297,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                 controller: _firstNameController,
                 label: 'Imię',
                 icon: Icons.person_outline,
-                validator: (value) {
+                enabled: _canEditFirstName,
+                validator: _canEditFirstName
+                    ? (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Imię jest wymagane';
                   }
@@ -240,7 +307,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                     return 'Imię musi mieć co najmniej 2 znaki';
                   }
                   return null;
-                },
+                }
+                    : null,
               ),
               const SizedBox(height: 16),
 
@@ -248,7 +316,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                 controller: _lastNameController,
                 label: 'Nazwisko',
                 icon: Icons.person_outline,
-                validator: (value) {
+                enabled: _canEditLastName,
+                validator: _canEditLastName
+                    ? (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Nazwisko jest wymagane';
                   }
@@ -256,7 +326,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                     return 'Nazwisko musi mieć co najmniej 2 znaki';
                   }
                   return null;
-                },
+                }
+                    : null,
               ),
               const SizedBox(height: 16),
 
@@ -278,11 +349,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                 icon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Email jest wymagany';
-                  }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return 'Podaj prawidłowy adres email';
+                  if (value != null && value.isNotEmpty) {
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\$').hasMatch(value)) {
+                      return 'Podaj prawidłowy adres email';
+                    }
                   }
                   return null;
                 },
@@ -362,11 +432,13 @@ class _EditProfileViewState extends State<EditProfileView> {
     required IconData icon,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
+    bool enabled = true,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
+      enabled: enabled,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: AppColors.primaryColor),
@@ -396,7 +468,7 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   Widget _buildDateField() {
     return InkWell(
-      onTap: _selectBirthDate,
+      onTap: _canEditBirthDate ? _selectBirthDate : null,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
@@ -426,13 +498,15 @@ class _EditProfileViewState extends State<EditProfileView> {
                         : 'Wybierz datę urodzenia',
                     style: GoogleFonts.poppins(
                       fontSize: 16,
-                      color: _selectedBirthDate != null ? Colors.black87 : Colors.grey[500],
+                      color: _canEditBirthDate
+                          ? (_selectedBirthDate != null ? Colors.black87 : Colors.grey[500])
+                          : Colors.grey,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: Colors.grey[400]),
+            _canEditBirthDate ? Icon(Icons.chevron_right, color: Colors.grey[400]) : SizedBox.shrink(),
           ],
         ),
       ),
@@ -440,6 +514,20 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   Widget _buildGenderField() {
+    if (!_canEditGender && _selectedGender != null) {
+      final genderLabel = _selectedGender == 'MALE'
+          ? 'Mężczyzna'
+          : _selectedGender == 'FEMALE'
+          ? 'Kobieta'
+          : 'Inne';
+      return _buildTextField(
+        controller: TextEditingController(text: genderLabel),
+        label: 'Płeć',
+        icon: Icons.person_outline,
+        enabled: false,
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -466,17 +554,11 @@ class _EditProfileViewState extends State<EditProfileView> {
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(
-                child: _buildGenderOption('Mężczyzna', 'MALE'),
-              ),
+              Expanded(child: _buildGenderOption('Mężczyzna', 'MALE')),
               const SizedBox(width: 12),
-              Expanded(
-                child: _buildGenderOption('Kobieta', 'FEMALE'),
-              ),
+              Expanded(child: _buildGenderOption('Kobieta', 'FEMALE')),
               const SizedBox(width: 12),
-              Expanded(
-                child: _buildGenderOption('Inne', 'OTHER'),
-              ),
+              Expanded(child: _buildGenderOption('Inne', 'OTHER')),
             ],
           ),
         ],
@@ -488,11 +570,13 @@ class _EditProfileViewState extends State<EditProfileView> {
     final isSelected = _selectedGender == value;
 
     return InkWell(
-      onTap: () {
+      onTap: _canEditGender
+          ? () {
         setState(() {
           _selectedGender = value;
         });
-      },
+      }
+          : null,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),

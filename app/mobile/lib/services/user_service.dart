@@ -2,7 +2,8 @@ import 'dart:developer' as dev;
 import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:mobile/services/token_repository.dart';
-
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 import '../models/basic_response.dart';
 import '../models/user.dart';
 import 'api/initial_api.dart';
@@ -22,6 +23,7 @@ class UserService {
     required String gender,
     String? email,
     String? phoneNumber,
+    String? city,
     required String password,
     int? shelterId,
     required bool applyAsVolunteer,
@@ -44,6 +46,7 @@ class UserService {
         'gender': gender,
         'email': email,
         'phoneNumber': phoneNumber,
+        if (city != null) 'city': city,
         'password': password,
       });
 
@@ -79,6 +82,21 @@ class UserService {
 
   Future<void> logout() async {
     await _tokens.removeToken();
+  }
+
+  Future<BasicResponse> deactivateAccount({String? reason}) async {
+    try {
+      final resp = await _api.post('/user/deactivate', queryParameters: {
+        if (reason != null && reason.isNotEmpty) 'reason': reason,
+      });
+      if (resp.statusCode == 200) {
+        await _tokens.removeToken();
+      }
+      return BasicResponse(resp.statusCode ?? 0, resp.data);
+    } on DioException catch (e) {
+      return BasicResponse(
+          e.response?.statusCode ?? 0, e.response?.data ?? {'error': e.message});
+    }
   }
 
   Future<User> getCurrentUser() async {
@@ -130,6 +148,32 @@ class UserService {
         'success': false,
         'error': 'Wystąpił nieoczekiwany błąd: $e',
       };
+    }
+  }
+
+  Future<String?> getProfileImage() async {
+    try {
+      final resp = await _api.get('/user/profile-image');
+      if (resp.statusCode == 200 && resp.data is Map<String, dynamic>) {
+        return resp.data['image'] as String?;
+      }
+      return null;
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pobierania zdjęcia profilu: ${e.message}');
+      return null;
+    }
+  }
+
+  Future<bool> uploadProfileImage(String path) async {
+    try {
+      final formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(path),
+      });
+      final resp = await _api.post('/user/profile-image', data: formData);
+      return resp.statusCode == 200;
+    } on DioException catch (e) {
+      dev.log('Błąd podczas wysyłania zdjęcia profilu: ${e.message}');
+      return false;
     }
   }
 }

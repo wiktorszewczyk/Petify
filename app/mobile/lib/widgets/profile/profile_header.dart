@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/user.dart';
 import '../../styles/colors.dart';
+import '../../services/user_service.dart';
 
 class ProfileHeader extends StatelessWidget {
   final User user;
@@ -25,17 +26,27 @@ class ProfileHeader extends StatelessWidget {
         children: [
           Hero(
             tag: 'profileAvatar',
-            child: Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primaryColor, width: 2),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/default_avatar.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
+            child: FutureBuilder<String?>(
+              future: user.hasProfileImage ? UserService().getProfileImage() : Future.value(null),
+              builder: (context, snapshot) {
+                final image = snapshot.data;
+                return Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.primaryColor, width: 2),
+                    image: DecorationImage(
+                      image: image != null
+                          ? (image.startsWith('http') || image.startsWith('data:'))
+                          ? NetworkImage(image)
+                          : AssetImage('assets/images/default_avatar.jpg') as ImageProvider
+                          : const AssetImage('assets/images/default_avatar.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 20),

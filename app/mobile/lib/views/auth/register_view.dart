@@ -32,6 +32,7 @@ class _RegisterViewState extends State<RegisterView> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _repeatPasswordController = TextEditingController();
+  final _cityController = TextEditingController();
 
   // State variables
   int _currentStep = 0;
@@ -39,15 +40,6 @@ class _RegisterViewState extends State<RegisterView> {
   DateTime? _selectedBirthDate;
   String _selectedGender = 'Mężczyzna';
   String _contactMethod = 'email'; // 'email' or 'phone'
-  bool _applyAsVolunteer = false;
-  int? _selectedShelterId;
-
-  // Sample shelters - replace with actual data from API
-  final List<Map<String, dynamic>> _shelters = [
-    {'id': 1, 'name': 'Schronisko "Przytulisko"'},
-    {'id': 2, 'name': 'Dom dla Zwierząt "Azyl"'},
-    {'id': 3, 'name': 'Schronisko "Bezpieczna Przystań"'},
-  ];
 
   @override
   void dispose() {
@@ -56,6 +48,7 @@ class _RegisterViewState extends State<RegisterView> {
     _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
+    _cityController.dispose();
     _passwordController.dispose();
     _repeatPasswordController.dispose();
     super.dispose();
@@ -151,8 +144,9 @@ class _RegisterViewState extends State<RegisterView> {
         email: _contactMethod == 'email' ? _emailController.text.trim() : null,
         phoneNumber: _contactMethod == 'phone' ? _phoneController.text.trim().replaceAll(' ', '') : null,
         password: _passwordController.text.trim(),
-        shelterId: _selectedShelterId,
-        applyAsVolunteer: _applyAsVolunteer,
+        city: _cityController.text.trim().isNotEmpty ? _cityController.text.trim() : null,
+        shelterId: null,
+        applyAsVolunteer: false,
       );
 
       if (!mounted) return;
@@ -464,50 +458,13 @@ class _RegisterViewState extends State<RegisterView> {
 
             const SizedBox(height: 30),
 
-            // Volunteer application
-            CheckboxListTile(
-              title: Text(
-                'Chcę aplikować jako wolontariusz',
-                style: GoogleFonts.poppins(fontSize: 16),
-              ),
-              subtitle: const Text('Będziesz mógł pomagać w schronisku'),
-              value: _applyAsVolunteer,
-              onChanged: (value) => setState(() => _applyAsVolunteer = value!),
-              activeColor: AppColors.primaryColor,
-              contentPadding: EdgeInsets.zero,
+            CustomTextField(
+              labelText: 'Miasto',
+              controller: _cityController,
+              validator: _nameValidator,
             ).animate().fadeIn(duration: 500.ms, delay: 100.ms),
 
             const SizedBox(height: 20),
-
-            if (_applyAsVolunteer) ...[
-              Text(
-                'Wybierz schronisko',
-                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<int>(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                ),
-                hint: const Text('Wybierz schronisko'),
-                value: _selectedShelterId,
-                items: _shelters.map((shelter) {
-                  return DropdownMenuItem<int>(
-                    value: shelter['id'],
-                    child: Text(shelter['name']),
-                  );
-                }).toList(),
-                onChanged: (value) => setState(() => _selectedShelterId = value),
-                validator: _applyAsVolunteer
-                    ? (value) => value == null ? 'Wybierz schronisko' : null
-                    : null,
-              ).animate().fadeIn(duration: 500.ms, delay: 200.ms),
-
-              const SizedBox(height: 20),
-            ],
 
             Container(
               padding: const EdgeInsets.all(16),
