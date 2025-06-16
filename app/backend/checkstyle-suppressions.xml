@@ -11,4 +11,5 @@
     <suppress checks="MissingJavadocMethod"/>
     <suppress checks="MissingJavadocType"/>
     <suppress checks="SummaryJavadoc"/>
+    <suppress files="auth-server[\\/]src[\\/]test[\\/]resources[\\/]application-test.properties" checks=".*"/>
 </suppressions>
