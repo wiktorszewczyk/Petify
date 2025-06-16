@@ -55,10 +55,11 @@ public class FavoritePetService {
         upsertFavoritePet(username, petId, MatchType.LIKE);
 
         try {
-            achievementClient.trackLikeProgress();
+            achievementClient.trackLikeProgressForUser(username);
             log.info("Successfully tracked like progress for user: {}", username);
         } catch (Exception e) {
             log.error("Failed to track achievement progress for like action by user: {}", username, e);
+
         }
     }
 
@@ -72,7 +73,7 @@ public class FavoritePetService {
         upsertFavoritePet(username, petId, MatchType.SUPPORT);
 
         try {
-            achievementClient.trackSupportProgress();
+            achievementClient.trackSupportProgressForUser(username);
             log.info("Successfully tracked support progress for user: {}", username);
         } catch (Exception e) {
             log.error("Failed to track achievement progress for support action by user: {}", username, e);
