@@ -378,8 +378,7 @@ class PetService {
         }
 
         // Wzbogać dane o informacje o schronisku dla każdego zwierzaka
-        List<Pet> enrichedPets = [];
-        for (Pet pet in pets) {
+        List<Pet> enrichedPets = await Future.wait(pets.map((pet) async {
           try {
             final shelter = await ShelterService().getShelterById(pet.shelterId);
 
@@ -422,12 +421,12 @@ class PetService {
               shelterAddress: shelter.address,
               distance: calculatedDistance,
             );
-            enrichedPets.add(enrichedPet);
+            return enrichedPet;
           } catch (e) {
             dev.log('Failed to fetch shelter info for favorite pet ${pet.id}: $e');
-            enrichedPets.add(pet);
+            return pet;
           }
-        }
+        }));
 
         return enrichedPets;
       }
@@ -463,9 +462,7 @@ class PetService {
           dev.log('getSupportedPets - Failed to get user location: $e');
         }
 
-        // Wzbogać dane o informacje o schronisku dla każdego zwierzaka
-        List<Pet> enrichedPets = [];
-        for (Pet pet in pets) {
+        List<Pet> enrichedPets = await Future.wait(pets.map((pet) async {
           try {
             final shelter = await ShelterService().getShelterById(pet.shelterId);
 
@@ -508,12 +505,12 @@ class PetService {
               shelterAddress: shelter.address,
               distance: calculatedDistance,
             );
-            enrichedPets.add(enrichedPet);
+            return enrichedPet;
           } catch (e) {
             dev.log('Failed to fetch shelter info for supported pet ${pet.id}: $e');
-            enrichedPets.add(pet);
+            return pet;
           }
-        }
+        }));
 
         return enrichedPets;
       }

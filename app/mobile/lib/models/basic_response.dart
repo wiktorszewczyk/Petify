@@ -1,10 +1,10 @@
 class BasicResponse {
   final int status;
-  final Map<String, dynamic> data;
+  final dynamic data;
 
-  BasicResponse(this.status, this.data);
+  BasicResponse(this.status, [this.data]);
 
-  get statusCode => status;
+  int get statusCode => status;
 
   @override
   String toString() => "BasicResponse(status: $status, data: $data)";
