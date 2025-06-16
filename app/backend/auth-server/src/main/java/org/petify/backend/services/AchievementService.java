@@ -123,20 +123,11 @@ public class AchievementService {
         trackAchievementByNameAndCategory(username, achievementName, AchievementCategory.PROFILE);
     }
 
-    @Transactional
-    public void trackProfileAchievementByName(String username, String achievementName) {
-        trackAchievementByNameAndCategory(username, achievementName, AchievementCategory.PROFILE);
-    }
-
     private void updateBadgeCounts(ApplicationUser user, AchievementCategory category) {
         switch (category) {
             case LIKES:
                 break;
             case SUPPORT:
-                break;
-            case ADOPTION:
-                user.setAdoptionCount(user.getAdoptionCount() + 1);
-                user.setBadgesCount(user.getBadgesCount() + 1);
                 break;
             case ADOPTION:
                 user.setAdoptionCount(user.getAdoptionCount() + 1);
