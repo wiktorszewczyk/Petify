@@ -42,14 +42,13 @@ public class AuthServerApplication {
             Role userRole = roleRepository.findByAuthority("USER")
                     .orElseGet(() -> roleRepository.save(new Role("USER")));
 
-            // Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
-            // .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
+            Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
+                    .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
 
             Role shelterRole = roleRepository.findByAuthority("SHELTER")
                     .orElseGet(() -> roleRepository.save(new Role("SHELTER")));
 
             Optional<ApplicationUser> existingAdmin = userRepository.findByUsername("admin");
-
             if (existingAdmin.isEmpty()) {
                 Set<Role> adminRoles = new HashSet<>();
                 adminRoles.add(adminRole);
@@ -107,6 +106,36 @@ public class AuthServerApplication {
 
                 ApplicationUser savedShelterUser = userRepository.save(shelterUser);
                 achievementService.initializeUserAchievements(savedShelterUser);
+            }
+
+            Optional<ApplicationUser> existingVolunteer = userRepository.findByUsername("volunteer");
+            if (existingVolunteer.isEmpty()) {
+                Set<Role> volunteerRoles = new HashSet<>();
+                volunteerRoles.add(volunteerRole);
+                volunteerRoles.add(userRole);
+
+                ApplicationUser volunteerUser = new ApplicationUser();
+                volunteerUser.setUsername("volunteer");
+                volunteerUser.setPassword(passwordEncoder.encode("volunteer"));
+                volunteerUser.setEmail("volunteer@petify.org");
+                volunteerUser.setFirstName("Anna");
+                volunteerUser.setLastName("Kowalska");
+                volunteerUser.setBirthDate(LocalDate.of(1995, 5, 15));
+                volunteerUser.setGender("FEMALE");
+                volunteerUser.setPhoneNumber("+48555123456");
+                volunteerUser.setVolunteerStatus(VolunteerStatus.ACTIVE);
+                volunteerUser.setActive(true);
+                volunteerUser.setCreatedAt(LocalDateTime.now());
+                volunteerUser.setAuthorities(volunteerRoles);
+                volunteerUser.setXpPoints(250);
+                volunteerUser.setLevel(3);
+                volunteerUser.setLikesCount(15);
+                volunteerUser.setSupportCount(8);
+                volunteerUser.setBadgesCount(2);
+                volunteerUser.setAdoptionCount(1);
+
+                ApplicationUser savedVolunteer = userRepository.save(volunteerUser);
+                achievementService.initializeUserAchievements(savedVolunteer);
             }
 
             long achievementCount = achievementRepository.count();
