@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  config-server:
+    image: ${ACR_LOGIN_SERVER}/petify-config-server:latest
+    expose:
+      - 8888
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  discovery:
+    image: ${ACR_LOGIN_SERVER}/petify-discovery:latest
+    expose:
+      - 8761
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  auth-server:
+    image: ${ACR_LOGIN_SERVER}/petify-auth-server:latest
+    depends_on:
+      discovery:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  chat:
+    image: ${ACR_LOGIN_SERVER}/petify-chat:latest
+    depends_on:
+      discovery:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  feed:
+    image: ${ACR_LOGIN_SERVER}/petify-feed:latest
+    depends_on:
+      discovery:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8030/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+  
+  funding:
+    image: ${ACR_LOGIN_SERVER}/petify-funding:latest
+    depends_on:
+      discovery:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8020/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  image:
+    image: ${ACR_LOGIN_SERVER}/petify-image:latest
+    depends_on:
+      discovery:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8060/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  reservations:
+    image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
+    depends_on:
+      discovery:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  shelter:
+    image: ${ACR_LOGIN_SERVER}/petify-shelter:latest
+    depends_on:
+      discovery:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8010/actuator/health"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  gateway:
+    image: ${ACR_LOGIN_SERVER}/petify-gateway:latest
+    ports:
+      - 8222:8222
+    depends_on:
+      discovery:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+      chat:
+        condition: service_healthy
+      feed:
+        condition: service_healthy
+      image:
+        condition: service_healthy
+      funding:
+        condition: service_healthy
+      shelter:
+        condition: service_healthy
+      reservations:
+        condition: service_healthy
