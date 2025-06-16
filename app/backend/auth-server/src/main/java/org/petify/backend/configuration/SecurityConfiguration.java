@@ -3,7 +3,10 @@ package org.petify.backend.configuration;
 import org.petify.backend.services.CustomOAuth2UserService;
 import org.petify.backend.services.TokenService;
 import org.petify.backend.utils.RSAKeyProperties;
+<<<<<<< HEAD
 import org.petify.backend.repository.UserRepository;
+=======
+>>>>>>> origin/main
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -49,9 +52,12 @@ public class SecurityConfiguration {
 
     @Autowired
     private UserDetailsService userDetailsService;
+<<<<<<< HEAD
     
     @Autowired
     private UserRepository userRepository;
+=======
+>>>>>>> origin/main
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -98,6 +104,7 @@ public class SecurityConfiguration {
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler((request, response, authentication) -> {
+<<<<<<< HEAD
                             try {
                                 String token = tokenService.generateJwt(authentication);
                                 
@@ -123,6 +130,13 @@ public class SecurityConfiguration {
                             } catch (Exception e) {
                                 // Handle redirect exception
                             }
+=======
+                            String token = tokenService.generateJwt(authentication);
+                            response.sendRedirect("/auth/oauth2/success?token=" + token);
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.sendRedirect("/auth/oauth2/error?error=" + exception.getMessage());
+>>>>>>> origin/main
                         })
                 );
 

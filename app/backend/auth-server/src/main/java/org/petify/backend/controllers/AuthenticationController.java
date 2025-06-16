@@ -163,6 +163,28 @@ public class AuthenticationController {
         return response;
     }
 
+<<<<<<< HEAD
+=======
+    @GetMapping("/auth/oauth2/success")
+    public void oauthLoginSuccess(
+            @RequestParam String token,
+            @AuthenticationPrincipal OAuth2User oauth2User,
+            HttpServletResponse response) throws IOException {
+
+        String email = oauth2User.getAttribute("email");
+        ApplicationUser user = userRepository.findByUsername(email)
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
+
+        String frontendUrl = "http://localhost:5173/home?token=" + token + "&userId=" + user.getUserId();
+        response.sendRedirect(frontendUrl);
+    }
+
+    @GetMapping("/auth/oauth2/error")
+    public void oauthLoginError(HttpServletResponse response) throws IOException {
+        String frontendUrl = "http://localhost:5173/home?error=OAuth2%20authentication%20failed";
+        response.sendRedirect(frontendUrl);
+    }
+>>>>>>> origin/main
 
     @PostMapping("/auth/oauth2/exchange")
     public ResponseEntity<?> exchangeOAuth2Token(@RequestBody Map<String, String> request) {
