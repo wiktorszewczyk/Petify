@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login, handleGoogleLogin } from '../api/auth';
 import './Auth.css'
-import { GoogleLogin } from '@react-oauth/google';
 
 export default function Login() {
   const [username, setEmail] = useState('');

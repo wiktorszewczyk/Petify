@@ -20,7 +20,6 @@
   z-index: 1; 
 }
 
-
 .shelter-picture {
   width: 100%;
   height: 450px;
@@ -69,9 +68,6 @@
   border: 4px solid #ffbb00;
 }
 
-
-
-
 .shelter-profile-info {
   width: 100%;
   background-color:rgba(255, 255, 255,0);
@@ -83,20 +79,16 @@
   margin-left: 10px;
 }
 
-
 .shelter-location-info {
   display: flex;
   justify-self: start;
-  
   gap: 10px;
   margin-top: 10px;
 }
 
-
-
 .shelter-header,
 .shelter-description,
-.announcements{
+.pet-description{
    margin-bottom: 24px;
   background-color: #f9f9f9;
   padding: 16px;
@@ -106,7 +98,8 @@
 }
 
 .shelter-header h2,
-.shelter-description h3{
+.shelter-description h3,
+.pet-description h3{
   margin-bottom: 10px;
   color: #000000;
   padding-bottom: 5px;
@@ -114,7 +107,8 @@
 }
 
 .shelter-header p,
-.shelter-description p {
+.shelter-description p,
+.pet-description p {
   color: #575757;
   font-size: 1.2rem;
 }
@@ -144,7 +138,6 @@
   width: 20px;
   height: 20px;
 }
-
 
 .btn-support {
   background-color: #ffa600;
@@ -244,7 +237,6 @@
   gap: 10px;
   margin: 20px 0;
   flex-wrap: wrap; 
-
 }
 
 .donate-option {
@@ -431,26 +423,267 @@
   background-color: #e6a800;
 }
 
+/* Sekcje postów i wydarzeń */
+.shelter-posts,
+.shelter-events {
+  margin-bottom: 30px;
+  background-color: #f9f9f9;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+  width: 100%;
+}
+
+.posts-list,
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Style dla postów */
+.post-card {
+  background: #ffffff;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+}
+
+.post-image-container {
+  width: 35%;
+  min-width: 180px;
+  height: 200px;
+  position: relative;
+  background-color: #f5f5f5;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.post-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  color: #999;
+}
+
+.placeholder-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.post-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.post-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.post-date {
+  font-weight: 500;
+}
+
+.post-images-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.post-button {
+  align-self: flex-start;
+  padding: 10px 20px;
+  background-color: #ffbb00;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.post-button:hover {
+  background-color: #e6a800;
+}
+
+/* Style dla wydarzeń */
+.event-card {
+  background: #ffffff;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+}
+
+.event-image-container {
+  width: 35%;
+  min-width: 180px;
+  height: 220px;
+  position: relative;
+  background-color: #f5f5f5;
+}
+
+.event-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.event-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  color: #999;
+}
+
+.event-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.event-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.event-detail {
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-size: 0.9rem;
+  gap: 8px;
+}
+
+.event-icon {
+  width: 16px;
+  height: 16px;
+  color: #ffbb00;
+  flex-shrink: 0;
+}
+
+.event-signup-button {
+  align-self: flex-start;
+  padding: 12px 24px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1rem;
+}
+
+.event-signup-button:hover {
+  background-color: #218838;
+}
+
 /* Responsive design for mobile devices */
 @media (max-width: 768px) {
-  .announcement-card {
+  .announcement-card,
+  .post-card,
+  .event-card {
     flex-direction: column;
   }
   
-  .announcement-image-container {
+  .announcement-image-container,
+  .post-image-container,
+  .event-image-container {
     width: 100%;
     height: 200px;
   }
   
-  .announcement-content {
+  .announcement-content,
+  .post-content,
+  .event-content {
     padding: 16px;
   }
   
-  .announcement-details {
+  .announcement-details,
+  .event-details {
     flex-direction: column;
     gap: 10px;
   }
+
+  .post-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }
+
 .photo-slider.no-photos {
   min-height: 420px !important;
   display: flex;
@@ -462,9 +695,194 @@
   padding: 1rem;
   text-align: center;
 }
+
 .photo-slider.no-photos p {
   font-size: 1.5rem; 
   font-weight: 600;
   color: #666;
   margin: 0;
+}
+
+
+/* Główna zbiórka styles */
+.main-fundraising {
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #ffa600 0%, #ff8c00 100%);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(255, 166, 0, 0.3);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-fundraising::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
+              linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%);
+  background-size: 20px 20px;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.fundraising-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.fundraising-badge-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.fundraising-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fundraising-description {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  opacity: 0.95;
+  line-height: 1.5;
+}
+
+.fundraising-progress {
+  margin-bottom: 24px;
+}
+
+.progress-info {
+  position: relative;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.progress-raised,
+.progress-goal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.progress-goal {
+  align-items: flex-end;
+}
+
+.progress-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.progress-amount {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: white;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-percentage {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.fundraising-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-share,
+.btn-support-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.btn-share {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.btn-share:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-support-main {
+  background: white;
+  color: #ff8c00;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-support-main:hover {
+  background: #f8f8f8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .fundraising-actions {
+    flex-direction: column;
+  }
+  
+  .fundraising-title {
+    font-size: 1.8rem;
+  }
+  
+  .progress-labels {
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+  }
+  
+  .progress-goal {
+    align-items: flex-start;
+  }
 }

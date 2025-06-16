@@ -11,6 +11,8 @@ import EditProfile from './pages/EditProfile'
 import './variables.css'
 import ShelterProfile from './pages/ShelterProfile'
 import PrivateRoute from './components/PrivateRoute'
+import VolunteerApplication from './pages/VolunteerApplication'
+import AdoptionForm from './pages/AdoptionForm'
 
 
 
@@ -30,7 +32,8 @@ function App() {
       <Route path="/petProfile/:id" element={<PrivateRoute><PetProfile/></PrivateRoute>} />
       <Route path="/shelterProfile/:id" element={<PrivateRoute><ShelterProfile/></PrivateRoute>} /> 
       <Route path="/editProfile" element={<PrivateRoute><EditProfile /></PrivateRoute>} />
-
+      <Route path="/volunteerApplication" element={<PrivateRoute><VolunteerApplication /></PrivateRoute>} />
+      <Route path="/adoptionForm/:id" element={<PrivateRoute><AdoptionForm /></PrivateRoute>} />
     </Routes>
   )
 }

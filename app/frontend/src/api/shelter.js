@@ -50,7 +50,8 @@ export const fetchShelters = async () => {
     throw new Error("Błąd podczas pobierania schronisk");
   }
 
-  return await response.json();
+  const data = await response.json();
+  return Array.isArray(data.content) ? data.content : [];
 };
 
 export const fetchShelterById = async (shelterId) => {
@@ -156,8 +157,9 @@ params.append("maxAge", filters.ageRange[1]);
   }
 
   const data = await response.json();
+  const pets = Array.isArray(data.pets) ? data.pets : [];
   const enrichedAnimals = await Promise.all(
-    data.map(async (animal) => {
+    pets.map(async (animal) => {
       let shelterName = `Schronisko #${animal.shelterId}`;
       let shelterAddress = '';
 
@@ -180,8 +182,6 @@ params.append("maxAge", filters.ageRange[1]);
       return {
         ...animal,
         photos: animal.images?.map((img) => img.imageUrl) || [],
-        characteristics: animal.characteristics || [],
-        location: shelterName,
         shelterAddress,
         shelterName,
       };

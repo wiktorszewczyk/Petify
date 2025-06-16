@@ -24,7 +24,7 @@ import {
   fetchImagesByPetId,
   fetchShelterById
 } from "../api/shelter";
-
+import { useNavigate } from "react-router-dom";
 
 
 import dono5 from '../assets/pet_snack.png';
@@ -60,7 +60,7 @@ const [shelter, setShelter] = useState(null);
 const [petPhotos, setPetPhotos] = useState([]);
 const [selectedAmount, setSelectedAmount] = useState(null);
 const [customAmount, setCustomAmount] = useState('');
-
+const navigate = useNavigate();
 
 
 const { id } = useParams();
@@ -259,7 +259,7 @@ if (!pet) return null;
 
   {/* Przyciski akcji */}
   <section className="pet-action-buttons">
-    <button className="action-btn btn-adopt" onClick={() => setShowAdoptPopup(true)}>
+    <button className="action-btn btn-adopt" onClick={() => navigate(`/adoptionForm/${pet.id}`)}>
       <Heart className="btn-icon" />
       Adoptuj
     </button>
