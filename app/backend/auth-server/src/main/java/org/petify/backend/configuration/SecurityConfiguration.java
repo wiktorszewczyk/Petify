@@ -86,6 +86,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     auth.requestMatchers("/user/**").permitAll();
                     // auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER", "VOLUNTEER", "SHELTER");
+                    auth.requestMatchers("/actuator/health").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -101,7 +102,6 @@ public class SecurityConfiguration {
                             response.sendRedirect("/auth/oauth2/error?error=" + exception.getMessage());
                         })
                 );
-
         return http.build();
     }
 

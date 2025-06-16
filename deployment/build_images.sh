@@ -1,5 +1,5 @@
 #!/bin/bash
-services=(config-server discovery gateway auth-server feed image shelter) # chat reservations funding
+services=(auth-server config-server) # (config-server discovery gateway auth-server feed image shelter) # chat reservations funding
 
 for service in "${services[@]}"
 do
