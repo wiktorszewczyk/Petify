@@ -89,8 +89,6 @@ build/
 ### VS Code ###
 .vscode/
 
-
 ### Keys ###
-app/backend/secrets.properties
-/app/backend/shelter/src/main/resources/application.properties
-/app/backend/image/src/main/resources/application.properties
+secrets.properties
+application.properties
