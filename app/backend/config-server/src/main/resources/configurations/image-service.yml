@@ -1,5 +1,6 @@
 server:
   port: 8060
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -29,3 +30,9 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${random.uuid}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
