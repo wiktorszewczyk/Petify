@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17
+    image: postgres:15
     environment:
       POSTGRES_DB: petify
       POSTGRES_USER: admin
@@ -31,6 +31,8 @@ services:
       - 8761
     environment:
       - EUREKA_HOST=discovery
+      - CONFIG_SERVER_HOST=config-server
+      - CONFIG_SERVER_PORT=8888
     depends_on:
       config-server:
         condition: service_healthy
@@ -52,6 +54,8 @@ services:
       - DB_USERNAME=admin
       - DB_PASSWORD=admin
       - GATEWAY_URL=http://gateway:8222
+      - CONFIG_SERVER_HOST=config-server
+      - CONFIG_SERVER_PORT=8888
       - google.client.id=${GOOGLE_CLIENT_ID}
       - google.client.secret=${GOOGLE_CLIENT_SECRET}
     depends_on:
@@ -78,6 +82,8 @@ services:
       - DB_PASSWORD=admin
       - AUTH_SERVICE_HOST=auth-server
       - AUTH_SERVICE_PORT=9000
+      - CONFIG_SERVER_HOST=config-server
+      - CONFIG_SERVER_PORT=8888
     depends_on:
       discovery:
         condition: service_healthy
@@ -104,6 +110,8 @@ services:
       - DB_PASSWORD=admin
       - AUTH_SERVICE_HOST=auth-server
       - AUTH_SERVICE_PORT=9000
+      - CONFIG_SERVER_HOST=config-server
+      - CONFIG_SERVER_PORT=8888
     depends_on:
       discovery:
         condition: service_healthy
@@ -130,6 +138,8 @@ services:
       - DB_PASSWORD=admin
       - AUTH_SERVICE_HOST=auth-server
       - AUTH_SERVICE_PORT=9000
+      - CONFIG_SERVER_HOST=config-server
+      - CONFIG_SERVER_PORT=8888
     depends_on:
       discovery:
         condition: service_healthy
@@ -151,6 +161,8 @@ services:
       - EUREKA_HOST=discovery
       - EUREKA_PORT=8761
       - GATEWAY_HOST=gateway
+      - CONFIG_SERVER_HOST=config-server
+      - CONFIG_SERVER_PORT=8888
     depends_on:
       discovery:
         condition: service_healthy
