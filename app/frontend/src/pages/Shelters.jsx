@@ -77,7 +77,7 @@ if (error) return <div className="error-message">{error}</div>;
       <div className="shelter-container">
         <div className="shelter-header">
           <h1>Nasze schroniska</h1>
-          <p>Wybierz schronisko, aby zobaczyć dostępne zwierzęta</p>
+          <p>Schroniska, które z nami współpracuja</p>
         </div>
 
         <div className="shelter-grid">
@@ -93,7 +93,7 @@ if (error) return <div className="error-message">{error}</div>;
               <div className="shelter-card-content">
                 <h3>{shelter.name}</h3>
                 <div className="shelter-details">
-                  <MapPin className="detail-icon" /> {shelter.location}
+                  <MapPin className="detail-icon" /> {shelter.address}
                 </div>
               </div>
             </div>

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import "./ShelterProfile.css";
 import {
   PawPrint,
@@ -7,13 +8,13 @@ import {
   ScrollText,
   ChevronLeft,
   ChevronRight,
+  Phone
 } from "lucide-react";
 import Navbar from "../components/Navbar";
+import { fetchShelterProfileById } from "../api/shelter";
 
 
-import shelter1 from '../assets/schronisko1.jpg';
-import shelter2 from '../assets/schronisko2.jpg';
-import shelter3 from '../assets/schronisko3.jpg';
+
 
 import dono1 from '../assets/donation_5.png';
 import dono2 from '../assets/donation_10.png';
@@ -40,52 +41,40 @@ const pawSteps = [
   { top: '70vh', left: '-3vw', size: '8vw', rotate: '-135deg' },
 ];
 
-const shelter = {
-  id: 101,
-  name: 'Schronisko na Paluchu',
-  location: 'Warszawa - Mokotów ul. Spacerowa 12', 
-  description: 'Schronisko dla zwierząt w Warszawie, które zapewnia opiekę i schronienie dla bezdomnych psów i kotów. Naszym celem jest znalezienie nowych domów dla naszych podopiecznych oraz edukacja społeczeństwa na temat odpowiedzialnego posiadania zwierząt.',
-  photos: [shelter1, shelter2, shelter3],
-};
 
-const announcements = [
-  {
-    id: 1,
-    title: "Dziień otwarty w schronisku",
-    location: "Warszawa - Mokotów ul. Spacerowa 12",
-    date: "2023-10-15",
-    description: "Zapraszamy na dzień otwarty w naszym schronisku! Poznaj naszych podopiecznych i dowiedz się, jak możesz pomóc.",
-    image : shelter1,
-  },
-  {
-    id: 1,
-    title: "Zbiórka na leczenie zwierząt",
-    location: "Warszawa - Mokotów ul. Spacerowa 12",
-    date: "2023-10-15",
-    description: "Zbieramy fundusze na leczenie naszych podopiecznych. Każda złotówka się liczy!",
-    image : shelter2,
-  },
-  // Dodaj więcej ogłoszeń w razie potrzeby
-];
+
+
 
 function ShelterProfile() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [showDonatePopup, setShowDonatePopup] = useState(false);
+  const [shelter, setShelter] = useState(null);
+  const [shelterPhoto, setShelterPhoto] = useState(null);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+const { id } = useParams();
 
-  const handlePrev = () => {
-    setCurrentPhotoIndex((prevIndex) =>
-      prevIndex === 0 ? shelter.photos.length - 1 : prevIndex - 1
-    );
+  
+
+ useEffect(() => {
+  const loadShelter = async () => {
+    try {
+      const data = await fetchShelterProfileById(id);
+      setShelterPhoto(data.imageUrl || null);
+      setShelter(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleNext = () => {
-    setCurrentPhotoIndex((prevIndex) =>
-      prevIndex === shelter.photos.length - 1 ? 0 : prevIndex + 1
-    );
-    };
-
+  loadShelter();
+}, [id]);
  
-  
+  if (loading) return <p>Ładowanie...</p>;
+if (error) return <p>Błąd: {error}</p>;
+if (!shelter) return null;
 
   return (
     <div className="profile-body">
@@ -146,30 +135,21 @@ function ShelterProfile() {
       <div className="shelter-profile-page">
         <div className="shelter-picture">
         <section className="shelter-profile-picture">
-          <div className="photo-slider">
-             <button className="slider-btn left" onClick={handlePrev}>
-              <ChevronLeft />
-            </button>
-            <img
-              src={shelter.photos[currentPhotoIndex]}
-              alt={`Buddy zdjęcie ${currentPhotoIndex + 1}`}
-              className="slider-image"
-            />
-            <button className="slider-btn right" onClick={handleNext}>
-              <ChevronRight />
-            </button>
-          </div>
-          <div className="photo-thumbnails">
-            {shelter.photos.map((photo, index) => (
-              <img
-                key={index}
-                src={photo}
-                alt={`Miniatura ${index + 1}`}
-                className={`thumbnail ${index === currentPhotoIndex ? 'active' : ''}`}
-                onClick={() => setCurrentPhotoIndex(index)}
-              />
-            ))}
-          </div>
+          {shelterPhoto ? (
+  <div className="photo-slider">
+    
+    <img
+      src={shelterPhoto}
+      alt={`Zdjęcie schroniska`}
+      className="slider-image"
+    />
+    
+  </div>
+) : (
+  <div className="photo-slider no-photos">
+    <p>Brak zdjęć dla tego schroniska</p>
+  </div>
+)}    
         </section>
 
         </div>
@@ -181,8 +161,12 @@ function ShelterProfile() {
     <h2 className="shelter-name">{shelter.name}</h2>  
     <div className="shelter-location-info"> 
       <MapPin className="map-pin-shelter-profile" /> 
-      <p className="shelter-location">{shelter.location}</p> 
+      <p className="shelter-location">{shelter.address}</p> 
     </div>
+      <div className="shelter-location-info">
+    <Phone className="map-pin-shelter-profile" />
+    <p className="shelter-location">{shelter.phoneNumber}</p>
+  </div>
   </div>
 
   {/* Przyciski akcji */}
@@ -205,37 +189,9 @@ function ShelterProfile() {
   </section>
 
 
-   {/*liczba dotacji*/}
 
-   {/*zbiorki*/}
-<section className="shelter-announcements">
-  <h3 className="section-title">Ogłoszenia</h3>
-  <div className="announcements-list">
-    {announcements.map((item) => (
-      <div key={item.id} className="announcement-card">
-        <div className="announcement-image-container">
-          <img src={item.image} alt={item.title} className="announcement-image" />
-        </div>
-        <div className="announcement-content">
-          <h4 className="announcement-title">{item.title}</h4>
-          <div className="announcement-details">
-            <div className="announcement-detail">
-              <MapPin size={16} className="announcement-icon" />
-              <span>{item.location}</span>
-            </div>
-            <div className="announcement-detail">
-              <ScrollText size={16} className="announcement-icon" />
-              <span>{item.date}</span>
-            </div>
-          </div>
-          <p className="announcement-description">{item.description}</p>
-          <button className="announcement-button">Szczegóły</button>
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
 
+  
   
 
   

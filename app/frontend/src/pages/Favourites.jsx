@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import './Favourites.css';
 import {MapPin, Heart,PawPrint} from 'lucide-react';
-import { fetchFavoritePets, fetchShelterById } from "../api/shelter";
+import { fetchFavoritePets, fetchShelterById, fetchImagesByPetId } from "../api/shelter";
 import { useEffect, useState } from "react";
 
 
@@ -44,15 +44,22 @@ useEffect(() => {
       const favoritesWithShelter = await Promise.all(
         pets.map(async (pet) => {
           let shelterName = "Nieznane schronisko";
+          let imageUrl = null;
 
           try {
             const shelter = await fetchShelterById(pet.shelterId);
             shelterName = shelter.name;
           } catch (_) {}
 
+          try {
+            const imageData = await fetchImagesByPetId(pet.id);
+            imageUrl = imageData[0]?.imageUrl || null;
+          } catch (_) {}
+
           return {
             ...pet,
             shelterName,
+            image: imageUrl,
           };
         })
       );
@@ -64,7 +71,8 @@ useEffect(() => {
       setLoading(false);
     }
   };
-    loadFavorites();
+
+  loadFavorites();
 }, []);
 
 if (loading) return <div className="loading-spinner"></div>;

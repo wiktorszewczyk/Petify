@@ -67,7 +67,7 @@ public class ShelterController {
         return new ResponseEntity<>(shelter, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAuthority('USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getShelterById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(shelterService.getShelterById(id));
