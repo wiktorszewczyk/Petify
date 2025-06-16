@@ -68,21 +68,41 @@ class AdoptionResponse {
   });
 
   factory AdoptionResponse.fromJson(Map<String, dynamic> json) {
-    return AdoptionResponse(
-      id: json['id'] is String ? int.parse(json['id']) : json['id'],
-      username: json['username'] ?? '',
-      petId: json['petId'] is String ? int.parse(json['petId']) : json['petId'],
-      adoptionStatus: json['adoptionStatus'] ?? 'PENDING',
-      motivationText: json['motivationText'] ?? '',
-      fullName: json['fullName'] ?? '',
-      phoneNumber: json['phoneNumber'] ?? '',
-      address: json['address'] ?? '',
-      housingType: json['housingType'] ?? '',
-      isHouseOwner: json['isHouseOwner'] ?? false,
-      hasYard: json['hasYard'] ?? false,
-      hasOtherPets: json['hasOtherPets'] ?? false,
-      description: json['description'],
-    );
+    try {
+      // Helper function to safely parse integers
+      int _parseId(dynamic value) {
+        if (value is int) return value;
+        if (value is String) return int.parse(value);
+        if (value is num) return value.toInt();
+        throw FormatException('Cannot parse ID from: $value');
+      }
+
+      // Helper function to safely parse boolean
+      bool _parseBool(dynamic value) {
+        if (value is bool) return value;
+        if (value is String) return value.toLowerCase() == 'true';
+        if (value is num) return value != 0;
+        return false;
+      }
+
+      return AdoptionResponse(
+        id: _parseId(json['id']),
+        username: json['username']?.toString() ?? '',
+        petId: _parseId(json['petId']),
+        adoptionStatus: json['adoptionStatus']?.toString() ?? 'PENDING',
+        motivationText: json['motivationText']?.toString() ?? '',
+        fullName: json['fullName']?.toString() ?? '',
+        phoneNumber: json['phoneNumber']?.toString() ?? '',
+        address: json['address']?.toString() ?? '',
+        housingType: json['housingType']?.toString() ?? '',
+        isHouseOwner: _parseBool(json['isHouseOwner']),
+        hasYard: _parseBool(json['hasYard']),
+        hasOtherPets: _parseBool(json['hasOtherPets']),
+        description: json['description']?.toString(),
+      );
+    } catch (e) {
+      throw FormatException('Error parsing AdoptionResponse from JSON: $e\nJSON: $json');
+    }
   }
 
   String get statusDisplayName {

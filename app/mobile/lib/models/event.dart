@@ -10,6 +10,10 @@ class Event {
   final int? participantsCount;
   final String? eventType; // "Warsztaty", "Spacer", "Dzień otwarty", etc.
   final bool requiresRegistration;
+  final int? capacity;
+  final int? shelterId;
+  final int? mainImageId;
+  final int? fundraisingId;
 
   Event({
     required this.id,
@@ -23,6 +27,10 @@ class Event {
     this.participantsCount,
     this.eventType,
     this.requiresRegistration = false,
+    this.capacity,
+    this.shelterId,
+    this.mainImageId,
+    this.fundraisingId,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -38,6 +46,26 @@ class Event {
       participantsCount: json['participantsCount'],
       eventType: json['eventType'],
       requiresRegistration: json['requiresRegistration'] ?? false,
+    );
+  }
+
+  factory Event.fromBackendJson(Map<String, dynamic> json) {
+    return Event(
+      id: json['id'].toString(),
+      title: json['title'] ?? '',
+      organizerName: 'Schronisko', // Will be filled by shelter info if needed
+      description: json['longDescription'] ?? json['shortDescription'] ?? '',
+      imageUrl: json['mainImageId'] != null
+          ? 'http://localhost:8222/images/${json['mainImageId']}'
+          : 'https://images.pexels.com/photos/1633522/pexels-photo-1633522.jpeg',
+      date: DateTime.parse(json['startDate']),
+      endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
+      location: json['address'] ?? '',
+      capacity: json['capacity'],
+      requiresRegistration: json['capacity'] != null,
+      shelterId: json['shelterId'],
+      mainImageId: json['mainImageId'],
+      fundraisingId: json['fundraisingId'],
     );
   }
 

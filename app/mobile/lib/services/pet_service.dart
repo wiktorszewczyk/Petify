@@ -573,4 +573,24 @@ class PetService {
   }
 
   Future<List<Pet>> getLikedPets() => getFavoritePets();
+
+  Future<List<Map<String, dynamic>>> getMyAdoptions() async {
+    try {
+      dev.log('🔄 PetService: Pobieranie wniosków adopcyjnych na /pets/my-adoptions');
+      final response = await _api.get('/pets/my-adoptions');
+      dev.log('✅ PetService: Response status: ${response.statusCode}');
+      dev.log('📄 PetService: Response data: ${response.data}');
+
+      if (response.statusCode == 200 && response.data is List) {
+        return List<Map<String, dynamic>>.from(response.data);
+      }
+
+      throw Exception('Nieprawidłowa odpowiedź serwera');
+    } on DioException catch (e) {
+      dev.log('❌ PetService: Błąd podczas pobierania wniosków adopcyjnych: ${e.message}');
+      dev.log('❌ PetService: Status: ${e.response?.statusCode}');
+      dev.log('❌ PetService: Response: ${e.response?.data}');
+      throw Exception('Nie udało się pobrać wniosków adopcyjnych: ${e.message}');
+    }
+  }
 }

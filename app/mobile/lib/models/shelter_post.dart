@@ -7,6 +7,10 @@ class ShelterPost {
   final DateTime date;
   final String? location;
   final Map<String, dynamic>? supportOptions;
+  final int? shelterId;
+  final int? mainImageId;
+  final int? fundraisingId;
+  final List<int>? imageIds;
 
   ShelterPost({
     required this.id,
@@ -17,6 +21,10 @@ class ShelterPost {
     required this.date,
     this.location,
     this.supportOptions,
+    this.shelterId,
+    this.mainImageId,
+    this.fundraisingId,
+    this.imageIds,
   });
 
   factory ShelterPost.fromJson(Map<String, dynamic> json) {
@@ -29,6 +37,27 @@ class ShelterPost {
       date: DateTime.parse(json['date']),
       location: json['location'],
       supportOptions: json['supportOptions'],
+    );
+  }
+
+  factory ShelterPost.fromBackendJson(Map<String, dynamic> json) {
+    return ShelterPost(
+      id: json['id'].toString(),
+      title: json['title'] ?? '',
+      shelterName: 'Schronisko', // Will be filled by shelter info if needed
+      description: json['longDescription'] ?? json['shortDescription'] ?? '',
+      imageUrl: json['mainImageId'] != null
+          ? 'http://localhost:8222/images/${json['mainImageId']}'
+          : 'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg',
+      date: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+      shelterId: json['shelterId'],
+      mainImageId: json['mainImageId'],
+      fundraisingId: json['fundraisingId'],
+      imageIds: json['imageIds'] != null
+          ? List<int>.from(json['imageIds'])
+          : null,
     );
   }
 

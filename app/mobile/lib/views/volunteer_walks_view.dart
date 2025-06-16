@@ -53,12 +53,22 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
         _isLoadingAvailable = false;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Błąd: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // Check if error is related to insufficient permissions
+        if (e.toString().contains('403') || e.toString().contains('uprawnień')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Funkcja dostępna tylko dla aktywnych wolontariuszy'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Błąd: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }
@@ -79,12 +89,22 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
         _isLoadingMy = false;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Błąd: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // Check if error is related to insufficient permissions
+        if (e.toString().contains('403') || e.toString().contains('uprawnień')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Funkcja dostępna tylko dla aktywnych wolontariuszy'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Błąd: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }

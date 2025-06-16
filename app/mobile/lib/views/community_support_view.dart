@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile/views/shelter_posts_view.dart';
 import 'package:mobile/views/shelter_support_view.dart';
 import 'package:mobile/views/volunteer_application_view.dart';
 import 'package:mobile/views/volunteer_walks_view.dart';
+import 'package:mobile/views/my_applications_view.dart';
+import 'package:mobile/views/announcements_view.dart';
 import '../../styles/colors.dart';
-import '../../widgets/buttons/action_button.dart';
 import '../../models/shelter_post.dart';
 import '../../services/user_service.dart';
+import '../../services/feed_service.dart';
 import 'events_view.dart';
 
 class CommunitySupportView extends StatefulWidget {
@@ -20,24 +21,15 @@ class CommunitySupportView extends StatefulWidget {
 
 class _CommunitySupportViewState extends State<CommunitySupportView> {
   bool _isLoading = false;
-  List<ShelterPost> _shelterPosts = [];
+  List<ShelterPost> _recentPosts = [];
   bool _isVolunteer = false;
   String? _volunteerStatus;
-
-  // Przykładowe zdjęcia dla schronisk - używamy zasobów zastępczych
-  // do czasu implementacji backendu
-  final List<String> _placeholderImages = [
-    'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // pies
-    'https://images.pexels.com/photos/2352276/pexels-photo-2352276.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // karma dla kotów
-    'https://images.pexels.com/photos/1633522/pexels-photo-1633522.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // dzień otwarty
-    'https://images.pexels.com/photos/1254140/pexels-photo-1254140.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // spacer z psem
-  ];
 
   @override
   void initState() {
     super.initState();
     _loadUserStatus();
-    _loadShelterPosts();
+    _loadRecentPosts();
   }
 
   Future<void> _loadUserStatus() async {
@@ -55,45 +47,15 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
     }
   }
 
-  Future<void> _loadShelterPosts() async {
+  Future<void> _loadRecentPosts() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      final posts = [
-        ShelterPost(
-          id: '1',
-          title: 'Zbiórka karmy dla kotów',
-          shelterName: 'Schronisko "Psia Łapka"',
-          description: 'Potrzebujemy karmy dla kotów, które niedawno do nas trafiły. Zbieramy suchą karmę oraz puszki.',
-          imageUrl: _placeholderImages[1],
-          date: DateTime.now().subtract(const Duration(days: 2)),
-          location: 'Warszawa, ul. Zwierzyniecka 5',
-        ),
-        ShelterPost(
-          id: '2',
-          title: 'Dzień otwarty w schronisku',
-          shelterName: 'Schronisko dla zwierząt "Azyl"',
-          description: 'Zapraszamy wszystkich na dzień otwarty w naszym schronisku! Poznaj naszych podopiecznych i dowiedz się jak pomóc.',
-          imageUrl: _placeholderImages[2],
-          date: DateTime.now().subtract(const Duration(days: 1)),
-          location: 'Kraków, ul. Adopcyjna 12',
-        ),
-        ShelterPost(
-          id: '3',
-          title: 'Szukamy koców i zabawek',
-          shelterName: 'Fundacja "Łapa w Łapę"',
-          description: 'Potrzebujemy koców, poduszek oraz zabawek dla psów i kotów. Pomóż nam zapewnić komfort naszym podopiecznym!',
-          imageUrl: _placeholderImages[0],
-          date: DateTime.now().subtract(const Duration(days: 4)),
-          location: 'Wrocław, ul. Schroniskowa 23',
-        ),
-      ];
-
+      final posts = await FeedService().getRecentPosts(7); // Get posts from last 7 days
       setState(() {
-        _shelterPosts = posts;
+        _recentPosts = posts.take(3).toList(); // Show only first 3 posts
         _isLoading = false;
       });
     } catch (e) {
@@ -127,10 +89,17 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
     }
   }
 
-  void _navigateToShelterPosts() {
+  void _navigateToMyApplications() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ShelterPostsView()),
+      MaterialPageRoute(builder: (context) => const MyApplicationsView()),
+    );
+  }
+
+  void _navigateToAnnouncements() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AnnouncementsView()),
     );
   }
 
@@ -145,7 +114,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
     String message = 'Chcesz pomagać zwierzakom w schroniskach poprzez wspólne spacery? Złóż wniosek o zostanie wolontariuszem!';
     String buttonText = 'Złóż wniosek';
 
-    // Dostosuj komunikat w zależności od statusu
     if (_volunteerStatus == 'PENDING') {
       message = 'Twój wniosek o zostanie wolontariuszem jest w trakcie rozpatrywania. Poczekaj na decyzję administracji.';
       buttonText = 'OK';
@@ -204,8 +172,8 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-        builder: (context) => const VolunteerApplicationView()
-      )
+            builder: (context) => const VolunteerApplicationView()
+        )
     );
   }
 
@@ -215,7 +183,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
       body: RefreshIndicator(
         onRefresh: () async {
           await _loadUserStatus();
-          await _loadShelterPosts();
+          await _loadRecentPosts();
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -242,32 +210,8 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
                 const SizedBox(height: 24),
                 _buildMainSupportCard(),
                 const SizedBox(height: 24),
-                _buildActionCardsRow(),
+                _buildNewActionGrid(),
                 const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Najnowsze ogłoszenia',
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: _navigateToShelterPosts,
-                      child: Text(
-                        'Zobacz wszystkie',
-                        style: GoogleFonts.poppins(
-                          color: AppColors.primaryColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                _buildPostsList(),
               ],
             ),
           ),
@@ -379,26 +323,52 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
     );
   }
 
-  Widget _buildActionCardsRow() {
-    return Row(
+  Widget _buildNewActionGrid() {
+    return Column(
       children: [
-        Expanded(
-          child: _buildActionCard(
-            title: 'Wyprowadź psa',
-            icon: Icons.directions_walk,
-            color: Colors.blue,
-            isLocked: !_isVolunteer,
-            onTap: _navigateToVolunteerWalk,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionCard(
+                title: 'Wyprowadź psa',
+                icon: Icons.directions_walk,
+                color: Colors.blue,
+                isLocked: !_isVolunteer,
+                onTap: _navigateToVolunteerWalk,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildActionCard(
+                title: 'Wydarzenia',
+                icon: Icons.event,
+                color: Colors.orange,
+                onTap: _navigateToEvents,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildActionCard(
-            title: 'Wydarzenia',
-            icon: Icons.event,
-            color: Colors.orange,
-            onTap: _navigateToEvents,
-          ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionCard(
+                title: 'Moje wnioski',
+                icon: Icons.description,
+                color: Colors.green,
+                onTap: _navigateToMyApplications,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildActionCard(
+                title: 'Ogłoszenia',
+                icon: Icons.announcement,
+                color: Colors.purple,
+                onTap: _navigateToAnnouncements,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -515,7 +485,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
       );
     }
 
-    if (_shelterPosts.isEmpty) {
+    if (_recentPosts.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 40.0),
@@ -539,9 +509,9 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: _shelterPosts.length,
+      itemCount: _recentPosts.length,
       itemBuilder: (context, index) {
-        final post = _shelterPosts[index];
+        final post = _recentPosts[index];
         return _buildPostCard(post);
       },
     );
