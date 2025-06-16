@@ -5,6 +5,7 @@ import org.petify.backend.dto.GeolocationResponse;
 import org.petify.backend.dto.UserLocationRequest;
 import org.petify.backend.dto.UserLocationResponse;
 import org.petify.backend.services.GeocodingService;
+import org.petify.backend.services.ProfileAchievementService;
 import org.petify.backend.services.UserLocationService;
 
 import jakarta.validation.Valid;
@@ -39,6 +40,9 @@ public class LocationController {
     @Autowired
     private GeocodingService geocodingService;
 
+    @Autowired
+    private ProfileAchievementService profileAchievementService;
+
     @GetMapping("/")
     public ResponseEntity<UserLocationResponse> getUserLocation(Authentication authentication) {
         String username = authentication.getName();
@@ -54,6 +58,8 @@ public class LocationController {
         try {
             String username = authentication.getName();
             UserLocationResponse updatedLocation = userLocationService.updateUserLocation(username, locationRequest);
+
+            profileAchievementService.onLocationSet(username);
 
             log.info("User {} updated location to: {}", username, locationRequest.city());
             return ResponseEntity.ok(updatedLocation);
@@ -77,6 +83,8 @@ public class LocationController {
 
             UserLocationResponse updatedLocation = userLocationService.setUserLocationByCoordinates(
                     username, coords.cityName(), coords.latitude(), coords.longitude(), 20.0);
+
+            profileAchievementService.onLocationSet(username);
 
             log.info("User {} set location by city to: {}", username, coords.cityName());
             return ResponseEntity.ok(updatedLocation);

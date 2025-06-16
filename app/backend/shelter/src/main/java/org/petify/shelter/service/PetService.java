@@ -110,7 +110,19 @@ public class PetService {
             });
         }
 
-        return stream.map(petMapper::toDtoWithImages).toList();
+        return stream.map(pet -> {
+            // Oblicz odległość dla każdego pet-a jeśli mamy współrzędne użytkownika
+            Double calculatedDistance = null;
+            if (userLat != null && userLng != null) {
+                Shelter shelter = pet.getShelter();
+                if (shelter != null && shelter.getLatitude() != null && shelter.getLongitude() != null) {
+                    calculatedDistance = distance(userLat, userLng, shelter.getLatitude(), shelter.getLongitude());
+                }
+            }
+
+            // Użyj nowej metody mapper-a która przyjmuje odległość
+            return petMapper.toDtoWithImagesAndDistance(pet, calculatedDistance);
+        }).toList();
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
