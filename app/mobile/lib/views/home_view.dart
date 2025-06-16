@@ -8,6 +8,7 @@ import '../../widgets/buttons/action_button.dart';
 import '../../widgets/cards/pet_card.dart';
 import '../../services/pet_service.dart';
 import '../../services/filter_preferences_service.dart';
+import '../../services/notification_service.dart';
 import '../models/filter_preferences.dart';
 import '../views/community_support_view.dart';
 import '../views/favorites_view.dart';
@@ -44,6 +45,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   final List<GlobalKey<State<StatefulWidget>>> _cardKeys = [];
 
+  final NotificationService _notificationService = NotificationService();
+  int _unreadNotificationCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +58,25 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
     _initAnimations();
     _loadFiltersAndPets();
+    _setupNotificationListener();
+  }
+
+  void _setupNotificationListener() {
+    _notificationService.notificationStream.listen((notifications) {
+      if (mounted) {
+        setState(() {
+          _unreadNotificationCount = _notificationService.getUnreadCount();
+        });
+      }
+    });
+
+    _updateUnreadCount();
+  }
+
+  void _updateUnreadCount() {
+    setState(() {
+      _unreadNotificationCount = _notificationService.getUnreadCount();
+    });
   }
 
   void _initAnimations() {
@@ -117,7 +140,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           _pets.clear();
           _pets.addAll(petsData);
           _isLoading = false;
-          _currentIndex = 0; // Reset do pierwszego zwierzaka
+          _currentIndex = 0;
 
           // Generujemy klucze dla każdego zwierzaka
           _cardKeys.clear();
@@ -138,15 +161,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         );
       }
     }
-  }
-
-  void _showNotifications() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => NotificationsSheet(),
-    );
   }
 
   void _onDragUpdate(DragUpdateDetails details) {
@@ -311,6 +325,17 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     }
   }
 
+  void _showNotifications() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const NotificationsSheet(),
+    ).then((_) {
+      _updateUnreadCount();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -352,10 +377,39 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             },
             tooltip: 'Ustawienia aplikacji',
           ),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: Colors.black),
-            onPressed: _showNotifications,
-            tooltip: 'Powiadomienia',
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications_outlined, color: Colors.black),
+                onPressed: _showNotifications,
+                tooltip: 'Powiadomienia',
+              ),
+              if (_unreadNotificationCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      _unreadNotificationCount > 99 ? '99+' : _unreadNotificationCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
