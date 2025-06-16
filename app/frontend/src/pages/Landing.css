@@ -109,7 +109,7 @@
 }
 
 .landing-logo {
-  height: 125px;
+  height: 150px;
   object-fit: cover;
   display: block;
 }
@@ -234,6 +234,9 @@
 .logo-image {
   height: 250px;
   transition: all 0.6s ease;
+  border-color: #000;
+  border-width: 2px;
+  box-shadow: #000 0px 0px 10px;
 }
 
 
@@ -241,7 +244,7 @@
 /* Logo text */
 .logo-text {
   font-family: 'Pacifico', sans-serif;
-  font-size: 3rem;
+  font-size: 4rem;
   color: var(--logo-color);
   transition: all 0.6s ease;
 }
@@ -423,7 +426,7 @@ body::-webkit-scrollbar,
 }
 
 .footer-logo {
-  height: 40px;
+  height: 150px;
   margin-bottom: 1rem;
 }
 
