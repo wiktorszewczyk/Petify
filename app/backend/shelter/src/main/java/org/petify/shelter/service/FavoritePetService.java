@@ -1,7 +1,7 @@
 package org.petify.shelter.service;
 
 import org.petify.shelter.client.AchievementClient;
-import org.petify.shelter.dto.PetResponse;
+import org.petify.shelter.dto.PetResponseWithImages;
 import org.petify.shelter.enums.MatchType;
 import org.petify.shelter.exception.PetIsArchivedException;
 import org.petify.shelter.exception.PetNotFoundException;
@@ -80,24 +80,26 @@ public class FavoritePetService {
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponse> getFavoritePets(String username) {
+    public List<PetResponseWithImages> getFavoritePets(String username) {
         return favoritePetRepository.findByUsernameAndStatus(username, MatchType.LIKE)
+                .orElse(List.of())
                 .stream()
                 .map(FavoritePet::getPet)
                 .filter(pet -> !pet.isArchived())
                 .filter(pet -> pet.getShelter().getIsActive())
-                .map(petMapper::toDto)
+                .map(petMapper::toDtoWithImages)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponse> getSupportedPets(String username) {
+    public List<PetResponseWithImages> getSupportedPets(String username) {
         return favoritePetRepository.findByUsernameAndStatus(username, MatchType.SUPPORT)
+                .orElse(List.of())
                 .stream()
                 .map(FavoritePet::getPet)
                 .filter(pet -> !pet.isArchived())
                 .filter(pet -> pet.getShelter().getIsActive())
-                .map(petMapper::toDto)
+                .map(petMapper::toDtoWithImages)
                 .toList();
     }
 }

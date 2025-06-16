@@ -3,15 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import './Favourites.css';
 import {MapPin, Heart,PawPrint} from 'lucide-react';
+import { fetchFavoritePets, fetchShelterById, fetchImagesByPetId } from "../api/shelter";
+import { useEffect, useState } from "react";
 
-// Import images
-import cat_1 from '../assets/cat_1.jpg';
-
-import dog1_1 from '../assets/dog1_1.jpg';
-
-import dog2_1 from '../assets/dog2_1.jpg';
-
-import dog3_1 from '../assets/dog1.jpg';
 
 const pawSteps = [
   { top: '55vh', left: '90vw', size: '8vw', rotate: '-100deg' },
@@ -34,48 +28,55 @@ const pawSteps = [
 ];
 
 
-// Mock data
-const favorites = [
-  {
-    id: 101,
-    name: 'Mila',
-    breed: 'Siberian Husky',
-    image: cat_1,
-    age: '2',
-    location: 'Warszawa',
-    shortDescription: 'Energiczna i przyjazna'
-  },
-  {
-    id: 105,
-    name: 'Luna',
-    breed: 'Siberian Husky',
-    image: dog2_1,
-    age: '2',
-    location: 'Warszawa',
-    shortDescription: 'Energiczna i przyjazna'
-  },
-  {
-    id: 102,
-    name: 'Burek',
-    breed: 'Labrador Retriever',
-    image: dog1_1,
-    age: '3',
-    location: 'Kraków',
-    shortDescription: 'Spokojny i łagodny'
-  },
-  {
-    id: 103,
-    name: 'Bella',
-    breed: 'Golden Retriever',
-    image: dog3_1,
-    age: '1',
-    location: 'Poznań',
-    shortDescription: 'Pełna miłości i radości'
-  }
-];
+
 
 const Favorites = () => {
   const navigate = useNavigate();
+  const [favorites, setFavorites] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+useEffect(() => {
+  const loadFavorites = async () => {
+    try {
+      const pets = await fetchFavoritePets();
+
+      const favoritesWithShelter = await Promise.all(
+        pets.map(async (pet) => {
+          let shelterName = "Nieznane schronisko";
+          let imageUrl = null;
+
+          try {
+            const shelter = await fetchShelterById(pet.shelterId);
+            shelterName = shelter.name;
+          } catch (_) {}
+
+          try {
+            const imageData = await fetchImagesByPetId(pet.id);
+            imageUrl = imageData[0]?.imageUrl || null;
+          } catch (_) {}
+
+          return {
+            ...pet,
+            shelterName,
+            image: imageUrl,
+          };
+        })
+      );
+
+      setFavorites(favoritesWithShelter);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadFavorites();
+}, []);
+
+if (loading) return <div className="loading-spinner"></div>;
+if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div>
@@ -104,7 +105,9 @@ const Favorites = () => {
           <h1>Twoje ulubione zwierzęta</h1>
           <p>Zwierzaki, które śledzisz i którym kibicujesz</p>
         </div>
-
+{favorites.length === 0 ? (
+  <p className="no-favorites">Nie masz jeszcze żadnych ulubionych zwierząt</p>
+) : (
         <div className="favorites-grid">
           {favorites.map((animal) => (
             <div
@@ -124,13 +127,14 @@ const Favorites = () => {
                  
                   <span className="animal-location">
                     <MapPin className="detail-icon" />
-                    <span className="detail-icon"></span> {animal.location}
+                    <span className="detail-icon"></span> {animal.shelterName}
                   </span>
                 </div>
               </div>
             </div>
           ))}
         </div>
+        )}
       </div>
     </div>
   );
