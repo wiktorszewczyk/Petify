@@ -50,13 +50,15 @@ class Event {
   }
 
   factory Event.fromBackendJson(Map<String, dynamic> json) {
+    final baseUrl = 'http://192.168.1.12:8222';
+
     return Event(
       id: json['id'].toString(),
       title: json['title'] ?? '',
       organizerName: 'Schronisko', // Will be filled by shelter info if needed
       description: json['longDescription'] ?? json['shortDescription'] ?? '',
       imageUrl: json['mainImageId'] != null
-          ? 'http://localhost:8222/images/${json['mainImageId']}'
+          ? '$baseUrl/images/${json['mainImageId']}'
           : 'https://images.pexels.com/photos/1633522/pexels-photo-1633522.jpeg',
       date: DateTime.parse(json['startDate']),
       endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,

@@ -8,13 +8,19 @@ import '../services/user_service.dart';
 import '../styles/colors.dart';
 
 class ChatView extends StatefulWidget {
-  final String conversationId;
+  final String? conversationId; // Made optional for backward compatibility
+  final String? chatRoomId; // New parameter from PostDetailsView
+  final String? recipientName; // New parameter for display name
+  final String? context; // New parameter for chat context
   final bool isNewConversation;
-  final Pet? pet;
+  final Pet? pet; // Optional pet model for new conversations
 
   const ChatView({
     Key? key,
-    required this.conversationId,
+    this.conversationId,
+    this.chatRoomId,
+    this.recipientName,
+    this.context,
     this.isNewConversation = false,
     this.pet,
   }) : super(key: key);
@@ -37,6 +43,9 @@ class _ChatViewState extends State<ChatView> {
   bool _isSending = false;
   bool _initialLoadAttempted = false;
 
+  // Get the actual conversation ID (support both old and new parameters)
+  String get _actualConversationId => widget.chatRoomId ?? widget.conversationId ?? '';
+
   @override
   void initState() {
     super.initState();
@@ -46,14 +55,14 @@ class _ChatViewState extends State<ChatView> {
     _loadConversationDetails();
 
     // Dodanie nasłuchiwania na nowe wiadomości
-    _messageService.addMessageListener(widget.conversationId, _onNewMessage);
+    _messageService.addMessageListener(_actualConversationId, _onNewMessage);
   }
 
   Future<void> _initializeCurrentUser() async {
     try {
       final user = await _userService.getCurrentUser();
       setState(() {
-        _currentUserId = user.username;
+        _currentUserId = user.username; // Use username instead of ID
       });
     } catch (e) {
       print('Error getting current user: $e');
@@ -62,16 +71,22 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   void dispose() {
-    _messageService.removeMessageListener(widget.conversationId, _onNewMessage);
+    // Usunięcie nasłuchiwania przy zniszczeniu widoku
+    _messageService.removeMessageListener(_actualConversationId, _onNewMessage);
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
+  // Obsługa nowej wiadomości
   void _onNewMessage(MessageModel message) {
+    // Upewnij się, że nie dodajemy wiadomości wysłanych przez aktualnego użytkownika,
+    // ponieważ te zostały już dodane w _sendMessage
+    // Również sprawdź, czy wiadomość już nie istnieje w liście
     if (message.senderId != _currentUserId && mounted) {
       setState(() {
         _messages ??= [];
+        // Sprawdź czy wiadomość już nie istnieje (unikaj duplikatów)
         final exists = _messages!.any((msg) =>
         msg.id == message.id ||
             (msg.content == message.content &&
@@ -92,15 +107,31 @@ class _ChatViewState extends State<ChatView> {
     });
 
     try {
-      final conversations = await _messageService.getConversations();
-      final conversation = conversations.firstWhere(
-            (conv) => conv.id == widget.conversationId,
-        orElse: () => throw Exception('Nie znaleziono konwersacji'),
-      );
+      // If we have recipient name and context from PostDetailsView, create a virtual conversation
+      if (widget.recipientName != null && widget.context != null) {
+        setState(() {
+          _conversation = ConversationModel(
+            id: _actualConversationId,
+            petId: '',
+            petName: widget.context ?? 'Ogłoszenie',
+            petImageUrl: 'assets/images/default_shelter.jpg',
+            shelterName: widget.recipientName ?? 'Schronisko',
+            lastMessage: 'Naciśnij aby rozpocząć czat',
+            lastMessageTime: DateTime.now(),
+            unread: false,
+          );
+        });
+      } else {
+        final conversations = await _messageService.getConversations();
+        final conversation = conversations.firstWhere(
+              (conv) => conv.id == _actualConversationId,
+          orElse: () => throw Exception('Nie znaleziono konwersacji'),
+        );
 
-      setState(() {
-        _conversation = conversation;
-      });
+        setState(() {
+          _conversation = conversation;
+        });
+      }
 
       await _loadMessages();
     } catch (e) {
@@ -108,7 +139,7 @@ class _ChatViewState extends State<ChatView> {
         setState(() {
           if (widget.pet != null && widget.isNewConversation) {
             _conversation = ConversationModel(
-              id: widget.conversationId,
+              id: _actualConversationId,
               petId: widget.pet!.id.toString(),
               petName: widget.pet!.name,
               petImageUrl: widget.pet!.imageUrl ?? 'assets/images/pet_placeholder.png',
@@ -130,6 +161,7 @@ class _ChatViewState extends State<ChatView> {
 
   Future<void> _loadMessages() async {
     if (_initialLoadAttempted && (_messages?.isNotEmpty ?? false)) {
+      // Jeśli to ponowna próba i mamy już wiadomości, nie ładuj ponownie
       return;
     }
 
@@ -139,10 +171,12 @@ class _ChatViewState extends State<ChatView> {
     });
 
     try {
+      // Tylko próbuj pobrać wiadomości, jeśli to nie jest nowa konwersacja
       if (!widget.isNewConversation) {
-        final messages = await _messageService.getMessages(widget.conversationId);
+        final messages = await _messageService.getMessages(_actualConversationId);
 
-        await _messageService.markMessagesAsRead(widget.conversationId);
+        // Oznacz wiadomości jako przeczytane
+        await _messageService.markMessagesAsRead(_actualConversationId);
 
         if (mounted) {
           setState(() {
@@ -151,11 +185,13 @@ class _ChatViewState extends State<ChatView> {
             _initialLoadAttempted = true;
           });
 
+          // Przewiń do najnowszej wiadomości
           if (messages.isNotEmpty) {
             _scrollToBottom();
           }
         }
       } else {
+        // Dla nowej konwersacji po prostu inicjalizujemy pustą listę
         if (mounted) {
           setState(() {
             _messages = [];
@@ -200,8 +236,10 @@ class _ChatViewState extends State<ChatView> {
     _messageController.clear();
 
     try {
-      final newMessage = await _messageService.sendMessage(widget.conversationId, content);
+      final newMessage = await _messageService.sendMessage(_actualConversationId, content);
 
+      // Don't add message to UI here - it will be added through the WebSocket listener
+      // or already added by the MessageService for immediate UI update
       setState(() {
         _isSending = false;
       });
@@ -232,6 +270,7 @@ class _ChatViewState extends State<ChatView> {
       body: SafeArea(
         child: Column(
           children: [
+            // Główny obszar czatu
             Expanded(
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator(
@@ -243,6 +282,7 @@ class _ChatViewState extends State<ChatView> {
                   ? _buildEmptyChat()
                   : _buildChatMessages(),
             ),
+            // Obszar wprowadzania wiadomości
             _buildMessageInput(),
           ],
         ),
@@ -363,6 +403,7 @@ class _ChatViewState extends State<ChatView> {
     return InkWell(
       onTap: () {
         _messageController.text = text;
+        // Nie wysyłamy automatycznie, aby użytkownik mógł edytować sugestię
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Container(
@@ -390,60 +431,6 @@ class _ChatViewState extends State<ChatView> {
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 1,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-      title: _conversation != null
-          ? Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: _getImageProvider(_conversation!.petImageUrl),
-                onError: (exception, stackTrace) {
-                  return const AssetImage('assets/images/pet_placeholder.png');
-                } as ImageErrorListener,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                _conversation!.petName,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              Text(
-                _conversation!.shelterName,
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ],
-      )
-          : const Text(
-        'Czat',
-        style: TextStyle(color: Colors.black),
-      ),
-    );
-  }
 
   Widget _buildErrorState() {
     return Center(
@@ -492,13 +479,16 @@ class _ChatViewState extends State<ChatView> {
         final message = _messages![index];
         final isMe = message.senderId == _currentUserId;
 
+        // Sprawdź, czy pokazać datę
         final showDate = index == 0 ||
             !_isSameDay(_messages![index].timestamp, _messages![index - 1].timestamp);
 
         return Column(
           children: [
+            // Pokaż datę, jeśli potrzeba
             if (showDate) _buildDateSeparator(message.timestamp),
 
+            // Wiadomość
             Align(
               alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
               child: Column(
@@ -663,6 +653,65 @@ class _ChatViewState extends State<ChatView> {
           ),
         ],
       ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      title: _conversation != null
+          ? Row(
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundImage: _getImageProvider(_conversation!.petImageUrl),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.recipientName ?? _conversation!.shelterName,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (widget.context != null)
+                  Text(
+                    widget.context!,
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  )
+                else if (_conversation!.petName.isNotEmpty)
+                  Text(
+                    'W sprawie: ${_conversation!.petName}',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      )
+          : Text(
+        'Chat',
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
+        ),
+      ),
+      backgroundColor: Colors.white,
+      elevation: 1,
+      iconTheme: const IconThemeData(color: Colors.black87),
     );
   }
 }

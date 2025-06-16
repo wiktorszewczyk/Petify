@@ -21,16 +21,6 @@ class _EventsViewState extends State<EventsView> {
   final List<String> _filters = ['Wszystkie', 'Dzisiaj', 'W tym tygodniu', 'W tym miesiącu'];
   final TextEditingController _searchController = TextEditingController();
 
-  // Obrazy placeholder dla wydarzeń
-  final List<String> _placeholderImages = [
-    'https://images.pexels.com/photos/1633522/pexels-photo-1633522.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // dzień otwarty
-    'https://images.pexels.com/photos/1254140/pexels-photo-1254140.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // spacer z psem
-    'https://images.pexels.com/photos/1906153/pexels-photo-1906153.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // wolontariat
-    'https://images.pexels.com/photos/8434641/pexels-photo-8434641.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // warsztaty
-    'https://images.pexels.com/photos/7707027/pexels-photo-7707027.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // festyn
-    'https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // szkolenie
-  ];
-
   @override
   void initState() {
     super.initState();

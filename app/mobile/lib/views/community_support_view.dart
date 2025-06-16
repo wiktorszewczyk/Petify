@@ -7,6 +7,7 @@ import 'package:mobile/views/volunteer_walks_view.dart';
 import 'package:mobile/views/my_applications_view.dart';
 import 'package:mobile/views/announcements_view.dart';
 import '../../styles/colors.dart';
+import '../../widgets/buttons/action_button.dart';
 import '../../models/shelter_post.dart';
 import '../../services/user_service.dart';
 import '../../services/feed_service.dart';
@@ -114,6 +115,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
     String message = 'Chcesz pomagać zwierzakom w schroniskach poprzez wspólne spacery? Złóż wniosek o zostanie wolontariuszem!';
     String buttonText = 'Złóż wniosek';
 
+    // Dostosuj komunikat w zależności od statusu
     if (_volunteerStatus == 'PENDING') {
       message = 'Twój wniosek o zostanie wolontariuszem jest w trakcie rozpatrywania. Poczekaj na decyzję administracji.';
       buttonText = 'OK';
@@ -212,6 +214,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
                 const SizedBox(height: 24),
                 _buildNewActionGrid(),
                 const SizedBox(height: 24),
+                _buildRecentPostsPreview(),
               ],
             ),
           ),
@@ -370,6 +373,38 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildRecentPostsPreview() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Najnowsze ogłoszenia',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextButton(
+              onPressed: _navigateToAnnouncements,
+              child: Text(
+                'Zobacz wszystkie',
+                style: GoogleFonts.poppins(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        _buildPostsList(),
       ],
     );
   }

@@ -41,14 +41,45 @@ class ShelterPost {
   }
 
   factory ShelterPost.fromBackendJson(Map<String, dynamic> json) {
+    final baseUrl = 'http://192.168.1.12:8222';
+
+    print('🔍 ShelterPost fromBackendJson: $json');
+
+    String postTitle = 'Bez tytułu';
+    if (json['title'] != null && json['title'].toString().isNotEmpty) {
+      postTitle = json['title'].toString();
+    } else if (json['name'] != null && json['name'].toString().isNotEmpty) {
+      postTitle = json['name'].toString();
+    }
+
+    String postDescription = '';
+    if (json['longDescription'] != null && json['longDescription'].toString().isNotEmpty) {
+      postDescription = json['longDescription'].toString();
+    } else if (json['shortDescription'] != null && json['shortDescription'].toString().isNotEmpty) {
+      postDescription = json['shortDescription'].toString();
+    } else if (json['description'] != null && json['description'].toString().isNotEmpty) {
+      postDescription = json['description'].toString();
+    }
+
+    String postImageUrl = 'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg';
+    if (json['mainImageId'] != null) {
+      postImageUrl = '$baseUrl/images/${json['mainImageId']}';
+      print('📸 Using mainImageId for URL: $postImageUrl');
+    } else if (json['imageUrl'] != null && json['imageUrl'].toString().isNotEmpty) {
+      String directUrl = json['imageUrl'].toString();
+      if (directUrl.contains('localhost')) {
+        directUrl = directUrl.replaceAll('localhost', '192.168.1.12');
+      }
+      postImageUrl = directUrl;
+      print('📸 Using direct imageUrl: $postImageUrl');
+    }
+
     return ShelterPost(
       id: json['id'].toString(),
-      title: json['title'] ?? '',
-      shelterName: 'Schronisko', // Will be filled by shelter info if needed
-      description: json['longDescription'] ?? json['shortDescription'] ?? '',
-      imageUrl: json['mainImageId'] != null
-          ? 'http://localhost:8222/images/${json['mainImageId']}'
-          : 'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg',
+      title: postTitle,
+      shelterName: 'Schronisko',
+      description: postDescription,
+      imageUrl: postImageUrl,
       date: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : DateTime.now(),

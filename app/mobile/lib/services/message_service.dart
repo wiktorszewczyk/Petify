@@ -595,6 +595,43 @@ class MessageService {
     }
   }
 
+  Future<Map<String, dynamic>> createOrGetShelterChatRoom(int shelterId) async {
+    try {
+      print('🏠 MessageService: Creating shelter chat room for shelter ID=$shelterId');
+
+      try {
+        final response = await _dio.get('/chat/room/shelter/$shelterId');
+        if (response.statusCode == 200) {
+          print('✅ MessageService: Found existing shelter chat room');
+          return response.data;
+        }
+      } catch (e) {
+        print('⚠️ MessageService: No existing shelter chat room found, will create new one');
+      }
+
+      final response = await _dio.get('/chat/room/0?shelterId=$shelterId&context=shelter_general');
+
+      if (response.statusCode == 200) {
+        print('✅ MessageService: Created shelter chat room successfully');
+        return response.data;
+      } else {
+        throw Exception('Failed to create shelter chat room: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ MessageService: Error creating shelter chat room: $e');
+
+      final fallbackConversation = {
+        'id': 'shelter_$shelterId',
+        'petId': 0,
+        'shelterId': shelterId,
+        'type': 'shelter_general'
+      };
+
+      print('🔄 MessageService: Using fallback conversation structure');
+      return fallbackConversation;
+    }
+  }
+
   void dispose() {
     if (_stompClient != null) {
       _stompClient!.deactivate();
