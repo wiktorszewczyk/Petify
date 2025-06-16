@@ -333,14 +333,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.5"
-  get_it:
-    dependency: transitive
-    description:
-      name: get_it
-      sha256: f126a3e286b7f5b578bf436d5592968706c4c1de28a228b870ce375d9f743103
-      url: "https://pub.dev"
-    source: hosted
-    version: "8.0.3"
   google_fonts:
     dependency: "direct main"
     description:
@@ -557,14 +549,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   package_info_plus:
     dependency: "direct main"
     description:
@@ -677,150 +661,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  payu:
-    dependency: "direct main"
-    description:
-      path: payu
-      ref: main
-      resolved-ref: "34973432ef17b4ab53ec19c468a6b54b5615f2e5"
-      url: "https://github.com/peetery/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_add_card:
-    dependency: transitive
-    description:
-      path: payu_add_card
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_api:
-    dependency: transitive
-    description:
-      path: payu_api
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_core:
-    dependency: transitive
-    description:
-      path: payu_core
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_interface:
-    dependency: transitive
-    description:
-      path: payu_interface
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_mobile_payments:
-    dependency: transitive
-    description:
-      path: "payu_mobile_payments/payu_mobile_payments"
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_mobile_payments_android:
-    dependency: transitive
-    description:
-      path: "payu_mobile_payments/payu_mobile_payments_android"
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_mobile_payments_ios:
-    dependency: transitive
-    description:
-      path: "payu_mobile_payments/payu_mobile_payments_ios"
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_mobile_payments_platform_interface:
-    dependency: transitive
-    description:
-      path: "payu_mobile_payments/payu_mobile_payments_platform_interface"
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_payment_methods:
-    dependency: transitive
-    description:
-      path: payu_payment_methods
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_state_management:
-    dependency: transitive
-    description:
-      path: payu_state_management
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_terms_and_conditions:
-    dependency: transitive
-    description:
-      path: payu_terms_and_conditions
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_three_ds:
-    dependency: transitive
-    description:
-      path: payu_three_ds
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_translations:
-    dependency: transitive
-    description:
-      path: payu_translations
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_ui:
-    dependency: transitive
-    description:
-      path: payu_ui
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
-  payu_web_payments:
-    dependency: transitive
-    description:
-      path: payu_web_payments
-      ref: "1.0.4"
-      resolved-ref: "2804af25f96d4e7b5a60903546c970efefd6d3d4"
-      url: "https://github.com/PayU-EMEA/PayU-Flutter.git"
-    source: git
-    version: "1.0.4"
   percent_indicator:
     dependency: "direct main"
     description:
@@ -901,14 +741,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
-  provider:
-    dependency: transitive
-    description:
-      name: provider
-      sha256: "4abbd070a04e9ddc287673bf5a030c7ca8b685ff70218720abab8b092f53dd84"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.5"
   share_plus:
     dependency: "direct main"
     description:

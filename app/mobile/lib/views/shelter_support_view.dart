@@ -5,7 +5,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/shelter_view.dart';
 import 'package:mobile/views/payment_view.dart';
-import 'package:mobile/views/shelter_donation_sheet.dart';
 import '../models/shelter.dart';
 import '../models/donation.dart';
 import '../services/shelter_service.dart';
@@ -53,16 +52,21 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
         }
       }
 
-      setState(() {
-        _shelters = shelters;
-        _shelterFundraisers = fundraisers;
-        _isLoading = false;
-      });
+
+      if (mounted) {
+        setState(() {
+          _shelters = shelters;
+          _shelterFundraisers = fundraisers;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _errorMessage = 'Nie udało się pobrać listy schronisk: $e';
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Nie udało się pobrać listy schronisk: $e';
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -72,8 +76,7 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
       MaterialPageRoute(builder: (context) => ShelterView(shelter: shelter)),
     );
 
-    // Refresh data if user made a donation
-    if (result == true) {
+    if (result == true && mounted) {
       _loadSheltersAndFundraisers();
     }
   }
@@ -100,14 +103,16 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
       ),
     );
 
-    if (result == true) {
+    if (result == true && mounted) {
       await _loadSheltersAndFundraisers();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dziękujemy za wsparcie!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Dziękujemy za wsparcie!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     }
   }
 

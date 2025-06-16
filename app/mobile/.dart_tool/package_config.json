@@ -260,12 +260,6 @@
       "languageVersion": "3.5"
     },
     {
-      "name": "get_it",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/get_it-8.0.3",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
       "name": "google_fonts",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-6.2.1",
       "packageUri": "lib/",
@@ -428,12 +422,6 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "nested",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/nested-1.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "package_info_plus",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/package_info_plus-8.3.0",
       "packageUri": "lib/",
@@ -518,102 +506,6 @@
       "languageVersion": "3.0"
     },
     {
-      "name": "payu",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-34973432ef17b4ab53ec19c468a6b54b5615f2e5/payu",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_add_card",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_add_card",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_api",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_api",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_core",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_core",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_interface",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_interface",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_mobile_payments",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_mobile_payments/payu_mobile_payments",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_mobile_payments_android",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_mobile_payments/payu_mobile_payments_android",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_mobile_payments_ios",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_mobile_payments/payu_mobile_payments_ios",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_mobile_payments_platform_interface",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_mobile_payments/payu_mobile_payments_platform_interface",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_payment_methods",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_payment_methods",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_state_management",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_state_management",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_terms_and_conditions",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_terms_and_conditions",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_three_ds",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_three_ds",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_translations",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_translations",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_ui",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_ui",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "payu_web_payments",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/git/PayU-Flutter-2804af25f96d4e7b5a60903546c970efefd6d3d4/payu_web_payments",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
       "name": "percent_indicator",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/percent_indicator-4.2.5",
       "packageUri": "lib/",
@@ -672,12 +564,6 @@
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
       "packageUri": "lib/",
       "languageVersion": "3.0"
-    },
-    {
-      "name": "provider",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/provider-6.1.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
     },
     {
       "name": "share_plus",
@@ -974,7 +860,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-06-16T11:04:47.539970Z",
+  "generated": "2025-06-16T17:01:05.447086Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///C:/flutter",

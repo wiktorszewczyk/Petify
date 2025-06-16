@@ -18,6 +18,7 @@ class _MyApplicationsViewState extends State<MyApplicationsView> {
   final _petService = PetService();
 
   List<AdoptionResponse> _adoptionApplications = [];
+  final Map<int, String> _petNames = {};
   bool _isLoadingAdoptions = false;
 
   @override
@@ -33,6 +34,23 @@ class _MyApplicationsViewState extends State<MyApplicationsView> {
 
     try {
       final applications = await _applicationService.getMyAdoptionApplications();
+
+      final Map<int, String> names = {};
+      for (final app in applications) {
+        try {
+          final pet = await _petService.getPetById(app.petId);
+          names[app.petId] = pet.name;
+        } catch (_) {}
+      }
+
+      setState(() {
+        _adoptionApplications = applications;
+        _petNames
+          ..clear()
+          ..addAll(names);
+        _isLoadingAdoptions = false;
+      });
+
       setState(() {
         _adoptionApplications = applications;
         _isLoadingAdoptions = false;
@@ -183,7 +201,7 @@ class _MyApplicationsViewState extends State<MyApplicationsView> {
                         ),
                       ),
                       Text(
-                        'Zwierzę ID: ${adoption.petId}',
+                        'Zwierzę: ${_petNames[adoption.petId] ?? 'ID ${adoption.petId}'}',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: Colors.grey[600],

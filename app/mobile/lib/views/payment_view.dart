@@ -8,6 +8,7 @@ import '../models/donation.dart';
 import '../models/shelter.dart';
 import '../services/payment_service.dart';
 import '../styles/colors.dart';
+import '../services/web_payment_service.dart';
 
 class PaymentView extends StatefulWidget {
   final int shelterId;
@@ -39,6 +40,7 @@ class PaymentView extends StatefulWidget {
 
 class _PaymentViewState extends State<PaymentView> {
   final PaymentService _paymentService = PaymentService();
+  final WebPaymentService _webPaymentService = WebPaymentService();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
   final TextEditingController _blikController = TextEditingController();
@@ -144,9 +146,7 @@ class _PaymentViewState extends State<PaymentView> {
 
       // Handle different payment flows - prefer web checkout over native SDK
       if (paymentResponse.payment.checkoutUrl != null) {
-        await _handleWebCheckout(paymentResponse.payment.checkoutUrl!);
-      } else if (paymentResponse.uiConfig.hasNativeSDK) {
-        await _handleNativeSDKPayment(paymentResponse);
+        await _handleWebViewPayment(paymentResponse.payment.checkoutUrl!);
       } else {
         await _pollPaymentStatus();
       }
@@ -156,13 +156,61 @@ class _PaymentViewState extends State<PaymentView> {
     }
   }
 
-  Future<void> _handleNativeSDKPayment(PaymentInitializationResponse response) async {
-    // Try to use checkout URL if available, otherwise show error
-    if (response.payment.checkoutUrl != null) {
-      await _handleWebCheckout(response.payment.checkoutUrl!);
-    } else {
-      _showError('Płatność nie może być przetworzona - brak URL płatności');
+  Future<void> _handleWebViewPayment(String checkoutUrl) async {
+    try {
+      dev.log('Opening payment in WebView: $checkoutUrl');
+
+      _showInfo('Otwieranie płatności...');
+
+      final result = await _webPaymentService.processPayment(
+        context: context,
+        paymentUrl: checkoutUrl,
+        successUrl: 'success',
+        cancelUrl: 'cancel',
+      );
+
+      dev.log('WebView payment result: ${result?.status}');
+
+      if (result != null) {
+        setState(() => _isProcessingPayment = false);
+
+        switch (result.status) {
+          case WebPaymentStatus.success:
+            await _showPaymentResultDialog(
+              success: true,
+              title: 'Płatność zakończona sukcesem!',
+              message: 'Dziękujemy za przekazane wsparcie dla schroniska. Twoja donacja pomoże zwierzakom znaleźć nowy dom.',
+            );
+            if (mounted) Navigator.of(context).pop(true);
+            break;
+          case WebPaymentStatus.cancelled:
+            await _showPaymentResultDialog(
+              success: false,
+              title: 'Płatność anulowana',
+              message: 'Płatność została anulowana. Możesz spróbować ponownie w dowolnym momencie.',
+            );
+            break;
+          case WebPaymentStatus.error:
+            await _showPaymentResultDialog(
+              success: false,
+              title: 'Błąd płatności',
+              message: 'Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie lub wybierz inną metodę płatności.',
+            );
+            break;
+        }
+      } else {
+        // Jeśli result is null, spróbuj sprawdzić status przez polling
+        _showInfo('Sprawdzanie statusu płatności...');
+        await _pollPaymentStatus();
+      }
+
+    } catch (e) {
+      dev.log('WebView payment failed: $e');
       setState(() => _isProcessingPayment = false);
+
+      // Fallback do zewnętrznej przeglądarki
+      _showInfo('Przekierowanie do przeglądarki...');
+      await _handleWebCheckout(checkoutUrl);
     }
   }
 
@@ -194,8 +242,12 @@ class _PaymentViewState extends State<PaymentView> {
         if (statusResponse.isCompleted) {
           timer.cancel();
           setState(() => _isProcessingPayment = false);
-          _showSuccess('Płatność zakończona sukcesem!');
-          Navigator.of(context).pop(true);
+          await _showPaymentResultDialog(
+            success: true,
+            title: 'Płatność zakończona sukcesem!',
+            message: 'Dziękujemy za przekazane wsparcie dla schroniska. Twoja donacja pomoże zwierzakom znaleźć nowy dom.',
+          );
+          if (mounted) Navigator.of(context).pop(true);
           return; // Exit early to prevent further execution
         }
 
@@ -204,15 +256,23 @@ class _PaymentViewState extends State<PaymentView> {
           if (paymentStatus == 'FAILED' || paymentStatus == 'CANCELLED') {
             timer.cancel();
             setState(() => _isProcessingPayment = false);
-            _showError('Płatność nieudana: ${statusResponse.latestPayment!.failureReason ?? 'Nieznany błąd'}');
+            await _showPaymentResultDialog(
+              success: false,
+              title: paymentStatus == 'CANCELLED' ? 'Płatność anulowana' : 'Płatność nieudana',
+              message: statusResponse.latestPayment!.failureReason ?? 'Wystąpił problem podczas przetwarzania płatności. Spróbuj ponownie.',
+            );
             return; // Exit early to prevent further execution
           }
 
           if (paymentStatus == 'SUCCEEDED') {
             timer.cancel();
             setState(() => _isProcessingPayment = false);
-            _showSuccess('Płatność zakończona sukcesem!');
-            Navigator.of(context).pop(true);
+            await _showPaymentResultDialog(
+              success: true,
+              title: 'Płatność zakończona sukcesem!',
+              message: 'Dziękujemy za przekazane wsparcie dla schroniska. Twoja donacja pomoże zwierzakom znaleźć nowy dom.',
+            );
+            if (mounted) Navigator.of(context).pop(true);
             return; // Exit early to prevent further execution
           }
         }
@@ -260,6 +320,65 @@ class _PaymentViewState extends State<PaymentView> {
         content: Text(message),
         backgroundColor: Colors.orange,
       ),
+    );
+  }
+
+  Future<void> _showPaymentResultDialog({
+    required bool success,
+    required String title,
+    required String message,
+  }) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                success ? Icons.check_circle : Icons.error,
+                color: success ? Colors.green : Colors.red,
+                size: 32,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: success ? Colors.green : Colors.red,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            message,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              height: 1.4,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'OK',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
