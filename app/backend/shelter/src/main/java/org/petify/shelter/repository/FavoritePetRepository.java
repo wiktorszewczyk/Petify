@@ -13,9 +13,7 @@ import java.util.Optional;
 public interface FavoritePetRepository extends JpaRepository<FavoritePet, Long> {
     List<FavoritePet> findByUsername(String username);
 
-
     Optional<List<FavoritePet>> findByUsernameAndStatus(String username, MatchType status);
-
 
     Optional<FavoritePet> findByUsernameAndPetId(String username, Long petId);
 }

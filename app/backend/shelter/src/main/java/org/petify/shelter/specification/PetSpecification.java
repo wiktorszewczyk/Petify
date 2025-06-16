@@ -58,5 +58,4 @@ public class PetSpecification {
     public static Specification<Pet> idGreaterThan(Long id) {
         return (root, query, cb) -> cb.greaterThan(root.get("id"), id);
     }
-
 }

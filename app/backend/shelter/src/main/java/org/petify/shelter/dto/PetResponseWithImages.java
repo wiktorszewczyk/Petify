@@ -1,7 +1,6 @@
 package org.petify.shelter.dto;
 
 import org.petify.shelter.enums.Gender;
-
 import org.petify.shelter.enums.PetSize;
 import org.petify.shelter.enums.PetType;
 
