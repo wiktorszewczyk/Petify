@@ -1,6 +1,20 @@
-version: '3.8'
-
 services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: petify
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d petify"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   config-server:
     image: ${ACR_LOGIN_SERVER}/petify-config-server:latest
     expose:
@@ -15,6 +29,8 @@ services:
     image: ${ACR_LOGIN_SERVER}/petify-discovery:latest
     expose:
       - 8761
+    environment:
+      - EUREKA_HOST=discovery
     depends_on:
       config-server:
         condition: service_healthy
@@ -26,8 +42,22 @@ services:
 
   auth-server:
     image: ${ACR_LOGIN_SERVER}/petify-auth-server:latest
+    expose:
+      - 9000
+    environment:
+      - EUREKA_HOST=discovery
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
+      - GATEWAY_URL=http://gateway:8222
+      - google.client.id=${GOOGLE_CLIENT_ID}
+      - google.client.secret=${GOOGLE_CLIENT_SECRET}
     depends_on:
       discovery:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
@@ -35,43 +65,51 @@ services:
       retries: 5
       start_period: 10s
 
-  # chat:
-  #   image: ${ACR_LOGIN_SERVER}/petify-chat:latest
-  #   depends_on:
-  #     discovery:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
-  #     interval: 5s
-  #     retries: 5
-  #     start_period: 10s
-
   feed:
     image: ${ACR_LOGIN_SERVER}/petify-feed:latest
+    expose:
+      - 8030
+    environment:
+      - EUREKA_HOST=discovery
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
+      - AUTH_SERVICE_HOST=auth-server
+      - AUTH_SERVICE_PORT=9000
     depends_on:
       discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      auth-server:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8030/actuator/health"]
       interval: 5s
       retries: 5
       start_period: 10s
-  
-  # funding:
-  #   image: ${ACR_LOGIN_SERVER}/petify-funding:latest
-  #   depends_on:
-  #     discovery:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8020/actuator/health"]
-  #     interval: 5s
-  #     retries: 5
-  #     start_period: 10s
 
   image:
     image: ${ACR_LOGIN_SERVER}/petify-image:latest
+    expose:
+      - 8060
+    environment:
+      - EUREKA_HOST=discovery
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
+      - AUTH_SERVICE_HOST=auth-server
+      - AUTH_SERVICE_PORT=9000
     depends_on:
       discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      auth-server:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8060/actuator/health"]
@@ -79,21 +117,25 @@ services:
       retries: 5
       start_period: 10s
 
-  # reservations:
-  #   image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
-  #   depends_on:
-  #     discovery:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8011/actuator/health"]
-  #     interval: 5s
-  #     retries: 5
-  #     start_period: 10s
-
   shelter:
     image: ${ACR_LOGIN_SERVER}/petify-shelter:latest
+    expose:
+      - 8010
+    environment:
+      - EUREKA_HOST=discovery
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
+      - AUTH_SERVICE_HOST=auth-server
+      - AUTH_SERVICE_PORT=9000
     depends_on:
       discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      auth-server:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8010/actuator/health"]
@@ -105,6 +147,10 @@ services:
     image: ${ACR_LOGIN_SERVER}/petify-gateway:latest
     ports:
       - 8222:8222
+    environment:
+      - EUREKA_HOST=discovery
+      - EUREKA_PORT=8761
+      - GATEWAY_HOST=gateway
     depends_on:
       discovery:
         condition: service_healthy
@@ -122,3 +168,93 @@ services:
       #   condition: service_healthy
       shelter:
         condition: service_healthy
+
+  # chat:
+  #   image: ${ACR_LOGIN_SERVER}/petify-chat:latest
+  #   expose:
+  #     - 8050
+  #   environment:
+  #     - EUREKA_HOST=discovery
+  #     - EUREKA_PORT=8761
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_USERNAME=admin
+  #     - DB_PASSWORD=admin
+  #     - AUTH_SERVICE_HOST=auth-server
+  #     - AUTH_SERVICE_PORT=9000
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #     auth-server:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
+
+  # funding:
+  #   image: ${ACR_LOGIN_SERVER}/petify-funding:latest
+  #   expose:
+  #     - 8020
+  #   environment:
+  #     - EUREKA_HOST=discovery
+  #     - EUREKA_PORT=8761
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_USERNAME=admin
+  #     - DB_PASSWORD=admin
+  #     - AUTH_SERVICE_HOST=auth-server
+  #     - AUTH_SERVICE_PORT=9000
+  #     - stripe.secret_key=${STRIPE_SECRET_KEY}
+  #     - stripe.publishable_key=${STRIPE_PUBLISHABLE_KEY}
+  #     - stripe.webhook_secret=${STRIPE_WEBHOOK_SECRET}
+  #     - PAYU_CLIENT_ID=${PAYU_CLIENT_ID:-300746}
+  #     - PAYU_CLIENT_SECRET=${PAYU_CLIENT_SECRET:-2ee86a66e5d97e3fadc400c9f19b065d}
+  #     - PAYU_POS_ID=${PAYU_POS_ID:-300746}
+  #     - PAYU_MD5_KEY=${PAYU_MD5_KEY:-b6ca15b0d1020e8094d9b5f8d163db54}
+  #     - PAYU_API_URL=${PAYU_API_URL:-https://secure.snd.payu.com}
+  #     - WEBHOOK_BASE_URL=http://gateway:8222
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #     auth-server:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8020/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
+
+  # reservations:
+  #   image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
+  #   expose:
+  #     - 8011
+  #   environment:
+  #     - EUREKA_HOST=discovery
+  #     - EUREKA_PORT=8761
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_USERNAME=admin
+  #     - DB_PASSWORD=admin
+  #     - AUTH_SERVICE_HOST=auth-server
+  #     - AUTH_SERVICE_PORT=9000
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #     auth-server:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8011/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
+
+volumes:
+  postgres_data:
