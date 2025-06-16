@@ -23,6 +23,17 @@ class _AchievementsViewState extends State<AchievementsView>
   bool _isLoading = true;
   bool _isError = false;
 
+  String _translateCategory(String cat) {
+    switch (cat) {
+      case 'LIKES':
+        return 'Polubienia';
+      case 'SUPPORT':
+        return 'Wsparcia';
+      default:
+        return cat;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -125,7 +136,7 @@ class _AchievementsViewState extends State<AchievementsView>
           labelColor: AppColors.white,
           unselectedLabelColor: AppColors.textColor,
           indicatorColor: AppColors.white,
-          tabs: _categories.map((c) => Tab(text: c)).toList(),
+          tabs: _categories.map((c) => Tab(text: _translateCategory(c))).toList(),
         ),
       ),
       body: Column(

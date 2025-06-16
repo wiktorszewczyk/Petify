@@ -18,7 +18,10 @@ class AchievementProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double progressPercent = xpPoints / xpToNextLevel;
+    final int xpRequiredForNextLevel = level * 100;
+    final int xpEarnedThisLevel = xpRequiredForNextLevel - xpToNextLevel;
+    final double progressPercent =
+        xpEarnedThisLevel / xpRequiredForNextLevel;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
@@ -98,7 +101,7 @@ class AchievementProgress extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${xpToNextLevel - xpPoints} XP do następnego poziomu',
+                  '${xpToNextLevel} XP do następnego poziomu',
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
