@@ -39,4 +39,16 @@ class PaymentProviderFactoryTest {
         assertThatThrownBy(() -> factory.getProvider(null))
                 .isInstanceOf(NullPointerException.class);
     }
+
+    @Test
+    void getAllProvidersContainsBothEntries() {
+        var providers = factory.getAllProviders();
+        assertThat(providers).containsKeys(PaymentProvider.STRIPE, PaymentProvider.PAYU);
+    }
+
+    @Test
+    void getProviderReturnsSameInstance() {
+        var stripe = factory.getProvider(PaymentProvider.STRIPE);
+        assertThat(factory.getProvider(PaymentProvider.STRIPE)).isSameAs(stripe);
+    }
 }

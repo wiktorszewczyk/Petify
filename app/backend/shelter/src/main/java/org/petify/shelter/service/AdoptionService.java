@@ -144,4 +144,11 @@ public class AdoptionService {
 
         return adoptionMapper.toDto(form);
     }
+
+    public List<AdoptionResponse> getAdoptionsByUsername(String username) {
+        List<Adoption> adoptions = adoptionRepository.findByUsername(username);
+        return adoptions.stream()
+                .map(adoptionMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }
