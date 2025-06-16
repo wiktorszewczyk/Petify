@@ -127,6 +127,9 @@
               <artifactId>lombok</artifactId>
             </exclude>
           </excludes>
+          <image>
+            <name>petify/${project.artifactId}</name>
+          </image>
         </configuration>
       </plugin>
     </plugins>
