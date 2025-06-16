@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/shelter_post.dart';
+import '../models/donation.dart';
 import '../services/feed_service.dart';
+import '../services/payment_service.dart';
 import '../styles/colors.dart';
 import 'post_details_view.dart';
 
@@ -15,8 +17,10 @@ class AnnouncementsView extends StatefulWidget {
 
 class _AnnouncementsViewState extends State<AnnouncementsView> {
   final _feedService = FeedService();
+  final _paymentService = PaymentService();
   List<ShelterPost> _posts = [];
   List<ShelterPost> _filteredPosts = [];
+  Map<int, FundraiserResponse?> _postFundraisers = {};
   bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
 
@@ -39,9 +43,24 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
 
     try {
       final posts = await _feedService.getRecentPosts(30); // Get posts from last 30 days
+      final fundraisers = <int, FundraiserResponse?>{};
+
+      // Load fundraiser details for posts that have fundraisingId
+      for (final post in posts) {
+        if (post.fundraisingId != null) {
+          try {
+            final fundraiser = await _paymentService.getFundraiser(post.fundraisingId!);
+            fundraisers[post.fundraisingId!] = fundraiser;
+          } catch (e) {
+            fundraisers[post.fundraisingId!] = null;
+          }
+        }
+      }
+
       setState(() {
         _posts = posts;
         _filteredPosts = posts;
+        _postFundraisers = fundraisers;
         _isLoading = false;
       });
     } catch (e) {
@@ -202,6 +221,8 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
   }
 
   Widget _buildPostCard(ShelterPost post) {
+    final fundraiser = post.fundraisingId != null ? _postFundraisers[post.fundraisingId!] : null;
+
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 16),
@@ -299,6 +320,87 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                       ),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  // Fundraising information
+                  if (fundraiser != null) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppColors.primaryColor.withOpacity(0.3),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.volunteer_activism,
+                                color: AppColors.primaryColor,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'Trwa zbiórka pieniędzy',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Zebrano: ${fundraiser.currentAmount.toInt()} PLN',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                'Cel: ${fundraiser.goalAmount.toInt()} PLN',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: LinearProgressIndicator(
+                              value: fundraiser.progressPercentage / 100,
+                              backgroundColor: Colors.grey[200],
+                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+                              minHeight: 6,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${fundraiser.progressPercentage.toInt()}% celu',
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: AppColors.primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                   const SizedBox(height: 12),

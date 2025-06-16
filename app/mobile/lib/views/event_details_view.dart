@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../models/event.dart';
+import '../models/donation.dart';
+import '../models/shelter.dart';
 import '../services/feed_service.dart';
 import '../services/shelter_service.dart';
 import '../services/user_service.dart';
+import '../services/payment_service.dart';
 import '../models/event_participant.dart';
 import '../styles/colors.dart';
+import 'payment_view.dart';
 
 class EventDetailsView extends StatefulWidget {
   final Event event;
@@ -19,10 +23,14 @@ class EventDetailsView extends StatefulWidget {
 class _EventDetailsViewState extends State<EventDetailsView> {
   final _feedService = FeedService();
   final _shelterService = ShelterService();
+  final _paymentService = PaymentService();
   int? _participants;
   String? _shelterName;
+  Shelter? _shelter;
+  FundraiserResponse? _fundraiser;
   bool _joining = false;
   bool _joined = false;
+  bool _isLoadingFundraiser = false;
 
   @override
   void initState() {
@@ -35,6 +43,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     await Future.wait([
       _loadParticipantsAndStatus(),
       _loadShelter(),
+      _loadFundraiserInfo(),
     ]);
   }
 
@@ -61,9 +70,31 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     try {
       final shelter = await _shelterService.getShelterById(widget.event.shelterId!);
       setState(() {
+        _shelter = shelter;
         _shelterName = shelter.name;
       });
     } catch (_) {}
+  }
+
+  Future<void> _loadFundraiserInfo() async {
+    if (widget.event.fundraisingId == null) return;
+
+    setState(() {
+      _isLoadingFundraiser = true;
+    });
+
+    try {
+      final fundraiser = await _paymentService.getFundraiser(widget.event.fundraisingId!);
+      setState(() {
+        _fundraiser = fundraiser;
+        _isLoadingFundraiser = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingFundraiser = false;
+      });
+      print('❌ EventDetailsView: Błąd podczas ładowania danych zbiórki: $e');
+    }
   }
 
   Future<void> _joinEvent() async {
@@ -101,6 +132,36 @@ class _EventDetailsViewState extends State<EventDetailsView> {
       setState(() {
         _joining = false;
       });
+    }
+  }
+
+  void _donateToFundraiser() async {
+    if (_fundraiser == null || widget.event.shelterId == null) return;
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentView(
+          shelterId: widget.event.shelterId!,
+          shelter: _shelter,
+          fundraiserId: _fundraiser!.id,
+          initialAmount: 20.0,
+          title: 'Wspieraj: ${_fundraiser!.title}',
+          description: _fundraiser!.description,
+        ),
+      ),
+    );
+
+    if (result == true && mounted) {
+      await _loadFundraiserInfo(); // Refresh fundraiser data
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Dziękujemy za wsparcie!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     }
   }
 
@@ -318,6 +379,10 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  if (_fundraiser != null) ...[
+                    _buildFundraiserCard(),
+                    const SizedBox(height: 24),
+                  ],
                   Text(
                     'O wydarzeniu',
                     style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
@@ -418,6 +483,150 @@ class _EventDetailsViewState extends State<EventDetailsView> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFundraiserCard() {
+    if (_fundraiser == null) return const SizedBox();
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primaryColor.withOpacity(0.1),
+            AppColors.primaryColor.withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.primaryColor.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.volunteer_activism,
+                color: AppColors.primaryColor,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _fundraiser!.title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            _fundraiser!.description,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: Colors.grey[700],
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Zebrano',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  Text(
+                    '${_fundraiser!.currentAmount.toInt()} PLN',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Cel',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  Text(
+                    '${_fundraiser!.goalAmount.toInt()} PLN',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: LinearProgressIndicator(
+              value: _fundraiser!.progressPercentage / 100,
+              backgroundColor: Colors.grey[300],
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+              minHeight: 10,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${_fundraiser!.progressPercentage.toInt()}% celu osiągnięte',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primaryColor,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _donateToFundraiser,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Wesprzyj zbiórkę',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

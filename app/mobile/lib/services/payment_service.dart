@@ -216,4 +216,22 @@ class PaymentService {
       throw Exception('Nie udało się pobrać zbiórek: ${e.message}');
     }
   }
+
+  Future<FundraiserResponse?> getFundraiser(int fundraiserId) async {
+    try {
+      final response = await _api.get('/fundraisers/$fundraiserId');
+
+      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+        return FundraiserResponse.fromJson(response.data);
+      }
+
+      return null;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return null;
+      }
+      dev.log('Błąd podczas pobierania zbiórki: ${e.message}');
+      throw Exception('Nie udało się pobrać zbiórki: ${e.message}');
+    }
+  }
 }

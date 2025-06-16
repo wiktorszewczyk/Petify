@@ -3,7 +3,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../models/event.dart';
+import '../models/donation.dart';
 import '../services/feed_service.dart';
+import '../services/payment_service.dart';
 import '../styles/colors.dart';
 import "event_details_view.dart";
 import '../services/shelter_service.dart';
@@ -19,9 +21,11 @@ class _EventsViewState extends State<EventsView> {
   bool _isLoading = false;
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
+  Map<int, FundraiserResponse?> _eventFundraisers = {};
   String _selectedFilter = 'Wszystkie';
   final List<String> _filters = ['Wszystkie', 'Dzisiaj', 'W tym tygodniu', 'W tym miesiącu'];
   final TextEditingController _searchController = TextEditingController();
+  final PaymentService _paymentService = PaymentService();
 
   @override
   void initState() {
@@ -89,8 +93,22 @@ class _EventsViewState extends State<EventsView> {
         );
       }).toList());
 
+      // Load fundraiser details for events that have fundraisingId
+      final fundraisers = <int, FundraiserResponse?>{};
+      for (final event in enriched) {
+        if (event.fundraisingId != null) {
+          try {
+            final fundraiser = await _paymentService.getFundraiser(event.fundraisingId!);
+            fundraisers[event.fundraisingId!] = fundraiser;
+          } catch (e) {
+            fundraisers[event.fundraisingId!] = null;
+          }
+        }
+      }
+
       setState(() {
         _events = enriched;
+        _eventFundraisers = fundraisers;
         _filterEvents();
         _isLoading = false;
       });
@@ -405,6 +423,8 @@ class _EventsViewState extends State<EventsView> {
   }
 
   Widget _buildEventCard(Event event) {
+    final fundraiser = event.fundraisingId != null ? _eventFundraisers[event.fundraisingId!] : null;
+
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 16),
@@ -565,6 +585,87 @@ class _EventsViewState extends State<EventsView> {
                       ),
                     ],
                   ),
+                  // Fundraising information
+                  if (fundraiser != null) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppColors.primaryColor.withOpacity(0.3),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.volunteer_activism,
+                                color: AppColors.primaryColor,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'Trwa zbiórka pieniędzy',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Zebrano: ${fundraiser.currentAmount.toInt()} PLN',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                'Cel: ${fundraiser.goalAmount.toInt()} PLN',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: LinearProgressIndicator(
+                              value: fundraiser.progressPercentage / 100,
+                              backgroundColor: Colors.grey[200],
+                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+                              minHeight: 6,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${fundraiser.progressPercentage.toInt()}% celu',
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: AppColors.primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   if (event.participantsCount != null) ...[
                     Row(

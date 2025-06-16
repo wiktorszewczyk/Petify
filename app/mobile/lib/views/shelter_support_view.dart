@@ -105,14 +105,6 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
 
     if (result == true && mounted) {
       await _loadSheltersAndFundraisers();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Dziękujemy za wsparcie!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
     }
   }
 

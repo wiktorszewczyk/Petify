@@ -3,9 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/shelter_post.dart';
 import '../models/shelter.dart';
+import '../models/donation.dart';
 import '../services/image_service.dart';
 import '../services/shelter_service.dart';
+import '../services/payment_service.dart';
 import '../styles/colors.dart';
+import 'payment_view.dart';
 
 class PostDetailsView extends StatefulWidget {
   final ShelterPost post;
@@ -22,11 +25,14 @@ class PostDetailsView extends StatefulWidget {
 class _PostDetailsViewState extends State<PostDetailsView> {
   final _imageService = ImageService();
   final _shelterService = ShelterService();
+  final _paymentService = PaymentService();
 
   List<ImageResponse> _additionalImages = [];
   bool _isLoadingImages = false;
   Shelter? _shelter;
   bool _isLoadingShelter = false;
+  FundraiserResponse? _fundraiser;
+  bool _isLoadingFundraiser = false;
 
   @override
   void initState() {
@@ -38,6 +44,7 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     await Future.wait([
       _loadAdditionalImages(),
       _loadShelterInfo(),
+      _loadFundraiserInfo(),
     ]);
   }
 
@@ -87,6 +94,29 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     }
   }
 
+  Future<void> _loadFundraiserInfo() async {
+    if (widget.post.fundraisingId == null) {
+      return;
+    }
+
+    setState(() {
+      _isLoadingFundraiser = true;
+    });
+
+    try {
+      final fundraiser = await _paymentService.getFundraiser(widget.post.fundraisingId!);
+      setState(() {
+        _fundraiser = fundraiser;
+        _isLoadingFundraiser = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingFundraiser = false;
+      });
+      print('❌ PostDetailsView: Błąd podczas ładowania danych zbiórki: $e');
+    }
+  }
+
   Future<void> _sharePost() async {
     try {
       await Share.share(
@@ -103,6 +133,36 @@ class _PostDetailsViewState extends State<PostDetailsView> {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  void _donateToFundraiser() async {
+    if (_fundraiser == null || widget.post.shelterId == null) return;
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentView(
+          shelterId: widget.post.shelterId!,
+          shelter: _shelter,
+          fundraiserId: _fundraiser!.id,
+          initialAmount: 20.0,
+          title: 'Wspieraj: ${_fundraiser!.title}',
+          description: _fundraiser!.description,
+        ),
+      ),
+    );
+
+    if (result == true && mounted) {
+      await _loadFundraiserInfo(); // Refresh fundraiser data
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Dziękujemy za wsparcie!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     }
   }
 
@@ -145,6 +205,11 @@ class _PostDetailsViewState extends State<PostDetailsView> {
 
                   _buildShelterInfo(),
                   const SizedBox(height: 16),
+
+                  if (_fundraiser != null) ...[
+                    _buildFundraiserCard(),
+                    const SizedBox(height: 24),
+                  ],
 
                   if (widget.post.description.isNotEmpty) ...[
                     Text(
@@ -323,6 +388,150 @@ class _PostDetailsViewState extends State<PostDetailsView> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildFundraiserCard() {
+    if (_fundraiser == null) return const SizedBox();
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primaryColor.withOpacity(0.1),
+            AppColors.primaryColor.withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.primaryColor.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.volunteer_activism,
+                color: AppColors.primaryColor,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _fundraiser!.title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            _fundraiser!.description,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: Colors.grey[700],
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Zebrano',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  Text(
+                    '${_fundraiser!.currentAmount.toInt()} PLN',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Cel',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  Text(
+                    '${_fundraiser!.goalAmount.toInt()} PLN',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: LinearProgressIndicator(
+              value: _fundraiser!.progressPercentage / 100,
+              backgroundColor: Colors.grey[300],
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+              minHeight: 10,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${_fundraiser!.progressPercentage.toInt()}% celu osiągnięte',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primaryColor,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _donateToFundraiser,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Wesprzyj zbiórkę',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
