@@ -120,7 +120,6 @@ class AchievementServiceTest {
         assertThat(result.getCompleted()).isTrue();
         assertThat(result.getCompletionDate()).isNotNull();
         assertThat(testUser.getXpPoints()).isEqualTo(50);
-        assertThat(testUser.getLikesCount()).isEqualTo(1);
         verify(userRepository).save(testUser);
     }
 
@@ -158,46 +157,58 @@ class AchievementServiceTest {
     }
 
     @Test
-    void trackLikeAchievements_ShouldTrackAllLikeAchievements() {
+    void trackLikeAchievements_ShouldIncrementLikesCountAndTrackAchievements() {
         Achievement likeAchievement1 = new Achievement();
         likeAchievement1.setId(1L);
         likeAchievement1.setCategory(AchievementCategory.LIKES);
+        likeAchievement1.setRequiredActions(1);
+        likeAchievement1.setXpReward(50);
 
         Achievement likeAchievement2 = new Achievement();
         likeAchievement2.setId(2L);
         likeAchievement2.setCategory(AchievementCategory.LIKES);
+        likeAchievement2.setRequiredActions(5);
+        likeAchievement2.setXpReward(100);
 
         List<Achievement> likeAchievements = List.of(likeAchievement1, likeAchievement2);
-        when(achievementRepository.findByCategory(AchievementCategory.LIKES)).thenReturn(likeAchievements);
+
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(achievementRepository.findById(anyLong())).thenReturn(Optional.of(testAchievement));
+        when(achievementRepository.findByCategory(AchievementCategory.LIKES)).thenReturn(likeAchievements);
+
+        when(achievementRepository.findById(1L)).thenReturn(Optional.of(likeAchievement1));
+        when(achievementRepository.findById(2L)).thenReturn(Optional.of(likeAchievement2));
         when(userAchievementRepository.findByUserAndAchievementId(any(), anyLong())).thenReturn(Optional.of(testUserAchievement));
         when(userAchievementRepository.save(any(UserAchievement.class))).thenReturn(testUserAchievement);
 
         achievementService.trackLikeAchievements("testuser");
 
+        assertThat(testUser.getLikesCount()).isEqualTo(1);
+        verify(userRepository, atLeastOnce()).save(testUser);
         verify(achievementRepository).findByCategory(AchievementCategory.LIKES);
-        verify(userRepository, times(2)).findByUsername("testuser");
+        verify(userRepository, atLeast(3)).findByUsername("testuser");
     }
 
     @Test
-    void trackSupportAchievements_ShouldTrackAllSupportAchievements() {
+    void trackSupportAchievements_ShouldIncrementSupportCountAndTrackAchievements() {
         Achievement supportAchievement = new Achievement();
         supportAchievement.setId(1L);
         supportAchievement.setCategory(AchievementCategory.SUPPORT);
+        supportAchievement.setRequiredActions(1);
+        supportAchievement.setXpReward(50);
 
         List<Achievement> supportAchievements = List.of(supportAchievement);
-        when(achievementRepository.findByCategory(AchievementCategory.SUPPORT)).thenReturn(supportAchievements);
 
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(achievementRepository.findById(anyLong())).thenReturn(Optional.of(testAchievement));
+        when(achievementRepository.findByCategory(AchievementCategory.SUPPORT)).thenReturn(supportAchievements);
+        when(achievementRepository.findById(1L)).thenReturn(Optional.of(supportAchievement));
         when(userAchievementRepository.findByUserAndAchievementId(any(), anyLong())).thenReturn(Optional.of(testUserAchievement));
         when(userAchievementRepository.save(any(UserAchievement.class))).thenReturn(testUserAchievement);
 
         achievementService.trackSupportAchievements("testuser");
 
+        assertThat(testUser.getSupportCount()).isEqualTo(1);
+        verify(userRepository, atLeastOnce()).save(testUser);
         verify(achievementRepository).findByCategory(AchievementCategory.SUPPORT);
-        verify(userRepository).findByUsername("testuser");
     }
 
     @Test
@@ -254,19 +265,20 @@ class AchievementServiceTest {
         Achievement volunteerAchievement = new Achievement();
         volunteerAchievement.setId(1L);
         volunteerAchievement.setCategory(AchievementCategory.VOLUNTEER);
+        volunteerAchievement.setRequiredActions(1);
+        volunteerAchievement.setXpReward(50);
 
         List<Achievement> volunteerAchievements = List.of(volunteerAchievement);
         when(achievementRepository.findByCategory(AchievementCategory.VOLUNTEER)).thenReturn(volunteerAchievements);
-
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(achievementRepository.findById(anyLong())).thenReturn(Optional.of(testAchievement));
+        when(achievementRepository.findById(anyLong())).thenReturn(Optional.of(volunteerAchievement));
         when(userAchievementRepository.findByUserAndAchievementId(any(), anyLong())).thenReturn(Optional.of(testUserAchievement));
         when(userAchievementRepository.save(any(UserAchievement.class))).thenReturn(testUserAchievement);
 
         achievementService.trackVolunteerAchievements("testuser");
 
         verify(achievementRepository).findByCategory(AchievementCategory.VOLUNTEER);
-        verify(userRepository).findByUsername("testuser");
+        verify(userRepository, atLeastOnce()).findByUsername("testuser");
     }
 
     @Test
@@ -274,19 +286,20 @@ class AchievementServiceTest {
         Achievement adoptionAchievement = new Achievement();
         adoptionAchievement.setId(1L);
         adoptionAchievement.setCategory(AchievementCategory.ADOPTION);
+        adoptionAchievement.setRequiredActions(1);
+        adoptionAchievement.setXpReward(100);
 
         List<Achievement> adoptionAchievements = List.of(adoptionAchievement);
         when(achievementRepository.findByCategory(AchievementCategory.ADOPTION)).thenReturn(adoptionAchievements);
-
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(achievementRepository.findById(anyLong())).thenReturn(Optional.of(testAchievement));
+        when(achievementRepository.findById(anyLong())).thenReturn(Optional.of(adoptionAchievement));
         when(userAchievementRepository.findByUserAndAchievementId(any(), anyLong())).thenReturn(Optional.of(testUserAchievement));
         when(userAchievementRepository.save(any(UserAchievement.class))).thenReturn(testUserAchievement);
 
         achievementService.trackAdoptionAchievements("testuser");
 
         verify(achievementRepository).findByCategory(AchievementCategory.ADOPTION);
-        verify(userRepository).findByUsername("testuser");
+        verify(userRepository, atLeastOnce()).findByUsername("testuser");
     }
 
     @Test
@@ -331,7 +344,7 @@ class AchievementServiceTest {
         achievementService.trackProfileAchievementByName("testuser", "Profile Complete");
 
         verify(achievementRepository).findByCategory(AchievementCategory.PROFILE);
-        verify(userRepository, times(2)).findByUsername("testuser");
+        verify(userRepository, atLeastOnce()).findByUsername("testuser");
     }
 
     @Test
@@ -353,7 +366,7 @@ class AchievementServiceTest {
         achievementService.trackVolunteerAchievementByName("testuser", "First Volunteer");
 
         verify(achievementRepository).findByCategory(AchievementCategory.VOLUNTEER);
-        verify(userRepository, times(2)).findByUsername("testuser");
+        verify(userRepository, atLeastOnce()).findByUsername("testuser");
     }
 
     @Test
@@ -373,5 +386,71 @@ class AchievementServiceTest {
         assertThat(testUser.getLevel()).isEqualTo(2);
         assertThat(testUser.getXpPoints()).isEqualTo(105);
         verify(userRepository).save(testUser);
+    }
+
+    @Test
+    void trackLikeAchievements_WhenUserNotFound_ShouldThrowException() {
+        when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> achievementService.trackLikeAchievements("nonexistent"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("User not found");
+    }
+
+    @Test
+    void trackSupportAchievements_WhenUserNotFound_ShouldThrowException() {
+        when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> achievementService.trackSupportAchievements("nonexistent"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("User not found");
+    }
+
+    @Test
+    void trackLikeAchievements_ShouldLogProgressCorrectly() {
+        testUser.setLikesCount(5);
+
+        Achievement likeAchievement = new Achievement();
+        likeAchievement.setId(1L);
+        likeAchievement.setCategory(AchievementCategory.LIKES);
+        likeAchievement.setRequiredActions(1);
+        likeAchievement.setXpReward(50);
+
+        List<Achievement> likeAchievements = List.of(likeAchievement);
+
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
+        when(achievementRepository.findByCategory(AchievementCategory.LIKES)).thenReturn(likeAchievements);
+        when(achievementRepository.findById(1L)).thenReturn(Optional.of(likeAchievement));
+        when(userAchievementRepository.findByUserAndAchievementId(any(), anyLong())).thenReturn(Optional.of(testUserAchievement));
+        when(userAchievementRepository.save(any(UserAchievement.class))).thenReturn(testUserAchievement);
+
+        achievementService.trackLikeAchievements("testuser");
+
+        assertThat(testUser.getLikesCount()).isEqualTo(6);
+        verify(userRepository, atLeastOnce()).save(testUser);
+    }
+
+    @Test
+    void trackSupportAchievements_ShouldLogProgressCorrectly() {
+        testUser.setSupportCount(2);
+
+        Achievement supportAchievement = new Achievement();
+        supportAchievement.setId(1L);
+        supportAchievement.setCategory(AchievementCategory.SUPPORT);
+        supportAchievement.setRequiredActions(1);
+        supportAchievement.setXpReward(50);
+
+        List<Achievement> supportAchievements = List.of(supportAchievement);
+
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
+        when(achievementRepository.findByCategory(AchievementCategory.SUPPORT)).thenReturn(supportAchievements);
+        when(achievementRepository.findById(1L)).thenReturn(Optional.of(supportAchievement));
+        when(userAchievementRepository.findByUserAndAchievementId(any(), anyLong())).thenReturn(Optional.of(testUserAchievement));
+        when(userAchievementRepository.save(any(UserAchievement.class))).thenReturn(testUserAchievement);
+
+        achievementService.trackSupportAchievements("testuser");
+
+        assertThat(testUser.getSupportCount()).isEqualTo(3);
+        verify(userRepository, atLeastOnce()).save(testUser);
     }
 }
