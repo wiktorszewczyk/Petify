@@ -11,5 +11,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long>, JpaSpecificationExecutor<Pet> {
     Page<Pet> findByShelterId(Long shelterId, Pageable pageable);
-
 }
