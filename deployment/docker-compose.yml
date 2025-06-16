@@ -35,16 +35,16 @@ services:
       retries: 5
       start_period: 10s
 
-  chat:
-    image: ${ACR_LOGIN_SERVER}/petify-chat:latest
-    depends_on:
-      discovery:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
-      interval: 5s
-      retries: 5
-      start_period: 10s
+  # chat:
+  #   image: ${ACR_LOGIN_SERVER}/petify-chat:latest
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
 
   feed:
     image: ${ACR_LOGIN_SERVER}/petify-feed:latest
@@ -57,16 +57,16 @@ services:
       retries: 5
       start_period: 10s
   
-  funding:
-    image: ${ACR_LOGIN_SERVER}/petify-funding:latest
-    depends_on:
-      discovery:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8020/actuator/health"]
-      interval: 5s
-      retries: 5
-      start_period: 10s
+  # funding:
+  #   image: ${ACR_LOGIN_SERVER}/petify-funding:latest
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8020/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
 
   image:
     image: ${ACR_LOGIN_SERVER}/petify-image:latest
@@ -79,16 +79,16 @@ services:
       retries: 5
       start_period: 10s
 
-  reservations:
-    image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
-    depends_on:
-      discovery:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8011/actuator/health"]
-      interval: 5s
-      retries: 5
-      start_period: 10s
+  # reservations:
+  #   image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8011/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
 
   shelter:
     image: ${ACR_LOGIN_SERVER}/petify-shelter:latest
@@ -110,15 +110,15 @@ services:
         condition: service_healthy
       auth-server:
         condition: service_healthy
-      chat:
-        condition: service_healthy
+      # chat:
+      #   condition: service_healthy
       feed:
         condition: service_healthy
+      # funding:
+      #   condition: service_healthy
       image:
         condition: service_healthy
-      funding:
-        condition: service_healthy
+      # reservations:
+      #   condition: service_healthy
       shelter:
-        condition: service_healthy
-      reservations:
         condition: service_healthy
