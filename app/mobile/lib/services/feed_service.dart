@@ -1,6 +1,7 @@
 import 'dart:developer' as dev;
 import 'package:dio/dio.dart';
 import '../models/event.dart';
+import '../models/event_participant.dart';
 import '../models/shelter_post.dart';
 import 'api/initial_api.dart';
 import 'image_service.dart';
@@ -225,6 +226,21 @@ class FeedService {
     } on DioException catch (e) {
       dev.log('Błąd podczas pobierania liczby uczestników: ${e.message}');
       return 0; // Fallback value
+    }
+  }
+
+  Future<List<EventParticipant>> getEventParticipants(int eventId) async {
+    try {
+      final response = await _api.get('/events/$eventId/participants');
+      if (response.statusCode == 200 && response.data is List) {
+        return (response.data as List)
+            .map((j) => EventParticipant.fromJson(j))
+            .toList();
+      }
+      throw Exception('Nieprawidłowa odpowiedź serwera');
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pobierania uczestników: ${e.message}');
+      rethrow;
     }
   }
 }

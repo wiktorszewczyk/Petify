@@ -5,9 +5,7 @@ import '../models/shelter_post.dart';
 import '../models/shelter.dart';
 import '../services/image_service.dart';
 import '../services/shelter_service.dart';
-import '../services/message_service.dart';
 import '../styles/colors.dart';
-import 'chat_view.dart';
 
 class PostDetailsView extends StatefulWidget {
   final ShelterPost post;
@@ -24,7 +22,6 @@ class PostDetailsView extends StatefulWidget {
 class _PostDetailsViewState extends State<PostDetailsView> {
   final _imageService = ImageService();
   final _shelterService = ShelterService();
-  final _messageService = MessageService();
 
   List<ImageResponse> _additionalImages = [];
   bool _isLoadingImages = false;
@@ -38,7 +35,6 @@ class _PostDetailsViewState extends State<PostDetailsView> {
   }
 
   Future<void> _loadAdditionalData() async {
-    // Równoległe ładowanie obrazów i danych schroniska
     await Future.wait([
       _loadAdditionalImages(),
       _loadShelterInfo(),
@@ -91,45 +87,6 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     }
   }
 
-  Future<void> _contactShelter() async {
-    if (_shelter == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nie udało się załadować danych schroniska'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    try {
-      // Utwórz pokój czatu dla schroniska (nie dla konkretnego zwierzęcia)
-      final chatRoom = await _messageService.createOrGetShelterChatRoom(_shelter!.id);
-
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChatView(
-              chatRoomId: chatRoom['id']?.toString(),
-              recipientName: _shelter!.name,
-              context: 'Ogłoszenie: ${widget.post.title}',
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Nie udało się nawiązać kontaktu: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
   Future<void> _sharePost() async {
     try {
       await Share.share(
@@ -170,16 +127,13 @@ class _PostDetailsViewState extends State<PostDetailsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Główne zdjęcie
             _buildMainImage(),
 
-            // Zawartość posta
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Tytuł
                   Text(
                     widget.post.title,
                     style: GoogleFonts.poppins(
@@ -189,11 +143,9 @@ class _PostDetailsViewState extends State<PostDetailsView> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Informacje o schronisku i dacie
                   _buildShelterInfo(),
                   const SizedBox(height: 16),
 
-                  // Opis
                   if (widget.post.description.isNotEmpty) ...[
                     Text(
                       'Opis',
@@ -213,7 +165,6 @@ class _PostDetailsViewState extends State<PostDetailsView> {
                     const SizedBox(height: 24),
                   ],
 
-                  // Galeria dodatkowych zdjęć
                   if (_additionalImages.isNotEmpty) ...[
                     Text(
                       'Galeria',
@@ -227,7 +178,6 @@ class _PostDetailsViewState extends State<PostDetailsView> {
                     const SizedBox(height: 24),
                   ],
 
-                  // Akcje
                   _buildActionButtons(),
                 ],
               ),
@@ -378,44 +328,23 @@ class _PostDetailsViewState extends State<PostDetailsView> {
   }
 
   Widget _buildActionButtons() {
-    return Row(
-      children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: _contactShelter,
-            icon: const Icon(Icons.chat),
-            label: Text(
-              'Skontaktuj się',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryColor,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
+    return Center(
+      child: OutlinedButton.icon(
+        onPressed: _sharePost,
+        icon: const Icon(Icons.share),
+        label: Text(
+          'Udostępnij',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: AppColors.primaryColor),
+          foregroundColor: AppColors.primaryColor,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
-        const SizedBox(width: 12),
-        OutlinedButton.icon(
-          onPressed: _sharePost,
-          icon: const Icon(Icons.share),
-          label: Text(
-            'Udostępnij',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-          ),
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(color: AppColors.primaryColor),
-            foregroundColor: AppColors.primaryColor,
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 

@@ -10,7 +10,7 @@ class Event {
   final DateTime? endDate;
   final String location;
   final int? participantsCount;
-  final String? eventType; // "Warsztaty", "Spacer", "Dzień otwarty", etc.
+  final String? eventType;
   final bool requiresRegistration;
   final int? capacity;
   final int? shelterId;
@@ -57,7 +57,7 @@ class Event {
     return Event(
       id: json['id'].toString(),
       title: json['title'] ?? '',
-      organizerName: 'Schronisko', // Will be filled by shelter info if needed
+      organizerName: 'Schronisko',
       description: json['longDescription'] ?? json['shortDescription'] ?? '',
       imageUrl: json['mainImageId'] != null
           ? '$baseUrl/images/${json['mainImageId']}'
@@ -89,23 +89,39 @@ class Event {
     };
   }
 
-  Event copyWith({String? imageUrl}) {
+  Event copyWith({
+    String? id,
+    String? title,
+    String? organizerName,
+    String? description,
+    String? imageUrl,
+    DateTime? date,
+    DateTime? endDate,
+    String? location,
+    int? participantsCount,
+    String? eventType,
+    bool? requiresRegistration,
+    int? capacity,
+    int? shelterId,
+    int? mainImageId,
+    int? fundraisingId,
+  }) {
     return Event(
-      id: id,
-      title: title,
-      organizerName: organizerName,
-      description: description,
+      id: id ?? this.id,
+      title: title ?? this.title,
+      organizerName: organizerName ?? this.organizerName,
+      description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,
-      date: date,
-      endDate: endDate,
-      location: location,
-      participantsCount: participantsCount,
-      eventType: eventType,
-      requiresRegistration: requiresRegistration,
-      capacity: capacity,
-      shelterId: shelterId,
-      mainImageId: mainImageId,
-      fundraisingId: fundraisingId,
+      date: date ?? this.date,
+      endDate: endDate ?? this.endDate,
+      location: location ?? this.location,
+      participantsCount: participantsCount ?? this.participantsCount,
+      eventType: eventType ?? this.eventType,
+      requiresRegistration: requiresRegistration ?? this.requiresRegistration,
+      capacity: capacity ?? this.capacity,
+      shelterId: shelterId ?? this.shelterId,
+      mainImageId: mainImageId ?? this.mainImageId,
+      fundraisingId: fundraisingId ?? this.fundraisingId,
     );
   }
 }

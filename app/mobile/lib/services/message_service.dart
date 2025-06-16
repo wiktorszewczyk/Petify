@@ -116,12 +116,10 @@ class MessageService {
       final currentUser = await getCurrentUser();
       if (currentUser == null) return;
 
-      final username = currentUser.username; // Use username
+      final username = currentUser.username;
 
-      // Wait for connection if not connected yet
       if (!_isStompConnected) {
         await _setupStompConnection();
-        // Wait a bit for connection to establish
         await Future.delayed(const Duration(milliseconds: 500));
         if (!_isStompConnected) {
           print('Failed to establish STOMP connection');
@@ -592,43 +590,6 @@ class MessageService {
     } catch (e) {
       print('Error getting unread count: $e');
       return 0;
-    }
-  }
-
-  Future<Map<String, dynamic>> createOrGetShelterChatRoom(int shelterId) async {
-    try {
-      print('🏠 MessageService: Creating shelter chat room for shelter ID=$shelterId');
-
-      try {
-        final response = await _dio.get('/chat/room/shelter/$shelterId');
-        if (response.statusCode == 200) {
-          print('✅ MessageService: Found existing shelter chat room');
-          return response.data;
-        }
-      } catch (e) {
-        print('⚠️ MessageService: No existing shelter chat room found, will create new one');
-      }
-
-      final response = await _dio.get('/chat/room/0?shelterId=$shelterId&context=shelter_general');
-
-      if (response.statusCode == 200) {
-        print('✅ MessageService: Created shelter chat room successfully');
-        return response.data;
-      } else {
-        throw Exception('Failed to create shelter chat room: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('❌ MessageService: Error creating shelter chat room: $e');
-
-      final fallbackConversation = {
-        'id': 'shelter_$shelterId',
-        'petId': 0,
-        'shelterId': shelterId,
-        'type': 'shelter_general'
-      };
-
-      print('🔄 MessageService: Using fallback conversation structure');
-      return fallbackConversation;
     }
   }
 
