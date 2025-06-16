@@ -25,10 +25,9 @@
     <module>funding</module>
     <module>image</module>
     <module>feed</module>
-<<<<<<< HEAD
-=======
+
     <module>load-tests</module>
->>>>>>> origin/main
+
   </modules>
 
   <distributionManagement>

@@ -163,8 +163,7 @@ public class AuthenticationController {
         return response;
     }
 
-<<<<<<< HEAD
-=======
+
     @GetMapping("/auth/oauth2/success")
     public void oauthLoginSuccess(
             @RequestParam String token,
@@ -184,7 +183,7 @@ public class AuthenticationController {
         String frontendUrl = "http://localhost:5173/home?error=OAuth2%20authentication%20failed";
         response.sendRedirect(frontendUrl);
     }
->>>>>>> origin/main
+
 
     @PostMapping("/auth/oauth2/exchange")
     public ResponseEntity<?> exchangeOAuth2Token(@RequestBody Map<String, String> request) {
