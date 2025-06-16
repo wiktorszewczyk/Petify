@@ -1,9 +1,9 @@
 x-common-variables: &common-variables
-  DB_PORT: 5432
-  DB_HOST: postgres
-  POSTGRES_DB: petify
-  POSTGRES_USER: $${DB_USER}
-  POSTGRES_PASSWORD: $${DB_PASSWORD}
+  PGPORT: 5432
+  PGHOST: ${DB_HOST}
+  PGDATABASE: petify
+  PGUSER: ${DB_USER}
+  PGPASSWORD: ${DB_PASSWORD}
 
   CONFIG_SERVER_PORT: 8888
   CONFIG_SERVER_HOST: config-server
@@ -18,62 +18,67 @@ x-common-variables: &common-variables
 
 services:
   postgres:
-    image: postgres:17
+    image: bitnami/postgresql:17
+    entrypoint: ["sleep", "infinity"]
     environment:
       <<: *common-variables
-    ports:
-      - 5433:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d petify"]
+      test: ["CMD-SHELL", "pg_isready -h ${DB_HOST} -p 5432"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+    mem_limit: 128m
 
   config-server:
     image: ${ACR_LOGIN_SERVER}/petify-config-server:latest
     expose:
       - 8888
+    environment:
+      <<: *common-variables
+    entrypoint: [ "sh", "-c", "env" ]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
       interval: 5s
       retries: 5
       start_period: 10s
+    mem_limit: 1g
 
-  discovery:
-    image: ${ACR_LOGIN_SERVER}/petify-discovery:latest
-    expose:
-      - 8761
-    environment:
-      <<: *common-variables
-    depends_on:
-      config-server:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
-      interval: 5s
-      retries: 5
-      start_period: 10s
+  # discovery:
+  #   image: ${ACR_LOGIN_SERVER}/petify-discovery:latest
+  #   expose:
+  #     - 8761
+  #   environment:
+  #     <<: *common-variables
+  #   depends_on:
+  #     config-server:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
+  #   mem_limit: 1g
 
-  auth-server:
-    image: ${ACR_LOGIN_SERVER}/petify-auth-server:latest
-    expose:
-      - 9000
-    environment:
-      <<: *common-variables
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-    depends_on:
-      discovery:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
+  # auth-server:
+  #   image: ${ACR_LOGIN_SERVER}/petify-auth-server:latest
+  #   expose:
+  #     - 9000
+  #   environment:
+  #     <<: *common-variables
+  #     GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+  #     GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
+  #     interval: 10s
+  #     retries: 5
+  #     start_period: 30s
+  #   mem_limit: 1g
 
   # chat:
   #   image: ${ACR_LOGIN_SERVER}/petify-chat:latest
@@ -91,25 +96,27 @@ services:
   #     interval: 5s
   #     retries: 5
   #     start_period: 10s
+  #   mem_limit: 1g
 
-  feed:
-    image: ${ACR_LOGIN_SERVER}/petify-feed:latest
-    expose:
-      - 8030
-    environment:
-      <<: *common-variables
-      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
-      S3_SECRET_KEY: ${S3_SECRET_KEY}
-    depends_on:
-      discovery:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8030/actuator/health"]
-      interval: 5s
-      retries: 5
-      start_period: 10s
+  # feed:
+  #   image: ${ACR_LOGIN_SERVER}/petify-feed:latest
+  #   expose:
+  #     - 8030
+  #   environment:
+  #     <<: *common-variables
+  #     S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+  #     S3_SECRET_KEY: ${S3_SECRET_KEY}
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8030/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
+  #   mem_limit: 1g
 
   # funding:
   #   image: ${ACR_LOGIN_SERVER}/petify-funding:latest
@@ -120,12 +127,12 @@ services:
   #     STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
   #     STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
   #     STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
-  #     PAYU_CLIENT_ID: ${PAYU_CLIENT_ID:300746}
-  #     PAYU_CLIENT_SECRET: ${PAYU_CLIENT_SECRET:2ee86a66e5d97e3fadc400c9f19b065d}
-  #     PAYU_POS_ID: ${PAYU_POS_ID:300746}
-  #     PAYU_MD5_KEY: ${PAYU_MD5_KEY:b6ca15b0d1020e8094d9b5f8d163db54}
-  #     PAYU_API_URL: ${PAYU_API_URL:https://secure.snd.payu.com}
-  #     WEBHOOK_BASE_URL: ${GATEWAY_URL}
+  #     PAYU_CLIENT_ID: $${PAYU_CLIENT_ID:300746}
+  #     PAYU_CLIENT_SECRET: $${PAYU_CLIENT_SECRET:2ee86a66e5d97e3fadc400c9f19b065d}
+  #     PAYU_POS_ID: $${PAYU_POS_ID:300746}
+  #     PAYU_MD5_KEY: $${PAYU_MD5_KEY:b6ca15b0d1020e8094d9b5f8d163db54}
+  #     PAYU_API_URL: $${PAYU_API_URL:https://secure.snd.payu.com}
+  #     WEBHOOK_BASE_URL: http://gateway:8222
   #   depends_on:
   #     discovery:
   #       condition: service_healthy
@@ -136,25 +143,27 @@ services:
   #     interval: 5s
   #     retries: 5
   #     start_period: 10s
+  #   mem_limit: 1g
 
-  image:
-    image: ${ACR_LOGIN_SERVER}/petify-image:latest
-    expose:
-      - 8060
-    environment:
-      <<: *common-variables
-      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
-      S3_SECRET_KEY: ${S3_SECRET_KEY}
-    depends_on:
-      discovery:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8060/actuator/health"]
-      interval: 5s
-      retries: 5
-      start_period: 10s
+  # image:
+  #   image: ${ACR_LOGIN_SERVER}/petify-image:latest
+  #   expose:
+  #     - 8060
+  #   environment:
+  #     <<: *common-variables
+  #     S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+  #     S3_SECRET_KEY: ${S3_SECRET_KEY}
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8060/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
+  #   mem_limit: 1g
 
   # reservations:
   #   image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
@@ -172,49 +181,49 @@ services:
   #     interval: 5s
   #     retries: 5
   #     start_period: 10s
+  #   mem_limit: 1g
 
-  shelter:
-    image: ${ACR_LOGIN_SERVER}/petify-shelter:latest
-    expose:
-      - 8010
-    environment:
-      <<: *common-variables
-      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
-      S3_SECRET_KEY: ${S3_SECRET_KEY}
-    depends_on:
-      discovery:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8010/actuator/health"]
-      interval: 5s
-      retries: 5
-      start_period: 10s
+  # shelter:
+  #   image: ${ACR_LOGIN_SERVER}/petify-shelter:latest
+  #   expose:
+  #     - 8010
+  #   environment:
+  #     <<: *common-variables
+  #     S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+  #     S3_SECRET_KEY: ${S3_SECRET_KEY}
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8010/actuator/health"]
+  #     interval: 5s
+  #     retries: 5
+  #     start_period: 10s
+  #   mem_limit: 1g
 
-  gateway:
-    image: ${ACR_LOGIN_SERVER}/petify-gateway:latest
-    ports:
-      - 8222:8222
-    environment:
-      <<: *common-variables
-    depends_on:
-      discovery:
-        condition: service_healthy
-      auth-server:
-        condition: service_healthy
-      # chat:
-      #   condition: service_healthy
-      feed:
-        condition: service_healthy
-      # funding:
-      #   condition: service_healthy
-      image:
-        condition: service_healthy
-      # reservations:
-      #   condition: service_healthy
-      shelter:
-        condition: service_healthy
-
-volumes:
-  postgres_data:
+  # gateway:
+  #   image: ${ACR_LOGIN_SERVER}/petify-gateway:latest
+  #   ports:
+  #     - 8222:8222
+  #   environment:
+  #     <<: *common-variables
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     auth-server:
+  #       condition: service_healthy
+  #     chat:
+  #       condition: service_healthy
+  #     feed:
+  #       condition: service_healthy
+  #     funding:
+  #       condition: service_healthy
+  #     image:
+  #       condition: service_healthy
+  #     reservations:
+  #       condition: service_healthy
+  #     shelter:
+  #       condition: service_healthy
+  #   mem_limit: 1g

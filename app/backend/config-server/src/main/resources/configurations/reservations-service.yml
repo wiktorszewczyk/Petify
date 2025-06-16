@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/petify
-    username: ${DB_USERNAME:admin}
-    password: ${DB_PASSWORD:admin}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5433}/${PGDATABASE:petify}
+    username: ${PGUSER:admin}
+    password: ${PGPASSWORD:admin}
   jpa:
     hibernate:
       ddl-auto: update
