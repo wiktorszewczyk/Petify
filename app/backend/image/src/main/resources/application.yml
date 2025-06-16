@@ -5,5 +5,5 @@ spring:
     import: configserver:http://${CONFIG_SERVER_HOST:localhost}:${CONFIG_SERVER_PORT:8888}
 
 s3:
-  access-key: ${s3.access.key}
-  secret-key: ${s3.secret.key}
+  access-key: ${S3_ACCESS_KEY:${s3.access.key}}
+  secret-key: ${S3_SECRET_KEY:${s3.secret.key}}

@@ -12,12 +12,12 @@ spring:
       client:
         registration:
           google:
-            client-id: ${google.client.id}
-            client-secret: ${google.client.secret}
+            client-id: ${GOOGLE_CLIENT_ID:${google.client.id}}
+            client-secret: ${GOOGLE_CLIENT_SECRET:${google.client.secret}}
             scope:
               - email
               - profile
-            redirect-uri: "${GATEWAY_URL:http://localhost:8222}/login/oauth2/code/google"
+            redirect-uri: "http://${GATEWAY_HOST:localhost}:${GATEWAY_PORT:8222}/login/oauth2/code/google"
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
@@ -39,11 +39,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-# Konfiguracja Eureka
 eureka:
   client:
     service-url:
       defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
   instance:
     prefer-ip-address: true
-    instance-id: ${spring.application.name}:${random.uuid}
+    instance-id: ${spring.application.name}:${server.port}
