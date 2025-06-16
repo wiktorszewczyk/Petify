@@ -1,21 +1,65 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { register } from '../api/auth'
 import './Auth.css'
 
 export default function Register() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    firstName: '',
+    lastName: '',
+    birthDate: '',
+    phoneNumber: '',
+    gender: 'MALE',
+  })
+
+  const [errors, setErrors] = useState([])
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const validate = () => {
+    const err = []
+
+    if (!form.email.includes('@')) err.push('Nieprawidłowy adres e-mail.')
+    if (form.password.length < 6) err.push('Hasło musi mieć co najmniej 6 znaków.')
+    if (form.password !== form.confirmPassword) err.push('Hasła nie są takie same.')
+    if (!/^\+?\d{9,15}$/.test(form.phoneNumber)) err.push('Nieprawidłowy numer telefonu.')
+    if (!form.firstName.trim() || !form.lastName.trim()) err.push('Imię i nazwisko są wymagane.')
+    if (!form.birthDate) err.push('Data urodzenia jest wymagana.')
+
+    return err
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (password !== confirmPassword) {
-      alert('Hasła nie są takie same')
+    const foundErrors = validate()
+    if (foundErrors.length > 0) {
+      setErrors(foundErrors)
       return
     }
-    console.log('Register:', { email, password })
-    navigate('/login')
+
+    try {
+      await register({
+        username: form.email,
+        password: form.password,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        birthDate: form.birthDate,
+        gender: form.gender,
+        phoneNumber: form.phoneNumber,
+        email: form.email,
+      })
+
+      navigate('/login')
+    } catch (error) {
+      setErrors([error.message || 'Rejestracja nieudana.'])
+    }
   }
 
   return (
@@ -27,42 +71,31 @@ export default function Register() {
       >
         <h2 className="mb-4 text-center">Rejestracja</h2>
 
-        <div className="mb-3">
-          <label className="form-label">Email</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+        {errors.length > 0 && (
+          <div className="alert alert-danger">
+            <ul className="mb-0">
+              {errors.map((err, i) => (
+                <li key={i}>{err}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-        <div className="mb-3">
-          <label className="form-label">Hasło</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+        <input className="form-control mb-2" name="firstName" placeholder="Imię" value={form.firstName} onChange={handleChange} />
+        <input className="form-control mb-2" name="lastName" placeholder="Nazwisko" value={form.lastName} onChange={handleChange} />
+        <input className="form-control mb-2" name="birthDate" type="date" value={form.birthDate} onChange={handleChange} />
+        <input className="form-control mb-2" name="phoneNumber" placeholder="Telefon" value={form.phoneNumber} onChange={handleChange} />
 
-        <div className="mb-4">
-          <label className="form-label">Powtórz hasło</label>
-          <input
-            type="password"
-            className="form-control"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
+        <select className="form-select mb-2" name="gender" value={form.gender} onChange={handleChange}>
+          <option value="MALE">Mężczyzna</option>
+          <option value="FEMALE">Kobieta</option>
+        </select>
 
-        <button type="submit" className="btn btn-success w-100">
-          Zarejestruj się
-        </button>
+        <input className="form-control mb-2" name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} />
+        <input className="form-control mb-2" name="password" type="password" placeholder="Hasło" value={form.password} onChange={handleChange} />
+        <input className="form-control mb-4" name="confirmPassword" type="password" placeholder="Powtórz hasło" value={form.confirmPassword} onChange={handleChange} />
+
+        <button type="submit" className="btn btn-success w-100">Zarejestruj się</button>
       </form>
     </div>
   )

@@ -85,20 +85,42 @@ public class AchievementService {
 
     @Transactional
     public void trackLikeAchievements(String username) {
+        ApplicationUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setLikesCount(user.getLikesCount() + 1);
+        userRepository.save(user);
+
         List<Achievement> likeAchievements = achievementRepository.findByCategory(AchievementCategory.LIKES);
 
         for (Achievement achievement : likeAchievements) {
             trackAchievementProgress(username, achievement.getId(), 1);
         }
+        log.info("Tracked like achievements for user {} - new like count: {}",
+                username, user.getLikesCount());
     }
 
     @Transactional
     public void trackSupportAchievements(String username) {
+        ApplicationUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setSupportCount(user.getSupportCount() + 1);
+        userRepository.save(user);
+
         List<Achievement> supportAchievements = achievementRepository.findByCategory(AchievementCategory.SUPPORT);
 
         for (Achievement achievement : supportAchievements) {
             trackAchievementProgress(username, achievement.getId(), 1);
         }
+
+        log.info("Tracked support achievements for user {} - new support count: {}",
+                username, user.getSupportCount());
+    }
+
+    @Transactional
+    public void trackProfileAchievementByName(String username, String achievementName) {
+        trackAchievementByNameAndCategory(username, achievementName, AchievementCategory.PROFILE);
     }
 
     @Transactional
@@ -109,10 +131,12 @@ public class AchievementService {
     private void updateBadgeCounts(ApplicationUser user, AchievementCategory category) {
         switch (category) {
             case LIKES:
-                user.setLikesCount(user.getLikesCount() + 1);
                 break;
             case SUPPORT:
-                user.setSupportCount(user.getSupportCount() + 1);
+                break;
+            case ADOPTION:
+                user.setAdoptionCount(user.getAdoptionCount() + 1);
+                user.setBadgesCount(user.getBadgesCount() + 1);
                 break;
             case ADOPTION:
                 user.setAdoptionCount(user.getAdoptionCount() + 1);

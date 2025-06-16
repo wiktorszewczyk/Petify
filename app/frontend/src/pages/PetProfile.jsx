@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "./PetProfile.css";
 import {
   Heart,
@@ -18,10 +19,13 @@ import {
   AlertCircle 
 } from "lucide-react";
 import Navbar from "../components/Navbar";
+import {
+  fetchPetById,
+  fetchImagesByPetId,
+  fetchShelterById
+} from "../api/shelter";
 
-import dog1 from '../assets/dog2_1.jpg';
-import dog2 from '../assets/dog2_2.jpg';
-import dog3 from '../assets/dog2_3.jpg';
+
 
 import dono5 from '../assets/pet_snack.png';
 import dono10 from '../assets/pet_bowl.png';
@@ -47,55 +51,58 @@ const pawSteps = [
   { top: '70vh', left: '-3vw', size: '8vw', rotate: '-135deg' },
 ];
 
-const pet = {
-  id: 101,
-  name: 'Luna',
-  age: 2,
-  breed: 'Husky',
-  gender: 'Female',
-  size: 'Large',
-  vaccinated: true,
-  neuteredOrSpayed: true,
-  location: 'Schronisko "Cztery Łapy"',
-  address: '1234 Dog Lane, Seattle, WA',
-  coordinates: { lat: 47.6062, lon: -122.3321 },
-  description: 'Buddy to prawdziwy promień słońca – energiczny, łagodny i bardzo przyjazny. Uwielbia spacery, zabawę na świeżym powietrzu i towarzystwo ludzi. Jest łasy na pieszczoty i bardzo szybko się przywiązuje. Świetnie dogaduje się z innymi psami, a jego złote futerko i wiecznie merdający ogon skradną Twoje serce od pierwszego spojrzenia. Buddy szuka odpowiedzialnego domu, gdzie będzie pełnoprawnym członkiem rodziny. Idealnie sprawdzi się w domu z ogrodem, ale odnajdzie się też w mieszkaniu, jeśli zapewnisz mu odpowiednią dawkę ruchu i miłości.',
-  photos: [dog1, dog2, dog3],
-  characteristics: [
-    'Lubi dzieci',
-    'Przyjazny wobec innych psów',
-    'Energiczny',
-    'Bardzo towarzyski',
-    'Uwielbia zabawy na świeżym powietrzu'
-  ],
-  healthInfo: {
-    vaccines: 'Wszystkie aktualne',
-    medicalChecks: 'Przebadany',
-    specialNeeds: 'Brak',
-  },
-  trainingLevel: 'Podstawowe posłuszeństwo',
-  goodWith: {
-    children: true,
-    otherDogs: true,
-    cats: 'Nieznane',
-  }
-};
+
 
 function PetProfile() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [showDonatePopup, setShowDonatePopup] = useState(false);
-  const [showAdoptPopup, setShowAdoptPopup] = useState(false);
+const [shelter, setShelter] = useState(null);
+const [petPhotos, setPetPhotos] = useState([]);
+const [selectedAmount, setSelectedAmount] = useState(null);
+const [customAmount, setCustomAmount] = useState('');
+
+
+
+const { id } = useParams();
+const [pet, setPet] = useState(null);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+
+useEffect(() => {
+  const fetchPet = async () => {
+    try {
+      const data = await fetchPetById(id);
+      setPet(data);
+
+      const imagesData = await fetchImagesByPetId(id);
+      setPetPhotos(imagesData.map((img) => img.imageUrl));
+
+      if (data.shelterId) {
+        const shelterData = await fetchShelterById(data.shelterId);
+        setShelter(shelterData);
+      }
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPet();
+}, [id]);
 
 
   const handlePrev = () => {
     setCurrentPhotoIndex((prevIndex) =>
-      prevIndex === 0 ? pet.photos.length - 1 : prevIndex - 1
+      prevIndex === 0 ? petPhotos.length - 1 : prevIndex - 1
     );
   };
 
   const handleNext = () => {
     setCurrentPhotoIndex((prevIndex) =>
-      prevIndex === pet.photos.length - 1 ? 0 : prevIndex + 1
+      prevIndex === petPhotos.length - 1 ? 0 : prevIndex + 1
     );
     };
 
@@ -109,6 +116,9 @@ function PetProfile() {
   return <AlertCircle className="suitability-icon warning" />;
 };
   
+if (loading) return <p>Ładowanie...</p>;
+if (error) return <p>Błąd: {error}</p>;
+if (!pet) return null;
 
   return (
     <div className="profile-body">
@@ -134,68 +144,86 @@ function PetProfile() {
 
       
       {showDonatePopup && (
-        <div className="donation-popup-overlay" onClick={() => setShowDonatePopup(false)}>
-          <div className="donation-popup" onClick={(e) => e.stopPropagation()}>
-            <h2>Wesprzyj {pet.name}</h2>
-            <p>Każda kwota się liczy! Wybierz wysokość wsparcia:</p>
-            <div className="donation-options">
-              {[ 
-                { amount: 5, label: "Smakołyki", img: dono5 },
-                { amount: 10, label: "Pełna miska", img: dono10 },
-                { amount: 15, label: "Zabawka", img: dono15 },
-                { amount: 25, label: "Zapas karmy", img: dono25 },
-                 { amount: 50, label: "Legowisko", img: dono50 }
-              ].map(({ amount, label, img }) => (
-                <button key={amount} className="donate-option">
-                  <img src={img} alt={label} className="donate-img" />
-                  <span className="donate-amount">{amount} zł</span>
-                  <span className="donate-label">{label}</span>
-                </button>
-              ))}
-            </div>
-      
-            <input type="number" placeholder="Inna kwota" className="donate-input" />
-            
-            <button className="confirm-donate-btn" onClick={() => window.location.href = '/payment'}>
-              Przejdź do płatności
-            </button>
-            <button className="close-popup-btn" onClick={() => setShowDonatePopup(false)}>X</button>
-          </div>
-        </div>
-      )}
-
-
-      {showAdoptPopup && (
-  <div className="donation-popup-overlay" onClick={() => setShowAdoptPopup(false)}>
+  <div className="donation-popup-overlay" onClick={() => setShowDonatePopup(false)}>
     <div className="donation-popup" onClick={(e) => e.stopPropagation()}>
-      <h2>Chcesz adoptować {pet.name}?</h2>
-      <p>Skontaktujemy Cię ze schroniskiem, aby rozpocząć proces adopcji.</p>
-      <button className="confirm-donate-btn" onClick={() => window.location.href = '/adoption-form'}>
-        Wypełnij formularz
+      <h2>Wesprzyj {pet.name}</h2>
+      <div className="donation-options">
+        {[
+          { amount: 5, label: "Smakołyki", img: dono5 },
+          { amount: 10, label: "Pełna miska", img: dono10 },
+          { amount: 15, label: "Zabawka", img: dono15 },
+          { amount: 25, label: "Zapas karmy", img: dono25 },
+          { amount: 50, label: "Legowisko", img: dono50 }
+        ].map(({ amount, label, img }) => (
+          <button 
+            key={amount} 
+            className={`donate-option ${selectedAmount === amount ? 'selected' : ''}`}
+            onClick={() => {
+              setSelectedAmount(amount);
+              setCustomAmount(''); // Wyczyść custom amount gdy wybierasz predefiniowaną kwotę
+            }}
+          >
+            <img src={img} alt={label} className="donate-img" />
+            <span className="donate-amount">{amount} zł</span>
+            <span className="donate-label">{label}</span>
+          </button>
+        ))}
+      </div>
+
+      <input 
+        type="number" 
+        placeholder="Inna kwota" 
+        className="donate-input"
+        value={customAmount}
+        onChange={(e) => {
+          setCustomAmount(e.target.value);
+          setSelectedAmount(null); // Wyczyść wybór predefiniowanej kwoty
+        }}
+      />
+      
+      <button 
+        className="confirm-donate-btn" 
+        disabled={!selectedAmount && !customAmount}
+        onClick={() => {
+          // Przekaż wybraną kwotę do payment
+          const finalAmount = selectedAmount || customAmount;
+          window.location.href = `/payment?amount=${finalAmount}`;
+        }}
+      >
+        Przejdź do płatności {(selectedAmount || customAmount) && `(${selectedAmount || customAmount} zł)`}
       </button>
-      <button className="close-popup-btn" onClick={() => setShowAdoptPopup(false)}>X</button>
+      <button className="close-popup-btn" onClick={() => setShowDonatePopup(false)}>×</button>
     </div>
   </div>
 )}
 
+
+      
+
       <div className="pet-profile-page">
         <div className="pet-picture">
         <section className="pet-profile-picture">
-          <div className="photo-slider">
-             <button className="slider-btn left" onClick={handlePrev}>
-              <ChevronLeft />
-            </button>
-            <img
-              src={pet.photos[currentPhotoIndex]}
-              alt={`Buddy zdjęcie ${currentPhotoIndex + 1}`}
-              className="slider-image"
-            />
-            <button className="slider-btn right" onClick={handleNext}>
-              <ChevronRight />
-            </button>
-          </div>
+          {petPhotos?.length > 0 ? (
+  <div className="photo-slider">
+    <button className="slider-btn left" onClick={handlePrev}>
+      <ChevronLeft />
+    </button>
+    <img
+      src={petPhotos[currentPhotoIndex]}
+      alt={`Zdjęcie ${currentPhotoIndex + 1}`}
+      className="slider-image"
+    />
+    <button className="slider-btn right" onClick={handleNext}>
+      <ChevronRight />
+    </button>
+  </div>
+) : (
+  <div className="photo-slider no-photos">
+    <p>Brak zdjęć dla tego zwierzaka</p>
+  </div>
+)}
           <div className="photo-thumbnails">
-            {pet.photos.map((photo, index) => (
+          {petPhotos?.length > 0 && petPhotos.map((photo, index) => (
               <img
                 key={index}
                 src={photo}
@@ -216,7 +244,16 @@ function PetProfile() {
     <h2 className="pet-name">{pet.name}, {pet.age} lata</h2>  
     <div className="pet-location-info"> 
       <MapPin className="map-pin-pet-profile" /> 
-      <p className="pet-location">{pet.location}</p> 
+      <p className="pet-location">
+    {shelter ? (
+      <>
+        {shelter.name} &nbsp;
+        {shelter.address}
+      </>
+    ) : (
+      "Ładowanie lokalizacji..."
+    )}
+  </p>
     </div>
   </div>
 
@@ -244,6 +281,16 @@ function PetProfile() {
   {/* Szczegóły podstawowe */}
   <div className="pet-details-grid">
     <div className="pet-detail-item">
+      <span className="detail-label">Typ zwierzęcia:</span>
+      <span className="detail-value">
+  {{
+    CAT: "Kot",
+    DOG: "Pies",
+    OTHER: "Inne"
+  }[pet.type] || "Nieznany"}
+</span>
+    </div>
+    <div className="pet-detail-item">
       <span className="detail-label">Płeć:</span>
       <span className="detail-value">{pet.gender === 'Male' ? 'Samiec' : 'Samica'}</span>
     </div>
@@ -254,22 +301,14 @@ function PetProfile() {
     <div className="pet-detail-item">
       <span className="detail-label">Rozmiar:</span>
       <span className="detail-value">
-        {pet.size === 'Large' ? 'Duży' : pet.size === 'Medium' ? 'Średni' : 'Mały'}
-      </span>
+  {{
+    SMALL: "Mały",
+    MEDIUM: "Średni",
+    LARGE: "Duży"
+  }[pet.size] || "Nieznany"}
+</span>
     </div>
-    <div className="pet-detail-item">
-      <span className="detail-label">Kastracja:</span>
-      <span className="detail-value">
-        {pet.neuteredOrSpayed ? 'Tak' : 'Nie'}
-      </span>
     </div>
-    <div className="pet-detail-item">
-      <span className="detail-label">Szczepienia:</span>
-      <span className="detail-value">
-        {pet.vaccinated ? 'Tak' : 'Nie'}
-      </span>
-    </div>
-  </div>
 
   {/* Opis */}
   <section className="pet-description">
@@ -277,62 +316,34 @@ function PetProfile() {
     <p>{pet.description}</p>
   </section>
 
-  {/* Charakterystyka */}
-  <section className="pet-characteristics">
-    <h3>Charakterystyka</h3>
-    <ul>
-      {pet.characteristics.map((char, index) => (
-        <li key={index}>{char}</li>
-      ))}
-    </ul>
-  </section>
-
-  {/* Informacje zdrowotne */}
-  <section className="pet-health-info">
-    <h3>Informacje Zdrowotne</h3>
-    <div className="pet-detail-item">
-      <span className="detail-label">Szczepienia:</span>
-      <span className="detail-value">{pet.healthInfo.vaccines}</span>
-    </div>
-    <div className="pet-detail-item">
-      <span className="detail-label">Badania:</span>
-      <span className="detail-value">{pet.healthInfo.medicalChecks}</span>
-    </div>
-    <div className="pet-detail-item">
-      <span className="detail-label">Specjalne potrzeby:</span>
-      <span className="detail-value">{pet.healthInfo.specialNeeds}</span>
-    </div>
-  </section>
 
   {/* Dopasowanie */}
   <section className="pet-suitability">
-  <h3>Czy nadaje się do...</h3>
+  <h3>Dopasowanie</h3>
   <div className="suitability-grid">
     <div className="suitability-item">
       <span className="detail-label">Dzieci:</span>
       <span className="suitability-value">
-        {getSuitabilityIcon(pet.goodWith.children)}
-        {pet.goodWith.children ? 'Tak' : 'Nie'}
+        {getSuitabilityIcon(pet.kidFriendly)}
+        {pet.kidFriendly ? 'Tak' : 'Nie'}
       </span>
     </div>
     <div className="suitability-item">
-      <span className="detail-label">Inne psy:</span>
+      <span className="detail-label">Sterylizacja:</span>
       <span className="suitability-value">
-        {getSuitabilityIcon(pet.goodWith.otherDogs)}
-        {pet.goodWith.otherDogs ? 'Tak' : 'Nie'}
+        {getSuitabilityIcon(pet.sterilized)}
+        {pet.sterilized ? 'Tak' : 'Nie'}
       </span>
     </div>
     <div className="suitability-item">
-      <span className="detail-label">Koty:</span>
+      <span className="detail-label">Szczepeienia:</span>
       <span className="suitability-value">
-        {getSuitabilityIcon(pet.goodWith.cats)}
-        {pet.goodWith.cats}
+        {getSuitabilityIcon(pet.vaccinated)}
+        {pet.vaccinated ? 'Tak' : 'Nie'}
       </span>
     </div>
   </div>
 </section>
-
-  
 
 </section>
 
