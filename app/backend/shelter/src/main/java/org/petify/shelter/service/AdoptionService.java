@@ -1,5 +1,6 @@
 package org.petify.shelter.service;
 
+import org.petify.shelter.client.AchievementClient;
 import org.petify.shelter.dto.AdoptionRequest;
 import org.petify.shelter.dto.AdoptionResponse;
 import org.petify.shelter.enums.AdoptionStatus;
@@ -15,6 +16,7 @@ import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +26,13 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class AdoptionService {
     private final AdoptionRepository adoptionRepository;
     private final ShelterRepository shelterRepository;
     private final PetRepository petRepository;
     private final AdoptionMapper adoptionMapper;
+    private final AchievementClient achievementClient;
 
     @Transactional
     public AdoptionResponse createAdoptionForm(Long petId, String username, AdoptionRequest adoptionRequest) {
@@ -99,6 +103,14 @@ public class AdoptionService {
             var pet = form.getPet();
             pet.setArchived(true);
             petRepository.save(pet);
+
+            try {
+                achievementClient.trackAdoptionProgressForUser(form.getUsername());
+                log.info("Tracked adoption achievement for user: {}", form.getUsername());
+            } catch (Exception e) {
+                log.error("Failed to track adoption achievement for user {}: {}", 
+                         form.getUsername(), e.getMessage());
+            }
         }
 
         form.setAdoptionStatus(newStatus);

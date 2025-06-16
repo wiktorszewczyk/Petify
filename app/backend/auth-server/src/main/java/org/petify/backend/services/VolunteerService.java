@@ -29,6 +29,9 @@ public class VolunteerService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private VolunteerAchievementService volunteerAchievementService;
+
     @Transactional
     public VolunteerApplication applyForVolunteer(String username, VolunteerApplication application) {
         ApplicationUser user = userRepository.findByUsername(username)
@@ -45,7 +48,11 @@ public class VolunteerService {
         application.setApplicationDate(LocalDateTime.now());
         application.setStatus("PENDING");
 
-        return volunteerApplicationRepository.save(application);
+        VolunteerApplication savedApplication = volunteerApplicationRepository.save(application);
+
+        volunteerAchievementService.onVolunteerApplicationSubmitted(username);
+
+        return savedApplication;
     }
 
     public List<VolunteerApplication> getUserApplications(String username) {
@@ -65,7 +72,7 @@ public class VolunteerService {
 
         Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
                 .orElseThrow(() -> new RuntimeException("VOLUNTEER role not found"));
-        
+
         Set<Role> userRoles = new HashSet<>((Set<Role>) user.getAuthorities());
         userRoles.add(volunteerRole);
         user.setAuthorities(userRoles);
@@ -73,7 +80,12 @@ public class VolunteerService {
 
         application.setStatus("APPROVED");
         application.setProcessedDate(LocalDateTime.now());
-        return volunteerApplicationRepository.save(application);
+
+        VolunteerApplication savedApplication = volunteerApplicationRepository.save(application);
+
+        volunteerAchievementService.onVolunteerApproved(user.getUsername());
+
+        return savedApplication;
     }
 
     @Transactional
@@ -83,7 +95,7 @@ public class VolunteerService {
 
         ApplicationUser user = application.getUser();
         user.setVolunteerStatus(VolunteerStatus.INACTIVE);
-        
+
         Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER").orElse(null);
         if (volunteerRole != null) {
             Set<Role> userRoles = new HashSet<>((Set<Role>) user.getAuthorities());

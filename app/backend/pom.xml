@@ -15,17 +15,17 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>config-server</module>
-    <module>auth-server</module>
-    <module>discovery</module>
-    <module>gateway</module>
-    <module>shelter</module>
-    <module>reservations</module>
-    <module>chat</module>
-    <module>funding</module>
-    <module>image</module>
-    <module>feed</module>
-    <module>load-tests</module>
+      <module>config-server</module>
+      <module>auth-server</module>
+      <module>discovery</module>
+      <module>gateway</module>
+      <module>shelter</module>
+      <module>reservations</module>
+      <module>chat</module>
+      <module>funding</module>
+      <module>image</module>
+      <module>feed</module>
+      <module>load-tests</module>
   </modules>
 
   <distributionManagement>
