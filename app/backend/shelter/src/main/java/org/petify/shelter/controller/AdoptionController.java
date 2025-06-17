@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,5 +53,16 @@ public class AdoptionController {
 
         AdoptionResponse updatedForm = adoptionService.updateAdoptionStatus(id, status, username);
         return ResponseEntity.ok(updatedForm);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAdoptionForm(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        String username = jwt != null ? jwt.getSubject() : null;
+        adoptionService.deleteAdoptionForm(id, username);
+        return ResponseEntity.noContent().build();
     }
 }

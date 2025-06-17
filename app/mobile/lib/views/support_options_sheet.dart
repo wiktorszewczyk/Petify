@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../styles/colors.dart';
-import '../../models/pet_model.dart';
+import '../../models/pet.dart';
 import '../../models/donation.dart';
 import '../../services/donation_service.dart';
+import 'payment_view.dart';
 
 class SupportOptionsSheet extends StatefulWidget {
-  final PetModel pet;
+  final Pet pet;
 
   const SupportOptionsSheet({
     Key? key,
     required this.pet,
   }) : super(key: key);
 
-  static Future<void> show(BuildContext context, PetModel pet) {
+  static Future<void> show(BuildContext context, Pet pet) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -68,7 +69,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
   void _selectItem(MaterialDonationItem item) {
     setState(() {
       _selectedItem = item;
-      _quantity = 1; // Reset ilości przy zmianie przedmiotu
+      _quantity = 1;
     });
   }
 
@@ -94,34 +95,39 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
       return;
     }
 
-    // Tutaj będzie później nawigacja do ekranu płatności
-    // Na razie tylko symulacja
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final donation = await _donationService.addMaterialDonation(
-        shelterName: widget.pet.shelterName,
-        petId: widget.pet.id,
-        item: _selectedItem!,
-        quantity: _quantity,
-        message: 'Wsparcie dla ${widget.pet.name}',
+      final result = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentView(
+            shelterId: widget.pet.shelterId,
+            petId: widget.pet.id,
+            materialItem: _selectedItem!,
+            quantity: _quantity,
+            title: 'Wspieraj: ${widget.pet.name}',
+            description: 'Zakup przedmiotu dla zwierzaka',
+            initialAmount: _selectedItem!.price * _quantity,
+          ),
+        ),
       );
 
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
-
-        // Pokazujemy potwierdzenie i zamykamy sheet
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Dziękujemy za wsparcie ${widget.pet.name}!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.of(context).pop();
+        if (result == true) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Dziękujemy za wsparcie ${widget.pet.name}!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -236,7 +242,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: _getImageProvider(widget.pet.imageUrl),
+                image: _getImageProvider(widget.pet.imageUrlSafe),
                 fit: BoxFit.cover,
               ),
               border: Border.all(color: AppColors.primaryColor, width: 2),
@@ -255,7 +261,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
                   ),
                 ),
                 Text(
-                  widget.pet.shelterName,
+                  widget.pet.shelterName.toString(),
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.grey[600],

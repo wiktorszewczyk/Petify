@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../styles/colors.dart';
@@ -24,10 +25,17 @@ class TopHeader extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircleAvatar(
-            radius: 35,
-            backgroundColor: Colors.white,
-            child: Icon(Icons.pets, color: AppColors.primaryColor, size: 32),
+          PhysicalModel(
+            color: Colors.transparent,
+            shape: BoxShape.circle,
+            elevation: 8,
+            shadowColor: Colors.black54,
+            child: SvgPicture.asset(
+              'assets/logo.svg',
+              width: 96,
+              height: 96,
+              fit: BoxFit.contain,
+            ),
           ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
 
           const SizedBox(height: 10),

@@ -71,7 +71,7 @@ public class ReservationController {
     }
 
     @GetMapping("/slots/pet/{petId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER','VOLUNTEER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER', 'VOLUNTEER')")
     public ResponseEntity<List<SlotResponse>> getSlotsByPet(@PathVariable Long petId) {
         return ResponseEntity.ok(reservationService.getSlotsByPetId(petId));
     }

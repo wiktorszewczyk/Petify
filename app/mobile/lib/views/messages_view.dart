@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/message_model.dart';
-import '../models/pet_model.dart';
+import '../models/pet.dart';
 import '../services/message_service.dart';
 import '../styles/colors.dart';
 import '../widgets/cards/conversation_card.dart';
@@ -56,6 +56,8 @@ class _MessagesViewState extends State<MessagesView> with AutomaticKeepAliveClie
         _conversations!.removeWhere((c) => c.id == conversation.id);
       });
 
+      await _messageService.deleteConversation(conversation.id);
+
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,20 +66,34 @@ class _MessagesViewState extends State<MessagesView> with AutomaticKeepAliveClie
           action: SnackBarAction(
             label: 'Cofnij',
             onPressed: () async {
-              setState(() {
-                _conversations!.add(conversation);
-                _conversations!.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
-              });
+              try {
+                await _loadConversations();
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Nie udało się przywrócić konwersacji'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
             },
           ),
         ),
       );
     } catch (e) {
+      setState(() {
+        _conversations!.add(conversation);
+        _conversations!.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+      });
+
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nie udało się usunąć konwersacji'),
+        SnackBar(
+          content: Text('Nie udało się usunąć konwersacji: $e'),
+          backgroundColor: Colors.red,
         ),
       );
     }
@@ -109,7 +125,7 @@ class _MessagesViewState extends State<MessagesView> with AutomaticKeepAliveClie
                       icon: const Icon(Icons.search),
                       onPressed: () {
                         // TODO: zaimplementować szukanie po wiadomościach
-                        },
+                      },
                       tooltip: 'Szukaj w wiadomościach',
                     ),
                 ],

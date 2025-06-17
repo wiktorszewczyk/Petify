@@ -46,7 +46,7 @@ public class AuthenticationService {
     private AchievementService achievementService;
 
     public ApplicationUser registerUser(final RegistrationDTO registrationDTO) {
-        String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty())
+        final String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty())
                 ? registrationDTO.getUsername()
                 : (registrationDTO.getEmail() != null)
                 ? registrationDTO.getEmail()
@@ -58,13 +58,20 @@ public class AuthenticationService {
             throw new IllegalArgumentException("User with this email or phone number already exists");
         }
 
-        String encodedPassword = passwordEncoder.encode(registrationDTO.getPassword());
+        final String encodedPassword = passwordEncoder.encode(registrationDTO.getPassword());
 
         Role userRole = roleRepository.findByAuthority("USER")
                 .orElseThrow(() -> new RuntimeException("Default user role not found"));
 
         Set<Role> authorities = new HashSet<>();
         authorities.add(userRole);
+
+        // If user wants to create a shelter, assign SHELTER role
+        if (registrationDTO.isCreateShelter()) {
+            Role shelterRole = roleRepository.findByAuthority("SHELTER")
+                    .orElseThrow(() -> new RuntimeException("SHELTER role not found"));
+            authorities.add(shelterRole);
+        }
 
         ApplicationUser newUser = new ApplicationUser();
         newUser.setUsername(username);
@@ -87,7 +94,7 @@ public class AuthenticationService {
         newUser.setPreferredSearchDistanceKm(20.0);
         newUser.setAutoLocationEnabled(false);
 
-        if (registrationDTO.isApplyAsVolunteer()) {
+        if (registrationDTO.isApplyAsVolunteer() && !registrationDTO.isCreateShelter()) { // Volunteer only if not creating shelter
             newUser.setVolunteerStatus(VolunteerStatus.PENDING);
         } else {
             newUser.setVolunteerStatus(VolunteerStatus.NONE);

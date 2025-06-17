@@ -19,11 +19,13 @@ class MessageModel {
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
-      id: json['id'],
-      senderId: json['senderId'],
-      conversationId: json['conversationId'],
-      content: json['content'],
-      timestamp: DateTime.parse(json['timestamp']),
+      id: json['id']?.toString() ?? '',
+      senderId: json['sender'] ?? json['senderId'] ?? '',
+      conversationId: json['roomId']?.toString() ?? json['conversationId'] ?? '',
+      content: json['content'] ?? '',
+      timestamp: json['timestamp'] != null
+          ? DateTime.parse(json['timestamp'])
+          : DateTime.now(),
       isRead: json['isRead'] ?? false,
       type: _parseMessageType(json['type'] ?? 'text'),
     );
@@ -32,8 +34,8 @@ class MessageModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'senderId': senderId,
-      'conversationId': conversationId,
+      'sender': senderId,
+      'roomId': conversationId,
       'content': content,
       'timestamp': timestamp.toIso8601String(),
       'isRead': isRead,
@@ -78,13 +80,15 @@ class ConversationModel {
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      id: json['id'],
-      petId: json['petId'],
-      petName: json['petName'],
-      petImageUrl: json['petImageUrl'],
-      shelterName: json['shelterName'],
-      lastMessage: json['lastMessage'],
-      lastMessageTime: DateTime.parse(json['lastMessageTime']),
+      id: json['id']?.toString() ?? '',
+      petId: json['petId']?.toString() ?? '',
+      petName: json['petName'] ?? '',
+      petImageUrl: json['petImageUrl'] ?? 'assets/images/empty_pets.png',
+      shelterName: json['shelterName'] ?? '',
+      lastMessage: json['lastMessage'] ?? '',
+      lastMessageTime: json['lastMessageTime'] != null
+          ? DateTime.parse(json['lastMessageTime'])
+          : DateTime.now(),
       unread: json['unread'] ?? false,
     );
   }
