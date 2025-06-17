@@ -60,6 +60,11 @@ public class PetController {
         return ResponseEntity.ok(petService.getPets(pageable));
     }
 
+    @GetMapping("/old")
+    public ResponseEntity<?> getAllPetsOld() {
+        return ResponseEntity.ok(petService.getPets());
+    }
+
     // implements cursor-based pagination
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @GetMapping("/filter")
@@ -116,6 +121,24 @@ public class PetController {
     public ResponseEntity<List<Long>> getAllPetIds() {
         List<Long> petIds = petService.getAllPetIds();
         return ResponseEntity.ok(petIds);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PetResponseWithImages>> getAllPetsAsList() {
+        return ResponseEntity.ok(petService.getAllPets());
+    }
+
+    @GetMapping("/shelter/{shelterId}/ids")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
+    public ResponseEntity<List<Long>> getPetIdsByShelterId(@PathVariable Long shelterId) {
+        List<Long> petIds = petService.getPetIdsByShelterId(shelterId);
+        return ResponseEntity.ok(petIds);
+    }
+
+    @GetMapping("/{petId}/archived")
+    public ResponseEntity<Boolean> isPetArchived(@PathVariable Long petId) {
+        boolean archived = petService.isPetArchived(petId);
+        return ResponseEntity.ok(archived);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
