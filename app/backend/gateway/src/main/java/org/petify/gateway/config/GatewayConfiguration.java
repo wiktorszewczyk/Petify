@@ -51,8 +51,10 @@ public class GatewayConfiguration {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowedOriginPatterns(Arrays.asList("http://localhost:*", "http://127.0.0.1:*"));
         corsConfig.setMaxAge(3600L);
-        corsConfig.addAllowedMethod(CorsConfiguration.ALL);
-        corsConfig.addAllowedHeader(CorsConfiguration.ALL);
+
+        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+
         corsConfig.setExposedHeaders(Arrays.asList("Authorization"));
 
         corsConfig.setAllowCredentials(true);

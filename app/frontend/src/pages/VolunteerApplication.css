@@ -1,0 +1,15 @@
+.cancel-button{
+    background: #ff0000;
+    color: #ffffff;
+    border: 2px solid #E2E8F0;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.edit-profile-actions{
+    background-color: #e2e8f000;
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.0);
+}

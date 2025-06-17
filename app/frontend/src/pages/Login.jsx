@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { login, handleGoogleLogin } from '../api/auth';
+import { login } from '../api/auth';
 import './Auth.css'
-import { GoogleLogin } from '@react-oauth/google';
 
 export default function Login() {
   const [username, setEmail] = useState('');
@@ -67,16 +66,7 @@ export default function Login() {
           Zaloguj się
         </button>
 
-        <div className="mt-3 text-center">
-          <button
-  className="btn btn-outline-dark w-100 mt-3"
-  onClick={() => {
-    window.location.href = "http://localhost:9000/auth/oauth2/google";
-  }}
->
-  Zaloguj się przez Google
-</button>
-        </div>
+        
       </form>
     </div>
   );
