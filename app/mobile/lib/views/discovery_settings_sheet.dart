@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../styles/colors.dart';
 import '../../services/filter_preferences_service.dart';
 import '../../services/location_service.dart';
+import '../../services/cache/cache_manager.dart';
 import '../models/filter_preferences.dart';
 
 class DiscoverySettingsSheet extends StatefulWidget {
@@ -46,6 +47,11 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
 
   Future<void> _saveAndClose([FilterPreferences? customPrefs]) async {
     final prefsToSave = customPrefs ?? _preferences;
+
+    CacheManager.invalidatePattern('pets_');
+    CacheManager.invalidatePattern('filter_preferences');
+    print('🗑️ DiscoverySettings: Cache invalidated due to filter changes');
+
     await FilterPreferencesService().saveFilterPreferences(prefsToSave);
     if (mounted) {
       Navigator.pop(context, prefsToSave);

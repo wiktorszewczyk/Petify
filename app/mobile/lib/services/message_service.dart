@@ -203,6 +203,10 @@ class MessageService with CacheableMixin {
         }
       }
 
+      final cacheKey = 'messages_${message.conversationId}';
+      final currentMessages = _conversationMessages[message.conversationId] ?? [];
+      CacheManager.set(cacheKey, currentMessages, ttl: Duration(minutes: 10));
+
       if (message.senderId != currentUsername) {
         final conversation = _cachedConversations?.firstWhere(
               (conv) => conv.id == message.conversationId,
@@ -262,155 +266,173 @@ class MessageService with CacheableMixin {
   }
 
   Future<List<ConversationModel>> getConversations({bool forceRefresh = false}) async {
-    try {
-      if (forceRefresh) {
-        clearCache();
-      }
+    const cacheKey = 'conversations_list';
 
-      final response = await _dio.get('/chat/rooms');
-
-      if (response.statusCode == 200) {
-        final List<dynamic> roomsData = response.data;
-
-        final conversations = <ConversationModel>[];
-
-        for (final roomData in roomsData) {
-          try {
-            final petResponse = await _dio.get('/pets/${roomData['petId']}');
-            final petData = petResponse.data;
-
-            String shelterName = 'Unknown Shelter';
-            try {
-              if (petData['shelterId'] != null) {
-                final shelterResponse = await _dio.get('/shelters/${petData['shelterId']}');
-                final shelterData = shelterResponse.data;
-                shelterName = shelterData['name'] ?? 'Unknown Shelter';
-              }
-            } catch (e) {
-              print('Error fetching shelter details: $e');
-              shelterName = roomData['shelterName'] ?? 'Unknown Shelter';
-            }
-
-            String lastMessage = 'Naciśnij aby rozpocząć czat';
-            DateTime lastMessageTime = DateTime.now();
-
-            try {
-              final historyResponse = await _dio.get('/chat/history/${roomData['id']}?size=1');
-              if (historyResponse.statusCode == 200) {
-                final historyData = historyResponse.data;
-                final List<dynamic> lastMessages = historyData['content'] ?? [];
-                if (lastMessages.isNotEmpty) {
-                  final lastMessageData = lastMessages.first;
-                  lastMessage = lastMessageData['content'] ?? 'Wiadomość';
-                  lastMessageTime = DateTime.parse(lastMessageData['timestamp']);
-                }
-              }
-            } catch (e) {
-              print('Error fetching last message for room ${roomData['id']}: $e');
-            }
-
-            final conversation = ConversationModel(
-              id: roomData['id'].toString(),
-              petId: roomData['petId'].toString(),
-              petName: petData['name'] ?? 'Unknown Pet',
-              petImageUrl: petData['imageUrl'] ?? 'assets/images/empty_pets.png',
-              shelterName: shelterName,
-              lastMessage: lastMessage,
-              lastMessageTime: lastMessageTime,
-              unread: (roomData['unreadCount'] ?? 0) > 0,
-            );
-
-            conversations.add(conversation);
-          } catch (e) {
-            print('Error fetching pet details for pet ${roomData['petId']}: $e');
-
-            String lastMessage = 'Naciśnij aby rozpocząć czat';
-            DateTime lastMessageTime = DateTime.now();
-
-            try {
-              final historyResponse = await _dio.get('/chat/history/${roomData['id']}?size=1');
-              if (historyResponse.statusCode == 200) {
-                final historyData = historyResponse.data;
-                final List<dynamic> lastMessages = historyData['content'] ?? [];
-                if (lastMessages.isNotEmpty) {
-                  final lastMessageData = lastMessages.first;
-                  lastMessage = lastMessageData['content'] ?? 'Wiadomość';
-                  lastMessageTime = DateTime.parse(lastMessageData['timestamp']);
-                }
-              }
-            } catch (e) {
-              print('Error fetching last message for room ${roomData['id']} (fallback): $e');
-            }
-
-            final conversation = ConversationModel(
-              id: roomData['id'].toString(),
-              petId: roomData['petId'].toString(),
-              petName: 'Unknown Pet',
-              petImageUrl: 'assets/images/empty_pets.png',
-              shelterName: roomData['shelterName'] ?? 'Unknown Shelter',
-              lastMessage: lastMessage,
-              lastMessageTime: lastMessageTime,
-              unread: (roomData['unreadCount'] ?? 0) > 0,
-            );
-            conversations.add(conversation);
-          }
-        }
-
-        conversations.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
-
-        _cachedConversations = conversations;
-        return conversations;
-      } else {
-        throw Exception('Failed to load conversations: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error loading conversations: $e');
-      return _cachedConversations ?? [];
+    if (forceRefresh) {
+      CacheManager.invalidate(cacheKey);
+      clearCache();
     }
+
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _dio.get('/chat/rooms');
+
+        if (response.statusCode == 200) {
+          final List<dynamic> roomsData = response.data;
+
+          final conversations = <ConversationModel>[];
+
+          for (final roomData in roomsData) {
+            try {
+              final petResponse = await _dio.get('/pets/${roomData['petId']}');
+              final petData = petResponse.data;
+
+              String shelterName = 'Unknown Shelter';
+              try {
+                if (petData['shelterId'] != null) {
+                  final shelterResponse = await _dio.get('/shelters/${petData['shelterId']}');
+                  final shelterData = shelterResponse.data;
+                  shelterName = shelterData['name'] ?? 'Unknown Shelter';
+                }
+              } catch (e) {
+                print('Error fetching shelter details: $e');
+                shelterName = roomData['shelterName'] ?? 'Unknown Shelter';
+              }
+
+              String lastMessage = 'Naciśnij aby rozpocząć czat';
+              DateTime lastMessageTime = DateTime.now();
+
+              try {
+                final historyResponse = await _dio.get('/chat/history/${roomData['id']}?size=1');
+                if (historyResponse.statusCode == 200) {
+                  final historyData = historyResponse.data;
+                  final List<dynamic> lastMessages = historyData['content'] ?? [];
+                  if (lastMessages.isNotEmpty) {
+                    final lastMessageData = lastMessages.first;
+                    lastMessage = lastMessageData['content'] ?? 'Wiadomość';
+                    lastMessageTime = DateTime.parse(lastMessageData['timestamp']);
+                  }
+                }
+              } catch (e) {
+                print('Error fetching last message for room ${roomData['id']}: $e');
+              }
+
+              final conversation = ConversationModel(
+                id: roomData['id'].toString(),
+                petId: roomData['petId'].toString(),
+                petName: petData['name'] ?? 'Unknown Pet',
+                petImageUrl: petData['imageUrl'] ?? 'assets/images/empty_pets.png',
+                shelterName: shelterName,
+                lastMessage: lastMessage,
+                lastMessageTime: lastMessageTime,
+                unread: (roomData['unreadCount'] ?? 0) > 0,
+              );
+
+              conversations.add(conversation);
+            } catch (e) {
+              print('Error fetching pet details for pet ${roomData['petId']}: $e');
+
+              String lastMessage = 'Naciśnij aby rozpocząć czat';
+              DateTime lastMessageTime = DateTime.now();
+
+              try {
+                final historyResponse = await _dio.get('/chat/history/${roomData['id']}?size=1');
+                if (historyResponse.statusCode == 200) {
+                  final historyData = historyResponse.data;
+                  final List<dynamic> lastMessages = historyData['content'] ?? [];
+                  if (lastMessages.isNotEmpty) {
+                    final lastMessageData = lastMessages.first;
+                    lastMessage = lastMessageData['content'] ?? 'Wiadomość';
+                    lastMessageTime = DateTime.parse(lastMessageData['timestamp']);
+                  }
+                }
+              } catch (e) {
+                print('Error fetching last message for room ${roomData['id']} (fallback): $e');
+              }
+
+              final conversation = ConversationModel(
+                id: roomData['id'].toString(),
+                petId: roomData['petId'].toString(),
+                petName: 'Unknown Pet',
+                petImageUrl: 'assets/images/empty_pets.png',
+                shelterName: roomData['shelterName'] ?? 'Unknown Shelter',
+                lastMessage: lastMessage,
+                lastMessageTime: lastMessageTime,
+                unread: (roomData['unreadCount'] ?? 0) > 0,
+              );
+              conversations.add(conversation);
+            }
+          }
+
+          conversations.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+
+          _cachedConversations = conversations;
+          return conversations;
+        } else {
+          throw Exception('Failed to load conversations: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error loading conversations: $e');
+        return _cachedConversations ?? [];
+      }
+    }, ttl: Duration(minutes: 5));
   }
 
   Future<List<MessageModel>> getMessages(String conversationId) async {
-    try {
-      if (_conversationMessages.containsKey(conversationId)) {
-        print('Returning cached messages for conversation $conversationId: ${_conversationMessages[conversationId]!.length} messages');
-        return _conversationMessages[conversationId]!;
-      }
+    final cacheKey = 'messages_$conversationId';
 
-      print('Fetching message history for conversation $conversationId');
-      final response = await _dio.get('/chat/history/$conversationId');
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        print('Message history response: $data');
-        final List<dynamic> messagesData = data['content'] ?? [];
-        print('Found ${messagesData.length} messages in history');
-
-        final messages = messagesData.map((messageData) {
-          return MessageModel(
-            id: messageData['id'].toString(),
-            senderId: messageData['sender'],
-            conversationId: conversationId,
-            content: messageData['content'],
-            timestamp: DateTime.parse(messageData['timestamp']),
-            type: MessageType.text,
-          );
-        }).toList();
-
-        messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-
-        _conversationMessages[conversationId] = messages;
-
-        await _setupStompConnection();
-        await _subscribeToRoom(conversationId);
-
-        return messages;
-      } else {
-        throw Exception('Failed to load messages: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error loading messages for conversation $conversationId: $e');
-      return _conversationMessages[conversationId] ?? [];
+    final cachedMessages = CacheManager.get<List<MessageModel>>(cacheKey);
+    if (cachedMessages != null) {
+      print('Returning CacheManager cached messages for conversation $conversationId: ${cachedMessages.length} messages');
+      _conversationMessages[conversationId] = cachedMessages;
+      await _setupStompConnection();
+      await _subscribeToRoom(conversationId);
+      return cachedMessages;
     }
+
+    return cachedFetch(cacheKey, () async {
+      try {
+        if (_conversationMessages.containsKey(conversationId) && _conversationMessages[conversationId]!.isNotEmpty) {
+          print('Returning local cached messages for conversation $conversationId: ${_conversationMessages[conversationId]!.length} messages');
+          return _conversationMessages[conversationId]!;
+        }
+
+        print('Fetching message history for conversation $conversationId');
+        final response = await _dio.get('/chat/history/$conversationId');
+
+        if (response.statusCode == 200) {
+          final data = response.data;
+          print('Message history response: $data');
+          final List<dynamic> messagesData = data['content'] ?? [];
+          print('Found ${messagesData.length} messages in history');
+
+          final messages = messagesData.map((messageData) {
+            return MessageModel(
+              id: messageData['id'].toString(),
+              senderId: messageData['sender'],
+              conversationId: conversationId,
+              content: messageData['content'],
+              timestamp: DateTime.parse(messageData['timestamp']),
+              type: MessageType.text,
+            );
+          }).toList();
+
+          messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+          _conversationMessages[conversationId] = messages;
+
+          await _setupStompConnection();
+          await _subscribeToRoom(conversationId);
+
+          return messages;
+        } else {
+          throw Exception('Failed to load messages: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error loading messages for conversation $conversationId: $e');
+        return _conversationMessages[conversationId] ?? [];
+      }
+    }, ttl: Duration(minutes: 10));
   }
 
   Future<MessageModel> sendMessage(String conversationId, String content, {MessageType type = MessageType.text}) async {
@@ -441,6 +463,8 @@ class MessageService with CacheableMixin {
       }
       _conversationMessages[conversationId]!.add(newMessage);
 
+      _notifyMessageListeners(conversationId, newMessage);
+
       if (_cachedConversations != null) {
         final idx = _cachedConversations!.indexWhere((conv) => conv.id == conversationId);
         if (idx != -1) {
@@ -459,6 +483,12 @@ class MessageService with CacheableMixin {
           _cachedConversations!.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
         }
       }
+
+      CacheManager.invalidate('conversations_list');
+
+      final cacheKey = 'messages_$conversationId';
+      final currentMessages = _conversationMessages[conversationId] ?? [];
+      CacheManager.set(cacheKey, currentMessages, ttl: Duration(minutes: 10));
 
       return newMessage;
     } catch (e) {
@@ -544,6 +574,11 @@ class MessageService with CacheableMixin {
         _cachedConversations!.insert(0, newConversation);
 
         _conversationMessages[conversationId] = [];
+
+        CacheManager.invalidate('conversations_list');
+
+        final messagesCacheKey = 'messages_$conversationId';
+        CacheManager.set(messagesCacheKey, <MessageModel>[], ttl: Duration(minutes: 10));
 
         await _setupStompConnection();
         await _subscribeToRoom(conversationId);

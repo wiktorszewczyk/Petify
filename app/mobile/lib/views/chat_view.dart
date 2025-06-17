@@ -76,7 +76,7 @@ class _ChatViewState extends State<ChatView> {
   }
 
   void _onNewMessage(MessageModel message) {
-    if (message.senderId != _currentUserId && mounted) {
+    if (mounted) {
       setState(() {
         _messages ??= [];
         final exists = _messages!.any((msg) =>
@@ -86,9 +86,14 @@ class _ChatViewState extends State<ChatView> {
         );
         if (!exists) {
           _messages!.add(message);
+          print('🔄 ChatView: Added message to local list. Total messages: ${_messages!.length}');
         }
       });
       _scrollToBottom();
+
+      if (message.senderId != _currentUserId) {
+        _messageService.markMessagesAsRead(_actualConversationId);
+      }
     }
   }
 
@@ -223,6 +228,17 @@ class _ChatViewState extends State<ChatView> {
 
     try {
       final newMessage = await _messageService.sendMessage(_actualConversationId, content);
+
+      if (widget.isNewConversation || (_messages?.isEmpty ?? true)) {
+        setState(() {
+          _messages ??= [];
+          final exists = _messages!.any((msg) => msg.id == newMessage.id);
+          if (!exists) {
+            _messages!.add(newMessage);
+            print('✅ ChatView: Added sent message to new conversation. Total messages: ${_messages!.length}');
+          }
+        });
+      }
 
       setState(() {
         _isSending = false;

@@ -171,10 +171,8 @@ class PetService with CacheableMixin {
           final swipeResponse = SwipeResponse.fromJson(response.data);
           dev.log('Parsed ${swipeResponse.pets.length} pets from SwipeResponse');
 
-          // Zbierz unikalne ID schronisk
           final shelterIds = swipeResponse.pets.map((pet) => pet.shelterId).toSet();
 
-          // Pobierz wszystkie schroniska za jednym razem (batch)
           final shelterService = ShelterService();
           final sheltersMap = <int, Shelter>{};
 
@@ -187,7 +185,6 @@ class PetService with CacheableMixin {
             }
           }));
 
-          // Wzbogać zwierzęta o dane schronisk
           final enrichedPets = swipeResponse.pets.map((pet) {
             final shelter = sheltersMap[pet.shelterId];
 
@@ -351,18 +348,18 @@ class PetService with CacheableMixin {
         dev.log('Błąd podczas pobierania szczegółów zwierzęcia: ${e.message}');
         throw Exception('Nie udało się pobrać szczegółów zwierzęcia: ${e.message}');
       }
-    }, ttl: Duration(minutes: 10)); // Dłuższy TTL dla szczegółów
+    }, ttl: Duration(minutes: 10));
   }
 
   Future<BasicResponse> likePet(int petId) async {
     try {
       final response = await _api.post('/pets/$petId/like');
 
-      // Invaliduj cache ulubionych jeśli operacja się powiodła
       if (response.statusCode == 200) {
         CacheManager.invalidatePattern('favorites');
         CacheManager.invalidatePattern('supported');
-        dev.log('Invalidated favorites cache after liking pet $petId');
+        CacheManager.invalidatePattern('pets_'); // Invaliduj wszystkie cache zwierząt!
+        dev.log('✅ LIKED PET $petId - Invalidated all pets cache. Next fetch will get fresh data from API.');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -376,11 +373,11 @@ class PetService with CacheableMixin {
     try {
       final response = await _api.post('/pets/$petId/dislike');
 
-      // Invaliduj cache ulubionych jeśli operacja się powiodła
       if (response.statusCode == 200) {
         CacheManager.invalidatePattern('favorites');
         CacheManager.invalidatePattern('supported');
-        dev.log('Invalidated favorites cache after unliking pet $petId');
+        CacheManager.invalidatePattern('pets_');
+        dev.log('Invalidated pets and favorites cache after unliking pet $petId');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -394,7 +391,6 @@ class PetService with CacheableMixin {
     try {
       final response = await _api.post('/pets/$petId/support');
 
-      // Invaliduj cache wspieranych jeśli operacja się powiodła
       if (response.statusCode == 200) {
         CacheManager.invalidatePattern('supported');
         dev.log('Invalidated supported pets cache after supporting pet $petId');
@@ -418,35 +414,38 @@ class PetService with CacheableMixin {
           final petsData = response.data as List;
           List<Pet> pets = petsData.map((petJson) => Pet.fromJson(petJson)).toList();
 
-          // Optymalizacja: pobierz lokalizację raz
           double? userLat;
           double? userLng;
           try {
-            final position = await LocationService().getCurrentLocation();
+            final position = await LocationService().getCurrentLocation().timeout(Duration(seconds: 2));
             if (position != null) {
               userLat = position.latitude;
               userLng = position.longitude;
               dev.log('getFavoritePets - User position: lat=$userLat, lng=$userLng');
             }
           } catch (e) {
-            dev.log('getFavoritePets - Failed to get user location: $e');
+            dev.log('getFavoritePets - Location fetch timeout or failed, continuing without distance: $e');
           }
 
-          // Optymalizacja: zbierz unikalne ID schronisk i pobierz je batch'owo
           final shelterIds = pets.map((pet) => pet.shelterId).toSet();
           final shelterService = ShelterService();
           final sheltersMap = <int, Shelter>{};
 
-          await Future.wait(shelterIds.map((shelterId) async {
-            try {
-              final shelter = await shelterService.getShelterById(shelterId);
-              sheltersMap[shelterId] = shelter;
-            } catch (e) {
-              dev.log('Failed to fetch shelter $shelterId: $e');
-            }
-          }));
+          try {
+            await Future.wait(
+                shelterIds.map((shelterId) async {
+                  try {
+                    final shelter = await shelterService.getShelterById(shelterId).timeout(Duration(seconds: 3));
+                    sheltersMap[shelterId] = shelter;
+                  } catch (e) {
+                    dev.log('Failed to fetch shelter $shelterId: $e');
+                  }
+                })
+            ).timeout(Duration(seconds: 5));
+          } catch (e) {
+            dev.log('Shelter batch fetch timeout: $e');
+          }
 
-          // Wzbogać zwierzęta o dane schronisk
           final enrichedPets = pets.map((pet) {
             final shelter = sheltersMap[pet.shelterId];
 
@@ -622,6 +621,7 @@ class PetService with CacheableMixin {
       return BasicResponse(e.response?.statusCode ?? 0, {'error': e.message});
     }
   }
+
 
   Future<List<Pet>> getLikedPets() => getFavoritePets();
 

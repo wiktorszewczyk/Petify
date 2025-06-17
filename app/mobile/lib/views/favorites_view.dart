@@ -3,6 +3,7 @@ import '../models/pet.dart';
 import '../widgets/cards/pet_mini_card.dart';
 import '../styles/colors.dart';
 import '../services/pet_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../views/pet_details_view.dart';
 
 class FavoritesView extends StatefulWidget {
@@ -25,7 +26,30 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
   void initState() {
     super.initState();
     _petService = PetService();
-    _loadFavorites();
+    _loadFavoritesFromCache();
+  }
+
+  Future<void> _loadFavoritesFromCache() async {
+    // Spróbuj załadować z cache najpierw
+    final cachedFavorites = CacheManager.get<List<Pet>>('favorites_pets');
+
+    if (cachedFavorites != null && cachedFavorites.isNotEmpty) {
+      setState(() {
+        _favoritePets = cachedFavorites;
+        _isLoading = false;
+        _errorMessage = null;
+      });
+
+      print('🚀 FavoritesView: Załadowano ${cachedFavorites.length} ulubionych z cache!');
+
+      // W tle sprawdź czy nie ma nowszych danych
+      _refreshFavoritesInBackground();
+      return;
+    }
+
+    // Fallback - brak cache, załaduj standardowo
+    print('⚠️ FavoritesView: Brak cache, ładowanie standardowe...');
+    await _loadFavorites();
   }
 
   Future<void> _loadFavorites() async {
@@ -46,6 +70,34 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _refreshFavoritesInBackground() async {
+    try {
+      final newFavorites = await _petService.getFavoritePets();
+
+      // Sprawdź czy są różnice
+      if (_favoritePets == null ||
+          newFavorites.length != _favoritePets!.length ||
+          _favoritesChanged(newFavorites)) {
+        setState(() {
+          _favoritePets = newFavorites;
+        });
+        print('🔄 FavoritesView: Zaktualizowano dane w tle');
+      }
+    } catch (e) {
+      print('Background refresh failed: $e');
+    }
+  }
+
+  bool _favoritesChanged(List<Pet> newFavorites) {
+    if (_favoritePets == null) return true;
+    if (newFavorites.length != _favoritePets!.length) return true;
+
+    for (int i = 0; i < newFavorites.length; i++) {
+      if (newFavorites[i].id != _favoritePets![i].id) return true;
+    }
+    return false;
   }
 
   Future<void> _removeFavorite(Pet pet) async {

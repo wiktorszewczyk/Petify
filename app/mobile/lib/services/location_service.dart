@@ -1,67 +1,76 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'cache/cache_manager.dart';
 
-class LocationService {
+class LocationService with CacheableMixin {
   static LocationService? _instance;
 
   factory LocationService() => _instance ??= LocationService._();
   LocationService._();
 
   Future<Position?> getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    const cacheKey = 'current_location';
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return null;
-    }
+    return cachedFetch(cacheKey, () async {
+      bool serviceEnabled;
+      LocationPermission permission;
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
         return null;
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
-      return null;
-    }
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return null;
+        }
+      }
 
-    try {
-      return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(seconds: 10),
-      );
-    } catch (e) {
-      return null;
-    }
+      if (permission == LocationPermission.deniedForever) {
+        return null;
+      }
+
+      try {
+        return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium,
+          timeLimit: const Duration(seconds: 5), // Skróć timeout
+        );
+      } catch (e) {
+        return null;
+      }
+    }, ttl: Duration(minutes: 15)); // Cache lokalizacji na 15 minut
   }
 
   Future<Position?> getCityCoordinates(String cityName) async {
-    try {
-      List<Location> locations = await locationFromAddress('$cityName, Polska');
-      if (locations.isNotEmpty) {
-        return Position(
-          longitude: locations.first.longitude,
-          latitude: locations.first.latitude,
-          timestamp: DateTime.now(),
-          accuracy: 0,
-          altitude: 0,
-          heading: 0,
-          speed: 0,
-          speedAccuracy: 0,
-          floor: null,
-          isMocked: false,
-          altitudeAccuracy: 0,
-          headingAccuracy: 0,
-        );
+    final cacheKey = 'city_coords_$cityName';
+
+    return cachedFetch(cacheKey, () async {
+      try {
+        List<Location> locations = await locationFromAddress('$cityName, Polska');
+        if (locations.isNotEmpty) {
+          return Position(
+            longitude: locations.first.longitude,
+            latitude: locations.first.latitude,
+            timestamp: DateTime.now(),
+            accuracy: 0,
+            altitude: 0,
+            heading: 0,
+            speed: 0,
+            speedAccuracy: 0,
+            floor: null,
+            isMocked: false,
+            altitudeAccuracy: 0,
+            headingAccuracy: 0,
+          );
+        }
+      } catch (e) {
+        print('Błąd podczas wyszukiwania miasta: $e');
       }
-    } catch (e) {
-      print('Błąd podczas wyszukiwania miasta: $e');
-    }
-    return null;
+      return null;
+    }, ttl: Duration(hours: 24)); // Cache koordynatów miast na 24h - bardzo rzadko się zmieniają
   }
 
   Future<void> saveLocationPreferences({
