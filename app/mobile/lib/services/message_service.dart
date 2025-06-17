@@ -8,10 +8,11 @@ import 'token_repository.dart';
 import 'user_service.dart';
 import 'notification_service.dart';
 import '../settings.dart';
+import 'cache/cache_manager.dart';
 
 typedef MessageNotificationCallback = void Function(MessageModel message);
 
-class MessageService {
+class MessageService with CacheableMixin {
   static final MessageService _instance = MessageService._internal();
 
   late final Dio _dio;

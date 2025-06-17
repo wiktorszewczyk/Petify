@@ -5,8 +5,9 @@ import '../models/event_participant.dart';
 import '../models/shelter_post.dart';
 import 'api/initial_api.dart';
 import 'image_service.dart';
+import 'cache/cache_manager.dart';
 
-class FeedService {
+class FeedService with CacheableMixin {
   final _api = InitialApi().dio;
   static FeedService? _instance;
   factory FeedService() => _instance ??= FeedService._();
@@ -14,29 +15,33 @@ class FeedService {
 
   /// Pobiera najbliższe wydarzenia w ciągu określonej liczby dni
   Future<List<Event>> getIncomingEvents(int days) async {
-    try {
-      final response = await _api.get('/events/incoming/$days');
+    final cacheKey = 'incoming_events_$days';
 
-      if (response.statusCode == 200 && response.data is List) {
-        final eventsData = response.data as List;
-        final imageService = ImageService();
-        return Future.wait(eventsData.map((eventJson) async {
-          var event = Event.fromBackendJson(eventJson);
-          if (event.mainImageId != null) {
-            try {
-              final img = await imageService.getImageById(event.mainImageId!);
-              event = event.copyWith(imageUrl: img.imageUrl);
-            } catch (_) {}
-          }
-          return event;
-        }));
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _api.get('/events/incoming/$days');
+
+        if (response.statusCode == 200 && response.data is List) {
+          final eventsData = response.data as List;
+          final imageService = ImageService();
+          return Future.wait(eventsData.map((eventJson) async {
+            var event = Event.fromBackendJson(eventJson);
+            if (event.mainImageId != null) {
+              try {
+                final img = await imageService.getImageById(event.mainImageId!);
+                event = event.copyWith(imageUrl: img.imageUrl);
+              } catch (_) {}
+            }
+            return event;
+          }));
+        }
+
+        throw Exception('Nieprawidłowa odpowiedź serwera');
+      } on DioException catch (e) {
+        dev.log('Błąd podczas pobierania wydarzeń: ${e.message}');
+        throw Exception('Nie udało się pobrać wydarzeń: ${e.message}');
       }
-
-      throw Exception('Nieprawidłowa odpowiedź serwera');
-    } on DioException catch (e) {
-      dev.log('Błąd podczas pobierania wydarzeń: ${e.message}');
-      throw Exception('Nie udało się pobrać wydarzeń: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 10));
   }
 
   /// Wyszukuje wydarzenia w ciągu określonej liczby dni

@@ -140,6 +140,7 @@ mixin CacheableMixin {
       }
     }
 
+    // Zapobiegnij duplikowanym zapytaniom
     return await CacheManager.deduplicate<T>(key, () async {
       final data = await fetcher();
       CacheManager.set(key, data, ttl: ttl);

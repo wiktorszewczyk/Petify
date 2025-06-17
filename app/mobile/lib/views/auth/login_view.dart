@@ -5,7 +5,7 @@ import '../../styles/colors.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/inputs/custom_textfield.dart';
 import '../../services/user_service.dart';
-import '../home_view.dart';
+import '../post_login_loading_view.dart';
 
 enum LoginType { email, phone }
 
@@ -79,7 +79,7 @@ class _LoginViewState extends State<LoginView> {
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const HomeView()),
+          MaterialPageRoute(builder: (_) => const PostLoginLoadingView()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 import 'package:dio/dio.dart';
 import 'api/initial_api.dart';
 import '../settings.dart';
+import 'cache/cache_manager.dart';
 
 class ImageResponse {
   final int id;
@@ -35,7 +36,7 @@ class ImageResponse {
   }
 }
 
-class ImageService {
+class ImageService with CacheableMixin {
   final _api = InitialApi().dio;
   static ImageService? _instance;
 
@@ -44,52 +45,64 @@ class ImageService {
 
   /// Pobiera obraz po ID
   Future<ImageResponse> getImageById(int imageId) async {
-    try {
-      dev.log('🖼️ ImageService: Pobieranie obrazu ID=$imageId');
-      final response = await _api.get('/images/$imageId');
+    final cacheKey = 'image_$imageId';
 
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        return ImageResponse.fromJson(response.data);
+    return cachedFetch(cacheKey, () async {
+      try {
+        dev.log('🖼️ ImageService: Pobieranie obrazu ID=$imageId');
+        final response = await _api.get('/images/$imageId');
+
+        if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+          return ImageResponse.fromJson(response.data);
+        }
+
+        throw Exception('Nieprawidłowa odpowiedź serwera');
+      } on DioException catch (e) {
+        dev.log('❌ ImageService: Błąd podczas pobierania obrazu $imageId: ${e.message}');
+        throw Exception('Nie udało się pobrać obrazu: ${e.message}');
       }
-
-      throw Exception('Nieprawidłowa odpowiedź serwera');
-    } on DioException catch (e) {
-      dev.log('❌ ImageService: Błąd podczas pobierania obrazu $imageId: ${e.message}');
-      throw Exception('Nie udało się pobrać obrazu: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 20));
   }
 
   /// Pobiera obrazy po listie ID
   Future<List<ImageResponse>> getImagesByIds(List<int> imageIds) async {
-    final images = <ImageResponse>[];
+    final cacheKey = 'images_batch_${imageIds.join('_')}';
 
-    for (final imageId in imageIds) {
-      try {
-        final image = await getImageById(imageId);
-        images.add(image);
-      } catch (e) {
-        dev.log('⚠️ ImageService: Nie udało się pobrać obrazu ID=$imageId: $e');
+    return cachedFetch(cacheKey, () async {
+      final images = <ImageResponse>[];
+
+      for (final imageId in imageIds) {
+        try {
+          final image = await getImageById(imageId);
+          images.add(image);
+        } catch (e) {
+          dev.log('⚠️ ImageService: Nie udało się pobrać obrazu ID=$imageId: $e');
+        }
       }
-    }
 
-    return images;
+      return images;
+    }, ttl: Duration(minutes: 15));
   }
 
   /// Pobiera obrazy dla encji (np. dla posta)
   Future<List<ImageResponse>> getEntityImages(int entityId, String entityType) async {
-    try {
-      dev.log('🖼️ ImageService: Pobieranie obrazów dla $entityType ID=$entityId');
-      final response = await _api.get('/images/$entityType/$entityId/images');
+    final cacheKey = 'entity_images_${entityType}_$entityId';
 
-      if (response.statusCode == 200 && response.data is List) {
-        final imagesData = response.data as List;
-        return imagesData.map((imageJson) => ImageResponse.fromJson(imageJson)).toList();
+    return cachedFetch(cacheKey, () async {
+      try {
+        dev.log('🖼️ ImageService: Pobieranie obrazów dla $entityType ID=$entityId');
+        final response = await _api.get('/images/$entityType/$entityId/images');
+
+        if (response.statusCode == 200 && response.data is List) {
+          final imagesData = response.data as List;
+          return imagesData.map((imageJson) => ImageResponse.fromJson(imageJson)).toList();
+        }
+
+        throw Exception('Nieprawidłowa odpowiedź serwera');
+      } on DioException catch (e) {
+        dev.log('❌ ImageService: Błąd podczas pobierania obrazów dla $entityType $entityId: ${e.message}');
+        throw Exception('Nie udało się pobrać obrazów: ${e.message}');
       }
-
-      throw Exception('Nieprawidłowa odpowiedź serwera');
-    } on DioException catch (e) {
-      dev.log('❌ ImageService: Błąd podczas pobierania obrazów dla $entityType $entityId: ${e.message}');
-      throw Exception('Nie udało się pobrać obrazów: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 25));
   }
 }

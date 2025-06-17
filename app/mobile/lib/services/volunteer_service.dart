@@ -3,8 +3,9 @@ import 'package:dio/dio.dart';
 import '../models/basic_response.dart';
 import '../services/token_repository.dart';
 import 'api/initial_api.dart';
+import 'cache/cache_manager.dart';
 
-class VolunteerService {
+class VolunteerService with CacheableMixin {
   final _api = InitialApi().dio;
   static VolunteerService? _instance;
   factory VolunteerService() => _instance ??= VolunteerService._();
@@ -17,6 +18,12 @@ class VolunteerService {
         '/volunteer/apply',
         data: applicationData,
       );
+
+      if (resp.statusCode == 200) {
+        CacheManager.invalidate('current_user');
+        CacheManager.invalidatePattern('user_');
+      }
+
       return BasicResponse(resp.statusCode ?? 0, resp.data);
     } on DioException catch (e) {
       dev.log('submitApplication error: ${e.message}');

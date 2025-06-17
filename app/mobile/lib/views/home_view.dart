@@ -9,6 +9,7 @@ import '../../widgets/cards/pet_card.dart';
 import '../../services/pet_service.dart';
 import '../../services/filter_preferences_service.dart';
 import '../../services/notification_service.dart';
+import '../../services/cache/cache_manager.dart';
 import '../models/filter_preferences.dart';
 import '../views/community_support_view.dart';
 import '../views/favorites_view.dart';
@@ -17,6 +18,7 @@ import '../views/profile_view.dart';
 import '../widgets/profile/notifications_sheet.dart';
 import 'discovery_settings_sheet.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../services/preloader/behavior_tracker.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -46,6 +48,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   final List<GlobalKey<State<StatefulWidget>>> _cardKeys = [];
 
   final NotificationService _notificationService = NotificationService();
+  final BehaviorTracker _behaviorTracker = BehaviorTracker();
   int _unreadNotificationCount = 0;
 
   @override
@@ -60,7 +63,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     );
 
     _initAnimations();
-    _loadFiltersAndPets();
+    _loadCachedDataFirst();
     _setupNotificationListener();
   }
 
@@ -106,7 +109,59 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
-  /// Ładuje filtry użytkownika i na ich podstawie pobiera zwierzęta
+  Future<void> _loadCachedDataFirst() async {
+    final cachedFilters = CacheManager.get<FilterPreferences>('filter_preferences');
+
+    if (cachedFilters != null) {
+      final cacheKey = _generatePetsCacheKey(cachedFilters);
+      final cachedPets = CacheManager.get<List<Pet>>(cacheKey);
+
+      if (cachedPets != null && cachedPets.isNotEmpty) {
+        setState(() {
+          _currentFilters = cachedFilters;
+          _pets.clear();
+          _pets.addAll(cachedPets);
+          _isLoading = false;
+          _isError = false;
+          _currentIndex = 0;
+
+          _cardKeys.clear();
+          for (int i = 0; i < _pets.length; i++) {
+            _cardKeys.add(GlobalKey<State<StatefulWidget>>());
+          }
+        });
+
+        print('🚀 HomeView: Załadowano ${_pets.length} zwierząt z cache key: $cacheKey');
+
+        _refreshDataInBackground();
+
+        return;
+      }
+    }
+
+    print('⚠️ HomeView: Brak cache, ładowanie standardowe...');
+    await _loadFiltersAndPets();
+  }
+
+  String _generatePetsCacheKey(FilterPreferences filterPrefs) {
+    final params = {
+      'vaccinated': filterPrefs.onlyVaccinated,
+      'urgent': filterPrefs.onlyUrgent,
+      'sterilized': filterPrefs.onlySterilized,
+      'kidFriendly': filterPrefs.kidFriendly,
+      'minAge': filterPrefs.minAge,
+      'maxAge': filterPrefs.maxAge,
+      'types': filterPrefs.animalTypes.join(','),
+      'maxDistance': filterPrefs.maxDistance,
+      'useCurrentLocation': filterPrefs.useCurrentLocation,
+      'selectedCity': filterPrefs.selectedCity,
+    };
+
+    final sortedKeys = params.keys.toList()..sort();
+    final keyParts = sortedKeys.map((key) => '$key:${params[key]}').join(',');
+    return 'pets_default:$keyParts';
+  }
+
   Future<void> _loadFiltersAndPets() async {
     try {
       _currentFilters = await FilterPreferencesService().getFilterPreferences();
@@ -118,7 +173,36 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     }
   }
 
-  /// Pobiera zwierzęta na podstawie aktualnych filtrów
+  Future<void> _refreshDataInBackground() async {
+    try {
+      final petService = PetService();
+      final newPets = await petService.getPetsWithDefaultFilters();
+
+      if (newPets.length != _pets.length || _petsChanged(newPets)) {
+        setState(() {
+          _pets.clear();
+          _pets.addAll(newPets);
+          _cardKeys.clear();
+          for (int i = 0; i < _pets.length; i++) {
+            _cardKeys.add(GlobalKey<State<StatefulWidget>>());
+          }
+        });
+        print('🔄 HomeView: Zaktualizowano dane w tle');
+      }
+    } catch (e) {
+      print('Background refresh failed: $e');
+    }
+  }
+
+  bool _petsChanged(List<Pet> newPets) {
+    if (newPets.length != _pets.length) return true;
+
+    for (int i = 0; i < newPets.length; i++) {
+      if (newPets[i].id != _pets[i].id) return true;
+    }
+    return false;
+  }
+
   Future<void> _loadPets() async {
     setState(() {
       _isLoading = true;
@@ -270,6 +354,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       final response = await petService.likePet(pet.id);
 
       if (mounted && response.statusCode == 200) {
+        _behaviorTracker.trackPetLike(pet.id);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Dodano ${pet.name} do polubionych!'),
@@ -707,6 +793,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         setState(() {
           _selectedTabIndex = index;
         });
+
+        final screenNames = ['home', 'community', 'favorites', 'messages', 'profile'];
+        if (index < screenNames.length) {
+          _behaviorTracker.trackScreenVisit(screenNames[index]);
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
