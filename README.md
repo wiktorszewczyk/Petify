@@ -10,13 +10,20 @@
 ## Setup
 
 ### Backend
+Service run order:
+1. Config Server
+2. Discovery Server
+3. Other Services (e.g., Pet Service, User Service)
+4. Gateway
 
-```
-
+```sh
+# for each service in seperate terminal
+cd app/backend/<service_name>
+mvn spring-boot:run
 ```
 
 #### Backend checks
-```
+```sh
 # Align POM formatting
 mvn tidy:pom -f app/backend/pom.xml
 
