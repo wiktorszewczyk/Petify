@@ -9,7 +9,6 @@ import {
   ArrowRight,
   ScrollText,
   DollarSign,
-  Clock,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { fetchUserData, fetchProfileImage } from "../api/auth"; 
@@ -84,7 +83,6 @@ useEffect(() => {
     rank: "Początkujący Wolontariusz",
     location: "Polska",
     profilePicture: profilePicture,
-    volunteerStatus: userData.volunteerStatus || "NONE",
   };
 
   const level = {
@@ -160,11 +158,12 @@ useEffect(() => {
         </div>
         <div className="user-details">
           <h2 className="user-name">{user.name}</h2>
-          {user.volunteerStatus === "APPROVED" && (
           <p className="user-rank">
-            Wolontariusz <span className="emoji">🌱</span>
+            {user.rank} <span className="emoji">🌱</span>
           </p>
-          )}
+          <p className="user-location">
+            <MapPin/> {user.location}
+          </p>
         </div>
         <button
   className="edit-profile-btn"
@@ -173,41 +172,16 @@ useEffect(() => {
   Edytuj Profil
 </button>
       </section>
-{(user.volunteerStatus === "INACTIVE" || user.volunteerStatus === "NONE") && (
-     <section
-  className="volunteer-cta"
-  role="button"
-  tabIndex={0}
-  onClick={() => navigate("/volunteerApplication")}
-  onKeyDown={(e) => {
-    if (e.key === "Enter") navigate("/volunteerApplication");
-  }}
->
-  <div className="cta-icon"><PawPrint /></div>
-  <div className="cta-text">
-    <h3>Zostań Wolontariuszem</h3>
-    <p>Pomóż zwierzakom w potrzebie i dołącz do naszej społeczności</p>
-  </div>
-  <div className="cta-arrow"><ArrowRight /></div>
-</section>
-)}
 
+      <section className="volunteer-cta" role="button" tabIndex={0}>
+        <div className="cta-icon"><PawPrint></PawPrint></div>
+        <div className="cta-text">
+          <h3>Zostań Wolontariuszem</h3>
+          <p>Pomóż zwierzakom w potrzebie i dołącz do naszej społeczności</p>
+        </div>
+        <div className="cta-arrow"><ArrowRight/></div>
+      </section>
 
-{user.volunteerStatus === "PENDING" && (
-  <section className="volunteer-pending">
-    <div className="pending-icon">
-      <Clock />
-    </div>
-    <div className="pending-content">
-      <h3>Zgłoszenie na wolontariusza</h3>
-      <p>Twoje zgłoszenie oczekuje na zatwierdzenie przez administratora</p>
-      <div className="pending-status">
-        <span className="status-indicator"></span>
-        <span className="status-text">W trakcie weryfikacji</span>
-      </div>
-    </div>
-  </section>
-)}
 
       <section className="level-section">
         <div className="level-info">
@@ -240,63 +214,35 @@ useEffect(() => {
         </div>
       </section>
 
+     <section className="achievements-earned">
+  <div className="section-header">
+    <h3>Zdobyte osiągnięcia</h3>
+  </div>
 
-
-<section className="achievements-section">
-  <div className="achievements-container">
-    <div className="achievements-header">
-      <h3>Zdobyte osiągnięcia</h3>
-      {earnedAchievements.length > 5 && (
-        <span className="achievements-count">
-          +{earnedAchievements.length - 5} więcej
-        </span>
-      )}
-    </div>
-
-    <div className="achievements-grid">
-      {earnedAchievements.map((a, i) => {
+  <div className="achievement-scroll-container">
+    {userData.achievements
+      .filter((a) => a.progressPercentage === 100)
+      .map((a, i) => {
         const category = a.achievement.category;
         const iconMap = {
-          LIKES: <Heart className="achievement-icon" />,
-          SUPPORT: <HandCoins className="achievement-icon" />,
-          BADGE: <Trophy className="achievement-icon" />,
+          LIKES: <ScrollText />,
+          SUPPORT: <HandCoins />,
+          BADGE: <DollarSign />,
         };
-
+        const colorMap = {
+          LIKES: "blue",
+          SUPPORT: "green",
+          BADGE: "yellow",
+        };
         return (
-          <div 
-            key={i} 
-            className="achievement-item"
-            title={a.achievement.name}
-          >
-            {/* Żółte kółko z ikoną */}
-            <div className="achievement-circle">
-              <div className="achievement-icon-wrapper">
-                {iconMap[category] || <Trophy className="achievement-icon" />}
-              </div>
-            </div>
-            
-            {/* Nazwa osiągnięcia */}
-            <div className="achievement-name">
-              {a.achievement.name}
-            </div>
+          <div key={i} className={`achievement-pill ${colorMap[category]}`} title={a.achievement.name}>
+            {iconMap[category] || <Trophy />}
+            <div className="tooltip">{a.achievement.name}</div>
           </div>
         );
       })}
-    </div>
-
-    {/* Jeśli brak osiągnięć */}
-    {earnedAchievements.length === 0 && (
-      <div className="no-achievements">
-        <div className="no-achievements-icon">
-          <Trophy />
-        </div>
-        <p className="no-achievements-title">Brak zdobytych osiągnięć</p>
-        <p className="no-achievements-subtitle">Kontynuuj pomaganie zwierzętom, aby zdobyć pierwsze osiągnięcie!</p>
-      </div>
-    )}
   </div>
 </section>
-
 
       <section className="achievements-progress">
         <h3>Postępy osiągnięć</h3>

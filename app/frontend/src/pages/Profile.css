@@ -329,152 +329,91 @@ font-size: 1.1rem;
 }
 
 /* Zdobyte osiągnięcia */
-
-.achievements-section {
-  margin: 2rem 0;
+.achievements-earned {
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
   width: 100%;
 }
 
-.achievements-container {
-  background: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 1200px;
-  margin: 0 auto;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.achievements-header h3{
- font-size: 1.5rem;
-  margin-bottom: 20px;
+.section-header h3 {
+  font-size: 1.5rem;
+  margin: 0;
   color: #2D3748;
   font-weight: 700;
 }
 
-
-
-.achievements-count {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-.achievements-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  justify-items: center;
-}
-
-.achievement-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.see-all-btn {
+  background: none;
+  border: none;
+  color: #4C6EF5;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: color 0.2s;
 }
 
-.achievement-item:hover {
-  transform: scale(1.05);
+.see-all-btn:hover {
+  color: #3755D1;
+  text-decoration: underline;
 }
 
-.achievement-circle {
-  width: 6rem;
-  height: 6rem;
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  border-radius: 50%;
+.achievements-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 12px;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #CBD5E0 #EDF2F7;
+}
+
+.achievements-carousel::-webkit-scrollbar {
+  height: 6px;
+}
+
+.achievements-carousel::-webkit-scrollbar-track {
+  background: #EDF2F7;
+  border-radius: 10px;
+}
+
+.achievements-carousel::-webkit-scrollbar-thumb {
+  background-color: #CBD5E0;
+  border-radius: 10px;
+}
+
+.achievement-badge {
+  flex: 0 0 auto;
+  background: linear-gradient(135deg, #F6F8FB, #EDF2F7);
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
-  margin-bottom: 0.75rem;
-  transition: box-shadow 0.2s ease;
+  scroll-snap-align: center;
+  font-weight: 600;
+  color: #4A5568;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.achievement-item:hover .achievement-circle {
-  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+.achievement-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.achievement-icon-wrapper {
-  background: rgba(217, 119, 6, 0.2);
-  border-radius: 50%;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.achievement-badge span {
+  margin-left: 6px;
 }
-
-.achievement-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  color: white;
-}
-
-.achievement-name {
-  text-align: center;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-  line-height: 1.25;
-  transition: color 0.2s ease;
-}
-
-.achievement-item:hover .achievement-name {
-  color: #d97706;
-}
-
-.no-achievements {
-  text-align: center;
-  padding: 3rem 0;
-}
-
-.no-achievements-icon {
-  width: 5rem;
-  height: 5rem;
-  background: #f3f4f6;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1rem;
-}
-
-.no-achievements-icon svg {
-  width: 2.5rem;
-  height: 2.5rem;
-  color: #9ca3af;
-}
-
-.no-achievements-title {
-  color: #6b7280;
-  font-size: 1.125rem;
-  margin: 0 0 0.5rem;
-}
-
-.no-achievements-subtitle {
-  color: #9ca3af;
-  font-size: 0.875rem;
-  margin: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .achievements-grid {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 0.75rem;
-  }
-  
-  .achievement-circle {
-    width: 3.5rem;
-    height: 3.5rem;
-  }
-  
-  .achievement-name {
-    font-size: 0.8rem;
-  }
-}
-
-
-
 
 /* Postępy osiągnięć */
 .achievements-progress {
@@ -728,145 +667,5 @@ font-size: 1.1rem;
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-.user-rank {
-  display: flex;
-  align-items: center;
-  font-size: 1.1rem;
-  color: #ffa600;
-}
-
-/* Volunteer Pending Section Styles */
-.volunteer-pending {
-  background: linear-gradient(135deg, #4C6EF5, #7F9CF5);
-  width: 100%;
-  border: none;
-  border-radius: 16px;
-  padding: 24px;
-  margin: 20px 0;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  box-shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.volunteer-pending:hover {
-  box-shadow: 0 6px 25px rgba(33, 150, 243, 0.2);
-}
-
-.pending-icon {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
-}
-
-.pending-icon svg {
-  width: 28px;
-  height: 28px;
-  color: white;
-  stroke-width: 2.5;
-}
-
-.pending-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.pending-content h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.pending-content p {
-  font-size: 0.95rem;
-  color: #ffffff;
-  margin: 0;
-  line-height: 1.4;
-  font-weight: 500;
-}
-
-.pending-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.status-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #8eaac0;
-  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
-}
-
-
-
-.status-text {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #afb7c0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .volunteer-pending {
-    padding: 18px;
-    gap: 16px;
-  }
-  
-  .pending-icon {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .pending-icon svg {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .pending-content h3 {
-    font-size: 1.1rem;
-  }
-  
-  .pending-content p {
-    font-size: 0.9rem;
-  }
-  
-  .status-text {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .volunteer-pending {
-    flex-direction: column;
-    text-align: center;
-    padding: 16px;
-  }
-  
-  .pending-content {
-    align-items: center;
-  }
-  
-  .pending-status {
-    justify-content: center;
   }
 }
