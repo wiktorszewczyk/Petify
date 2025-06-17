@@ -10,8 +10,9 @@ import '../services/filter_preferences_service.dart';
 import '../services/location_service.dart';
 import '../services/shelter_service.dart';
 import 'api/initial_api.dart';
+import 'cache/cache_manager.dart';
 
-class PetService {
+class PetService with CacheableMixin {
   final _api = InitialApi().dio;
   static PetService? _instance;
 
@@ -41,37 +42,52 @@ class PetService {
   /// Pobiera zwierzęta z domyślnymi filtrami
   Future<List<Pet>> getPetsWithDefaultFilters() async {
     final filterPrefs = await FilterPreferencesService().getFilterPreferences();
-    final locationService = LocationService();
+    final cacheKey = generateCacheKey('pets_default', {
+      'vaccinated': filterPrefs.onlyVaccinated,
+      'urgent': filterPrefs.onlyUrgent,
+      'sterilized': filterPrefs.onlySterilized,
+      'kidFriendly': filterPrefs.kidFriendly,
+      'minAge': filterPrefs.minAge,
+      'maxAge': filterPrefs.maxAge,
+      'types': filterPrefs.animalTypes.join(','),
+      'maxDistance': filterPrefs.maxDistance,
+      'useCurrentLocation': filterPrefs.useCurrentLocation,
+      'selectedCity': filterPrefs.selectedCity,
+    });
 
-    double? userLat;
-    double? userLng;
+    return cachedFetch(cacheKey, () async {
+      final locationService = LocationService();
 
-    if (filterPrefs.useCurrentLocation) {
-      final position = await locationService.getCurrentLocation();
-      if (position != null) {
-        userLat = position.latitude;
-        userLng = position.longitude;
+      double? userLat;
+      double? userLng;
+
+      if (filterPrefs.useCurrentLocation) {
+        final position = await locationService.getCurrentLocation();
+        if (position != null) {
+          userLat = position.latitude;
+          userLng = position.longitude;
+        }
+      } else if (filterPrefs.selectedCity != null) {
+        final position = await locationService.getCityCoordinates(filterPrefs.selectedCity!);
+        if (position != null) {
+          userLat = position.latitude;
+          userLng = position.longitude;
+        }
       }
-    } else if (filterPrefs.selectedCity != null) {
-      final position = await locationService.getCityCoordinates(filterPrefs.selectedCity!);
-      if (position != null) {
-        userLat = position.latitude;
-        userLng = position.longitude;
-      }
-    }
 
-    return getFilteredPets(
-      vaccinated: filterPrefs.onlyVaccinated ? true : null,
-      urgent: filterPrefs.onlyUrgent ? true : null,
-      sterilized: filterPrefs.onlySterilized ? true : null,
-      kidFriendly: filterPrefs.kidFriendly ? true : null,
-      minAge: filterPrefs.minAge,
-      maxAge: filterPrefs.maxAge,
-      type: _mapAnimalTypesToBackend(filterPrefs.animalTypes),
-      userLat: userLat,
-      userLng: userLng,
-      radiusKm: filterPrefs.maxDistance,
-    );
+      return getFilteredPets(
+        vaccinated: filterPrefs.onlyVaccinated ? true : null,
+        urgent: filterPrefs.onlyUrgent ? true : null,
+        sterilized: filterPrefs.onlySterilized ? true : null,
+        kidFriendly: filterPrefs.kidFriendly ? true : null,
+        minAge: filterPrefs.minAge,
+        maxAge: filterPrefs.maxAge,
+        type: _mapAnimalTypesToBackend(filterPrefs.animalTypes),
+        userLat: userLat,
+        userLng: userLng,
+        radiusKm: filterPrefs.maxDistance,
+      );
+    }, ttl: Duration(minutes: 3));
   }
 
   String? _mapAnimalTypesToBackend(Set<String> types) {
@@ -129,45 +145,53 @@ class PetService {
     int? cursor,
     int? limit,
   }) async {
-    try {
-      final queryParams = <String, dynamic>{};
+    final queryParams = <String, dynamic>{};
+    if (vaccinated != null) queryParams['vaccinated'] = vaccinated;
+    if (urgent != null) queryParams['urgent'] = urgent;
+    if (sterilized != null) queryParams['sterilized'] = sterilized;
+    if (kidFriendly != null) queryParams['kidFriendly'] = kidFriendly;
+    if (minAge != null) queryParams['minAge'] = minAge;
+    if (maxAge != null) queryParams['maxAge'] = maxAge;
+    if (type != null) queryParams['type'] = type;
+    if (userLat != null) queryParams['userLat'] = userLat;
+    if (userLng != null) queryParams['userLng'] = userLng;
+    if (radiusKm != null) queryParams['radiusKm'] = radiusKm;
+    if (cursor != null) queryParams['cursor'] = cursor;
+    if (limit != null) queryParams['limit'] = limit;
 
-      if (vaccinated != null) queryParams['vaccinated'] = vaccinated;
-      if (urgent != null) queryParams['urgent'] = urgent;
-      if (sterilized != null) queryParams['sterilized'] = sterilized;
-      if (kidFriendly != null) queryParams['kidFriendly'] = kidFriendly;
-      if (minAge != null) queryParams['minAge'] = minAge;
-      if (maxAge != null) queryParams['maxAge'] = maxAge;
-      if (type != null) queryParams['type'] = type;
-      if (userLat != null) queryParams['userLat'] = userLat;
-      if (userLng != null) queryParams['userLng'] = userLng;
-      if (radiusKm != null) queryParams['radiusKm'] = radiusKm;
-      if (cursor != null) queryParams['cursor'] = cursor;
-      if (limit != null) queryParams['limit'] = limit;
+    final cacheKey = generateCacheKey('pets_filtered', queryParams);
 
-      dev.log('Making request to /pets/filter with params: $queryParams');
-      final response = await _api.get('/pets/filter', queryParameters: queryParams);
-      dev.log('Response status: ${response.statusCode}');
-      dev.log('Response data type: ${response.data.runtimeType}');
-      dev.log('Response data: ${response.data}');
+    return cachedFetch(cacheKey, () async {
+      try {
+        dev.log('Making request to /pets/filter with params: $queryParams');
+        final response = await _api.get('/pets/filter', queryParameters: queryParams);
+        dev.log('Response status: ${response.statusCode}');
 
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        final swipeResponse = SwipeResponse.fromJson(response.data);
-        dev.log('Parsed ${swipeResponse.pets.length} pets from SwipeResponse');
+        if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+          final swipeResponse = SwipeResponse.fromJson(response.data);
+          dev.log('Parsed ${swipeResponse.pets.length} pets from SwipeResponse');
 
-        List<Pet> enrichedPets = [];
-        for (Pet pet in swipeResponse.pets) {
-          try {
-            final shelter = await ShelterService().getShelterById(pet.shelterId);
+          // Zbierz unikalne ID schronisk
+          final shelterIds = swipeResponse.pets.map((pet) => pet.shelterId).toSet();
 
-            final distanceFromBackend = pet.distance;
-            if (distanceFromBackend != null) {
-              dev.log('Backend returned distance for pet ${pet.name}: ${distanceFromBackend.toStringAsFixed(1)} km');
-            } else {
-              dev.log('Backend did not return distance for pet ${pet.name}');
+          // Pobierz wszystkie schroniska za jednym razem (batch)
+          final shelterService = ShelterService();
+          final sheltersMap = <int, Shelter>{};
+
+          await Future.wait(shelterIds.map((shelterId) async {
+            try {
+              final shelter = await shelterService.getShelterById(shelterId);
+              sheltersMap[shelterId] = shelter;
+            } catch (e) {
+              dev.log('Failed to fetch shelter $shelterId: $e');
             }
+          }));
 
-            final enrichedPet = Pet(
+          // Wzbogać zwierzęta o dane schronisk
+          final enrichedPets = swipeResponse.pets.map((pet) {
+            final shelter = sheltersMap[pet.shelterId];
+
+            return Pet(
               id: pet.id,
               name: pet.name,
               type: pet.type,
@@ -184,212 +208,118 @@ class PetService {
               kidFriendly: pet.kidFriendly,
               imageUrl: pet.imageUrl,
               images: pet.images,
-              shelterName: shelter.name,
-              shelterAddress: shelter.address,
-              distance: distanceFromBackend,
+              shelterName: shelter?.name,
+              shelterAddress: shelter?.address,
+              distance: pet.distance,
             );
-            enrichedPets.add(enrichedPet);
-          } catch (e) {
-            dev.log('Failed to fetch shelter info for pet ${pet.id}: $e');
-            enrichedPets.add(pet);
-          }
+          }).toList();
+
+          return enrichedPets;
         }
 
-        return enrichedPets;
+        throw Exception('Nieprawidłowa odpowiedź serwera');
+      } on DioException catch (e) {
+        dev.log('Błąd podczas pobierania przefiltrowanych zwierząt: ${e.message}');
+        dev.log('Response: ${e.response?.data}');
+        throw Exception('Nie udało się pobrać listy zwierząt: ${e.message}');
       }
-
-      throw Exception('Nieprawidłowa odpowiedź serwera');
-    } on DioException catch (e) {
-      dev.log('Błąd podczas pobierania przefiltrowanych zwierząt: ${e.message}');
-      dev.log('Response: ${e.response?.data}');
-      throw Exception('Nie udało się pobrać listy zwierząt: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 3));
   }
 
   /// Pobiera zwierzęta na podstawie zapisanych filtrów użytkownika
   Future<List<Pet>> getPetsWithCustomFilters(FilterPreferences filterPrefs) async {
-    final locationService = LocationService();
+    final cacheKey = generateCacheKey('pets_custom', {
+      'vaccinated': filterPrefs.onlyVaccinated,
+      'urgent': filterPrefs.onlyUrgent,
+      'sterilized': filterPrefs.onlySterilized,
+      'kidFriendly': filterPrefs.kidFriendly,
+      'minAge': filterPrefs.minAge,
+      'maxAge': filterPrefs.maxAge,
+      'types': filterPrefs.animalTypes.join(','),
+      'maxDistance': filterPrefs.maxDistance,
+      'useCurrentLocation': filterPrefs.useCurrentLocation,
+      'selectedCity': filterPrefs.selectedCity,
+    });
 
-    double? userLat;
-    double? userLng;
+    return cachedFetch(cacheKey, () async {
+      final locationService = LocationService();
 
-    if (filterPrefs.useCurrentLocation) {
-      final position = await locationService.getCurrentLocation();
-      if (position != null) {
-        userLat = position.latitude;
-        userLng = position.longitude;
+      double? userLat;
+      double? userLng;
+
+      if (filterPrefs.useCurrentLocation) {
+        final position = await locationService.getCurrentLocation();
+        if (position != null) {
+          userLat = position.latitude;
+          userLng = position.longitude;
+        }
+      } else if (filterPrefs.selectedCity != null) {
+        final position = await locationService.getCityCoordinates(filterPrefs.selectedCity!);
+        if (position != null) {
+          userLat = position.latitude;
+          userLng = position.longitude;
+        }
       }
-    } else if (filterPrefs.selectedCity != null) {
-      final position = await locationService.getCityCoordinates(filterPrefs.selectedCity!);
-      if (position != null) {
-        userLat = position.latitude;
-        userLng = position.longitude;
-      }
-    }
 
-    return getFilteredPets(
-      vaccinated: filterPrefs.onlyVaccinated ? true : null,
-      urgent: filterPrefs.onlyUrgent ? true : null,
-      sterilized: filterPrefs.onlySterilized ? true : null,
-      kidFriendly: filterPrefs.kidFriendly ? true : null,
-      minAge: filterPrefs.minAge,
-      maxAge: filterPrefs.maxAge,
-      type: _mapAnimalTypesToBackend(filterPrefs.animalTypes),
-      userLat: userLat,
-      userLng: userLng,
-      radiusKm: filterPrefs.maxDistance, // null = bez ograniczeń
-    );
+      return getFilteredPets(
+        vaccinated: filterPrefs.onlyVaccinated ? true : null,
+        urgent: filterPrefs.onlyUrgent ? true : null,
+        sterilized: filterPrefs.onlySterilized ? true : null,
+        kidFriendly: filterPrefs.kidFriendly ? true : null,
+        minAge: filterPrefs.minAge,
+        maxAge: filterPrefs.maxAge,
+        type: _mapAnimalTypesToBackend(filterPrefs.animalTypes),
+        userLat: userLat,
+        userLng: userLng,
+        radiusKm: filterPrefs.maxDistance,
+      );
+    }, ttl: Duration(minutes: 3));
   }
 
   Future<Pet> getPetById(int petId) async {
-    try {
-      final response = await _api.get('/pets/$petId');
+    final cacheKey = 'pet_detail_$petId';
 
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        final pet = Pet.fromJson(response.data);
-        dev.log('getPetById - Raw pet data: ${response.data}');
-        dev.log('getPetById - Pet.distance after parsing: ${pet.distance}');
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _api.get('/pets/$petId');
 
-        try {
-          final shelter = await ShelterService().getShelterById(pet.shelterId);
-          dev.log('getPetById - Shelter coordinates: lat=${shelter.latitude}, lng=${shelter.longitude}');
+        if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+          final pet = Pet.fromJson(response.data);
+          dev.log('getPetById - Raw pet data: ${response.data}');
+          dev.log('getPetById - Pet.distance after parsing: ${pet.distance}');
 
-          double? calculatedDistance = pet.distance;
-          dev.log('getPetById - Initial distance from backend: $calculatedDistance');
-
-          if (calculatedDistance == null) {
-            try {
-              dev.log('getPetById - Trying to get user location...');
-              final position = await LocationService().getCurrentLocation();
-              dev.log('getPetById - User position: lat=${position?.latitude}, lng=${position?.longitude}');
-
-              if (position != null && shelter.latitude != null && shelter.longitude != null) {
-                calculatedDistance = _calculateDistance(
-                    position.latitude, position.longitude,
-                    shelter.latitude!, shelter.longitude!
-                );
-                dev.log('getPetById - Calculated distance for pet ${pet.name}: ${calculatedDistance?.toStringAsFixed(1)} km');
-              } else {
-                dev.log('getPetById - Cannot calculate distance: position=$position, shelter.lat=${shelter.latitude}, shelter.lng=${shelter.longitude}');
-              }
-            } catch (e) {
-              dev.log('getPetById - Failed to get user location: $e');
-            }
-          } else {
-            dev.log('getPetById - Using distance from backend: ${calculatedDistance.toStringAsFixed(1)} km');
-          }
-
-          dev.log('getPetById - Final calculated distance: $calculatedDistance');
-
-          return Pet(
-            id: pet.id,
-            name: pet.name,
-            type: pet.type,
-            breed: pet.breed,
-            age: pet.age,
-            archived: pet.archived,
-            description: pet.description,
-            shelterId: pet.shelterId,
-            gender: pet.gender,
-            size: pet.size,
-            vaccinated: pet.vaccinated,
-            urgent: pet.urgent,
-            sterilized: pet.sterilized,
-            kidFriendly: pet.kidFriendly,
-            imageUrl: pet.imageUrl,
-            images: pet.images,
-            shelterName: shelter.name,
-            shelterAddress: shelter.address,
-            distance: calculatedDistance,
-          );
-        } catch (e) {
-          dev.log('Failed to fetch shelter info for pet $petId: $e');
-          return pet;
-        }
-      }
-
-      throw Exception('Nieprawidłowa odpowiedź serwera');
-    } on DioException catch (e) {
-      dev.log('Błąd podczas pobierania szczegółów zwierzęcia: ${e.message}');
-      throw Exception('Nie udało się pobrać szczegółów zwierzęcia: ${e.message}');
-    }
-  }
-
-  Future<BasicResponse> likePet(int petId) async {
-    try {
-      final response = await _api.post('/pets/$petId/like');
-      return BasicResponse(response.statusCode ?? 0, response.data);
-    } on DioException catch (e) {
-      dev.log('Błąd podczas polubienia zwierzęcia: ${e.message}');
-      return BasicResponse(e.response?.statusCode ?? 0, {'error': e.message});
-    }
-  }
-
-  Future<BasicResponse> unlikePet(int petId) async {
-    try {
-      final response = await _api.post('/pets/$petId/dislike');
-      return BasicResponse(response.statusCode ?? 0, response.data);
-    } on DioException catch (e) {
-      dev.log('Błąd podczas cofania polubienia: ${e.message}');
-      return BasicResponse(e.response?.statusCode ?? 0, {'error': e.message});
-    }
-  }
-
-  Future<BasicResponse> supportPet(int petId) async {
-    try {
-      final response = await _api.post('/pets/$petId/support');
-      return BasicResponse(response.statusCode ?? 0, response.data);
-    } on DioException catch (e) {
-      dev.log('Błąd podczas wspierania zwierzęcia: ${e.message}');
-      return BasicResponse(e.response?.statusCode ?? 0, {'error': e.message});
-    }
-  }
-
-  Future<List<Pet>> getFavoritePets() async {
-    try {
-      final response = await _api.get('/pets/favorites');
-
-      if (response.statusCode == 200 && response.data is List) {
-        final petsData = response.data as List;
-        List<Pet> pets = petsData.map((petJson) => Pet.fromJson(petJson)).toList();
-
-        double? userLat;
-        double? userLng;
-        try {
-          final position = await LocationService().getCurrentLocation();
-          if (position != null) {
-            userLat = position.latitude;
-            userLng = position.longitude;
-            dev.log('getFavoritePets - User position: lat=$userLat, lng=$userLng');
-          } else {
-            dev.log('getFavoritePets - No user position available');
-          }
-        } catch (e) {
-          dev.log('getFavoritePets - Failed to get user location: $e');
-        }
-
-        List<Pet> enrichedPets = await Future.wait(pets.map((pet) async {
           try {
             final shelter = await ShelterService().getShelterById(pet.shelterId);
+            dev.log('getPetById - Shelter coordinates: lat=${shelter.latitude}, lng=${shelter.longitude}');
 
             double? calculatedDistance = pet.distance;
-            if (calculatedDistance == null && userLat != null && userLng != null) {
-              if (shelter.latitude != null && shelter.longitude != null) {
-                calculatedDistance = _calculateDistance(
-                    userLat, userLng,
-                    shelter.latitude!, shelter.longitude!
-                );
-                dev.log('getFavoritePets - Calculated distance for pet ${pet.name}: ${calculatedDistance?.toStringAsFixed(1)} km');
-              } else {
-                dev.log('getFavoritePets - No shelter coordinates for pet ${pet.name}');
+            dev.log('getPetById - Initial distance from backend: $calculatedDistance');
+
+            if (calculatedDistance == null) {
+              try {
+                dev.log('getPetById - Trying to get user location...');
+                final position = await LocationService().getCurrentLocation();
+                dev.log('getPetById - User position: lat=${position?.latitude}, lng=${position?.longitude}');
+
+                if (position != null && shelter.latitude != null && shelter.longitude != null) {
+                  calculatedDistance = _calculateDistance(
+                      position.latitude, position.longitude,
+                      shelter.latitude!, shelter.longitude!
+                  );
+                  dev.log('getPetById - Calculated distance for pet ${pet.name}: ${calculatedDistance?.toStringAsFixed(1)} km');
+                } else {
+                  dev.log('getPetById - Cannot calculate distance: position=$position, shelter.lat=${shelter.latitude}, shelter.lng=${shelter.longitude}');
+                }
+              } catch (e) {
+                dev.log('getPetById - Failed to get user location: $e');
               }
-            } else if (calculatedDistance != null) {
-              dev.log('getFavoritePets - Using backend distance for pet ${pet.name}: ${calculatedDistance.toStringAsFixed(1)} km');
             } else {
-              dev.log('getFavoritePets - No user location for distance calculation for pet ${pet.name}');
+              dev.log('getPetById - Using distance from backend: ${calculatedDistance.toStringAsFixed(1)} km');
             }
 
-            final enrichedPet = Pet(
+            dev.log('getPetById - Final calculated distance: $calculatedDistance');
+
+            return Pet(
               id: pet.id,
               name: pet.name,
               type: pet.type,
@@ -410,21 +340,158 @@ class PetService {
               shelterAddress: shelter.address,
               distance: calculatedDistance,
             );
-            return enrichedPet;
           } catch (e) {
-            dev.log('Failed to fetch shelter info for favorite pet ${pet.id}: $e');
+            dev.log('Failed to fetch shelter info for pet $petId: $e');
             return pet;
           }
-        }));
+        }
 
-        return enrichedPets;
+        throw Exception('Nieprawidłowa odpowiedź serwera');
+      } on DioException catch (e) {
+        dev.log('Błąd podczas pobierania szczegółów zwierzęcia: ${e.message}');
+        throw Exception('Nie udało się pobrać szczegółów zwierzęcia: ${e.message}');
+      }
+    }, ttl: Duration(minutes: 10)); // Dłuższy TTL dla szczegółów
+  }
+
+  Future<BasicResponse> likePet(int petId) async {
+    try {
+      final response = await _api.post('/pets/$petId/like');
+
+      // Invaliduj cache ulubionych jeśli operacja się powiodła
+      if (response.statusCode == 200) {
+        CacheManager.invalidatePattern('favorites');
+        CacheManager.invalidatePattern('supported');
+        dev.log('Invalidated favorites cache after liking pet $petId');
       }
 
-      throw Exception('Nieprawidłowa odpowiedź serwera');
+      return BasicResponse(response.statusCode ?? 0, response.data);
     } on DioException catch (e) {
-      dev.log('Błąd podczas pobierania polubionych zwierząt: ${e.message}');
-      throw Exception('Nie udało się pobrać polubionych zwierząt: ${e.message}');
+      dev.log('Błąd podczas polubienia zwierzęcia: ${e.message}');
+      return BasicResponse(e.response?.statusCode ?? 0, {'error': e.message});
     }
+  }
+
+  Future<BasicResponse> unlikePet(int petId) async {
+    try {
+      final response = await _api.post('/pets/$petId/dislike');
+
+      // Invaliduj cache ulubionych jeśli operacja się powiodła
+      if (response.statusCode == 200) {
+        CacheManager.invalidatePattern('favorites');
+        CacheManager.invalidatePattern('supported');
+        dev.log('Invalidated favorites cache after unliking pet $petId');
+      }
+
+      return BasicResponse(response.statusCode ?? 0, response.data);
+    } on DioException catch (e) {
+      dev.log('Błąd podczas cofania polubienia: ${e.message}');
+      return BasicResponse(e.response?.statusCode ?? 0, {'error': e.message});
+    }
+  }
+
+  Future<BasicResponse> supportPet(int petId) async {
+    try {
+      final response = await _api.post('/pets/$petId/support');
+
+      // Invaliduj cache wspieranych jeśli operacja się powiodła
+      if (response.statusCode == 200) {
+        CacheManager.invalidatePattern('supported');
+        dev.log('Invalidated supported pets cache after supporting pet $petId');
+      }
+
+      return BasicResponse(response.statusCode ?? 0, response.data);
+    } on DioException catch (e) {
+      dev.log('Błąd podczas wspierania zwierzęcia: ${e.message}');
+      return BasicResponse(e.response?.statusCode ?? 0, {'error': e.message});
+    }
+  }
+
+  Future<List<Pet>> getFavoritePets() async {
+    const cacheKey = 'favorites_pets';
+
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _api.get('/pets/favorites');
+
+        if (response.statusCode == 200 && response.data is List) {
+          final petsData = response.data as List;
+          List<Pet> pets = petsData.map((petJson) => Pet.fromJson(petJson)).toList();
+
+          // Optymalizacja: pobierz lokalizację raz
+          double? userLat;
+          double? userLng;
+          try {
+            final position = await LocationService().getCurrentLocation();
+            if (position != null) {
+              userLat = position.latitude;
+              userLng = position.longitude;
+              dev.log('getFavoritePets - User position: lat=$userLat, lng=$userLng');
+            }
+          } catch (e) {
+            dev.log('getFavoritePets - Failed to get user location: $e');
+          }
+
+          // Optymalizacja: zbierz unikalne ID schronisk i pobierz je batch'owo
+          final shelterIds = pets.map((pet) => pet.shelterId).toSet();
+          final shelterService = ShelterService();
+          final sheltersMap = <int, Shelter>{};
+
+          await Future.wait(shelterIds.map((shelterId) async {
+            try {
+              final shelter = await shelterService.getShelterById(shelterId);
+              sheltersMap[shelterId] = shelter;
+            } catch (e) {
+              dev.log('Failed to fetch shelter $shelterId: $e');
+            }
+          }));
+
+          // Wzbogać zwierzęta o dane schronisk
+          final enrichedPets = pets.map((pet) {
+            final shelter = sheltersMap[pet.shelterId];
+
+            double? calculatedDistance = pet.distance;
+            if (calculatedDistance == null && userLat != null && userLng != null && shelter != null) {
+              if (shelter.latitude != null && shelter.longitude != null) {
+                calculatedDistance = _calculateDistance(
+                    userLat, userLng,
+                    shelter.latitude!, shelter.longitude!
+                );
+              }
+            }
+
+            return Pet(
+              id: pet.id,
+              name: pet.name,
+              type: pet.type,
+              breed: pet.breed,
+              age: pet.age,
+              archived: pet.archived,
+              description: pet.description,
+              shelterId: pet.shelterId,
+              gender: pet.gender,
+              size: pet.size,
+              vaccinated: pet.vaccinated,
+              urgent: pet.urgent,
+              sterilized: pet.sterilized,
+              kidFriendly: pet.kidFriendly,
+              imageUrl: pet.imageUrl,
+              images: pet.images,
+              shelterName: shelter?.name,
+              shelterAddress: shelter?.address,
+              distance: calculatedDistance,
+            );
+          }).toList();
+
+          return enrichedPets;
+        }
+
+        throw Exception('Nieprawidłowa odpowiedź serwera');
+      } on DioException catch (e) {
+        dev.log('Błąd podczas pobierania polubionych zwierząt: ${e.message}');
+        throw Exception('Nie udało się pobrać polubionych zwierząt: ${e.message}');
+      }
+    }, ttl: Duration(minutes: 5));
   }
 
   Future<List<Pet>> getSupportedPets() async {

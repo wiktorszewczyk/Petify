@@ -7,8 +7,9 @@ import 'package:mime/mime.dart';
 import '../models/basic_response.dart';
 import '../models/user.dart';
 import 'api/initial_api.dart';
+import 'cache/cache_manager.dart';
 
-class UserService {
+class UserService with CacheableMixin {
   final _api = InitialApi().dio;
   final _tokens = TokenRepository();
   static UserService? _instance;
@@ -65,6 +66,9 @@ class UserService {
 
   Future<void> logout() async {
     await _tokens.removeToken();
+    // Wyczyść cache po wylogowaniu
+    CacheManager.clear();
+    dev.log('Cache cleared after logout');
   }
 
   Future<BasicResponse> deactivateAccount({String? reason}) async {
@@ -83,15 +87,19 @@ class UserService {
   }
 
   Future<User> getCurrentUser() async {
-    try {
-      final resp = await _api.get('/user');
-      if (resp.statusCode == 200 && resp.data is Map<String, dynamic>) {
-        return User.fromJson(resp.data as Map<String, dynamic>);
+    const cacheKey = 'current_user';
+
+    return cachedFetch(cacheKey, () async {
+      try {
+        final resp = await _api.get('/user');
+        if (resp.statusCode == 200 && resp.data is Map<String, dynamic>) {
+          return User.fromJson(resp.data as Map<String, dynamic>);
+        }
+        throw Exception('Nieoczekiwana odpowiedź serwera: ${resp.statusCode}');
+      } on DioException catch (e) {
+        throw Exception('Błąd podczas pobierania profilu: ${e.message}');
       }
-      throw Exception('Nieoczekiwana odpowiedź serwera: ${resp.statusCode}');
-    } on DioException catch (e) {
-      throw Exception('Błąd podczas pobierania profilu: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 10));
   }
 
   Future<Map<String, dynamic>> updateUserProfile(Map<String, dynamic> userData) async {
@@ -99,6 +107,11 @@ class UserService {
       final resp = await _api.put('/user', data: userData);
 
       if (resp.statusCode == 200) {
+        // Invaliduj cache użytkownika po aktualizacji
+        CacheManager.invalidate('current_user');
+        CacheManager.invalidatePattern('user_');
+        dev.log('User cache invalidated after profile update');
+
         return {
           'success': true,
           'user': resp.data,

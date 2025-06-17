@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/services/cache/cache_scheduler.dart';
 import 'styles/theme.dart';
 import 'views/splash_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -9,6 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = 'pk_test_51RPoLaDA0YiX3e5zdwlX5j0VVCDtdCRqm6AqIqiTlHPkIRXOQIqnIqYWMfXa52KPcKKN82K8V2y3oJerkYGFS9hJ00l4DkazC0';
   await initializeDateFormatting('pl', null);
+  CacheScheduler.start();
   runApp(const PetifyApp());
 }
 

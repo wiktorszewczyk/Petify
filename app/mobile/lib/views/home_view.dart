@@ -25,7 +25,7 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin {
+class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final List<Pet> _pets = [];
   bool _isLoading = true;
   bool _isError = false;
@@ -47,6 +47,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   final NotificationService _notificationService = NotificationService();
   int _unreadNotificationCount = 0;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -333,6 +336,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

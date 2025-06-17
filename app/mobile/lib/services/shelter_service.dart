@@ -4,8 +4,9 @@ import '../models/shelter.dart';
 import '../models/pet.dart';
 import '../models/basic_response.dart';
 import 'api/initial_api.dart';
+import 'cache/cache_manager.dart';
 
-class ShelterService {
+class ShelterService with CacheableMixin {
   final _api = InitialApi().dio;
   static ShelterService? _instance;
 
@@ -41,19 +42,23 @@ class ShelterService {
 
   /// Pobiera szczegóły schroniska
   Future<Shelter> getShelterById(int shelterId) async {
-    try {
-      final response = await _api.get('/shelters/$shelterId');
+    final cacheKey = 'shelter_$shelterId';
 
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        var shelter = Shelter.fromJson(response.data);
-        return await _enrichShelterData(shelter);
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _api.get('/shelters/$shelterId');
+
+        if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+          var shelter = Shelter.fromJson(response.data);
+          return await _enrichShelterData(shelter);
+        }
+
+        throw Exception('Nieprawidłowa odpowiedź serwera');
+      } on DioException catch (e) {
+        dev.log('Błąd podczas pobierania szczegółów schroniska: ${e.message}');
+        throw Exception('Nie udało się pobrać szczegółów schroniska: ${e.message}');
       }
-
-      throw Exception('Nieprawidłowa odpowiedź serwera');
-    } on DioException catch (e) {
-      dev.log('Błąd podczas pobierania szczegółów schroniska: ${e.message}');
-      throw Exception('Nie udało się pobrać szczegółów schroniska: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 15)); // Dłuższy TTL dla schronisk
   }
 
   /// Pobiera zwierzęta z konkretnego schroniska
