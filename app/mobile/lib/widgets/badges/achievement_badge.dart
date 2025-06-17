@@ -19,6 +19,17 @@ class AchievementBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Kolory bazujące na stanie osiągnięcia
+    final Color fillColor = achievement.isUnlocked
+        ? AppColors.primaryColor.withOpacity(0.2)
+        : Colors.grey[300]!;
+    final Color borderColor = achievement.isUnlocked
+        ? AppColors.primaryColor.withOpacity(0.5)
+        : Colors.grey[400]!;
+    final Color iconColor = achievement.isUnlocked
+        ? AppColors.primaryColor
+        : Colors.grey[600]!;
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -29,44 +40,26 @@ class AchievementBadge extends StatelessWidget {
             height: size,
             child: Stack(
               children: [
+                // Tło oraz obramowanie
                 Container(
                   width: size,
                   height: size,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: achievement.isUnlocked
-                        ? achievement.backgroundColor ?? AppColors.primaryColor.withOpacity(0.2)
-                        : Colors.grey[300],
-                    boxShadow: achievement.isUnlocked
-                        ? [
-                      BoxShadow(
-                        color: (achievement.iconColor ?? AppColors.primaryColor).withOpacity(0.3),
-                        blurRadius: 8,
-                        spreadRadius: 1,
-                      )
-                    ]
-                        : null,
-                    border: Border.all(
-                      color: achievement.isUnlocked
-                          ? (achievement.iconColor ?? AppColors.primaryColor).withOpacity(0.5)
-                          : Colors.grey[400]!,
-                      width: 2,
-                    ),
+                    color: fillColor,
+                    border: Border.all(color: borderColor, width: 2),
                   ),
                 ),
-
-                // Main icon
+                // Ikona
                 Center(
                   child: Icon(
                     achievement.icon,
                     size: size * 0.45,
-                    color: achievement.isUnlocked
-                        ? achievement.iconColor ?? AppColors.primaryColor
-                        : Colors.grey[600],
+                    color: iconColor,
                   ),
                 ),
-
-                if (!achievement.isUnlocked)
+                // Zablokowana maska
+                if (!achievement.isUnlocked) ...[
                   Container(
                     width: size,
                     height: size,
@@ -82,20 +75,16 @@ class AchievementBadge extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                if (achievement.progressTotal != null &&
-                    achievement.progressCurrent != null &&
-                    !achievement.isUnlocked)
-                  Positioned.fill(
-                    child: CircularProgressIndicator(
-                      value: achievement.progressPercentage,
-                      strokeWidth: 3,
-                      backgroundColor: Colors.grey[300],
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        achievement.iconColor ?? AppColors.primaryColor,
+                  if (achievement.progressTotal != null && achievement.progressCurrent != null)
+                    Positioned.fill(
+                      child: CircularProgressIndicator(
+                        value: achievement.progressPercentage,
+                        strokeWidth: 3,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: AlwaysStoppedAnimation<Color>(iconColor),
                       ),
                     ),
-                  ),
+                ],
               ],
             ),
           ),

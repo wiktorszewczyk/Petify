@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/notification_item.dart';
 import '../../services/notification_service.dart';
+import '../../services/message_service.dart';
+import '../../views/chat_view.dart';
 import '../../styles/colors.dart';
 
 class NotificationsSheet extends StatefulWidget {
@@ -13,6 +15,7 @@ class NotificationsSheet extends StatefulWidget {
 
 class _NotificationsSheetState extends State<NotificationsSheet> {
   final _service = NotificationService();
+  final _messageService = MessageService();
   late Future<List<NotificationItem>> _future;
 
   @override
@@ -64,13 +67,33 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
   }
 
   Widget _notifTile(NotificationItem n) => ListTile(
-    leading: Icon(n.read ? Icons.notifications_none : Icons.notifications, color: AppColors.primaryColor),
+    leading: Icon(
+        n.isChatNotification
+            ? (n.read ? Icons.chat_bubble_outline : Icons.chat_bubble)
+            : (n.read ? Icons.notifications_none : Icons.notifications),
+        color: AppColors.primaryColor
+    ),
     title: Text(n.title, style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
     subtitle: Text(n.body, maxLines: 2, overflow: TextOverflow.ellipsis),
     trailing: Text('${n.date.hour}:${n.date.minute.toString().padLeft(2, '0')}'),
     onTap: () async {
       await _service.markAsRead(n.id);
-      Navigator.pop(context);
+
+      if (n.isChatNotification && n.conversationId != null) {
+        Navigator.pop(context);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatView(
+              conversationId: n.conversationId!,
+              isNewConversation: false,
+            ),
+          ),
+        );
+      } else {
+        Navigator.pop(context);
+      }
     },
   );
 }

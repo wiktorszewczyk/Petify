@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../services/google_auth_service.dart';
 import '../../styles/colors.dart';
 import '../../widgets/top_header.dart';
+import '../home_view.dart';
 import 'login_view.dart';
-import 'oauth2_signin_page.dart';
 import 'register_view.dart';
 import '../../widgets/buttons/primary_button.dart';
 
@@ -254,11 +255,26 @@ class _WelcomeViewState extends State<WelcomeView> {
                   side: const BorderSide(color: Colors.grey),
                 ),
               ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const OAuth2SignInPage()),
+              onPressed: () async {
+                final resp = await GoogleAuthService().signInWithGoogle();
+
+                if (resp.statusCode >= 200 && resp.statusCode < 300) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Zalogowano!'),
+                      backgroundColor: Colors.green,
+                    ),
                   );
-                },
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const HomeView()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Logowanie nie powiodło się: ${resp.data}')),
+                  );
+                }
+              },
             ).animate().fade(delay: 600.ms).slideY(begin: 0.1),
           ],
         ),

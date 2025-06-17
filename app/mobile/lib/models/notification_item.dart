@@ -4,6 +4,8 @@ class NotificationItem {
   final String body;
   final DateTime date;
   final bool read;
+  final String? conversationId;
+  final String? petName;
 
   NotificationItem({
     required this.id,
@@ -11,15 +13,9 @@ class NotificationItem {
     required this.body,
     required this.date,
     this.read = false,
+    this.conversationId,
+    this.petName,
   });
 
-  factory NotificationItem.fake(int i) => NotificationItem(
-    id: 'not_$i',
-    title: i.isEven ? 'Nowe wyzwanie!' : 'Podziękowanie od schroniska',
-    body: i.isEven
-        ? 'Wspieraj zwierzaki przez 5 kolejnych dni i zdobądź 100 XP.'
-        : 'Dziękujemy za wsparcie – Twoja darowizna już pomaga.',
-    date: DateTime.now().subtract(Duration(hours: i * 6)),
-    read: i % 3 == 0,
-  );
+  bool get isChatNotification => conversationId != null;
 }

@@ -1,14 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/support_options_sheet.dart';
-import '../models/pet_model.dart';
+import 'package:mobile/views/adoption_form_view.dart';
+import '../models/pet.dart';
 import '../styles/colors.dart';
 import '../services/pet_service.dart';
 import '../services/message_service.dart';
 import 'chat_view.dart';
 
 class PetDetailsView extends StatefulWidget {
-  final PetModel pet;
+  final Pet pet;
   const PetDetailsView({Key? key, required this.pet}) : super(key: key);
 
   @override
@@ -21,63 +23,89 @@ class _PetDetailsViewState extends State<PetDetailsView> {
   final PageController _pageController = PageController();
   int _currentPhoto = 0;
   bool _busy = false;
+  Pet? _refreshedPet;
 
   @override
   void initState() {
     super.initState();
     _petService = PetService();
     _messageService = MessageService();
+    if (widget.pet.distance == null) {
+      _loadPetDetails();
+    }
   }
 
-  List<String> get _allImages => [widget.pet.imageUrl, ...widget.pet.galleryImages];
-
-  String _y(int n) => n == 1 ? 'rok' : (n >= 2 && n <= 4 ? 'lata' : 'lat');
-
-  String _size(String s) => {
-    'small': 'Mały',
-    'medium': 'Średni',
-    'large': 'Duży',
-    'xlarge': 'B.duży'
-  }[s.toLowerCase()] ??
-      s;
-
-  List<String> get _traits {
-    final t = <String>[widget.pet.gender == 'male' ? 'Samiec' : 'Samica', _size(widget.pet.size)];
-    if (widget.pet.isVaccinated) t.add('Zaszczepiony');
-    if (widget.pet.isNeutered) t.add('Sterylizowany');
-    if (widget.pet.isChildFriendly) t.add('Przyjazny dzieciom');
-    return t;
+  Future<void> _loadPetDetails() async {
+    try {
+      final refreshedPet = await _petService.getPetById(widget.pet.id);
+      if (mounted) {
+        setState(() {
+          _refreshedPet = refreshedPet;
+        });
+      }
+    } catch (e) {
+      print('Failed to refresh pet details: $e');
+    }
   }
 
-  ButtonStyle _btnStyle(
-      Color bg,
-      Color fg, {
-        double elevation = 0,
-        Color? borderColor,
-      }) =>
-      ElevatedButton.styleFrom(
-        backgroundColor: bg,
-        foregroundColor: fg,
-        elevation: elevation,
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: borderColor != null ? BorderSide(color: borderColor) : BorderSide.none,
-        ),
-      );
+  Pet get currentPet => _refreshedPet ?? widget.pet;
+
+  List<String> get _allImages {
+    return [currentPet.imageUrlSafe, ...currentPet.galleryImages];
+  }
 
   Widget _buildImage(String path, {BoxFit fit = BoxFit.cover}) {
     if (path.startsWith('http://') || path.startsWith('https://')) {
-      return Image.network(path, fit: fit);
-    } else {
-      return Image.asset(path, fit: fit);
+      return Image.network(
+        path,
+        fit: fit,
+        errorBuilder: (_, __, ___) => _buildErrorImage(),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[200],
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes!
+                    : null,
+                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+              ),
+            ),
+          );
+        },
+      );
     }
+
+    if (path.startsWith('assets/')) {
+      return Image.asset(
+        path,
+        fit: fit,
+        errorBuilder: (_, __, ___) => _buildErrorImage(),
+      );
+    }
+
+    return _buildErrorImage();
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      color: Colors.grey[300],
+      child: Center(
+        child: Icon(Icons.pets, size: 50, color: Colors.grey[600]),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final shelterName = widget.pet.shelterName?.isNotEmpty == true ? widget.pet.shelterName! : 'Schronisko';
-    final shelterAddr = widget.pet.shelterAddress?.isNotEmpty == true ? widget.pet.shelterAddress! : 'brak adresu';
+    final shelterName = currentPet.shelterName?.isNotEmpty == true
+        ? currentPet.shelterName!
+        : 'Schronisko';
+    final shelterAddr = currentPet.shelterAddress?.isNotEmpty == true
+        ? currentPet.shelterAddress!
+        : 'brak adresu';
 
     return Scaffold(
       body: CustomScrollView(
@@ -100,7 +128,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                     itemCount: _allImages.length,
                     itemBuilder: (_, i) => i == 0
                         ? Hero(
-                        tag: 'pet_mini_${widget.pet.id}',
+                        tag: 'pet_mini_${currentPet.id}',
                         child: _buildImage(_allImages[i])
                     )
                         : _buildImage(_allImages[i]),
@@ -144,22 +172,41 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(widget.pet.name, style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.bold)),
+                        child: Text(
+                            currentPet.name,
+                            style: GoogleFonts.poppins(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold
+                            )
+                        ),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(color: AppColors.primaryColor.withOpacity(.2), borderRadius: BorderRadius.circular(12)),
-                        child: Text('${widget.pet.age} ${_y(widget.pet.age)}',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primaryColor)),
+                        decoration: BoxDecoration(
+                            color: AppColors.primaryColor.withOpacity(.2),
+                            borderRadius: BorderRadius.circular(12)
+                        ),
+                        child: Text(
+                            '${currentPet.age} ${_y(currentPet.age)}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primaryColor
+                            )
+                        ),
                       )
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _iconText(Icons.pets, widget.pet.breed),
+                  _iconText(Icons.pets, currentPet.breed ?? currentPet.typeDisplayName),
                   const SizedBox(height: 6),
-                  _iconText(Icons.location_on, 'Odległość: ${widget.pet.distance} km'),
+                  _iconText(
+                      Icons.location_on,
+                      currentPet.distance != null
+                          ? 'Odległość: ${currentPet.formattedDistance}'
+                          : 'Lokalizacja nieznana'
+                  ),
 
-                  if (widget.pet.isUrgent) ...[
+                  if (currentPet.isUrgent) ...[
                     const SizedBox(height: 16),
                     _urgent(),
                   ],
@@ -167,14 +214,18 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                   const SizedBox(height: 24),
                   _section('O zwierzaku'),
                   Text(
-                    widget.pet.description ?? 'Brak opisu. Skontaktuj się ze schroniskiem, aby dowiedzieć się więcej.',
+                    currentPet.description ?? 'Brak opisu. Skontaktuj się ze schroniskiem, aby dowiedzieć się więcej.',
                     style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
 
                   if (_traits.isNotEmpty) ...[
                     const SizedBox(height: 24),
                     _section('Cechy'),
-                    Wrap(spacing: 8, runSpacing: 8, children: _traits.map(_chip).toList(growable: false)),
+                    Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _traits.map(_chip).toList(growable: false)
+                    ),
                   ],
 
                   const SizedBox(height: 24),
@@ -186,8 +237,14 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                   Center(
                     child: OutlinedButton.icon(
                       icon: const Icon(Icons.delete_outline, color: Colors.red),
-                      label: const Text('Usuń z polubionych', style: TextStyle(color: Colors.red)),
-                      style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.red), padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
+                      label: const Text(
+                          'Usuń z polubionych',
+                          style: TextStyle(color: Colors.red)
+                      ),
+                      style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.red),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12)
+                      ),
                       onPressed: _confirmRemove,
                     ),
                   ),
@@ -251,7 +308,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                       children: const [
                         Icon(Icons.pets, size: 20),
                         SizedBox(width: 8),
-                        Text('ADOPTUJ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        Text(
+                            'ADOPTUJ',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                        ),
                       ],
                     ),
                   ),
@@ -264,7 +324,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (context) => SupportOptionsSheet(pet: widget.pet),
+                      builder: (context) => SupportOptionsSheet(pet: currentPet),
                     ),
                     style: _btnStyle(
                       Colors.white,
@@ -290,17 +350,102 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     );
   }
 
-  Widget _circle(Widget child) => Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.white.withOpacity(.8), shape: BoxShape.circle), child: child);
+  Widget _circle(Widget child) => Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          color: Colors.white.withOpacity(.8),
+          shape: BoxShape.circle
+      ),
+      child: child
+  );
 
-  Widget _iconText(IconData icon, String text) => Row(children: [Icon(icon, size: 20, color: Colors.grey[600]), const SizedBox(width: 6), Text(text)]);
+  Widget _iconText(IconData icon, String text) => Row(
+      children: [
+        Icon(icon, size: 20, color: Colors.grey[600]),
+        const SizedBox(width: 6),
+        Text(text)
+      ]
+  );
 
-  Widget _section(String t) => Text(t, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold));
+  Widget _section(String t) => Text(
+      t,
+      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold)
+  );
 
-  Widget _chip(String t) => Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), decoration: BoxDecoration(color: AppColors.primaryColor.withOpacity(.1), borderRadius: BorderRadius.circular(20)), child: Text(t, style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.w500)));
+  Widget _chip(String t) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+          color: AppColors.primaryColor.withOpacity(.1),
+          borderRadius: BorderRadius.circular(20)
+      ),
+      child: Text(
+          t,
+          style: TextStyle(
+              color: AppColors.primaryColor,
+              fontWeight: FontWeight.w500
+          )
+      )
+  );
 
-  Widget _urgent() => Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: Colors.red.withOpacity(.2), borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.red)), child: Row(mainAxisSize: MainAxisSize.min, children: const [Icon(Icons.warning_amber_rounded, color: Colors.red, size: 18), SizedBox(width: 6), Text('PILNY', style: TextStyle(color: Colors.red))]));
+  Widget _urgent() => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+          color: Colors.red.withOpacity(.2),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.red)
+      ),
+      child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.warning_amber_rounded, color: Colors.red, size: 18),
+            SizedBox(width: 6),
+            Text('PILNY', style: TextStyle(color: Colors.red))
+          ]
+      )
+  );
 
-  Widget _shelterBox(String name, String addr) => Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(12)), child: Row(children: [Container(width: 60, height: 60, decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.primaryColor), child: const Icon(Icons.home_work_outlined, color: Colors.white, size: 30)), const SizedBox(width: 16), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(name, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)), const SizedBox(height: 2), Text(addr, style: TextStyle(color: Colors.grey[600]))]))]));
+  Widget _shelterBox(String name, String addr) => Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(12)
+      ),
+      child: Row(
+          children: [
+            Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primaryColor
+                ),
+                child: const Icon(Icons.home_work_outlined, color: Colors.white, size: 30)
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          name,
+                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)
+                      ),
+                      const SizedBox(height: 4),
+                      if (addr.isNotEmpty)
+                        Text(addr, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                      if (currentPet.shelterName?.isNotEmpty == true) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          'Kliknij "Skontaktuj się" aby uzyskać więcej informacji',
+                          style: TextStyle(color: Colors.grey[500], fontSize: 12, fontStyle: FontStyle.italic),
+                        ),
+                      ]
+                    ]
+                )
+            )
+          ]
+      )
+  );
 
   Widget _navArrow({required bool left, required bool enabled}) => Positioned.fill(
     child: Align(
@@ -329,13 +474,38 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     ),
   );
 
+  ButtonStyle _btnStyle(Color bg, Color fg, {double elevation = 0, Color? borderColor}) =>
+      ElevatedButton.styleFrom(
+        backgroundColor: bg,
+        foregroundColor: fg,
+        elevation: elevation,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: borderColor != null ? BorderSide(color: borderColor) : BorderSide.none,
+        ),
+      );
+
+  String _y(int n) => n == 1 ? 'rok' : (n >= 2 && n <= 4 ? 'lata' : 'lat');
+
+  List<String> get _traits {
+    final t = <String>[
+      currentPet.genderDisplayName,
+      currentPet.sizeDisplayName
+    ];
+    if (currentPet.isVaccinated) t.add('Zaszczepiony');
+    if (currentPet.isNeutered) t.add('Sterylizowany');
+    if (currentPet.isChildFriendly) t.add('Przyjazny dzieciom');
+    return t;
+  }
+
   Future<void> _contactShelter() async {
     setState(() => _busy = true);
 
     try {
       final conversations = await _messageService.getConversations();
       final existingConversation = conversations
-          .where((conv) => conv.petId == widget.pet.id)
+          .where((conv) => conv.petId == currentPet.id.toString())
           .toList();
 
       String conversationId;
@@ -345,11 +515,11 @@ class _PetDetailsViewState extends State<PetDetailsView> {
         conversationId = existingConversation.first.id;
       } else {
         conversationId = await _messageService.createConversation(
-          petId: widget.pet.id,
-          petName: widget.pet.name,
-          shelterId: widget.pet.shelterId,
-          shelterName: widget.pet.shelterName ?? 'Schronisko',
-          petImageUrl: widget.pet.imageUrl,
+          petId: currentPet.id.toString(),
+          petName: currentPet.name,
+          shelterId: currentPet.shelterId.toString(),
+          shelterName: currentPet.shelterName ?? 'Schronisko',
+          petImageUrl: currentPet.imageUrl!,
         );
         isNewConversation = true;
       }
@@ -364,7 +534,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
           builder: (context) => ChatView(
             conversationId: conversationId,
             isNewConversation: isNewConversation,
-            pet: widget.pet,
+            pet: currentPet,
           ),
         ),
       );
@@ -381,35 +551,58 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     }
   }
 
-  Future<void> _openAdoptionForm() async => _soon('Formularz adopcji');
+  Future<void> _openAdoptionForm() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdoptionFormView(pet: currentPet),
+      ),
+    );
+  }
 
-  void _soon(String w) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$w – wkrótce'), backgroundColor: Colors.blue));
 
   Future<void> _confirmRemove() async {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Usuń z ulubionych'),
-        content: Text('Na pewno chcesz usunąć ${widget.pet.name}?'),
+        content: Text('Na pewno chcesz usunąć ${currentPet.name}?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Anuluj')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Usuń', style: TextStyle(color: Colors.red)))
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Anuluj')
+          ),
+          TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Usuń', style: TextStyle(color: Colors.red))
+          )
         ],
       ),
-    ) ??
-        false;
+    ) ?? false;
 
     if (!ok) return;
 
     setState(() => _busy = true);
     try {
-      await _petService.unlikePet(widget.pet.id);
+      final response = await _petService.unlikePet(currentPet.id);
       if (!mounted) return;
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${widget.pet.name} usunięty z ulubionych'), backgroundColor: Colors.grey));
+
+      if (response.statusCode == 200) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('${currentPet.name} usunięty z ulubionych'),
+                backgroundColor: Colors.grey
+            )
+        );
+      } else {
+        throw Exception('Błąd serwera: ${response.statusCode}');
+      }
     } catch (e) {
       setState(() => _busy = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Błąd: $e'), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Błąd: $e'), backgroundColor: Colors.red)
+      );
     }
   }
 
