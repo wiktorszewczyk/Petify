@@ -42,14 +42,13 @@ public class AuthServerApplication {
             Role userRole = roleRepository.findByAuthority("USER")
                     .orElseGet(() -> roleRepository.save(new Role("USER")));
 
-            // Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
-            // .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
+            Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
+                    .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
 
             Role shelterRole = roleRepository.findByAuthority("SHELTER")
                     .orElseGet(() -> roleRepository.save(new Role("SHELTER")));
 
             Optional<ApplicationUser> existingAdmin = userRepository.findByUsername("admin");
-
             if (existingAdmin.isEmpty()) {
                 Set<Role> adminRoles = new HashSet<>();
                 adminRoles.add(adminRole);
@@ -73,6 +72,7 @@ public class AuthServerApplication {
                 admin.setLikesCount(0);
                 admin.setSupportCount(0);
                 admin.setBadgesCount(0);
+                admin.setAdoptionCount(0);
 
                 ApplicationUser savedAdmin = userRepository.save(admin);
                 achievementService.initializeUserAchievements(savedAdmin);
@@ -102,9 +102,40 @@ public class AuthServerApplication {
                 shelterUser.setLikesCount(0);
                 shelterUser.setSupportCount(0);
                 shelterUser.setBadgesCount(0);
+                shelterUser.setAdoptionCount(0);
 
                 ApplicationUser savedShelterUser = userRepository.save(shelterUser);
                 achievementService.initializeUserAchievements(savedShelterUser);
+            }
+
+            Optional<ApplicationUser> existingVolunteer = userRepository.findByUsername("volunteer");
+            if (existingVolunteer.isEmpty()) {
+                Set<Role> volunteerRoles = new HashSet<>();
+                volunteerRoles.add(volunteerRole);
+                volunteerRoles.add(userRole);
+
+                ApplicationUser volunteerUser = new ApplicationUser();
+                volunteerUser.setUsername("volunteer");
+                volunteerUser.setPassword(passwordEncoder.encode("volunteer"));
+                volunteerUser.setEmail("volunteer@petify.org");
+                volunteerUser.setFirstName("Anna");
+                volunteerUser.setLastName("Kowalska");
+                volunteerUser.setBirthDate(LocalDate.of(1995, 5, 15));
+                volunteerUser.setGender("FEMALE");
+                volunteerUser.setPhoneNumber("+48555123456");
+                volunteerUser.setVolunteerStatus(VolunteerStatus.ACTIVE);
+                volunteerUser.setActive(true);
+                volunteerUser.setCreatedAt(LocalDateTime.now());
+                volunteerUser.setAuthorities(volunteerRoles);
+                volunteerUser.setXpPoints(250);
+                volunteerUser.setLevel(3);
+                volunteerUser.setLikesCount(15);
+                volunteerUser.setSupportCount(8);
+                volunteerUser.setBadgesCount(2);
+                volunteerUser.setAdoptionCount(1);
+
+                ApplicationUser savedVolunteer = userRepository.save(volunteerUser);
+                achievementService.initializeUserAchievements(savedVolunteer);
             }
 
             long achievementCount = achievementRepository.count();
@@ -158,10 +189,73 @@ public class AuthServerApplication {
                 achievement6.setName("Super wsparcie");
                 achievement6.setDescription("Wesprzyj 25 zwierząt");
                 achievement6.setIconName("hands-helping");
-                achievement6.setXpReward(200);
+                achievement6.setXpReward(250);
                 achievement6.setCategory(AchievementCategory.SUPPORT);
                 achievement6.setRequiredActions(25);
                 achievementRepository.save(achievement6);
+
+                Achievement profilePicture = new Achievement();
+                profilePicture.setName("Pierwsza fotka");
+                profilePicture.setDescription("Dodaj zdjęcie profilowe");
+                profilePicture.setIconName("camera");
+                profilePicture.setXpReward(50);
+                profilePicture.setCategory(AchievementCategory.PROFILE);
+                profilePicture.setRequiredActions(1);
+                achievementRepository.save(profilePicture);
+
+                Achievement completeProfile = new Achievement();
+                completeProfile.setName("Kompletny profil");
+                completeProfile.setDescription("Wypełnij wszystkie dane w profilu");
+                completeProfile.setIconName("user-check");
+                completeProfile.setXpReward(100);
+                completeProfile.setCategory(AchievementCategory.PROFILE);
+                completeProfile.setRequiredActions(1);
+                achievementRepository.save(completeProfile);
+
+                Achievement locationSet = new Achievement();
+                locationSet.setName("Lokalizacja ustawiona");
+                locationSet.setDescription("Dodaj swoją lokalizację");
+                locationSet.setIconName("map-pin");
+                locationSet.setXpReward(25);
+                locationSet.setCategory(AchievementCategory.PROFILE);
+                locationSet.setRequiredActions(1);
+                achievementRepository.save(locationSet);
+
+                Achievement volunteerAchievement = new Achievement();
+                volunteerAchievement.setName("Ochotnik");
+                volunteerAchievement.setDescription("Zgłoś się jako wolontariusz");
+                volunteerAchievement.setIconName("hand-holding-heart");
+                volunteerAchievement.setXpReward(75);
+                volunteerAchievement.setCategory(AchievementCategory.VOLUNTEER);
+                volunteerAchievement.setRequiredActions(1);
+                achievementRepository.save(volunteerAchievement);
+
+                Achievement firstAdoption = new Achievement();
+                firstAdoption.setName("Pierwszy przyjaciel");
+                firstAdoption.setDescription("Gratulacje za pierwszą adopcję zwierzęcia! Zmieniłeś czyjeś życie na lepsze.");
+                firstAdoption.setIconName("heart-handshake");
+                firstAdoption.setXpReward(200);
+                firstAdoption.setCategory(AchievementCategory.ADOPTION);
+                firstAdoption.setRequiredActions(1);
+                achievementRepository.save(firstAdoption);
+
+                Achievement animalRescuer = new Achievement();
+                animalRescuer.setName("Ratownik zwierząt");
+                animalRescuer.setDescription("Adoptowałeś już 5 zwierząt! Jesteś prawdziwym ratownikiem czworonogów.");
+                animalRescuer.setIconName("shield-heart");
+                animalRescuer.setXpReward(500);
+                animalRescuer.setCategory(AchievementCategory.ADOPTION);
+                animalRescuer.setRequiredActions(5);
+                achievementRepository.save(animalRescuer);
+
+                Achievement adoptionAngel = new Achievement();
+                adoptionAngel.setName("Anioł adopcji");
+                adoptionAngel.setDescription("Niesamowite! 10 adopcji za Tobą. Jesteś prawdziwym aniołem dla bezdomnych zwierząt.");
+                adoptionAngel.setIconName("crown");
+                adoptionAngel.setXpReward(1000);
+                adoptionAngel.setCategory(AchievementCategory.ADOPTION);
+                adoptionAngel.setRequiredActions(10);
+                achievementRepository.save(adoptionAngel);
             }
         };
     }

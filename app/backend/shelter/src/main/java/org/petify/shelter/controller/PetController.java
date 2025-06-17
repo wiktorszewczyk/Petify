@@ -279,6 +279,19 @@ public class PetController {
         return ResponseEntity.ok(favoritePets);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
+    @GetMapping("/my-adoptions")
+    public ResponseEntity<List<AdoptionResponse>> getMyAdoptions(@AuthenticationPrincipal Jwt jwt) {
+        String username = jwt != null ? jwt.getSubject() : null;
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<AdoptionResponse> adoptions = adoptionService.getAdoptionsByUsername(username);
+        return ResponseEntity.ok(adoptions);
+    }
+
     private void verifyPetOwnership(Long petId, @AuthenticationPrincipal Jwt jwt) {
         String username = jwt != null ? jwt.getSubject() : null;
         Long shelterId = petService.getPetById(petId).shelterId();

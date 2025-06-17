@@ -1,12 +1,11 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import './Shelters.css';
 import { MapPin, PawPrint } from 'lucide-react';
+import { fetchShelters } from '../api/shelter';
 
-import shelter1 from '../assets/schronisko1.jpg';
-import shelter2 from '../assets/schronisko2.jpg';
-import shelter3 from '../assets/schronisko3.jpg';
 
 const pawSteps = [
   { top: '55vh', left: '90vw', size: '8vw', rotate: '-100deg' },
@@ -26,29 +25,31 @@ const pawSteps = [
   { top: '70vh', left: '-3vw', size: '8vw', rotate: '-135deg' },
 ];
 
-const shelters = [
-  {
-    id: 1,
-    name: 'Schronisko na Paluchu',
-    location: 'Warszawa',
-    image: shelter1,
-  },
-  {
-    id: 2,
-    name: 'Azyl Koci Świat',
-    location: 'Kraków',
-    image: shelter2,
-  },
-  {
-    id: 3,
-    name: 'Psi Zakątek',
-    location: 'Gdańsk',
-    image: shelter3,
-  },
-];
+
 
 const Shelters = () => {
   const navigate = useNavigate();
+  const [shelters, setShelters] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+useEffect(() => {
+  const load = async () => {
+    try {
+      const data = await fetchShelters();
+      setShelters(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  load();
+}, []);
+
+if (loading) return <div className="loading-spinner">Ładowanie schronisk...</div>;
+if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div>
@@ -76,7 +77,7 @@ const Shelters = () => {
       <div className="shelter-container">
         <div className="shelter-header">
           <h1>Nasze schroniska</h1>
-          <p>Wybierz schronisko, aby zobaczyć dostępne zwierzęta</p>
+          <p>Schroniska, które z nami współpracuja</p>
         </div>
 
         <div className="shelter-grid">
@@ -84,7 +85,7 @@ const Shelters = () => {
             <div
               key={shelter.id}
               className="shelter-card"
-              onClick={() => navigate(`/shelter/${shelter.id}`)}
+              onClick={() => navigate(`/shelterProfile/${shelter.id}`)}
             >
               <div className="shelter-card-image">
                 <img src={shelter.image} alt={shelter.name} />
@@ -92,7 +93,7 @@ const Shelters = () => {
               <div className="shelter-card-content">
                 <h3>{shelter.name}</h3>
                 <div className="shelter-details">
-                  <MapPin className="detail-icon" /> {shelter.location}
+                  <MapPin className="detail-icon" /> {shelter.address}
                 </div>
               </div>
             </div>

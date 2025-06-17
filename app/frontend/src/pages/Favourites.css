@@ -157,3 +157,20 @@
     transform: scale(0.5) rotate(var(--rotation));
   }
 }
+
+.no-favorites {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #666;
+  text-align: center;
+  font-size: 1.2rem;
+  border: 2px dashed #ffc107; /* amber */
+  border-radius: 1rem;
+  background-color: #fff8e1;
+  margin: 2rem auto;
+  max-width: 600px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}

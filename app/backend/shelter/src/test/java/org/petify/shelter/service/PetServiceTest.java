@@ -430,7 +430,8 @@ class PetServiceTest {
                 true,
                 true,
                 TEST_IMAGE_URL,
-                Collections.emptyList()
+                Collections.emptyList(),
+                0.0
         );
     }
 }

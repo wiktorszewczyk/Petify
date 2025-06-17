@@ -27,6 +27,12 @@ public interface PetMapper {
     @Mapping(target = "imageUrl", expression = "java(ImageUrlConverter.toFullImageUrl(pet.getImageName()))")
     PetResponseWithImages toDtoWithImages(Pet pet);
 
+    @Mapping(source = "pet.shelter.id", target = "shelterId")
+    @Mapping(target = "images", source = "pet.images")
+    @Mapping(target = "imageUrl", expression = "java(ImageUrlConverter.toFullImageUrl(pet.getImageName()))")
+    @Mapping(source = "distance", target = "distance")
+    PetResponseWithImages toDtoWithImagesAndDistance(Pet pet, Double distance);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "adoptions", ignore = true)
     @Mapping(target = "images", ignore = true)

@@ -75,4 +75,57 @@ public class AchievementController {
         achievementService.trackSupportAchievements(username);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/track-volunteer")
+    public ResponseEntity<Void> trackVolunteerProgress() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.trackVolunteerAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-adoption")
+    public ResponseEntity<Void> trackAdoptionProgress() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.trackAdoptionAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-adoption/{username}")
+    public ResponseEntity<Void> trackAdoptionProgressForUser(@PathVariable String username) {
+        achievementService.trackAdoptionAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-like/{username}")
+    public ResponseEntity<Void> trackLikeProgressForUser(@PathVariable String username) {
+        achievementService.trackLikeAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-support/{username}")
+    public ResponseEntity<Void> trackSupportProgressForUser(@PathVariable String username) {
+        achievementService.trackSupportAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add-donation-xp")
+    public ResponseEntity<Void> addDonationExperiencePoints(@RequestParam int xpPoints) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        achievementService.addExperiencePointsForDonation(username, xpPoints);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add-donation-xp/{username}")
+    public ResponseEntity<Void> addDonationExperiencePointsForUser(
+            @PathVariable String username,
+            @RequestParam int xpPoints) {
+        achievementService.addExperiencePointsForDonation(username, xpPoints);
+        return ResponseEntity.ok().build();
+    }
 }

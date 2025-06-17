@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import './Landing.css';
-import logo from '../assets/logo-placeholder.png';
+import logo from '../assets/logo.svg';
 import heroBg from '../assets/dogs.jpg'; 
 import walk from '../assets/walk.gif';
 import profile from '../assets/profile.gif';
@@ -14,7 +14,6 @@ export default function Landing() {
   const [showArrow, setShowArrow] = useState(false);
   const containerRef = useRef(null);
   const trackRef = useRef(null);
-  const [scrollValue, setScrollValue] = useState(0);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 500);
@@ -67,25 +66,10 @@ export default function Landing() {
             <a href="#about" className="cta-button">Dowiedz się więcej</a>
           </div>
         </div>
-        <a href="#gallery" className={`scroll-circle animated ${showArrow ? 'bounce-in' : ''}`}>
+        <a href="#about" className={`scroll-circle animated ${showArrow ? 'bounce-in' : ''}`}>
   ↓
 </a>
       </section>
-
-      <section id="gallery" className="scroll-gallery-outer" ref={containerRef}>
-  <div className="scroll-gallery-inner">
-    <div className="scroll-gallery-track" ref={trackRef}>
-    <img src="/src/assets/landing_image_1.jpg" alt="Dog 1" />
-    <img src="/src/assets/landing_image_2.jpg" alt="Dog 2" />
-    <img src="/src/assets/landing_image_3.jpg" alt="Dog 3" />
-    <img src="/src/assets/landing_image_4.jpg" alt="Dog 4" />
-    <img src="/src/assets/landing_image_5.jpg" alt="Dog 5" />
-    <img src="/src/assets/landing_image_6.jpg" alt="Dog 6" />
-    <img src="/src/assets/landing_image_7.jpg" alt="Dog 7" />
-    <div className="scroll-end-spacer" />
-    </div>
-  </div>
-</section>
 
 <section id="about"className="about-section">
   <div className="about-content">
