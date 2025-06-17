@@ -177,6 +177,28 @@ export async function fetchProfileImage() {
     throw new Error("Nie udało się pobrać zdjęcia profilowego");
   }
 
-  const blob = await response.blob();
-  return URL.createObjectURL(blob);
+  const data = await response.json();
+
+  if (data.hasImage === "true" && data.image) {
+    return data.image;
+  } else {
+    throw new Error("Brak zdjęcia profilowego");
+  }
+}
+
+export async function deleteProfileImage() {
+  const token = getToken();
+
+  const response = await fetch(`${API_URL}/user/profile-image`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Nie udało się usunąć zdjęcia profilowego");
+  }
+
+  return await response.json();
 }
