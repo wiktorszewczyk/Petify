@@ -13,7 +13,9 @@ x-common-variables: &common-variables
   GATEWAY_URL: http://gateway:8222
 
 services:
+  # External services
   postgres:
+    container_name: petify-postgres-connection
     image: bitnami/postgresql:17
     entrypoint: ["sleep", "infinity"]
     environment:
@@ -30,7 +32,21 @@ services:
       start_period: 10s
     mem_limit: 128m
 
+  rabbitmq:
+    container_name: petify-rabbitmq
+    image: rabbitmq:4.1.1-management
+    expose:
+      - 5672
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 1g
+
+  # Petify services
   config-server:
+    container_name: petify-config-server
     image: ${ACR_LOGIN_SERVER}/petify-config-server:latest
     expose:
       - 8888
@@ -43,6 +59,7 @@ services:
     mem_limit: 1g
 
   discovery:
+    container_name: petify-discovery
     image: ${ACR_LOGIN_SERVER}/petify-discovery:latest
     expose:
       - 8761
@@ -58,6 +75,7 @@ services:
     mem_limit: 1g
 
   auth-server:
+    container_name: petify-auth-server
     image: ${ACR_LOGIN_SERVER}/petify-auth-server:latest
     expose:
       - 9000
@@ -76,25 +94,31 @@ services:
       retries: 20
     mem_limit: 1g
 
-  # chat:
-  #   image: ${ACR_LOGIN_SERVER}/petify-chat:latest
-  #   expose:
-  #     - 8050
-  #   environment:
-  #     <<: *common-variables
-  #   depends_on:
-  #     discovery:
-  #       condition: service_healthy
-  #     postgres:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
-  #     interval: 15s
-  #     retries: 10
-  #     start_period: 30s
-  #   mem_limit: 1g
+  chat:
+    container_name: petify-chat
+    image: ${ACR_LOGIN_SERVER}/petify-chat:latest
+    expose:
+      - 8050
+    environment:
+      <<: *common-variables
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
+      interval: 15s
+      retries: 10
+      start_period: 30s
+    mem_limit: 1g
 
   feed:
+    container_name: petify-feed
     image: ${ACR_LOGIN_SERVER}/petify-feed:latest
     expose:
       - 8030
@@ -114,6 +138,7 @@ services:
     mem_limit: 1g
 
   funding:
+    container_name: petify-funding
     image: ${ACR_LOGIN_SERVER}/petify-funding:latest
     expose:
       - 8020
@@ -140,6 +165,7 @@ services:
     mem_limit: 1g
 
   image:
+    container_name: petify-image
     image: ${ACR_LOGIN_SERVER}/petify-image:latest
     expose:
       - 8060
@@ -159,6 +185,7 @@ services:
     mem_limit: 1g
 
   reservations:
+    container_name: petify-reservations
     image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
     expose:
       - 8011
@@ -176,6 +203,7 @@ services:
     mem_limit: 1g
 
   shelter:
+    container_name: petify-shelter
     image: ${ACR_LOGIN_SERVER}/petify-shelter:latest
     expose:
       - 8010
@@ -195,6 +223,7 @@ services:
     mem_limit: 1g
 
   gateway:
+    container_name: petify-gateway
     image: ${ACR_LOGIN_SERVER}/petify-gateway:latest
     ports:
       - 8222:8222
@@ -205,8 +234,8 @@ services:
         condition: service_healthy
       auth-server:
         condition: service_healthy
-      # chat:
-      #   condition: service_healthy
+      chat:
+        condition: service_healthy
       feed:
         condition: service_healthy
       funding:
