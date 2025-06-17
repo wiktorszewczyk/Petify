@@ -153,7 +153,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     );
 
     if (result == true && mounted) {
-      await _loadFundraiserInfo(); // Refresh fundraiser data
+      await _loadFundraiserInfo();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

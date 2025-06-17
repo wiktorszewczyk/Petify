@@ -23,14 +23,13 @@ class _PetDetailsViewState extends State<PetDetailsView> {
   final PageController _pageController = PageController();
   int _currentPhoto = 0;
   bool _busy = false;
-  Pet? _refreshedPet; // Pet z odświeżonymi danymi (w tym distance)
+  Pet? _refreshedPet;
 
   @override
   void initState() {
     super.initState();
     _petService = PetService();
     _messageService = MessageService();
-    // Sprawdź czy pet ma odległość, jeśli nie - pobierz aktualne dane
     if (widget.pet.distance == null) {
       _loadPetDetails();
     }
@@ -46,15 +45,12 @@ class _PetDetailsViewState extends State<PetDetailsView> {
       }
     } catch (e) {
       print('Failed to refresh pet details: $e');
-      // Jeśli się nie uda, zostaniemy z oryginalnym pet object
     }
   }
 
-  // Getter który zwraca odświeżone dane jeśli dostępne, w przeciwnym razie oryginalne
   Pet get currentPet => _refreshedPet ?? widget.pet;
 
   List<String> get _allImages {
-    // Zwracamy listę zdjęć - główne zdjęcie + galeria
     return [currentPet.imageUrlSafe, ...currentPet.galleryImages];
   }
 
@@ -354,7 +350,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     );
   }
 
-  // Helper methods
   Widget _circle(Widget child) => Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -438,7 +433,6 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                       const SizedBox(height: 4),
                       if (addr.isNotEmpty)
                         Text(addr, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
-                      // Dodajemy informacje kontaktowe jeśli są dostępne
                       if (currentPet.shelterName?.isNotEmpty == true) ...[
                         const SizedBox(height: 4),
                         Text(

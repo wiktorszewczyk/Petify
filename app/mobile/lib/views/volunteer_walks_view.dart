@@ -27,7 +27,6 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
   bool _isLoadingMy = false;
   final Map<int, Pet> _petDetailsCache = {};
 
-  // Calendar view state
   DateTime _selectedDate = DateTime.now();
   bool _isCalendarView = true;
 
@@ -62,7 +61,6 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
         _isLoadingAvailable = false;
       });
       if (mounted) {
-        // Check if error is related to insufficient permissions
         if (e.toString().contains('403') || e.toString().contains('uprawnień')) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -99,7 +97,6 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
         _isLoadingMy = false;
       });
       if (mounted) {
-        // Check if error is related to insufficient permissions
         if (e.toString().contains('403') || e.toString().contains('uprawnień')) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -222,7 +219,6 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
         final pet = await _petService.getPetById(id);
         _petDetailsCache[id] = pet;
       } catch (e) {
-        // ignore failures for individual pets
       }
     }
   }
@@ -404,14 +400,12 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
   }
 
   Widget _buildCalendarView(List<ReservationSlot> slots, bool isReservation) {
-    // Group slots by date
     final Map<DateTime, List<ReservationSlot>> slotsByDate = {};
     for (final slot in slots) {
       final date = DateTime(slot.startTime.year, slot.startTime.month, slot.startTime.day);
       slotsByDate.putIfAbsent(date, () => []).add(slot);
     }
 
-    // Get sorted dates
     final sortedDates = slotsByDate.keys.toList()..sort();
 
     return Column(
@@ -768,7 +762,6 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header with pet image
             Container(
               height: 200,
               decoration: BoxDecoration(
@@ -877,42 +870,36 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
                 ],
               ),
             ),
-            // Content
             Flexible(
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Date and time
                     _buildDetailRow(
                       Icons.schedule,
                       'Termin spaceru',
                       _formatDateTime(slot.startTime, slot.endTime),
                     ),
                     const SizedBox(height: 16),
-                    // Shelter info
                     _buildDetailRow(
                       Icons.home,
                       'Schronisko',
                       pet.shelterName ?? 'Brak informacji',
                     ),
                     const SizedBox(height: 16),
-                    // Address
                     _buildDetailRow(
                       Icons.location_on,
                       'Adres',
                       pet.shelterAddress ?? 'Brak informacji',
                     ),
                     const SizedBox(height: 16),
-                    // Distance
                     _buildDetailRow(
                       Icons.near_me,
                       'Odległość',
                       distanceText,
                     ),
                     const SizedBox(height: 16),
-                    // Pet details
                     Row(
                       children: [
                         Expanded(
@@ -938,7 +925,6 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
                       ],
                     ),
                     const SizedBox(height: 20),
-                    // Status
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 12),

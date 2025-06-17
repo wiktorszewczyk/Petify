@@ -144,7 +144,6 @@ class _PaymentViewState extends State<PaymentView> {
         provider: _selectedProvider!.provider,
       );
 
-      // Handle different payment flows - prefer web checkout over native SDK
       if (paymentResponse.payment.checkoutUrl != null) {
         await _handleWebViewPayment(paymentResponse.payment.checkoutUrl!);
       } else {
@@ -199,7 +198,6 @@ class _PaymentViewState extends State<PaymentView> {
             break;
         }
       } else {
-        // Jeśli result is null, spróbuj sprawdzić status przez polling
         _showInfo('Sprawdzanie statusu płatności...');
         await _pollPaymentStatus();
       }
@@ -208,7 +206,6 @@ class _PaymentViewState extends State<PaymentView> {
       dev.log('WebView payment failed: $e');
       setState(() => _isProcessingPayment = false);
 
-      // Fallback do zewnętrznej przeglądarki
       _showInfo('Przekierowanie do przeglądarki...');
       await _handleWebCheckout(checkoutUrl);
     }
@@ -219,7 +216,6 @@ class _PaymentViewState extends State<PaymentView> {
       final Uri uri = Uri.parse(checkoutUrl);
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
-        // Start polling for payment status after opening checkout
         await _pollPaymentStatus();
       } else {
         throw Exception('Nie można otworzyć strony płatności');
@@ -248,7 +244,7 @@ class _PaymentViewState extends State<PaymentView> {
             message: 'Dziękujemy za przekazane wsparcie dla schroniska. Twoja donacja pomoże zwierzakom znaleźć nowy dom.',
           );
           if (mounted) Navigator.of(context).pop(true);
-          return; // Exit early to prevent further execution
+          return;
         }
 
         if (statusResponse.latestPayment != null) {
@@ -261,7 +257,7 @@ class _PaymentViewState extends State<PaymentView> {
               title: paymentStatus == 'CANCELLED' ? 'Płatność anulowana' : 'Płatność nieudana',
               message: statusResponse.latestPayment!.failureReason ?? 'Wystąpił problem podczas przetwarzania płatności. Spróbuj ponownie.',
             );
-            return; // Exit early to prevent further execution
+            return;
           }
 
           if (paymentStatus == 'SUCCEEDED') {
@@ -273,11 +269,10 @@ class _PaymentViewState extends State<PaymentView> {
               message: 'Dziękujemy za przekazane wsparcie dla schroniska. Twoja donacja pomoże zwierzakom znaleźć nowy dom.',
             );
             if (mounted) Navigator.of(context).pop(true);
-            return; // Exit early to prevent further execution
+            return;
           }
         }
 
-        // Stop polling after 5 minutes
         if (timer.tick > 150) {
           timer.cancel();
           setState(() => _isProcessingPayment = false);
@@ -286,8 +281,7 @@ class _PaymentViewState extends State<PaymentView> {
       } catch (e, stackTrace) {
         dev.log('Error polling payment status: $e');
         dev.log('Stack trace: $stackTrace');
-        // Continue polling even if there's an error, but limit attempts
-        if (timer.tick > 10) { // Stop after 10 failed attempts
+        if (timer.tick > 10) {
           timer.cancel();
           setState(() => _isProcessingPayment = false);
           _showError('Błąd podczas sprawdzania statusu płatności: $e');
@@ -464,7 +458,6 @@ class _PaymentViewState extends State<PaymentView> {
             ),
             const SizedBox(height: 12),
 
-            // Quick amount buttons
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -541,7 +534,6 @@ class _PaymentViewState extends State<PaymentView> {
             if (_useCustomAmount) ...[
               const SizedBox(height: 16),
 
-              // Custom amount input
               TextField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
@@ -673,7 +665,6 @@ class _PaymentViewState extends State<PaymentView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Donation summary
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -731,7 +722,6 @@ class _PaymentViewState extends State<PaymentView> {
           ),
           const SizedBox(height: 16),
 
-          // Payment providers
           ...(_paymentOptions?.availableProviders ?? []).map((provider) {
             return _buildSimpleProviderCard(provider);
           }).toList(),

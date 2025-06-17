@@ -93,7 +93,6 @@ class _EventsViewState extends State<EventsView> {
         );
       }).toList());
 
-      // Load fundraiser details for events that have fundraisingId
       final fundraisers = <int, FundraiserResponse?>{};
       for (final event in enriched) {
         if (event.fundraisingId != null) {
@@ -585,7 +584,6 @@ class _EventsViewState extends State<EventsView> {
                       ),
                     ],
                   ),
-                  // Fundraising information
                   if (fundraiser != null) ...[
                     const SizedBox(height: 12),
                     Container(

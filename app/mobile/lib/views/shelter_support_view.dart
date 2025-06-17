@@ -42,7 +42,6 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
       final shelters = await _shelterService.getShelters();
       final fundraisers = <int, FundraiserResponse?>{};
 
-      // Load main fundraiser for each shelter
       for (final shelter in shelters) {
         try {
           final fundraiser = await _paymentService.getShelterMainFundraiser(shelter.id);
@@ -362,7 +361,6 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
               ),
             ),
 
-            // Real fundraiser progress from backend
             if (fundraiser != null) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -425,7 +423,6 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
               const SizedBox(height: 16),
             ],
 
-            // Needs list - only real data from backend
             if (shelter.needs != null && shelter.needs!.isNotEmpty) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -455,7 +452,6 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
               const SizedBox(height: 16),
             ],
 
-            // Action buttons
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(

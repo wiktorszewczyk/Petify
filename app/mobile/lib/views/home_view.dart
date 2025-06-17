@@ -110,7 +110,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       await _loadPets();
     } catch (e) {
       print('Błąd podczas ładowania filtrów: $e');
-      // Jeśli błąd z filtrami, użyj domyślnych
       _currentFilters = FilterPreferences();
       await _loadPets();
     }
@@ -128,10 +127,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       List<Pet> petsData;
 
       if (_currentFilters != null) {
-        // Użyj filtrów użytkownika
         petsData = await petService.getPetsWithCustomFilters(_currentFilters!);
       } else {
-        // Fallback - użyj domyślnych filtrów
         petsData = await petService.getPetsWithDefaultFilters();
       }
 
@@ -142,7 +139,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           _isLoading = false;
           _currentIndex = 0;
 
-          // Generujemy klucze dla każdego zwierzaka
           _cardKeys.clear();
           for (int i = 0; i < _pets.length; i++) {
             _cardKeys.add(GlobalKey<State<StatefulWidget>>());
@@ -257,7 +253,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         if (_currentIndex < _pets.length - 1) {
           _currentIndex++;
         } else {
-          // Jeśli koniec listy, przeładuj zwierzęta
           _loadPets();
         }
       });
@@ -527,7 +522,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                // Prebuffer karty w tle
                 if (_currentIndex < _pets.length - 2)
                   Positioned.fill(
                     child: PetCard(
@@ -539,7 +533,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     ),
                   ),
 
-                // Karta zwierzęcia w tle (następna karta)
                 if (_currentIndex < _pets.length - 1)
                   Positioned.fill(
                     child: PetCard(
@@ -551,7 +544,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     ),
                   ),
 
-                // Aktualna karta zwierzęcia
                 if (_currentIndex < _pets.length)
                   Positioned.fill(
                     child: GestureDetector(
@@ -579,7 +571,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     ),
                   ),
 
-                // Indykatory swipe'a
                 if (_swipeDirection == SwipeDirection.right)
                   Positioned(
                     top: 40,
@@ -646,7 +637,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ),
         ),
 
-        // Przyciski akcji
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Row(

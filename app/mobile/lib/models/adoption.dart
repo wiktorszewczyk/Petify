@@ -69,7 +69,6 @@ class AdoptionResponse {
 
   factory AdoptionResponse.fromJson(Map<String, dynamic> json) {
     try {
-      // Helper function to safely parse integers
       int _parseId(dynamic value) {
         if (value is int) return value;
         if (value is String) return int.parse(value);
@@ -77,7 +76,6 @@ class AdoptionResponse {
         throw FormatException('Cannot parse ID from: $value');
       }
 
-      // Helper function to safely parse boolean
       bool _parseBool(dynamic value) {
         if (value is bool) return value;
         if (value is String) return value.toLowerCase() == 'true';

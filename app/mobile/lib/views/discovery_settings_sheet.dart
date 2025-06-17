@@ -44,7 +44,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
     super.dispose();
   }
 
-  // Automatyczne zapisywanie przed zamknięciem
   Future<void> _saveAndClose([FilterPreferences? customPrefs]) async {
     final prefsToSave = customPrefs ?? _preferences;
     await FilterPreferencesService().saveFilterPreferences(prefsToSave);
@@ -229,19 +228,17 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.close),
-                  onPressed: () => _saveAndClose(), // Auto-zapisz przed zamknięciem
+                  onPressed: () => _saveAndClose(),
                 ),
               ],
             ),
             const Divider(height: 30),
 
-            // Lokalizacja
             _section(
               title: 'Lokalizacja',
               subtitle: 'Wybierz sposób określania lokalizacji:',
               child: Column(
                 children: [
-                  // Opcja - aktualna lokalizacja
                   InkWell(
                     onTap: _getCurrentLocation,
                     borderRadius: BorderRadius.circular(12),
@@ -278,7 +275,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
                   ),
                   const SizedBox(height: 12),
 
-                  // Opcja - wybrane miasto
                   InkWell(
                     onTap: _switchToCityMode,
                     borderRadius: BorderRadius.circular(12),
@@ -375,7 +371,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
               ),
             ),
 
-            // Maksymalna odległość
             _section(
               title: 'Maksymalna odległość',
               subtitle: _preferences.maxDistance != null
@@ -387,7 +382,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
                   : const Text('∞', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               child: Column(
                 children: [
-                  // Przełącznik "Bez ograniczeń"
                   CheckboxListTile(
                     value: _preferences.maxDistance == null,
                     activeColor: AppColors.primaryColor,
@@ -408,8 +402,8 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
                     Slider.adaptive(
                       value: _preferences.maxDistance!,
                       min: 5,
-                      max: 200, // Zwiększono do 200km
-                      divisions: 39, // (200-5)/5 = 39 podziałek co 5km
+                      max: 200,
+                      divisions: 39,
                       label: '${_preferences.maxDistance!.round()} km',
                       activeColor: AppColors.primaryColor,
                       onChanged: (v) => setState(() =>
@@ -432,7 +426,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
               ),
             ),
 
-            // Wiek z opcją "bez ograniczeń"
             _section(
               title: 'Wiek',
               subtitle: _preferences.minAge != null && _preferences.maxAge != null
@@ -444,7 +437,6 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
                   : const Text('∞', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               child: Column(
                 children: [
-                  // Przełącznik "Bez ograniczeń"
                   CheckboxListTile(
                     value: _preferences.minAge == null || _preferences.maxAge == null,
                     activeColor: AppColors.primaryColor,

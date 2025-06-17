@@ -26,8 +26,7 @@ class DonationService {
       throw Exception('Nieprawidłowa odpowiedź serwera');
     } on DioException catch (e) {
       dev.log('Błąd podczas pobierania donacji użytkownika: ${e.message}');
-      // Fallback to fake data for demo
-      return List.generate(6, Donation.fake);
+      return [];
     }
   }
 
@@ -60,7 +59,6 @@ class DonationService {
       throw Exception('Nie udało się utworzyć donacji');
     } on DioException catch (e) {
       dev.log('Błąd podczas tworzenia donacji materialnej: ${e.message}');
-      // Fallback for demo
       return Donation.material(
         shelterName: 'Schronisko $shelterId',
         petId: petId.toString(),
@@ -101,7 +99,6 @@ class DonationService {
       throw Exception('Nie udało się utworzyć donacji');
     } on DioException catch (e) {
       dev.log('Błąd podczas tworzenia donacji pieniężnej: ${e.message}');
-      // Fallback for demo
       return Donation.monetary(
         shelterName: 'Schronisko $shelterId',
         amount: amount,
@@ -112,9 +109,6 @@ class DonationService {
 
   // Pobranie dostępnych przedmiotów do donacji materialnej
   Future<List<MaterialDonationItem>> getAvailableMaterialItems() async {
-    // Symulacja pobierania danych z API
-    await Future.delayed(Duration(milliseconds: 500));
-
     return MaterialDonationItem.getAvailableItems();
   }
 
@@ -148,7 +142,6 @@ class DonationService {
       throw Exception('Nie udało się obliczyć opłat');
     } on DioException catch (e) {
       dev.log('Błąd podczas obliczania opłat: ${e.message}');
-      // Fallback calculation
       final serviceFee = amount * 0.029; // 2.9%
       return {
         'totalAmount': amount,

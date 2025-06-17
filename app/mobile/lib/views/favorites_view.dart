@@ -35,7 +35,6 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
     });
 
     try {
-      // Używamy API endpoint do pobrania polubionych zwierząt
       final pets = await _petService.getFavoritePets();
       setState(() {
         _favoritePets = pets;
@@ -51,7 +50,6 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
 
   Future<void> _removeFavorite(Pet pet) async {
     try {
-      // Wywołaj API do usunięcia z polubionych
       final response = await _petService.unlikePet(pet.id);
 
       if (response.statusCode == 200) {
@@ -67,7 +65,6 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
             action: SnackBarAction(
               label: 'Cofnij',
               onPressed: () async {
-                // Przywróć do polubionych
                 final likeResponse = await _petService.likePet(pet.id);
                 if (likeResponse.statusCode == 200) {
                   setState(() {

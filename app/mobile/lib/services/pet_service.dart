@@ -20,7 +20,7 @@ class PetService {
 
   /// Oblicza odległość między dwoma punktami używając wzoru Haversine
   double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-    const double earthRadius = 6371; // Promień Ziemi w kilometrach
+    const double earthRadius = 6371;
 
     double dLat = _toRadians(lat2 - lat1);
     double dLon = _toRadians(lon2 - lon1);
@@ -155,13 +155,11 @@ class PetService {
         final swipeResponse = SwipeResponse.fromJson(response.data);
         dev.log('Parsed ${swipeResponse.pets.length} pets from SwipeResponse');
 
-        // Wzbogać dane o informacje o schronisku dla każdego zwierzaka
         List<Pet> enrichedPets = [];
         for (Pet pet in swipeResponse.pets) {
           try {
             final shelter = await ShelterService().getShelterById(pet.shelterId);
 
-            // Używaj odległości z backendu
             final distanceFromBackend = pet.distance;
             if (distanceFromBackend != null) {
               dev.log('Backend returned distance for pet ${pet.name}: ${distanceFromBackend.toStringAsFixed(1)} km');
@@ -169,7 +167,6 @@ class PetService {
               dev.log('Backend did not return distance for pet ${pet.name}');
             }
 
-            // Stwórz nowy Pet z informacjami o schronisku i obliczoną odległością
             final enrichedPet = Pet(
               id: pet.id,
               name: pet.name,
@@ -189,12 +186,11 @@ class PetService {
               images: pet.images,
               shelterName: shelter.name,
               shelterAddress: shelter.address,
-              distance: distanceFromBackend, // Używamy odległości z backendu
+              distance: distanceFromBackend,
             );
             enrichedPets.add(enrichedPet);
           } catch (e) {
             dev.log('Failed to fetch shelter info for pet ${pet.id}: $e');
-            // Dodaj zwierzaka bez informacji o schronisku
             enrichedPets.add(pet);
           }
         }
@@ -245,7 +241,6 @@ class PetService {
     );
   }
 
-  // Reszta metod bez zmian...
   Future<Pet> getPetById(int petId) async {
     try {
       final response = await _api.get('/pets/$petId');
@@ -255,14 +250,11 @@ class PetService {
         dev.log('getPetById - Raw pet data: ${response.data}');
         dev.log('getPetById - Pet.distance after parsing: ${pet.distance}');
 
-        // Wzbogać dane o informacje o schronisku
         try {
           final shelter = await ShelterService().getShelterById(pet.shelterId);
           dev.log('getPetById - Shelter coordinates: lat=${shelter.latitude}, lng=${shelter.longitude}');
 
-          // Spróbuj pobrać lokalizację użytkownika do obliczenia odległości
-          // (backend w getPetById nie zwraca distance, więc obliczamy po stronie mobilnej)
-          double? calculatedDistance = pet.distance; // Sprawdź czy backend zwrócił
+          double? calculatedDistance = pet.distance;
           dev.log('getPetById - Initial distance from backend: $calculatedDistance');
 
           if (calculatedDistance == null) {
@@ -361,7 +353,6 @@ class PetService {
         final petsData = response.data as List;
         List<Pet> pets = petsData.map((petJson) => Pet.fromJson(petJson)).toList();
 
-        // Pobierz lokalizację użytkownika raz na początku
         double? userLat;
         double? userLng;
         try {
@@ -377,12 +368,10 @@ class PetService {
           dev.log('getFavoritePets - Failed to get user location: $e');
         }
 
-        // Wzbogać dane o informacje o schronisku dla każdego zwierzaka
         List<Pet> enrichedPets = await Future.wait(pets.map((pet) async {
           try {
             final shelter = await ShelterService().getShelterById(pet.shelterId);
 
-            // Oblicz odległość jeśli backend jej nie zwrócił
             double? calculatedDistance = pet.distance;
             if (calculatedDistance == null && userLat != null && userLng != null) {
               if (shelter.latitude != null && shelter.longitude != null) {
@@ -446,7 +435,6 @@ class PetService {
         final petsData = response.data as List;
         List<Pet> pets = petsData.map((petJson) => Pet.fromJson(petJson)).toList();
 
-        // Pobierz lokalizację użytkownika raz na początku
         double? userLat;
         double? userLng;
         try {
@@ -466,7 +454,6 @@ class PetService {
           try {
             final shelter = await ShelterService().getShelterById(pet.shelterId);
 
-            // Oblicz odległość jeśli backend jej nie zwrócił
             double? calculatedDistance = pet.distance;
             if (calculatedDistance == null && userLat != null && userLng != null) {
               if (shelter.latitude != null && shelter.longitude != null) {

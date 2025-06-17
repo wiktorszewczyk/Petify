@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/pet.dart';
@@ -21,7 +19,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
 
   bool _isLoading = false;
 
-  // Kontrolery pól formularza
   final _motivationController = TextEditingController();
   final _fullNameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -75,7 +72,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
         });
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          // Sukces
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -92,8 +88,8 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Zamknij dialog
-                    Navigator.of(context).pop(); // Wróć do poprzedniego ekranu
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   },
                   child: Text(
                     'OK',
@@ -107,7 +103,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
             ),
           );
         } else {
-          // Błąd z serwera
           String errorMessage = 'Wystąpił błąd podczas wysyłania formularza';
 
           if (response.data is Map<String, dynamic>) {
@@ -168,11 +163,9 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Informacje o zwierzęciu
               _buildPetInfo(),
               const SizedBox(height: 24),
 
-              // Sekcja: Dane osobowe
               _buildSectionTitle('Dane osobowe'),
               const SizedBox(height: 16),
 
@@ -187,7 +180,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                   if (value.trim().length < 3) {
                     return 'Imię i nazwisko musi mieć co najmniej 3 znaki';
                   }
-                  // Sprawdź czy zawiera przynajmniej imię i nazwisko
                   final parts = value.trim().split(' ');
                   if (parts.length < 2) {
                     return 'Podaj imię i nazwisko';
@@ -207,7 +199,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
                   if (value == null || value.trim().isEmpty) {
                     return 'To pole jest wymagane';
                   }
-                  // Sprawdź format numeru telefonu
                   final phoneRegex = RegExp(r'^\+?[0-9\s\-]{9,15}$');
                   if (!phoneRegex.hasMatch(value.trim())) {
                     return 'Podaj prawidłowy numer telefonu';
@@ -236,7 +227,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
 
               const SizedBox(height: 24),
 
-              // Sekcja: Warunki mieszkaniowe
               _buildSectionTitle('Warunki mieszkaniowe'),
               const SizedBox(height: 16),
 
@@ -280,7 +270,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
 
               const SizedBox(height: 24),
 
-              // Sekcja: Motywacja
               _buildSectionTitle('Motywacja'),
               const SizedBox(height: 16),
 
@@ -320,7 +309,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
 
               const SizedBox(height: 32),
 
-              // Przycisk wysłania
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -349,7 +337,6 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
 
               const SizedBox(height: 16),
 
-              // Disclaimer
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -475,7 +462,7 @@ class _AdoptionFormViewState extends State<AdoptionFormView> {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
         ),
-        counterText: maxLines > 1 ? '' : null, // Ukryj licznik znaków dla wieloliniowych
+        counterText: maxLines > 1 ? '' : null,
       ),
     );
   }

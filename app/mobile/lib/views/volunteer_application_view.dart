@@ -55,7 +55,6 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
         });
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          // Sukces
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -72,8 +71,8 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Zamknij dialog
-                    Navigator.of(context).pop(); // Wróć do profilu
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   },
                   child: Text(
                     'OK',
@@ -87,7 +86,6 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
             ),
           );
         } else {
-          // Błąd z serwera
           String errorMessage = 'Wystąpił błąd podczas wysyłania wniosku';
 
           if (response.data is Map<String, dynamic>) {
@@ -141,7 +139,6 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header info
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -265,7 +262,6 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
 
               const SizedBox(height: 32),
 
-              // Przycisk wysłania
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -294,7 +290,6 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
 
               const SizedBox(height: 16),
 
-              // Disclaimer
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(

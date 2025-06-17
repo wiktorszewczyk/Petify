@@ -53,7 +53,6 @@ class _AchievementsViewState extends State<AchievementsView>
     });
     try {
       final list = await AchievementService().getUserAchievements();
-      // wszystkie kategorie: Wszystkie, Zdobyte, Do zdobycia, plus te z danych
       final cats = <String>{};
       for (var a in list) {
         cats.add(a.category);
@@ -67,7 +66,6 @@ class _AchievementsViewState extends State<AchievementsView>
         ...sortedCats,
       ];
 
-      // kategoryzacja
       final map = <String, List<Achievement>>{};
       map['Wszystkie'] = list;
       map['Zdobyte'] = list.where((a) => a.isUnlocked).toList();
@@ -76,7 +74,6 @@ class _AchievementsViewState extends State<AchievementsView>
         map[cat] = list.where((a) => a.category == cat).toList();
       }
 
-      // inicjalizacja controllerów
       _tabController = TabController(length: allCats.length, vsync: this);
 
       setState(() {
@@ -118,7 +115,6 @@ class _AchievementsViewState extends State<AchievementsView>
       );
     }
 
-    // liczymy statystyki:
     final total = _achievements.length;
     final unlocked = _achievements.where((a) => a.isUnlocked).length;
     final xp = _achievements
@@ -147,7 +143,6 @@ class _AchievementsViewState extends State<AchievementsView>
       ),
       body: Column(
         children: [
-          // Stats row
           Container(
             padding: const EdgeInsets.all(16),
             color: Colors.white,
@@ -174,7 +169,6 @@ class _AchievementsViewState extends State<AchievementsView>
               .animate()
               .fadeIn(duration: 400.ms)
               .slideY(begin: 0.2, end: 0),
-          // Lista achievementów
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -206,7 +200,6 @@ class _AchievementsViewState extends State<AchievementsView>
   }
 
   Widget _buildGrid(List<Achievement> items, String category) {
-    // sortowanie analogicznie do poprzedniego kodu
     if (category == 'Wszystkie') {
       items.sort((a, b) {
         if (a.isUnlocked != b.isUnlocked) return a.isUnlocked ? -1 : 1;

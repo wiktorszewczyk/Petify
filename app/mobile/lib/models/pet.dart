@@ -18,10 +18,9 @@ class Pet {
   final String? imageUrl; // Główne zdjęcie z backend
   final List<String>? images; // Dodatkowe zdjęcia z backend
 
-  // Dodatkowe pola dla kompatybilności z frontendem
   final String? shelterName;
   final String? shelterAddress;
-  final double? distance; // obliczane po stronie frontu, w kilometrach
+  final double? distance;
 
   Pet({
     required this.id,
@@ -122,12 +121,10 @@ class Pet {
     }
   }
 
-  // Getter dla URL zdjęcia z kontrolą błędów
   String get imageUrlSafe {
     if (imageUrl != null && imageUrl!.isNotEmpty) {
       return imageUrl!;
     }
-    // Fallback do placeholder
     return 'assets/images/empty_pets.png';
   }
 
@@ -135,7 +132,6 @@ class Pet {
     return images ?? [];
   }
 
-  // Getter dla typu zwierzęcia po polsku
   String get typeDisplayName {
     switch (type.toUpperCase()) {
       case 'CAT':
@@ -148,7 +144,6 @@ class Pet {
     }
   }
 
-  // Getter dla rozmiaru po polsku
   String get sizeDisplayName {
     switch (size) {
       case 'small':
@@ -164,7 +159,6 @@ class Pet {
     }
   }
 
-  // Getter dla płci po polsku
   String get genderDisplayName {
     switch (gender) {
       case 'male':
@@ -176,13 +170,11 @@ class Pet {
     }
   }
 
-  // Gettery dla kompatybilności z istniejącym kodem
   bool get isVaccinated => vaccinated;
   bool get isNeutered => sterilized;
   bool get isChildFriendly => kidFriendly;
   bool get isUrgent => urgent;
 
-  // Getter dla sformatowanej odległości
   String get formattedDistance {
     if (distance == null) return 'Nieznana odległość';
 

@@ -9,7 +9,6 @@ import 'package:mobile/views/announcements_view.dart';
 import '../../styles/colors.dart';
 import '../../models/shelter_post.dart';
 import '../../services/user_service.dart';
-import '../../services/feed_service.dart';
 import 'events_view.dart';
 
 class CommunitySupportView extends StatefulWidget {
@@ -20,8 +19,6 @@ class CommunitySupportView extends StatefulWidget {
 }
 
 class _CommunitySupportViewState extends State<CommunitySupportView> {
-  bool _isLoading = false;
-  List<ShelterPost> _recentPosts = [];
   bool _isVolunteer = false;
   String? _volunteerStatus;
 
@@ -55,7 +52,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
 
   void _navigateToVolunteerWalk() {
     if (_isVolunteer) {
-      // Przekieruj do ekranu spacerów/rezerwacji
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const VolunteerWalksView()),
@@ -90,7 +86,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
     String message = 'Chcesz pomagać zwierzakom w schroniskach poprzez wspólne spacery? Złóż wniosek o zostanie wolontariuszem!';
     String buttonText = 'Złóż wniosek';
 
-    // Dostosuj komunikat w zależności od statusu
     if (_volunteerStatus == 'PENDING') {
       message = 'Twój wniosek o zostanie wolontariuszem jest w trakcie rozpatrywania. Poczekaj na decyzję administracji.';
       buttonText = 'OK';
@@ -445,200 +440,6 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
       end: 0,
       duration: 300.ms,
       delay: 100.ms,
-      curve: Curves.easeOutCubic,
-    );
-  }
-
-  Widget _buildPostsList() {
-    if (_isLoading) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 40.0),
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-          ),
-        ),
-      );
-    }
-
-    if (_recentPosts.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 40.0),
-          child: Column(
-            children: [
-              Icon(Icons.announcement_outlined, size: 48, color: Colors.grey[400]),
-              const SizedBox(height: 16),
-              Text(
-                'Brak aktualnych ogłoszeń',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _recentPosts.length,
-      itemBuilder: (context, index) {
-        final post = _recentPosts[index];
-        return _buildPostCard(post);
-      },
-    );
-  }
-
-  Widget _buildPostCard(ShelterPost post) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Image.network(
-                post.imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    color: Colors.grey[300],
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                            : null,
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-                      ),
-                    ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[300],
-                  child: Center(
-                    child: Icon(Icons.image_not_supported, color: Colors.grey[400]),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.home_work_outlined, size: 16, color: Colors.grey[600]),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        post.shelterName,
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${post.date.day}.${post.date.month}.${post.date.year}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                  ],
-                ),
-                if (post.location != null) ...[
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on_outlined, size: 16, color: Colors.grey[600]),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          post.location!,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-                const SizedBox(height: 8),
-                Text(
-                  post.title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  post.description,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey[800],
-                  ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Przejście do szczegółów ogłoszenia')),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: Text(
-                        'Szczegóły',
-                        style: GoogleFonts.poppins(
-                          color: AppColors.primaryColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ).animate().fadeIn(duration: 300.ms).slideY(
-      begin: 0.2,
-      end: 0,
-      duration: 300.ms,
-      delay: 150.ms,
       curve: Curves.easeOutCubic,
     );
   }

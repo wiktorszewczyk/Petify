@@ -102,7 +102,6 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
       if (!_isCustomAmount) {
         _customAmountController.clear();
       } else {
-        // Ustawiamy fokus na polu tekstowym
         FocusScope.of(context).requestFocus();
       }
     });
@@ -112,7 +111,6 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
     double? donationAmount;
 
     if (_isCustomAmount) {
-      // Walidacja własnej kwoty
       try {
         final customAmount = double.parse(_customAmountController.text.replaceAll(',', '.'));
         if (customAmount <= 0) {
@@ -144,13 +142,11 @@ class _ShelterDonationSheetState extends State<ShelterDonationSheet> {
       return;
     }
 
-    // Rozpoczynamy proces płatności
     setState(() {
       _isLoading = true;
     });
 
     try {
-      // Navigate to PaymentView
       final result = await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => PaymentView(

@@ -8,12 +8,12 @@ import '../services/user_service.dart';
 import '../styles/colors.dart';
 
 class ChatView extends StatefulWidget {
-  final String? conversationId; // Made optional for backward compatibility
-  final String? chatRoomId; // New parameter from PostDetailsView
-  final String? recipientName; // New parameter for display name
-  final String? context; // New parameter for chat context
+  final String? conversationId;
+  final String? chatRoomId;
+  final String? recipientName;
+  final String? context;
   final bool isNewConversation;
-  final Pet? pet; // Optional pet model for new conversations
+  final Pet? pet;
 
   const ChatView({
     Key? key,
@@ -43,7 +43,6 @@ class _ChatViewState extends State<ChatView> {
   bool _isSending = false;
   bool _initialLoadAttempted = false;
 
-  // Get the actual conversation ID (support both old and new parameters)
   String get _actualConversationId => widget.chatRoomId ?? widget.conversationId ?? '';
 
   @override
@@ -54,7 +53,6 @@ class _ChatViewState extends State<ChatView> {
     _initializeCurrentUser();
     _loadConversationDetails();
 
-    // Dodanie nasłuchiwania na nowe wiadomości
     _messageService.addMessageListener(_actualConversationId, _onNewMessage);
   }
 
@@ -62,7 +60,7 @@ class _ChatViewState extends State<ChatView> {
     try {
       final user = await _userService.getCurrentUser();
       setState(() {
-        _currentUserId = user.username; // Use username instead of ID
+        _currentUserId = user.username;
       });
     } catch (e) {
       print('Error getting current user: $e');
@@ -71,22 +69,16 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   void dispose() {
-    // Usunięcie nasłuchiwania przy zniszczeniu widoku
     _messageService.removeMessageListener(_actualConversationId, _onNewMessage);
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
-  // Obsługa nowej wiadomości
   void _onNewMessage(MessageModel message) {
-    // Upewnij się, że nie dodajemy wiadomości wysłanych przez aktualnego użytkownika,
-    // ponieważ te zostały już dodane w _sendMessage
-    // Również sprawdź, czy wiadomość już nie istnieje w liście
     if (message.senderId != _currentUserId && mounted) {
       setState(() {
         _messages ??= [];
-        // Sprawdź czy wiadomość już nie istnieje (unikaj duplikatów)
         final exists = _messages!.any((msg) =>
         msg.id == message.id ||
             (msg.content == message.content &&
@@ -107,7 +99,6 @@ class _ChatViewState extends State<ChatView> {
     });
 
     try {
-      // If we have recipient name and context from PostDetailsView, create a virtual conversation
       if (widget.recipientName != null && widget.context != null) {
         setState(() {
           _conversation = ConversationModel(
@@ -161,7 +152,6 @@ class _ChatViewState extends State<ChatView> {
 
   Future<void> _loadMessages() async {
     if (_initialLoadAttempted && (_messages?.isNotEmpty ?? false)) {
-      // Jeśli to ponowna próba i mamy już wiadomości, nie ładuj ponownie
       return;
     }
 
@@ -171,11 +161,9 @@ class _ChatViewState extends State<ChatView> {
     });
 
     try {
-      // Tylko próbuj pobrać wiadomości, jeśli to nie jest nowa konwersacja
       if (!widget.isNewConversation) {
         final messages = await _messageService.getMessages(_actualConversationId);
 
-        // Oznacz wiadomości jako przeczytane
         await _messageService.markMessagesAsRead(_actualConversationId);
 
         if (mounted) {
@@ -185,13 +173,11 @@ class _ChatViewState extends State<ChatView> {
             _initialLoadAttempted = true;
           });
 
-          // Przewiń do najnowszej wiadomości
           if (messages.isNotEmpty) {
             _scrollToBottom();
           }
         }
       } else {
-        // Dla nowej konwersacji po prostu inicjalizujemy pustą listę
         if (mounted) {
           setState(() {
             _messages = [];
@@ -238,8 +224,6 @@ class _ChatViewState extends State<ChatView> {
     try {
       final newMessage = await _messageService.sendMessage(_actualConversationId, content);
 
-      // Don't add message to UI here - it will be added through the WebSocket listener
-      // or already added by the MessageService for immediate UI update
       setState(() {
         _isSending = false;
       });
@@ -270,7 +254,6 @@ class _ChatViewState extends State<ChatView> {
       body: SafeArea(
         child: Column(
           children: [
-            // Główny obszar czatu
             Expanded(
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator(
@@ -282,7 +265,6 @@ class _ChatViewState extends State<ChatView> {
                   ? _buildEmptyChat()
                   : _buildChatMessages(),
             ),
-            // Obszar wprowadzania wiadomości
             _buildMessageInput(),
           ],
         ),
@@ -403,7 +385,6 @@ class _ChatViewState extends State<ChatView> {
     return InkWell(
       onTap: () {
         _messageController.text = text;
-        // Nie wysyłamy automatycznie, aby użytkownik mógł edytować sugestię
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Container(
@@ -479,22 +460,18 @@ class _ChatViewState extends State<ChatView> {
         final message = _messages![index];
         final isMe = message.senderId == _currentUserId;
 
-        // Sprawdź, czy pokazać datę
         final showDate = index == 0 ||
             !_isSameDay(_messages![index].timestamp, _messages![index - 1].timestamp);
 
         return Column(
           children: [
-            // Pokaż datę, jeśli potrzeba
             if (showDate) _buildDateSeparator(message.timestamp),
 
-            // Wiadomość
             Align(
               alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
               child: Column(
                 crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
-                  // Pokaż nazwę nadawcy dla wiadomości od schroniska
                   if (!isMe && _conversation != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 16, bottom: 4),

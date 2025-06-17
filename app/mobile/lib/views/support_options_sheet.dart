@@ -69,7 +69,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
   void _selectItem(MaterialDonationItem item) {
     setState(() {
       _selectedItem = item;
-      _quantity = 1; // Reset ilości przy zmianie przedmiotu
+      _quantity = 1;
     });
   }
 

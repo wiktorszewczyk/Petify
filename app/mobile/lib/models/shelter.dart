@@ -11,9 +11,8 @@ class Shelter {
   final String? imageName;
   final String? imageType;
   final String? imageData; // Base64
-  final String? imageUrl; // Direct URL from backend
+  final String? imageUrl; // Direct URL
 
-  // Dodatkowe pola dla kompatybilności (będą wypełniane lokalnie)
   final int? petsCount;
   final int? volunteersCount;
   final List<String>? needs;
@@ -64,7 +63,6 @@ class Shelter {
       imageType: json['imageType'],
       imageData: json['imageData'],
       imageUrl: json['imageUrl'],
-      // Dodatkowe pola będą wypełniane później
       petsCount: json['petsCount'],
       volunteersCount: json['volunteersCount'],
       needs: json['needs'] != null ? List<String>.from(json['needs']) : null,
@@ -104,36 +102,28 @@ class Shelter {
     };
   }
 
-  // Getter dla obrazka
   String get finalImageUrl {
-    // Priorytet: imageUrl z backendu
     if (imageUrl != null && imageUrl!.isNotEmpty) {
       return imageUrl!;
     }
 
-    // Fallback: imageData (base64)
     if (imageData != null && imageData!.isNotEmpty) {
-      // Sprawdź czy to już jest data URL
       if (imageData!.startsWith('data:image')) {
         return imageData!;
       }
-      // Jeśli nie, dodaj prefix
       final mimeType = imageType ?? 'image/jpeg';
       return 'data:$mimeType;base64,$imageData';
     }
 
-    // Fallback do placeholder
     return 'assets/images/default_shelter.jpg';
   }
 
-  // Getter dla postępu donacji
   double get donationPercentage {
     if (donationGoal == null || donationGoal! <= 0) return 0;
     if (donationCurrent == null) return 0;
     return ((donationCurrent! / donationGoal!) * 100).clamp(0, 100);
   }
 
-  // Metoda do kopiowania z dodatkowymi polami
   Shelter copyWith({
     int? id,
     String? ownerUsername,

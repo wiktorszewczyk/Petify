@@ -25,7 +25,6 @@ class ShelterService {
         for (var shelterJson in sheltersData) {
           var shelter = Shelter.fromJson(shelterJson);
 
-          // Dodaj dodatkowe informacje (liczba zwierząt, miasto itp.)
           shelter = await _enrichShelterData(shelter);
           shelters.add(shelter);
         }
@@ -101,7 +100,6 @@ class ShelterService {
   /// Wzbogaca dane schroniska o dodatkowe informacje
   Future<Shelter> _enrichShelterData(Shelter shelter) async {
     try {
-      // Pobierz liczbę zwierząt w schronisku
       final petsCount = await _getPetsCount(shelter.id);
 
       return shelter.copyWith(petsCount: petsCount);

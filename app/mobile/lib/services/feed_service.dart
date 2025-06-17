@@ -225,7 +225,7 @@ class FeedService {
       throw Exception('Nieprawidłowa odpowiedź serwera');
     } on DioException catch (e) {
       dev.log('Błąd podczas pobierania liczby uczestników: ${e.message}');
-      return 0; // Fallback value
+      return 0;
     }
   }
 

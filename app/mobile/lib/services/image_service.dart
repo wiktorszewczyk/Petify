@@ -69,7 +69,6 @@ class ImageService {
         images.add(image);
       } catch (e) {
         dev.log('⚠️ ImageService: Nie udało się pobrać obrazu ID=$imageId: $e');
-        // Kontynuuj z pozostałymi obrazami
       }
     }
 

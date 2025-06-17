@@ -64,11 +64,11 @@ class Donation {
   final String? petId; // ID zwierzaka (tylko gdy type == material)
   final MaterialDonationItem? materialItem; // Przedmiot (tylko gdy type == material)
   final int? quantity; // Ilość (tylko gdy type == material)
-  final String? status; // Status donacji z backendu
-  final int? shelterId; // ID schroniska
-  final int? fundraiserId; // ID zbiórki
-  final double? serviceFee; // Opłata serwisowa
-  final double? netAmount; // Kwota netto
+  final String? status;
+  final int? shelterId;
+  final int? fundraiserId;
+  final double? serviceFee;
+  final double? netAmount;
 
   const Donation({
     required this.id,
@@ -87,25 +87,6 @@ class Donation {
     this.netAmount,
   });
 
-  /// Prosta metoda generująca dane mockowe do widoków list / historii.
-  factory Donation.fake(int i) {
-    final isMaterial = i.isOdd;
-    final item = MaterialDonationItem.getAvailableItems()[i % 5];
-    final qty = (i % 3) + 1;
-    return Donation(
-      id: 'don_$i',
-      amount: isMaterial ? item.price * qty : 10.0 * (1 + (i % 5)),
-      date: DateTime.now().subtract(Duration(days: i * 3)),
-      shelterName: ['Azyl', 'Szczęśliwy Ogon', 'Miejskie Schronisko'][i % 3],
-      message: i.isEven ? 'Dla futrzaków 🐾' : null,
-      type: isMaterial ? DonationType.material : DonationType.monetary,
-      petId: isMaterial ? 'pet_${i * 2}' : null,
-      materialItem: isMaterial ? item : null,
-      quantity: isMaterial ? qty : null,
-    );
-  }
-
-  // Factory constructor z danych backendu
   factory Donation.fromBackendJson(Map<String, dynamic> json) {
     final donationType = json['donationType'] == 'MATERIAL'
         ? DonationType.material
@@ -113,7 +94,6 @@ class Donation {
 
     MaterialDonationItem? materialItem;
     if (donationType == DonationType.material && json['itemName'] != null) {
-      // Znajdź odpowiedni MaterialDonationItem na podstawie nazwy i ceny
       final availableItems = MaterialDonationItem.getAvailableItems();
       materialItem = availableItems.firstWhere(
               (item) => item.apiName == json['itemName'],
@@ -121,7 +101,7 @@ class Donation {
           name: json['itemName'] ?? 'Nieznany przedmiot',
           price: (json['unitPrice'] ?? 0.0).toDouble(),
           iconPath: 'assets/icons/pet_food.png',
-          apiName: json['itemName'] ?? 'Unknown', // Default icon
+          apiName: json['itemName'] ?? 'Unknown',
         ),
       );
     }
@@ -134,7 +114,7 @@ class Donation {
           : (json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : DateTime.now()),
-      shelterName: 'Schronisko ${json['shelterId'] ?? 'Nieznane'}', // TODO: Get actual shelter name
+      shelterName: 'Schronisko ${json['shelterId'] ?? 'Nieznane'}',
       message: json['message'],
       type: donationType,
       petId: json['petId']?.toString(),
@@ -148,7 +128,6 @@ class Donation {
     );
   }
 
-  // Factory constructor for a material donation (przekazanie "paczek" dla konkretnego zwierzaka)
   factory Donation.material({
     required String shelterName,
     required String petId,
@@ -169,7 +148,6 @@ class Donation {
     );
   }
 
-  // Factory constructor for a monetary donation (klasyczne wsparcie schroniska)
   factory Donation.monetary({
     required String shelterName,
     required double amount,
@@ -185,8 +163,6 @@ class Donation {
     );
   }
 }
-
-// Nowe modele dla payment flow
 
 class DonationResponse {
   final int id;
@@ -318,7 +294,6 @@ class PaymentProviderOption {
   }
 }
 
-// Backend returns PaymentOptionsResponse, not DonationIntentResponse
 class PaymentOptionsResponse {
   final int donationId;
   final DonationResponse donation;
@@ -344,7 +319,6 @@ class PaymentOptionsResponse {
   }
 }
 
-// Keep backward compatibility
 typedef DonationIntentResponse = PaymentOptionsResponse;
 
 class PaymentInitializationResponse {
@@ -427,7 +401,7 @@ class DonationWithPaymentStatusResponse {
           ? PaymentResponse.fromJson(json['latestPayment'])
           : null,
       isCompleted: json['isCompleted'] ?? false,
-      message: json['message'] ?? json['statusMessage'], // Handle both message and statusMessage
+      message: json['message'] ?? json['statusMessage'],
     );
   }
 
@@ -481,7 +455,7 @@ class PaymentResponse {
       status: json['status'] ?? 'UNKNOWN',
       amount: (json['amount'] ?? 0.0).toDouble(),
       provider: json['provider'] ?? 'UNKNOWN',
-      method: json['paymentMethod'] ?? 'UNKNOWN', // Fixed: use 'paymentMethod' from API
+      method: json['paymentMethod'] ?? 'UNKNOWN',
       createdAt: DateTime.parse(json['createdAt']),
       completedAt: json['completedAt'] != null
           ? DateTime.parse(json['completedAt'])
@@ -492,7 +466,6 @@ class PaymentResponse {
   }
 }
 
-// Keep backward compatibility
 class PaymentStatusResponse {
   final String status;
   final String? failureReason;

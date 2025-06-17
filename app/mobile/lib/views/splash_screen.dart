@@ -46,14 +46,12 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
       if (resp.statusCode == 200 && resp.data['valid'] == true) {
-        // final profileResp = await UserService().getCurrentUser();
         _goToHome();
       } else {
         await TokenRepository().removeToken();
         _goToWelcome();
       }
     } on DioException catch (e) {
-      // niepoprawny lub wygasły token
       await TokenRepository().removeToken();
       _goToWelcome();
     }

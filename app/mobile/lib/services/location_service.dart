@@ -95,7 +95,7 @@ class LocationService {
 
   /// Oblicza odległość między dwoma punktami w kilometrach
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-    return Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000.0; // Convert to km
+    return Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000.0; // na km
   }
 
   /// Formatuje odległość do wyświetlenia

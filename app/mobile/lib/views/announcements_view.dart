@@ -42,10 +42,9 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
     });
 
     try {
-      final posts = await _feedService.getRecentPosts(30); // Get posts from last 30 days
+      final posts = await _feedService.getRecentPosts(30);
       final fundraisers = <int, FundraiserResponse?>{};
 
-      // Load fundraiser details for posts that have fundraisingId
       for (final post in posts) {
         if (post.fundraisingId != null) {
           try {
@@ -322,7 +321,6 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                  // Fundraising information
                   if (fundraiser != null) ...[
                     const SizedBox(height: 12),
                     Container(

@@ -78,9 +78,9 @@ class _EditProfileViewState extends State<EditProfileView> {
   Future<void> _selectBirthDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedBirthDate ?? DateTime.now().subtract(const Duration(days: 6570)), // 18 lat
+      initialDate: _selectedBirthDate ?? DateTime.now().subtract(const Duration(days: 6570)),
       firstDate: DateTime(1900),
-      lastDate: DateTime.now().subtract(const Duration(days: 6570)), // min 18 lat
+      lastDate: DateTime.now().subtract(const Duration(days: 6570)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -171,7 +171,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               backgroundColor: Colors.green,
             ),
           );
-          Navigator.of(context).pop(true); // Zwróć true aby wskazać sukces
+          Navigator.of(context).pop(true);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -243,7 +243,6 @@ class _EditProfileViewState extends State<EditProfileView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Avatar section
               Center(
                 child: Stack(
                   children: [
@@ -289,7 +288,6 @@ class _EditProfileViewState extends State<EditProfileView> {
               ),
               const SizedBox(height: 30),
 
-              // Podstawowe informacje
               _buildSectionHeader('Podstawowe informacje'),
               const SizedBox(height: 16),
 
@@ -331,15 +329,12 @@ class _EditProfileViewState extends State<EditProfileView> {
               ),
               const SizedBox(height: 16),
 
-              // Data urodzenia
               _buildDateField(),
               const SizedBox(height: 16),
 
-              // Płeć
               _buildGenderField(),
               const SizedBox(height: 30),
 
-              // Kontakt
               _buildSectionHeader('Informacje kontaktowe'),
               const SizedBox(height: 16),
 
@@ -375,7 +370,6 @@ class _EditProfileViewState extends State<EditProfileView> {
               ),
               const SizedBox(height: 30),
 
-              // Przycisk zapisz
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

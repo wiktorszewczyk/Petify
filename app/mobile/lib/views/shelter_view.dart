@@ -80,9 +80,6 @@ class _ShelterViewState extends State<ShelterView> {
         }
       }
 
-      // TODO: Add support for shelter image gallery when backend provides it
-      // For now: only main image
-
       if (mounted) {
         setState(() {
           _mainFundraiser = fundraiser;

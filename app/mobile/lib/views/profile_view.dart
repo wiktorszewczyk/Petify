@@ -67,7 +67,6 @@ class _ProfileViewState extends State<ProfileView>
       if (!mounted) return;
       setState(() {
         _user = userData;
-        // tylko 3 ostatnie odblokowane
         _recentAchievements = allAchievements
             .where((a) => a.isUnlocked)
             .toList()
@@ -95,7 +94,6 @@ class _ProfileViewState extends State<ProfileView>
         builder: (context) => const VolunteerApplicationView(),
       ),
     ).then((_) {
-      // Odśwież profil po powrocie z formularza aplikacji
       _loadUserProfile();
     });
   }
@@ -117,7 +115,6 @@ class _ProfileViewState extends State<ProfileView>
       ),
     );
 
-    // Jeśli profil został zaktualizowany, odśwież dane
     if (result == true) {
       _loadUserProfile();
     }

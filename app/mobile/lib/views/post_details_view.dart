@@ -154,7 +154,7 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     );
 
     if (result == true && mounted) {
-      await _loadFundraiserInfo(); // Refresh fundraiser data
+      await _loadFundraiserInfo();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

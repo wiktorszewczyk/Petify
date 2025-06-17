@@ -25,7 +25,6 @@ class Achievement {
     required this.progressTotal,
   });
 
-  /// Procentowy postęp [0.0–1.0]
   double get progressPercentage {
     if (isUnlocked) return 1.0;
     if (progressTotal <= 0) return 0.0;
