@@ -49,9 +49,31 @@ public class PetService {
         return pet.getShelter().getOwnerUsername();
     }
 
+    public List<PetResponseWithImages> getAllPets() {
+        return petRepository.findAll()
+                .stream()
+                .map(petMapper::toDtoWithImages)
+                .collect(Collectors.toList());
+    }
+
+    public List<Long> getPetIdsByShelterId(Long shelterId) {
+        return petRepository.findByShelterId(shelterId)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(Pet::getId)
+                .collect(Collectors.toList());
+    }
+
     public Page<PetResponseWithImages> getPets(Pageable pageable) {
         return petRepository.findAll(pageable)
                 .map(petMapper::toDtoWithImages);
+    }
+
+    public List<PetResponseWithImages> getPets() {
+        return petRepository.findAll()
+                .stream()
+                .map(petMapper::toDtoWithImages)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

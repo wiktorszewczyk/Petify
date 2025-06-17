@@ -46,7 +46,7 @@ public class AuthenticationService {
     private AchievementService achievementService;
 
     public ApplicationUser registerUser(final RegistrationDTO registrationDTO) {
-        String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty())
+        final String username = (registrationDTO.getUsername() != null && !registrationDTO.getUsername().isEmpty())
                 ? registrationDTO.getUsername()
                 : (registrationDTO.getEmail() != null)
                 ? registrationDTO.getEmail()
@@ -58,7 +58,7 @@ public class AuthenticationService {
             throw new IllegalArgumentException("User with this email or phone number already exists");
         }
 
-        String encodedPassword = passwordEncoder.encode(registrationDTO.getPassword());
+        final String encodedPassword = passwordEncoder.encode(registrationDTO.getPassword());
 
         Role userRole = roleRepository.findByAuthority("USER")
                 .orElseThrow(() -> new RuntimeException("Default user role not found"));
