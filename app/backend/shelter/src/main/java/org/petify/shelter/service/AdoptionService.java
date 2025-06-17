@@ -138,10 +138,33 @@ public class AdoptionService {
         return adoptionMapper.toDto(updatedForm);
     }
 
+    @Transactional
+    public void deleteAdoptionForm(Long formId, String username) {
+        Adoption form = adoptionRepository.findById(formId)
+                .orElseThrow(() -> new AdoptionFormNotFoundException(formId));
+
+        if (!form.getPet().getShelter().getOwnerUsername().equals(username)) {
+            throw new AccessDeniedException("You are not allowed to delete this adoption form.");
+        }
+
+        if (form.getAdoptionStatus() == AdoptionStatus.PENDING || form.getAdoptionStatus() == AdoptionStatus.ACCEPTED) {
+            throw new IllegalStateException("You cannot delete a pending or accepted adoption form. Please reject or cancel it first.");
+        }
+
+        adoptionRepository.delete(form);
+    }
+
     public AdoptionResponse getAdoptionFormById(Long formId) {
         var form = adoptionRepository.findById(formId)
                 .orElseThrow(() -> new AdoptionFormNotFoundException(formId));
 
         return adoptionMapper.toDto(form);
+    }
+
+    public List<AdoptionResponse> getAdoptionsByUsername(String username) {
+        List<Adoption> adoptions = adoptionRepository.findByUsername(username);
+        return adoptions.stream()
+                .map(adoptionMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

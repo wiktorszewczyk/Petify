@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +19,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user/achievements")
-@CrossOrigin("*")
 public class AchievementController {
 
     @Autowired
@@ -97,6 +95,18 @@ public class AchievementController {
     @PostMapping("/track-adoption/{username}")
     public ResponseEntity<Void> trackAdoptionProgressForUser(@PathVariable String username) {
         achievementService.trackAdoptionAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-like/{username}")
+    public ResponseEntity<Void> trackLikeProgressForUser(@PathVariable String username) {
+        achievementService.trackLikeAchievements(username);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/track-support/{username}")
+    public ResponseEntity<Void> trackSupportProgressForUser(@PathVariable String username) {
+        achievementService.trackSupportAchievements(username);
         return ResponseEntity.ok().build();
     }
 
