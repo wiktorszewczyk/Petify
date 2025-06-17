@@ -155,7 +155,7 @@ public class ApplicationUser implements UserDetails {
     }
 
     @Transient
-    @JsonProperty("hasProfileImage")
+    @JsonIgnore
     public boolean hasProfileImage() {
         try {
             return profileImage != null && profileImage.length > 0;

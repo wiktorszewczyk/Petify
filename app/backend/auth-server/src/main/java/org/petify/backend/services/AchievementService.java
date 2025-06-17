@@ -32,6 +32,7 @@ public class AchievementService {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public List<UserAchievement> getUserAchievements(String username) {
         ApplicationUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
