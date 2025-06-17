@@ -20,6 +20,9 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -71,6 +74,10 @@ public class Adoption {
     @Column(name = "description")
     private String description;
 
+    @CreationTimestamp
+    @Column(name = "application_date", nullable = false, updatable = false)
+    private LocalDateTime applicationDate;
+
     public Adoption(String username, Pet pet, AdoptionStatus adoptionStatus, String motivationText, String fullName,
                     String phoneNumber, String address, String housingType, boolean isHouseOwner, boolean hasYard,
                     boolean hasOtherPets, String description) {
@@ -105,7 +112,7 @@ public class Adoption {
                 adoption.getMotivationText()).append(getFullName(), adoption.getFullName()).append(getMotivationText(),
                 adoption.getMotivationText()).append(getPhoneNumber(), adoption.getPhoneNumber()).append(getAddress(),
                 adoption.getAddress()).append(getHousingType(), adoption.getHousingType()).append(getDescription(),
-                adoption.getDescription()).isEquals();
+                adoption.getDescription()).append(getApplicationDate(), adoption.getApplicationDate()).isEquals();
     }
 
     @Override
@@ -114,7 +121,7 @@ public class Adoption {
                 .append(getPet()).append(getAdoptionStatus()).append(getMotivationText()).append(getFullName())
                 .append(getMotivationText()).append(getPhoneNumber()).append(getAddress()).append(getHousingType())
                 .append(isHouseOwner()).append(isHasYard()).append(isHasOtherPets())
-                .append(getDescription()).toHashCode();
+                .append(getDescription()).append(getApplicationDate()).toHashCode();
     }
 
     @Override
@@ -134,6 +141,7 @@ public class Adoption {
                 .append("hasYard", hasYard)
                 .append("hasOtherPets", hasOtherPets)
                 .append("description", description)
+                .append("applicationDate", applicationDate)
                 .toString();
     }
 }

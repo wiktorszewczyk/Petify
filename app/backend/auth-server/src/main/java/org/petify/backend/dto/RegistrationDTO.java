@@ -39,6 +39,8 @@ public class RegistrationDTO {
 
     private boolean applyAsVolunteer;
 
+    private boolean createShelter;
+
     public RegistrationDTO() {
         super();
     }

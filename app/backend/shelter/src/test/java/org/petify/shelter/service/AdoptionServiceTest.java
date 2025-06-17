@@ -19,6 +19,7 @@ import org.petify.shelter.repository.PetRepository;
 import org.petify.shelter.repository.ShelterRepository;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +82,7 @@ class AdoptionServiceTest {
                 true,
                 false,
                 "Description"
+
         );
 
         testAdoptionResponse = new AdoptionResponse(
@@ -96,7 +98,8 @@ class AdoptionServiceTest {
                 true,
                 true,
                 false,
-                "Description"
+                "Description",
+                LocalDateTime.now()
         );
     }
 
