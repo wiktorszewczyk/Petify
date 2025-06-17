@@ -49,8 +49,8 @@ public class GatewayConfiguration {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowedOriginPatterns(Arrays.asList(
-            "http://localhost:*",
-            "http://127.0.0.1:*"
+                "http://localhost:*",
+                "http://127.0.0.1:*"
         ));
         corsConfig.setMaxAge(3600L);
         corsConfig.addAllowedMethod(CorsConfiguration.ALL);

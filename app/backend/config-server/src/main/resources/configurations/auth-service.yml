@@ -52,3 +52,10 @@ management:
     web:
       exposure:
         include: health
+
+petify:
+  admin:
+    credentials:
+      username: ${PETIFY_ADMIN_USERNAME:admin}
+      password: ${PETIFY_ADMIN_PASSWORD:admin_password}
+      email: ${PETIFY_ADMIN_EMAIL:admin@petify.org}

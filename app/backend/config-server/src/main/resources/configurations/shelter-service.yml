@@ -23,6 +23,11 @@ spring:
         jwt:
           jwk-set-uri: http://${AUTH_SERVICE_HOST:localhost}:${AUTH_SERVICE_PORT:9000}/.well-known/jwks.json
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 eureka:
   client:
     service-url:
@@ -36,8 +41,3 @@ management:
     web:
       exposure:
         include: health
-          jwk-set-uri: http://localhost:9000/.well-known/jwks.json
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB

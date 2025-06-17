@@ -17,19 +17,21 @@ services:
   postgres:
     container_name: petify-postgres-connection
     image: bitnami/postgresql:17
-    entrypoint: ["sleep", "infinity"]
     environment:
-      PGPORT: ${DB_PORT}
-      PGHOST: ${DB_HOST}
-      PGDATABASE: ${DB_NAME}
       PGUSER: ${DB_USER}
       PGPASSWORD: ${DB_PASSWORD}
+    entrypoint:
+      [
+        "bash", "-c",
+        "psql -h ${DB_HOST} -d postgres -c 'DROP DATABASE IF EXISTS \"${DB_NAME}\";' && \
+         psql -h ${DB_HOST} -d postgres -c 'CREATE DATABASE \"${DB_NAME}\";' && \
+         sleep infinity"
+      ]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h ${DB_HOST} -p ${DB_PORT}"]
-      interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 10s
+      interval: 10s
+      retries: 10
     mem_limit: 128m
 
   rabbitmq:
@@ -39,21 +41,23 @@ services:
       - 5672
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 10s
       timeout: 5s
-      retries: 5
+      interval: 10s
+      retries: 10
     mem_limit: 1g
 
   # Petify services
   config-server:
     container_name: petify-config-server
     image: ${ACR_LOGIN_SERVER}/petify-config-server:latest
+    pull_policy: always
     expose:
       - 8888
     environment:
       <<: *common-variables
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      timeout: 5s
       interval: 10s
       retries: 10
     mem_limit: 1g
@@ -61,6 +65,7 @@ services:
   discovery:
     container_name: petify-discovery
     image: ${ACR_LOGIN_SERVER}/petify-discovery:latest
+    pull_policy: always
     expose:
       - 8761
     environment:
@@ -70,6 +75,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      timeout: 5s
       interval: 15s
       retries: 20
     mem_limit: 1g
@@ -77,10 +83,14 @@ services:
   auth-server:
     container_name: petify-auth-server
     image: ${ACR_LOGIN_SERVER}/petify-auth-server:latest
+    pull_policy: always
     expose:
       - 9000
     environment:
       <<: *common-variables
+      PETIFY_ADMIN_USERNAME: ${PETIFY_ADMIN_USERNAME}
+      PETIFY_ADMIN_EMAIL: ${PETIFY_ADMIN_EMAIL}
+      PETIFY_ADMIN_PASSWORD: ${PETIFY_ADMIN_PASSWORD}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     depends_on:
@@ -90,6 +100,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
+      timeout: 5s
       interval: 15s
       retries: 20
     mem_limit: 1g
@@ -97,6 +108,7 @@ services:
   chat:
     container_name: petify-chat
     image: ${ACR_LOGIN_SERVER}/petify-chat:latest
+    pull_policy: always
     expose:
       - 8050
     environment:
@@ -112,14 +124,15 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
+      timeout: 5s
       interval: 15s
-      retries: 10
-      start_period: 30s
+      retries: 20
     mem_limit: 1g
 
   feed:
     container_name: petify-feed
     image: ${ACR_LOGIN_SERVER}/petify-feed:latest
+    pull_policy: always
     expose:
       - 8030
     environment:
@@ -133,6 +146,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8030/actuator/health"]
+      timeout: 5s
       interval: 15s
       retries: 20
     mem_limit: 1g
@@ -140,6 +154,7 @@ services:
   funding:
     container_name: petify-funding
     image: ${ACR_LOGIN_SERVER}/petify-funding:latest
+    pull_policy: always
     expose:
       - 8020
     environment:
@@ -160,6 +175,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8020/actuator/health"]
+      timeout: 5s
       interval: 15s
       retries: 20
     mem_limit: 1g
@@ -167,6 +183,7 @@ services:
   image:
     container_name: petify-image
     image: ${ACR_LOGIN_SERVER}/petify-image:latest
+    pull_policy: always
     expose:
       - 8060
     environment:
@@ -180,6 +197,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8060/actuator/health"]
+      timeout: 5s
       interval: 15s
       retries: 20
     mem_limit: 1g
@@ -187,6 +205,7 @@ services:
   reservations:
     container_name: petify-reservations
     image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
+    pull_policy: always
     expose:
       - 8011
     environment:
@@ -198,6 +217,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8011/actuator/health"]
+      timeout: 5s
       interval: 15s
       retries: 20
     mem_limit: 1g
@@ -205,6 +225,7 @@ services:
   shelter:
     container_name: petify-shelter
     image: ${ACR_LOGIN_SERVER}/petify-shelter:latest
+    pull_policy: always
     expose:
       - 8010
     environment:
@@ -218,6 +239,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8010/actuator/health"]
+      timeout: 5s
       interval: 15s
       retries: 20
     mem_limit: 1g
@@ -225,6 +247,7 @@ services:
   gateway:
     container_name: petify-gateway
     image: ${ACR_LOGIN_SERVER}/petify-gateway:latest
+    pull_policy: always
     ports:
       - 8222:8222
     environment:
