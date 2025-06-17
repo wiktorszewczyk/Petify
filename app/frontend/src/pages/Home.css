@@ -125,13 +125,13 @@ body {
 
 .basic-info h2 {
   margin: 0;
-  font-size: 2.2em;
+  font-size: 2.2em !important;
 }
 
 .basic-info p {
   margin: 5px 0 0;
-  font-size: 1.2em;
-  margin-bottom: 5vh;
+  font-size: 1.2em !important;
+  margin-bottom: 6vh;
 }
 
 .animal-tags {

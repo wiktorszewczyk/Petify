@@ -75,12 +75,12 @@ export default function Navbar() {
       {isMenuOpen && <div className="menu-overlay" onClick={() => setIsMenuOpen(false)}></div>}
       
       {/* Czerwony przycisk zamykania - tylko na mobile */}
-      {isMenuOpen && (
+      {/* {isMenuOpen && (
         <div className="mobile-close-btn" onClick={() => setIsMenuOpen(false)}>
       <ArrowLeft size={20} className="tab-icon" />
     </div>
         
-      )}
+      )} */}
     </nav>
   );
 }

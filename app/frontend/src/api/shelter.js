@@ -119,17 +119,20 @@ export const fetchFilteredAnimals = async (filters, cursor = 1) => {
   const jwt = getToken();
   const params = new URLSearchParams();
 
- if (filters.type && filters.type !== 'Wszystkie') {
-  const mappedType = mapTypeToEnum[filters.type];
-  if (mappedType) {
-    params.append("type", mappedType);
+  if (filters.type && filters.type !== 'Wszystkie') {
+    const mappedType = mapTypeToEnum[filters.type];
+    if (mappedType) {
+      params.append("type", mappedType);
+    }
   }
-}
+
   params.append("minAge", filters.ageRange[0]);
-params.append("maxAge", filters.ageRange[1]);
+  params.append("maxAge", filters.ageRange[1]);
+
   if (filters.vaccinated) params.append("vaccinated", filters.vaccinated);
   if (filters.urgent) params.append("urgent", filters.urgent);
- if (filters.city) {
+
+  if (filters.city) {
     const found = majorPolishCities.find(c => c.name === filters.city);
     if (found) {
       params.append("userLat", found.lat);
@@ -140,9 +143,9 @@ params.append("maxAge", filters.ageRange[1]);
   if (filters.distance) {
     params.append("radiusKm", filters.distance);
   }
+
   params.append("limit", 10);
   params.append("cursor", cursor);
-
 
   const response = await fetch(`${API_URL}/pets/filter?${params.toString()}`, {
     method: 'GET',
@@ -158,30 +161,41 @@ params.append("maxAge", filters.ageRange[1]);
 
   const data = await response.json();
   const pets = Array.isArray(data.pets) ? data.pets : [];
+
   const enrichedAnimals = await Promise.all(
     pets.map(async (animal) => {
       let shelterName = `Schronisko #${animal.shelterId}`;
       let shelterAddress = '';
+      let photos = [];
 
       try {
-        const shelterRes = await fetch(`${API_URL}/shelters/${animal.shelterId}`, {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
+        const [shelterRes, imagesRes] = await Promise.all([
+          fetch(`${API_URL}/shelters/${animal.shelterId}`, {
+            headers: { Authorization: `Bearer ${jwt}` },
+          }),
+          fetch(`${API_URL}/pets/${animal.id}/images`, {
+            headers: { Authorization: `Bearer ${jwt}` },
+          }),
+        ]);
 
         if (shelterRes.ok) {
           const shelter = await shelterRes.json();
           shelterName = shelter.name;
           shelterAddress = shelter.address || '';
         }
+
+        if (imagesRes.ok) {
+          const images = await imagesRes.json();
+          photos = images.map(img => img.imageUrl);
+        }
+
       } catch (e) {
-        console.warn(`Nie udało się pobrać danych schroniska dla ID ${animal.shelterId}`);
+        console.warn(`Nie udało się pobrać danych dla zwierzaka ${animal.id}`, e);
       }
 
       return {
         ...animal,
-        photos: animal.images?.map((img) => img.imageUrl) || [],
+        photos,
         shelterAddress,
         shelterName,
       };

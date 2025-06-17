@@ -13,6 +13,7 @@ import ShelterProfile from './pages/ShelterProfile'
 import PrivateRoute from './components/PrivateRoute'
 import VolunteerApplication from './pages/VolunteerApplication'
 import AdoptionForm from './pages/AdoptionForm'
+import PetAppointments from './pages/PetAppointments'
 
 
 
@@ -34,6 +35,7 @@ function App() {
       <Route path="/editProfile" element={<PrivateRoute><EditProfile /></PrivateRoute>} />
       <Route path="/volunteerApplication" element={<PrivateRoute><VolunteerApplication /></PrivateRoute>} />
       <Route path="/adoptionForm/:id" element={<PrivateRoute><AdoptionForm /></PrivateRoute>} />
+      <Route path="/petAppointments/:id" element={<PrivateRoute><PetAppointments /></PrivateRoute>} />
     </Routes>
   )
 }

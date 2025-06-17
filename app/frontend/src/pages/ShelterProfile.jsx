@@ -254,50 +254,6 @@ function ShelterProfile() {
             <p>{shelter.description}</p>
           </section>
 
-           {/* Główna zbiórka */}
-          <section className="main-fundraising">
-            <div className="fundraising-badge">
-              <HandCoins className="fundraising-badge-icon" />
-              <span>GŁÓWNA ZBIÓRKA</span>
-            </div>
-            
-            <h3 className="fundraising-title">Zbiórka na schronisko</h3>
-            <p className="fundraising-description">
-              Zbieramy pieniądze na rozbudowę schroniska.
-            </p>
-            
-            <div className="fundraising-progress">
-              <div className="progress-info">
-                <div className="progress-labels">
-                  <span className="progress-raised">
-                    <span className="progress-label">Zebrano</span>
-                    <span className="progress-amount">140 PLN</span>
-                  </span>
-                  <span className="progress-goal">
-                    <span className="progress-label">Cel</span>
-                    <span className="progress-amount">5000 PLN</span>
-                  </span>
-                </div>
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: '2.8%' }}></div>
-                </div>
-                <div className="progress-percentage">2% celu</div>
-              </div>
-            </div>
-            
-            <div className="fundraising-actions">
-              <button className="btn-share">
-                <ScrollText className="btn-icon" />
-                Udostępnij
-              </button>
-              <button 
-                className="btn-support-main" 
-                onClick={() => setShowDonatePopup(true)}
-              >
-                Wspieram
-              </button>
-            </div>
-          </section>
 
 
           {/* Wydarzenia schroniska */}

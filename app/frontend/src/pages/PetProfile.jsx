@@ -62,6 +62,14 @@ const [selectedAmount, setSelectedAmount] = useState(null);
 const [customAmount, setCustomAmount] = useState('');
 const navigate = useNavigate();
 
+const donationOptions = [
+  { amount: 5, label: "Smakołyki", img: dono5, donationType: "MATERIAL", itemName: "Smakołyki" },
+  { amount: 10, label: "Pełna miska", img: dono10, donationType: "MATERIAL", itemName: "Pełna miska" },
+  { amount: 15, label: "Zabawka", img: dono15, donationType: "MATERIAL", itemName: "Zabawka" },
+  { amount: 25, label: "Zapas karmy", img: dono25, donationType: "MATERIAL", itemName: "Zapas karmy" },
+  { amount: 50, label: "Legowisko", img: dono50, donationType: "MATERIAL", itemName: "Legowisko" }
+];
+
 
 const { id } = useParams();
 const [pet, setPet] = useState(null);
@@ -93,6 +101,54 @@ useEffect(() => {
   fetchPet();
 }, [id]);
 
+
+ const handleDonate = async (provider) => {
+    const jwt = localStorage.getItem("jwt");
+    const amount = Number(selectedAmount || customAmount);
+    const selectedOption = donationOptions.find(opt => opt.amount === selectedAmount);
+    const donationIntentBody = {
+      shelterId: pet?.shelterId,
+      petId: pet.id,
+      donationType: selectedOption ? selectedOption.donationType : "MONEY",
+      message: "Wsparcie przez profil",
+      anonymous: false,
+      itemName: selectedOption ? selectedOption.itemName : "Wpłata pieniężna",
+      unitPrice: amount,
+      quantity: 1
+    };
+    try {
+      const intentRes = await fetch("http://localhost:8020/donations/intent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`
+        },
+        body: JSON.stringify(donationIntentBody)
+      });
+      const intentData = await intentRes.json();
+      const donationId = intentData.donationId;
+      const sessionToken = intentData.sessionToken;
+      const paymentRes = await fetch(`http://localhost:8020/donations/${donationId}/payment/initialize`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`,
+          "Session-Token": sessionToken
+        },
+        body: JSON.stringify({ provider })
+      });
+      const paymentData = await paymentRes.json();
+      const redirectUrl = paymentData?.redirectUrl || paymentData?.payment?.checkoutUrl;
+      if (redirectUrl) {
+        window.open(redirectUrl, "_blank");
+      } else {
+        alert("Nie udało się pobrać linku do płatności.");
+      }
+    } catch (err) {
+      console.error("Błąd płatności:", err);
+      alert("Nie udało się zainicjować płatności");
+    }
+  };
 
   const handlePrev = () => {
     setCurrentPhotoIndex((prevIndex) =>
@@ -142,60 +198,51 @@ if (!pet) return null;
         ))}
       </div>
 
-      
-      {showDonatePopup && (
-  <div className="donation-popup-overlay" onClick={() => setShowDonatePopup(false)}>
-    <div className="donation-popup" onClick={(e) => e.stopPropagation()}>
-      <h2>Wesprzyj {pet.name}</h2>
-      <div className="donation-options">
-        {[
-          { amount: 5, label: "Smakołyki", img: dono5 },
-          { amount: 10, label: "Pełna miska", img: dono10 },
-          { amount: 15, label: "Zabawka", img: dono15 },
-          { amount: 25, label: "Zapas karmy", img: dono25 },
-          { amount: 50, label: "Legowisko", img: dono50 }
-        ].map(({ amount, label, img }) => (
-          <button 
-            key={amount} 
-            className={`donate-option ${selectedAmount === amount ? 'selected' : ''}`}
-            onClick={() => {
-              setSelectedAmount(amount);
-              setCustomAmount(''); // Wyczyść custom amount gdy wybierasz predefiniowaną kwotę
-            }}
-          >
-            <img src={img} alt={label} className="donate-img" />
-            <span className="donate-amount">{amount} zł</span>
-            <span className="donate-label">{label}</span>
-          </button>
-        ))}
-      </div>
 
-      <input 
-        type="number" 
-        placeholder="Inna kwota" 
-        className="donate-input"
-        value={customAmount}
-        onChange={(e) => {
-          setCustomAmount(e.target.value);
-          setSelectedAmount(null); // Wyczyść wybór predefiniowanej kwoty
-        }}
-      />
       
-      <button 
-        className="confirm-donate-btn" 
-        disabled={!selectedAmount && !customAmount}
-        onClick={() => {
-          // Przekaż wybraną kwotę do payment
-          const finalAmount = selectedAmount || customAmount;
-          window.location.href = `/payment?amount=${finalAmount}`;
-        }}
-      >
-        Przejdź do płatności {(selectedAmount || customAmount) && `(${selectedAmount || customAmount} zł)`}
-      </button>
-      <button className="close-popup-btn" onClick={() => setShowDonatePopup(false)}>×</button>
-    </div>
-  </div>
-)}
+             {showDonatePopup && (
+        <div className="donation-popup-overlay" onClick={() => setShowDonatePopup(false)}>
+          <div className="donation-popup" onClick={(e) => e.stopPropagation()}>
+            <h2>Wesprzyj {pet.name}</h2>
+            <div className="donation-options">
+              {donationOptions.map(({ amount, label, img }) => (
+                <button
+                  key={amount}
+                  className={`donate-option ${selectedAmount === amount ? 'selected' : ''}`}
+                  onClick={() => {
+                    setSelectedAmount(amount);
+                    setCustomAmount('');
+                  }}
+                >
+                  <img src={img} alt={label} className="donate-img" />
+                  <span className="donate-amount">{amount} zł</span>
+                  <span className="donate-label">{label}</span>
+                </button>
+              ))}
+            </div>
+            <input
+              type="number"
+              placeholder="Inna kwota"
+              className="donate-input"
+              value={customAmount}
+              onChange={(e) => {
+                setCustomAmount(e.target.value);
+                setSelectedAmount(null);
+              }}
+            />
+            <button
+              className="confirm-donate-btn"
+              disabled={!selectedAmount && !customAmount}
+              onClick={() => handleDonate("PAYU")}
+            >
+              PayU ({selectedAmount || customAmount} zł)
+            </button>
+            <button className="close-popup-btn" onClick={() => setShowDonatePopup(false)}>×</button>
+          </div>
+        </div>
+      )}
+      
+     
 
 
       
@@ -263,7 +310,7 @@ if (!pet) return null;
       <Heart className="btn-icon" />
       Adoptuj
     </button>
-    <button className="action-btn btn-walk">
+    <button className="action-btn btn-walk" onClick={() => navigate(`/petAppointments/${pet.id}`)}>
       <PawPrint className="btn-icon" />
       Wyprowadź psa
     </button>

@@ -1,0 +1,388 @@
+.appointments-body {
+margin-top: 0;
+padding-top: 0;
+}
+
+.appointments-page{
+     background: rgba(122, 122, 122, 0.267);
+  color: #333;
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  padding: 24px 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+  position: relative;
+  z-index: 1; 
+}
+
+/* Header Styles */
+.appointments-header {
+  background: #fff;
+  width: 100%;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+
+
+.location-icon {
+  width: 16px;
+  height: 16px;
+  color: #4C6EF5;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.title-icon {
+  width: 28px;
+  height: 28px;
+  color: #4C6EF5;
+}
+
+.page-title h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2D3748;
+  margin: 0;
+}
+
+/* Message Styles */
+.message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.message.success {
+  background: #D4F4DD;
+  color: #2F855A;
+  border: 1px solid #9AE6B4;
+}
+
+.message.error {
+  background: #FED7D7;
+  color: #C53030;
+  border: 1px solid #FCA5A5;
+}
+
+
+/* Appointments Section */
+.appointments-section {
+  background: #fff;
+  width: 100%;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #F7FAFC;
+}
+
+.section-icon {
+  width: 28px;
+  height: 28px;
+  color: #4C6EF5;
+}
+
+.reserved-icon {
+  color: #38A169;
+}
+
+.section-header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2D3748;
+  margin: 0;
+}
+
+/* Day Groups */
+.day-group {
+  margin-bottom: 32px;
+}
+
+.day-group:last-child {
+  margin-bottom: 0;
+}
+
+.day-header {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #4A5568;
+  margin: 0 0 16px 0;
+  padding: 8px 12px;
+  background: #F7FAFC;
+  border-radius: 8px;
+}
+
+.day-appointments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Appointment Cards */
+.appointment-card {
+  border: 2px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.appointment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-card.available {
+  border-color: #4C6EF5;
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+}
+
+.appointment-card.available:hover {
+  border-color: #3182CE;
+  box-shadow: 0 8px 20px rgba(76, 110, 245, 0.15);
+}
+
+.appointment-card.reserved {
+  border-color: #38A169;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
+}
+
+.appointment-card.reserved:hover {
+  border-color: #2F855A;
+  box-shadow: 0 8px 20px rgba(56, 161, 105, 0.15);
+}
+
+.appointment-time {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.time-icon {
+  width: 20px;
+  height: 20px;
+  color: #4C6EF5;
+}
+
+.time-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.time {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2D3748;
+}
+
+.duration {
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+/* Book Button */
+.book-button {
+  width: 100%;
+  background: linear-gradient(135deg, #4C6EF5, #7F9CF5);
+  color: #fff;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(76, 110, 245, 0.3);
+}
+
+.book-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 110, 245, 0.4);
+}
+
+.book-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.book-button:disabled:hover {
+  transform: none;
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.loading-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loading-text::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reserved Info */
+.reserved-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(56, 161, 105, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.user-icon {
+  width: 18px;
+  height: 18px;
+  color: #38A169;
+}
+
+.reserved-by {
+  font-size: 0.95rem;
+  color: #2F855A;
+}
+
+/* No Appointments */
+.no-appointments {
+  text-align: center;
+  padding: 60px 20px;
+  color: #718096;
+}
+
+.no-appointments-icon {
+  width: 64px;
+  height: 64px;
+  color: #CBD5E0;
+  margin: 0 auto 16px;
+}
+
+.no-appointments p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Loading Message */
+.loading-message {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.2rem;
+  color: #4A5568;
+}
+
+/* Reserved Section */
+.reserved-section {
+  border-top: 3px solid #38A169;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .appointments-page {
+    padding: 16px 12px;
+  }
+  
+  .pet-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .pet-avatar {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .pet-name {
+    font-size: 1.5rem;
+  }
+  
+  .day-appointments {
+    grid-template-columns: 1fr;
+  }
+  
+  .date-select {
+    min-width: 200px;
+    width: 100%;
+  }
+  
+  .filter-section,
+  .appointments-section {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pet-name {
+    font-size: 1.3rem;
+  }
+  
+  .pet-breed {
+    font-size: 1rem;
+  }
+  
+  .page-title h2 {
+    font-size: 1.2rem;
+  }
+  
+  .section-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .day-header {
+    font-size: 1rem;
+  }
+  
+  .appointment-card {
+    padding: 16px;
+  }
+  
+  .book-button {
+    padding: 12px 16px;
+    font-size: 1rem;
+  }
+}
