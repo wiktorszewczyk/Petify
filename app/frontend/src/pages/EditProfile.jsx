@@ -39,11 +39,8 @@ export default function EditProfile() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-const isValidPhoneNumber = (number) => {
-  const phoneRegex = /^\+?[0-9\s\-]{7,15}$/;
-  return phoneRegex.test(number.trim());
-};
-  
+
+
  
 
   useEffect(() => {
@@ -98,10 +95,6 @@ const isValidPhoneNumber = (number) => {
  const handleSubmit = async (e) => {
   e.preventDefault();
   setMessage("");
-   if (!isValidPhoneNumber(form.phoneNumber)) {
-    setMessage("Numer telefonu jest nieprawidłowy.");
-    return;
-  }
   setLoading(true);
 
   try {

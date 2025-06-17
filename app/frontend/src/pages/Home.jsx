@@ -90,7 +90,7 @@ useEffect(() => {
     const newAnimals = await fetchFilteredAnimals(filters, nextCursor);
     setAnimals((prev) => isNextPage ? [...prev, ...newAnimals] : newAnimals);
     if (!isNextPage) {
-      setCurrentAnimalIndex(0); 
+      setCurrentAnimalIndex(0); // 👈 DODAJ TO
       setCursor(1);
     } else {
       setCursor(nextCursor);
@@ -139,7 +139,7 @@ const handleSwipe = async (direction) => {
   }
 
   setTimeout(() => {
-    setCurrentAnimalIndex((prev) => prev + 1);
+    setCurrentAnimalIndex((prev) => Math.min(prev + 1, animals.length - 1));
     resetCard();
     setFade(false);
   }, 300);
@@ -196,72 +196,6 @@ const handleSwipe = async (direction) => {
     }
   }, [isDragging, position, startPos]);
 
-const donationOptions = [
-  { amount: 5, label: "Smakołyki", img: dono5, donationType: "MATERIAL", itemName: "Smakołyki" },
-  { amount: 10, label: "Pełna miska", img: dono10, donationType: "MATERIAL", itemName: "Pełna miska" },
-  { amount: 15, label: "Zabawka", img: dono15, donationType: "MATERIAL", itemName: "Zabawka" },
-  { amount: 25, label: "Zapas karmy", img: dono25, donationType: "MATERIAL", itemName: "Zapas karmy" },
-  { amount: 50, label: "Legowisko", img: dono50, donationType: "MATERIAL", itemName: "Legowisko" }
-];
-
-const handleDonate = async (provider) => {
-  const jwt = localStorage.getItem("jwt");
-  const amount = Number(selectedAmount || customAmount);
-
-  const selectedOption = donationOptions.find(opt => opt.amount === selectedAmount);
-
-  const donationIntentBody = {
-    shelterId: currentAnimal?.shelterId,
-    petId: currentAnimal.id,
-    donationType: selectedOption ? selectedOption.donationType : "MONEY",
-    message: "Wsparcie przez stronę",
-    anonymous: false,
-    itemName: selectedOption ? selectedOption.itemName : "Wpłata pieniężna",
-    unitPrice: amount,
-    quantity: 1
-  };
-
-  try {
-    const intentRes = await fetch("http://localhost:8020/donations/intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${jwt}`
-      },
-      body: JSON.stringify(donationIntentBody)
-    });
-
-    const intentData = await intentRes.json();
-    const donationId = intentData.donationId;
-    const sessionToken = intentData.sessionToken;
-
-    // 🔁 Initialize payment
-    const paymentRes = await fetch(`http://localhost:8020/donations/${donationId}/payment/initialize`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${jwt}`,
-        "Session-Token": sessionToken
-      },
-      body: JSON.stringify({ provider }) 
-    });
-
-    const paymentData = await paymentRes.json();
-const redirectUrl = paymentData?.redirectUrl || paymentData?.payment?.checkoutUrl;
-
-if (redirectUrl) {
-  window.open(redirectUrl, "_blank"); // otwórz w nowej karcie
-} else {
-  alert("Nie udało się pobrać linku do płatności.");
-}
-
-  } catch (err) {
-    console.error("Błąd płatności:", err);
-    alert("Nie udało się zainicjować płatności");
-  }
-};
-
-  
 
 
   return (
@@ -326,15 +260,17 @@ if (redirectUrl) {
               }}
             />
             
-           <button
-  className="confirm-donate-btn"
-  disabled={!selectedAmount && !customAmount}
-  onClick={() => handleDonate("PAYU", currentAnimal, selectedAmount, customAmount, setShowDonatePopup)}
->
-  PayU ({selectedAmount || customAmount} zł)
-</button>
-
-
+            <button 
+              className="confirm-donate-btn" 
+              disabled={!selectedAmount && !customAmount}
+              onClick={() => {
+                // Przekaż wybraną kwotę do payment
+                const finalAmount = selectedAmount || customAmount;
+                window.location.href = `/payment?amount=${finalAmount}`;
+              }}
+            >
+              Przejdź do płatności {(selectedAmount || customAmount) && `(${selectedAmount || customAmount} zł)`}
+            </button>
             <button className="close-popup-btn" onClick={() => setShowDonatePopup(false)}>×</button>
           </div>
         </div>
