@@ -29,6 +29,12 @@ class _AchievementsViewState extends State<AchievementsView>
         return 'Polubienia';
       case 'SUPPORT':
         return 'Wsparcia';
+      case 'ADOPTION':
+        return 'Adopcje';
+      case 'PROFILE':
+        return 'Profil';
+      case 'VOLUNTEER':
+        return 'Wolontariat';
       default:
         return cat;
     }

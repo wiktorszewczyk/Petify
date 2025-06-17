@@ -32,14 +32,12 @@ class _RegisterViewState extends State<RegisterView> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _repeatPasswordController = TextEditingController();
-  final _cityController = TextEditingController();
 
   // State variables
   int _currentStep = 0;
   bool _isLoading = false;
   DateTime? _selectedBirthDate;
-  String _selectedGender = 'Mężczyzna';
-  String _contactMethod = 'email'; // 'email' or 'phone'
+  String _selectedGender = 'MALE';
 
   @override
   void dispose() {
@@ -48,7 +46,6 @@ class _RegisterViewState extends State<RegisterView> {
     _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _cityController.dispose();
     _passwordController.dispose();
     _repeatPasswordController.dispose();
     super.dispose();
@@ -66,23 +63,19 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   String? _emailValidator(String? val) {
-    if (_contactMethod == 'email') {
-      if (val == null || val.isEmpty || !val.contains('@')) {
-        return 'Podaj poprawny email';
-      }
+    if (val == null || val.isEmpty || !val.contains('@')) {
+      return 'Podaj poprawny email';
     }
     return null;
   }
 
   String? _phoneValidator(String? val) {
-    if (_contactMethod == 'phone') {
-      if (val == null || val.isEmpty) {
-        return 'Podaj numer telefonu';
-      }
-      // Basic phone validation - adjust regex as needed
-      if (!RegExp(r'^\+?[0-9]{9,15}$').hasMatch(val.replaceAll(' ', ''))) {
-        return 'Nieprawidłowy format numeru';
-      }
+    if (val == null || val.isEmpty) {
+      return 'Podaj numer telefonu';
+    }
+    // Basic phone validation - adjust regex as needed
+    if (!RegExp(r'^\+?[0-9]{9,15}$').hasMatch(val.replaceAll(' ', ''))) {
+      return 'Nieprawidłowy format numeru';
     }
     return null;
   }
@@ -137,16 +130,13 @@ class _RegisterViewState extends State<RegisterView> {
 
     try {
       final regResp = await userService.register(
-        firstName: _firstNameController.text.trim(),
-        lastName: _lastNameController.text.trim(),
-        birthDate: _selectedBirthDate!.toIso8601String().split('T')[0],
-        gender: _selectedGender,
-        email: _contactMethod == 'email' ? _emailController.text.trim() : null,
-        phoneNumber: _contactMethod == 'phone' ? _phoneController.text.trim().replaceAll(' ', '') : null,
-        password: _passwordController.text.trim(),
-        city: _cityController.text.trim().isNotEmpty ? _cityController.text.trim() : null,
-        shelterId: null,
-        applyAsVolunteer: false,
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
+          birthDate: _selectedBirthDate!.toIso8601String().split('T')[0],
+          gender: _selectedGender,
+          email: _emailController.text.trim(),
+          phoneNumber: _phoneController.text.trim().replaceAll(' ', ''),
+          password: _passwordController.text.trim()
       );
 
       if (!mounted) return;
@@ -155,14 +145,11 @@ class _RegisterViewState extends State<RegisterView> {
       if (regResp.statusCode == 200 || regResp.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Rejestracja zakończona pomyślnie!'),
+            content: Text('Rejestracja zakończona pomyślnie! Teraz możesz się zalogować.'),
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeView()),
-        );
+        widget.onSwitch();
       } else {
         _showError('Błąd rejestracji: ${regResp.data}');
       }
@@ -212,7 +199,6 @@ class _RegisterViewState extends State<RegisterView> {
               ],
             ),
           ),
-          _buildNavigationButtons(),
         ],
       ),
     );
@@ -329,7 +315,7 @@ class _RegisterViewState extends State<RegisterView> {
                 Expanded(
                   child: RadioListTile<String>(
                     title: const Text('Mężczyzna'),
-                    value: 'Mężczyzna',
+                    value: 'MALE',
                     groupValue: _selectedGender,
                     onChanged: (value) => setState(() => _selectedGender = value!),
                     activeColor: AppColors.primaryColor,
@@ -339,7 +325,7 @@ class _RegisterViewState extends State<RegisterView> {
                 Expanded(
                   child: RadioListTile<String>(
                     title: const Text('Kobieta'),
-                    value: 'Kobieta',
+                    value: 'FEMALE',
                     groupValue: _selectedGender,
                     onChanged: (value) => setState(() => _selectedGender = value!),
                     activeColor: AppColors.primaryColor,
@@ -348,6 +334,11 @@ class _RegisterViewState extends State<RegisterView> {
                 ),
               ],
             ).animate().fadeIn(duration: 500.ms, delay: 400.ms),
+
+            const SizedBox(height: 40),
+
+            // Navigation buttons for Step 1
+            _buildNavigationButtons(),
           ],
         ),
       ),
@@ -363,61 +354,19 @@ class _RegisterViewState extends State<RegisterView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Kontakt i hasło',
+              'Email i hasło',
               style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ).animate().fadeIn(duration: 500.ms),
 
             const SizedBox(height: 30),
 
-            // Contact method selection
-            Text(
-              'Sposób kontaktu',
-              style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: const Text('Email'),
-                    value: 'email',
-                    groupValue: _contactMethod,
-                    onChanged: (value) => setState(() => _contactMethod = value!),
-                    activeColor: AppColors.primaryColor,
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                ),
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: const Text('Telefon'),
-                    value: 'phone',
-                    groupValue: _contactMethod,
-                    onChanged: (value) => setState(() => _contactMethod = value!),
-                    activeColor: AppColors.primaryColor,
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                ),
-              ],
+            CustomTextField(
+              labelText: 'Email',
+              controller: _emailController,
+              validator: _emailValidator,
+              keyboardType: TextInputType.emailAddress,
             ).animate().fadeIn(duration: 500.ms, delay: 100.ms),
-
-            const SizedBox(height: 15),
-
-            if (_contactMethod == 'email')
-              CustomTextField(
-                labelText: 'Email',
-                controller: _emailController,
-                validator: _emailValidator,
-                keyboardType: TextInputType.emailAddress,
-              ).animate().fadeIn(duration: 500.ms, delay: 200.ms),
-
-            if (_contactMethod == 'phone')
-              CustomTextField(
-                labelText: 'Numer telefonu',
-                controller: _phoneController,
-                validator: _phoneValidator,
-                keyboardType: TextInputType.phone,
-              ).animate().fadeIn(duration: 500.ms, delay: 200.ms),
 
             const SizedBox(height: 15),
 
@@ -426,7 +375,7 @@ class _RegisterViewState extends State<RegisterView> {
               obscureText: true,
               controller: _passwordController,
               validator: _passwordValidator,
-            ).animate().fadeIn(duration: 500.ms, delay: 300.ms),
+            ).animate().fadeIn(duration: 500.ms, delay: 200.ms),
 
             const SizedBox(height: 15),
 
@@ -435,7 +384,12 @@ class _RegisterViewState extends State<RegisterView> {
               obscureText: true,
               controller: _repeatPasswordController,
               validator: _repeatPasswordValidator,
-            ).animate().fadeIn(duration: 500.ms, delay: 400.ms),
+            ).animate().fadeIn(duration: 500.ms, delay: 300.ms),
+
+            const SizedBox(height: 40),
+
+            // Navigation buttons for Step 2
+            _buildNavigationButtons(),
           ],
         ),
       ),
@@ -451,17 +405,9 @@ class _RegisterViewState extends State<RegisterView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Dodatkowe informacje',
-              style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
+              'Kontakt',
+              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
-            ).animate().fadeIn(duration: 500.ms),
-
-            const SizedBox(height: 30),
-
-            CustomTextField(
-              labelText: 'Miasto',
-              controller: _cityController,
-              validator: _nameValidator,
             ).animate().fadeIn(duration: 500.ms, delay: 100.ms),
 
             const SizedBox(height: 20),
@@ -469,30 +415,40 @@ class _RegisterViewState extends State<RegisterView> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.1),
+                color: Colors.blue.shade50,
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.blue.shade100),
               ),
-              child: Column(
+              child: Row(
                 children: [
-                  Icon(Icons.pets, color: AppColors.primaryColor, size: 40),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Już prawie gotowe!',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryColor,
+                  Icon(Icons.info_outline, color: Colors.blue.shade600, size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'W celu ułatwienia kontaktu schronisk z Tobą potrzebujemy Twój numer telefonu.',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: Colors.blue.shade700,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Dołącz do społeczności i pomóż zwierzakom znaleźć dom',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(fontSize: 14),
                   ),
                 ],
               ),
-            ).animate().scale(delay: 300.ms, duration: 500.ms),
+            ).animate().fadeIn(duration: 500.ms, delay: 200.ms),
+
+            const SizedBox(height: 20),
+
+            CustomTextField(
+              labelText: 'Numer telefonu',
+              controller: _phoneController,
+              validator: _phoneValidator,
+              keyboardType: TextInputType.phone,
+            ).animate().fadeIn(duration: 500.ms, delay: 300.ms),
+
+            const SizedBox(height: 40),
+
+            // Navigation buttons for Step 3
+            _buildNavigationButtons(),
           ],
         ),
       ),
@@ -500,39 +456,36 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   Widget _buildNavigationButtons() {
-    return Padding(
-      padding: const EdgeInsets.all(25),
-      child: Column(
-        children: [
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: _isLoading
-                ? const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
-            )
-                : PrimaryButton(
-              text: _currentStep == 2 ? 'Utwórz konto' : 'Dalej',
-              onPressed: _nextStep,
+    return Column(
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: _isLoading
+              ? const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
             ),
+          )
+              : PrimaryButton(
+            text: _currentStep == 2 ? 'Utwórz konto' : 'Dalej',
+            onPressed: _nextStep,
           ),
+        ),
 
-          const SizedBox(height: 10),
+        const SizedBox(height: 10),
 
-          if (_currentStep == 0)
-            TextButton(
-              onPressed: widget.onSwitch,
-              child: Text(
-                'Masz już konto? Zaloguj się',
-                style: GoogleFonts.poppins(
-                  color: AppColors.primaryColor,
-                  fontSize: 16,
-                ),
+        if (_currentStep == 0)
+          TextButton(
+            onPressed: widget.onSwitch,
+            child: Text(
+              'Masz już konto? Zaloguj się',
+              style: GoogleFonts.poppins(
+                color: AppColors.primaryColor,
+                fontSize: 16,
               ),
-            ).animate().fadeIn(delay: 300.ms),
-        ],
-      ),
+            ),
+          ).animate().fadeIn(delay: 300.ms),
+      ],
     );
   }
 }

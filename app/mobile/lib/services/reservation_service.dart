@@ -10,47 +10,78 @@ class ReservationService {
   factory ReservationService() => _instance ??= ReservationService._();
   ReservationService._();
 
+  String _extractProblemDetail(DioException e, String fallback) {
+    final data = e.response?.data;
+    if (data is Map<String, dynamic>) {
+      if (data.containsKey('detail')) {
+        return data['detail'].toString();
+      }
+      if (data.containsKey('error')) {
+        return data['error'].toString();
+      }
+    }
+    return '$fallback: ${e.message}';
+  }
+
   /// Pobiera dostępne sloty do rezerwacji (tylko dla wolontariuszy)
   Future<List<ReservationSlot>> getAvailableSlots() async {
     try {
+      dev.log('ReservationService: Requesting available slots...');
       final response = await _api.get('/reservations/slots/available');
+      dev.log('ReservationService: Response status: ${response.statusCode}');
+      dev.log('ReservationService: Response data type: ${response.data.runtimeType}');
 
       if (response.statusCode == 200 && response.data is List) {
         final slotsData = response.data as List;
+        dev.log('ReservationService: Received ${slotsData.length} slots');
         return slotsData.map((slotJson) => ReservationSlot.fromJson(slotJson)).toList();
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');
     } on DioException catch (e) {
       dev.log('Błąd podczas pobierania dostępnych slotów: ${e.message}');
+      dev.log('Status code: ${e.response?.statusCode}');
+      dev.log('Response data: ${e.response?.data}');
 
       if (e.response?.statusCode == 403) {
         throw Exception('Brak uprawnień. Tylko wolontariusze mogą przeglądać dostępne terminy.');
       }
 
-      throw Exception('Nie udało się pobrać dostępnych terminów: ${e.message}');
+      throw Exception(_extractProblemDetail(e, 'Nie udało się pobrać dostępnych terminów'));
+    } catch (e) {
+      dev.log('Unexpected error in getAvailableSlots: $e');
+      throw Exception('Nieoczekiwany błąd: $e');
     }
   }
 
   /// Pobiera moje rezerwacje (jako wolontariusz)
   Future<List<ReservationSlot>> getMyReservations() async {
     try {
+      dev.log('ReservationService: Requesting my reservations...');
       final response = await _api.get('/reservations/my-slots');
+      dev.log('ReservationService: My slots response status: ${response.statusCode}');
+      dev.log('ReservationService: My slots response data type: ${response.data.runtimeType}');
 
       if (response.statusCode == 200 && response.data is List) {
         final slotsData = response.data as List;
+        dev.log('ReservationService: Received ${slotsData.length} my reservations');
         return slotsData.map((slotJson) => ReservationSlot.fromJson(slotJson)).toList();
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');
     } on DioException catch (e) {
       dev.log('Błąd podczas pobierania moich rezerwacji: ${e.message}');
+      dev.log('My slots status code: ${e.response?.statusCode}');
+      dev.log('My slots response data: ${e.response?.data}');
 
       if (e.response?.statusCode == 403) {
         throw Exception('Brak uprawnień. Tylko wolontariusze mogą przeglądać swoje rezerwacje.');
       }
 
-      throw Exception('Nie udało się pobrać twoich rezerwacji: ${e.message}');
+      throw Exception(_extractProblemDetail(e, 'Nie udało się pobrać twoich rezerwacji'));
+    } catch (e) {
+      dev.log('Unexpected error in getMyReservations: $e');
+      throw Exception('Nieoczekiwany błąd: $e');
     }
   }
 

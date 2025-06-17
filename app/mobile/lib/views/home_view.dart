@@ -361,22 +361,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.tune, color: Colors.black),
-            onPressed: _showDiscoverySettings,
-            tooltip: 'Ustawienia odkrywania',
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.black),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const HomeView(),
-                ),
-              );
-            },
-            tooltip: 'Ustawienia aplikacji',
-          ),
+          if (_selectedTabIndex == 0)
+            IconButton(
+              icon: const Icon(Icons.tune, color: Colors.black),
+              onPressed: _showDiscoverySettings,
+              tooltip: 'Ustawienia odkrywania',
+            ),
           Stack(
             children: [
               IconButton(

@@ -21,38 +21,21 @@ class UserService {
     required String lastName,
     required String birthDate,
     required String gender,
-    String? email,
-    String? phoneNumber,
-    String? city,
+    required String email,
+    required String phoneNumber,
     required String password,
-    int? shelterId,
-    required bool applyAsVolunteer,
   }) async {
     try {
-      String username;
-      if (email != null && email.isNotEmpty) {
-        username = email;
-      } else if (phoneNumber != null && phoneNumber.isNotEmpty) {
-        username = phoneNumber;
-      } else {
-        throw Exception('Either email or phone number must be provided');
-      }
-
       final resp = await _api.post('/auth/register', data: {
-        'username': username,
+        'username': email,
         'firstName': firstName,
         'lastName': lastName,
         'birthDate': birthDate,
         'gender': gender,
         'email': email,
         'phoneNumber': phoneNumber,
-        if (city != null) 'city': city,
         'password': password,
       });
-
-      if (resp.statusCode == 200) {
-        await login(username, password);
-      }
 
       return BasicResponse(resp.statusCode ?? 0, resp.data);
     } on DioException catch (e) {
@@ -166,13 +149,27 @@ class UserService {
 
   Future<bool> uploadProfileImage(String path) async {
     try {
+      String? mimeType = lookupMimeType(path);
+      if (mimeType == null || !mimeType.startsWith('image/')) {
+        dev.log('Nieprawidłowy format pliku: $mimeType');
+        return false;
+      }
+
       final formData = FormData.fromMap({
-        'image': await MultipartFile.fromFile(path),
+        'image': await MultipartFile.fromFile(
+          path,
+          contentType: MediaType.parse(mimeType),
+        ),
       });
+
       final resp = await _api.post('/user/profile-image', data: formData);
       return resp.statusCode == 200;
     } on DioException catch (e) {
       dev.log('Błąd podczas wysyłania zdjęcia profilu: ${e.message}');
+      if (e.response != null) {
+        dev.log('Response data: ${e.response?.data}');
+        dev.log('Response status: ${e.response?.statusCode}');
+      }
       return false;
     }
   }

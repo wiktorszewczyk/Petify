@@ -16,14 +16,20 @@ class ReservationSlot {
   });
 
   factory ReservationSlot.fromJson(Map<String, dynamic> json) {
-    return ReservationSlot(
-      id: json['id'],
-      petId: json['petId'],
-      startTime: DateTime.parse(json['startTime']),
-      endTime: DateTime.parse(json['endTime']),
-      status: json['status'],
-      reservedBy: json['reservedBy'],
-    );
+    try {
+      return ReservationSlot(
+        id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()),
+        petId: json['petId'] is int ? json['petId'] : int.parse(json['petId'].toString()),
+        startTime: DateTime.parse(json['startTime']),
+        endTime: DateTime.parse(json['endTime']),
+        status: json['status'] ?? 'UNKNOWN',
+        reservedBy: json['reservedBy'],
+      );
+    } catch (e) {
+      print('Error parsing ReservationSlot from JSON: $e');
+      print('JSON data: $json');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
