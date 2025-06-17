@@ -7,6 +7,7 @@ import 'dart:developer' as dev;
 import '../models/donation.dart';
 import '../models/shelter.dart';
 import '../services/payment_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../styles/colors.dart';
 import '../services/web_payment_service.dart';
 
@@ -175,6 +176,12 @@ class _PaymentViewState extends State<PaymentView> {
 
         switch (result.status) {
           case WebPaymentStatus.success:
+            CacheManager.invalidatePattern('donation_');
+            CacheManager.invalidatePattern('fundraiser_');
+            CacheManager.invalidatePattern('user_');
+            CacheManager.invalidatePattern('achievements_');
+            print('🗑️ PaymentView: Invalidated cache after successful WebView payment');
+
             await _showPaymentResultDialog(
               success: true,
               title: 'Płatność zakończona sukcesem!',
@@ -238,6 +245,13 @@ class _PaymentViewState extends State<PaymentView> {
         if (statusResponse.isCompleted) {
           timer.cancel();
           setState(() => _isProcessingPayment = false);
+
+          CacheManager.invalidatePattern('donation_');
+          CacheManager.invalidatePattern('fundraiser_');
+          CacheManager.invalidatePattern('user_');
+          CacheManager.invalidatePattern('achievements_');
+          print('🗑️ PaymentView: Invalidated cache after successful polling payment');
+
           await _showPaymentResultDialog(
             success: true,
             title: 'Płatność zakończona sukcesem!',
@@ -263,6 +277,13 @@ class _PaymentViewState extends State<PaymentView> {
           if (paymentStatus == 'SUCCEEDED') {
             timer.cancel();
             setState(() => _isProcessingPayment = false);
+
+            CacheManager.invalidatePattern('donation_');
+            CacheManager.invalidatePattern('fundraiser_');
+            CacheManager.invalidatePattern('user_');
+            CacheManager.invalidatePattern('achievements_');
+            print('🗑️ PaymentView: Invalidated cache after SUCCEEDED payment status');
+
             await _showPaymentResultDialog(
               success: true,
               title: 'Płatność zakończona sukcesem!',

@@ -30,7 +30,6 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
   }
 
   Future<void> _loadFavoritesFromCache() async {
-    // Spróbuj załadować z cache najpierw
     final cachedFavorites = CacheManager.get<List<Pet>>('favorites_pets');
 
     if (cachedFavorites != null && cachedFavorites.isNotEmpty) {
@@ -42,12 +41,10 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
 
       print('🚀 FavoritesView: Załadowano ${cachedFavorites.length} ulubionych z cache!');
 
-      // W tle sprawdź czy nie ma nowszych danych
       _refreshFavoritesInBackground();
       return;
     }
 
-    // Fallback - brak cache, załaduj standardowo
     print('⚠️ FavoritesView: Brak cache, ładowanie standardowe...');
     await _loadFavorites();
   }
@@ -76,7 +73,6 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
     try {
       final newFavorites = await _petService.getFavoritePets();
 
-      // Sprawdź czy są różnice
       if (_favoritePets == null ||
           newFavorites.length != _favoritePets!.length ||
           _favoritesChanged(newFavorites)) {
@@ -109,6 +105,9 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
           _favoritePets!.removeWhere((element) => element.id == pet.id);
         });
 
+        CacheManager.invalidatePattern('favorites_pets');
+        print('🗑️ FavoritesView: Invalidated favorites cache after removing pet ${pet.id}');
+
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -122,6 +121,8 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                   setState(() {
                     _favoritePets!.add(pet);
                   });
+                  CacheManager.invalidatePattern('favorites_pets');
+                  print('🗑️ FavoritesView: Invalidated favorites cache after re-adding pet ${pet.id}');
                 }
               },
             ),

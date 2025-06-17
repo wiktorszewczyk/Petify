@@ -69,7 +69,10 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(ctx);
-                Navigator.push(ctx, MaterialPageRoute(builder: (_) => const VolunteerApplicationView()));
+                Navigator.push(ctx, MaterialPageRoute(builder: (_) => const VolunteerApplicationView())).then((_) {
+                  _loadUserStatus();
+                  print('🔄 CommunitySupportView: Refreshing user status after returning from volunteer application');
+                });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,

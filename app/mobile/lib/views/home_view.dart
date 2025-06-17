@@ -423,6 +423,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       if (mounted && response.statusCode == 200) {
         _behaviorTracker.trackPetLike(pet.id);
 
+        CacheManager.invalidatePattern('favorites_pets');
+        print('🗑️ HomeView: Invalidated favorites cache after liking pet ${pet.id}');
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Dodano ${pet.name} do polubionych!'),
@@ -549,6 +552,27 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     });
   }
 
+  Future<void> _refreshAllData() async {
+    try {
+      CacheManager.invalidatePattern('pets_');
+      CacheManager.invalidatePattern('favorites_pets');
+
+      print('🔄 HomeView: Odświeżanie wszystkich danych...');
+
+      await _loadLikedPetsFromBackend();
+      await _loadFiltersAndPets();
+
+      print('✅ HomeView: Odświeżanie zakończone pomyślnie');
+    } catch (e) {
+      print('❌ HomeView: Błąd podczas odświeżania: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Nie udało się odświeżyć danych: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -662,231 +686,276 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     }
 
     if (_isError) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 60, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
-              'Nie udało się załadować danych',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+      return RefreshIndicator(
+        onRefresh: _refreshAllData,
+        color: AppColors.primaryColor,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 60, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Nie udało się załadować danych',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Pociągnij w dół, aby odświeżyć',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: _refreshAllData,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Spróbuj ponownie'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                      foregroundColor: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await _loadLikedPetsFromBackend();
-                await _loadPets();
-              },
-              icon: const Icon(Icons.refresh),
-              label: const Text('Spróbuj ponownie'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                foregroundColor: Colors.black,
-              ),
-            ),
-          ],
+          ),
         ),
       );
     }
 
     if (_pets.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/empty_pets.png',
-              height: 200,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Brak zwierząt w okolicy',
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+      return RefreshIndicator(
+        onRefresh: _refreshAllData,
+        color: AppColors.primaryColor,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/empty_pets.png',
+                    height: 200,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Brak zwierząt w okolicy',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Spróbuj zwiększyć zasięg poszukiwań\nlub zmienić filtry',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Pociągnij w dół, aby odświeżyć',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await _loadLikedPetsFromBackend();
+                      _showDiscoverySettings();
+                    },
+                    icon: const Icon(Icons.tune),
+                    label: const Text('Zmień filtry'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                      foregroundColor: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Spróbuj zwiększyć zasięg poszukiwań\nlub zmienić filtry',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await _loadLikedPetsFromBackend();
-                _showDiscoverySettings();
-              },
-              icon: const Icon(Icons.tune),
-              label: const Text('Zmień filtry'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                foregroundColor: Colors.black,
-              ),
-            ),
-          ],
+          ),
         ),
       );
     }
 
     final currentPet = _pets[_currentIndex];
 
-    return Column(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                if (_currentIndex < _pets.length - 2)
-                  Positioned.fill(
-                    child: PetCard(
-                      pet: _pets[_currentIndex + 2],
-                      key: _cardKeys.length > _currentIndex + 2 ? _cardKeys[_currentIndex + 2] : null,
-                    ).animate().scale(
-                      begin: const Offset(0.90, 0.90),
-                      end: const Offset(0.90, 0.90),
-                    ),
-                  ),
-
-                if (_currentIndex < _pets.length - 1)
-                  Positioned.fill(
-                    child: PetCard(
-                      pet: _pets[_currentIndex + 1],
-                      key: _cardKeys.length > _currentIndex + 1 ? _cardKeys[_currentIndex + 1] : null,
-                    ).animate().scale(
-                      begin: const Offset(0.95, 0.95),
-                      end: const Offset(0.95, 0.95),
-                    ),
-                  ),
-
-                if (_currentIndex < _pets.length)
-                  Positioned.fill(
-                    child: GestureDetector(
-                      onPanUpdate: _onDragUpdate,
-                      onPanEnd: _onDragEnd,
-                      child: AnimatedBuilder(
-                        animation: _swipeController,
-                        builder: (context, child) {
-                          final offset = _isAnimating ? _swipeAnimation.value : _dragPosition;
-                          final angle = _isAnimating ? _rotationAnimation.value : _dragPosition.dx * 0.001;
-
-                          return Transform.translate(
-                            offset: offset,
-                            child: Transform.rotate(
-                              angle: angle,
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: PetCard(
-                          pet: currentPet,
-                          key: _cardKeys.length > _currentIndex ? _cardKeys[_currentIndex] : null,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                if (_swipeDirection == SwipeDirection.right)
-                  Positioned(
-                    top: 40,
-                    left: 20,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.favorite, color: Colors.white, size: 30),
-                          const SizedBox(width: 8),
-                          Text(
-                            'POLUB',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ).animate().scale(
-                      duration: 200.ms,
-                      curve: Curves.easeOut,
-                    ),
-                  ),
-
-                if (_swipeDirection == SwipeDirection.left)
-                  Positioned(
-                    top: 40,
-                    right: 20,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.close, color: Colors.white, size: 30),
-                          const SizedBox(width: 8),
-                          Text(
-                            'POMIŃ',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ).animate().scale(
-                      duration: 200.ms,
-                      curve: Curves.easeOut,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return RefreshIndicator(
+      onRefresh: _refreshAllData,
+      color: AppColors.primaryColor,
+      child: Stack(
+        children: [
+          ListView(
             children: [
-              ActionButton(
-                icon: Icons.close,
-                backgroundColor: Colors.red,
-                onPressed: () => _onActionButtonPressed(SwipeDirection.left),
+              SizedBox(height: MediaQuery.of(context).size.height),
+            ],
+          ),
+          Column(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      if (_currentIndex < _pets.length - 2)
+                        Positioned.fill(
+                          child: PetCard(
+                            pet: _pets[_currentIndex + 2],
+                            key: _cardKeys.length > _currentIndex + 2 ? _cardKeys[_currentIndex + 2] : null,
+                          ).animate().scale(
+                            begin: const Offset(0.90, 0.90),
+                            end: const Offset(0.90, 0.90),
+                          ),
+                        ),
+
+                      if (_currentIndex < _pets.length - 1)
+                        Positioned.fill(
+                          child: PetCard(
+                            pet: _pets[_currentIndex + 1],
+                            key: _cardKeys.length > _currentIndex + 1 ? _cardKeys[_currentIndex + 1] : null,
+                          ).animate().scale(
+                            begin: const Offset(0.95, 0.95),
+                            end: const Offset(0.95, 0.95),
+                          ),
+                        ),
+
+                      if (_currentIndex < _pets.length)
+                        Positioned.fill(
+                          child: GestureDetector(
+                            onPanUpdate: _onDragUpdate,
+                            onPanEnd: _onDragEnd,
+                            child: AnimatedBuilder(
+                              animation: _swipeController,
+                              builder: (context, child) {
+                                final offset = _isAnimating ? _swipeAnimation.value : _dragPosition;
+                                final angle = _isAnimating ? _rotationAnimation.value : _dragPosition.dx * 0.001;
+
+                                return Transform.translate(
+                                  offset: offset,
+                                  child: Transform.rotate(
+                                    angle: angle,
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: PetCard(
+                                pet: currentPet,
+                                key: _cardKeys.length > _currentIndex ? _cardKeys[_currentIndex] : null,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      if (_swipeDirection == SwipeDirection.right)
+                        Positioned(
+                          top: 40,
+                          left: 20,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.favorite, color: Colors.white, size: 30),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'POLUB',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ).animate().scale(
+                            duration: 200.ms,
+                            curve: Curves.easeOut,
+                          ),
+                        ),
+
+                      if (_swipeDirection == SwipeDirection.left)
+                        Positioned(
+                          top: 40,
+                          right: 20,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.close, color: Colors.white, size: 30),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'POMIŃ',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ).animate().scale(
+                            duration: 200.ms,
+                            curve: Curves.easeOut,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
-              ActionButton(
-                icon: Icons.favorite,
-                backgroundColor: Colors.green,
-                size: 70,
-                onPressed: () => _onActionButtonPressed(SwipeDirection.right),
-              ),
-              ActionButton(
-                icon: Icons.volunteer_activism,
-                backgroundColor: Colors.blue,
-                onPressed: _showSupportOptions,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ActionButton(
+                      icon: Icons.close,
+                      backgroundColor: Colors.red,
+                      onPressed: () => _onActionButtonPressed(SwipeDirection.left),
+                    ),
+                    ActionButton(
+                      icon: Icons.favorite,
+                      backgroundColor: Colors.green,
+                      size: 70,
+                      onPressed: () => _onActionButtonPressed(SwipeDirection.right),
+                    ),
+                    ActionButton(
+                      icon: Icons.volunteer_activism,
+                      backgroundColor: Colors.blue,
+                      onPressed: _showSupportOptions,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

@@ -6,6 +6,7 @@ import '../models/user.dart';
 import '../models/achievement.dart';
 import '../services/user_service.dart';
 import '../services/achievement_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../styles/colors.dart';
 
 import '../widgets/profile/profile_header.dart';
@@ -60,6 +61,11 @@ class _ProfileViewState extends State<ProfileView>
     });
 
     try {
+      CacheManager.invalidatePattern('user_');
+      CacheManager.invalidatePattern('achievements_');
+
+      print('🔄 ProfileView: Odświeżanie danych profilu...');
+
       final userData = await UserService().getCurrentUser();
       final allAchievements =
       await AchievementService().getUserAchievements();
@@ -75,7 +81,10 @@ class _ProfileViewState extends State<ProfileView>
         _recentAchievements = _recentAchievements.take(3).toList();
         _isLoading = false;
       });
+
+      print('✅ ProfileView: Profil odświeżony pomyślnie');
     } catch (e) {
+      print('❌ ProfileView: Błąd podczas odświeżania profilu: $e');
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -244,46 +253,51 @@ class _ProfileViewState extends State<ProfileView>
 
   Widget _buildProfileContent() {
     final user = _user!;
-    return CustomScrollView(
-      controller: _scrollCtrl,
-      slivers: [
-        _buildAppBar(),
-        SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ProfileHeader(user: user),
+    return RefreshIndicator(
+      onRefresh: _loadUserProfile,
+      color: AppColors.primaryColor,
+      child: CustomScrollView(
+        controller: _scrollCtrl,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          _buildAppBar(),
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ProfileHeader(user: user),
 
-              VolunteerStatusCard(
-                user: user,
-                onVolunteerSignup: _handleVolunteerSignup,
-              ),
+                VolunteerStatusCard(
+                  user: user,
+                  onVolunteerSignup: _handleVolunteerSignup,
+                ),
 
-              if (_shouldShowVolunteerApplicationButton())
-                _buildVolunteerApplicationCard(),
+                if (_shouldShowVolunteerApplicationButton())
+                  _buildVolunteerApplicationCard(),
 
-              AchievementProgress(
-                level: user.level,
-                xpPoints: user.xpPoints,
-                xpToNextLevel: user.xpToNextLevel,
-              ),
-              QuickStats(user: user),
-              Achievements(achievements: _recentAchievements),
-              ActiveAchievements(user: user),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: TextButton(
-                  onPressed: _confirmDeactivate,
-                  child: Text(
-                    'Dezaktywuj konto',
-                    style: TextStyle(color: Colors.redAccent),
+                AchievementProgress(
+                  level: user.level,
+                  xpPoints: user.xpPoints,
+                  xpToNextLevel: user.xpToNextLevel,
+                ),
+                QuickStats(user: user),
+                Achievements(achievements: _recentAchievements),
+                ActiveAchievements(user: user),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: TextButton(
+                    onPressed: _confirmDeactivate,
+                    child: Text(
+                      'Dezaktywuj konto',
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

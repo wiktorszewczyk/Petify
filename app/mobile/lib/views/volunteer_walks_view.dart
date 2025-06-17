@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/reservation_slot.dart';
 import '../services/reservation_service.dart';
 import '../services/pet_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../styles/colors.dart';
 import '../models/pet.dart';
 import '../services/location_service.dart';
@@ -121,6 +122,10 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
 
     if (mounted) {
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        CacheManager.invalidatePattern('reservation_');
+        CacheManager.invalidatePattern('user_');
+        print('🗑️ VolunteerWalksView: Invalidated cache after reserving slot ${slot.id}');
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Termin został zarezerwowany!'),
@@ -181,6 +186,10 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
 
       if (mounted) {
         if (response.statusCode >= 200 && response.statusCode < 300) {
+          CacheManager.invalidatePattern('reservation_');
+          CacheManager.invalidatePattern('user_');
+          print('🗑️ VolunteerWalksView: Invalidated cache after canceling slot ${slot.id}');
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Rezerwacja została anulowana'),

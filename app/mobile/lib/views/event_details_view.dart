@@ -8,6 +8,7 @@ import '../services/feed_service.dart';
 import '../services/shelter_service.dart';
 import '../services/user_service.dart';
 import '../services/payment_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../models/event_participant.dart';
 import '../styles/colors.dart';
 import 'payment_view.dart';
@@ -103,6 +104,12 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     });
     try {
       await _feedService.joinEvent(int.parse(widget.event.id));
+
+      CacheManager.invalidatePattern('events_');
+      CacheManager.invalidatePattern('feed_');
+      CacheManager.invalidatePattern('user_');
+      print('🗑️ EventDetailsView: Invalidated cache after joining event ${widget.event.id}');
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
