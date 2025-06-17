@@ -1,116 +1,241 @@
-import 'dart:math';
-import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:stomp_dart_client/stomp_dart_client.dart';
 import '../models/message_model.dart';
+import '../models/user.dart';
+import 'api/initial_api.dart';
+import 'token_repository.dart';
+import 'user_service.dart';
+import 'notification_service.dart';
+import '../settings.dart';
+import 'cache/cache_manager.dart';
 
-// Callback type for message notifications
 typedef MessageNotificationCallback = void Function(MessageModel message);
 
-class MessageService {
+class MessageService with CacheableMixin {
   static final MessageService _instance = MessageService._internal();
 
-  // Message listeners for real-time updates
+  late final Dio _dio;
+  late final TokenRepository _tokenRepository;
+  late final UserService _userService;
+  late final NotificationService _notificationService;
+
+  StompClient? _stompClient;
+  bool _isStompConnected = false;
+  final Set<String> _subscribedRooms = {};
+
   final Map<String, List<MessageNotificationCallback>> _messageListeners = {};
+
+  final Map<String, List<MessageModel>> _conversationMessages = {};
+  List<ConversationModel>? _cachedConversations;
+
+  User? _currentUser;
 
   factory MessageService() {
     return _instance;
   }
 
   MessageService._internal() {
-    // Inicjalizacja danych demo na starcie
-    _initializeDemoData();
+    _dio = InitialApi().dio;
+    _tokenRepository = TokenRepository();
+    _userService = UserService();
+    _notificationService = NotificationService();
   }
 
-  // Lokalne przechowywanie konwersacji
-  List<ConversationModel> _conversations = [];
-
-  // Lokalne przechowywanie wiadomości dla każdej konwersacji
-  final Map<String, List<MessageModel>> _conversationMessages = {};
-
-  // Inicjalizacja danych demonstracyjnych
-  void _initializeDemoData() {
-    // Przygotuj kilka przykładowych konwersacji z demo zwierzętami
-    final demoConversation1 = ConversationModel(
-      id: 'conv_wawel',
-      petId: 'pet1',
-      petName: 'Wawel',
-      petImageUrl: 'assets/demo/wawel1.jpg',
-      shelterName: 'Łódzkie Schronisko',
-      lastMessage: 'Dzień dobry, chciałbym dowiedzieć się więcej o Wawelu.',
-      lastMessageTime: DateTime.now().subtract(Duration(hours: 2)),
-      unread: false,
-    );
-
-    final demoConversation2 = ConversationModel(
-      id: 'conv_misia',
-      petId: 'pet2',
-      petName: 'Misia',
-      petImageUrl: 'assets/demo/misia1.jpg',
-      shelterName: 'Azyl Pod Sercem',
-      lastMessage: 'Czy Misia toleruje inne zwierzęta?',
-      lastMessageTime: DateTime.now().subtract(Duration(days: 1)),
-      unread: true,
-    );
-
-    _conversations = [demoConversation1, demoConversation2];
-
-    // Przygotuj wiadomości dla pierwszej konwersacji
-    _conversationMessages['conv_wawel'] = [
-      MessageModel(
-        id: 'msg_wawel_1',
-        senderId: 'user123',
-        conversationId: 'conv_wawel',
-        content: 'Dzień dobry, chciałbym dowiedzieć się więcej o Wawelu.',
-        timestamp: DateTime.now().subtract(Duration(hours: 3)),
-        type: MessageType.text,
-      ),
-      MessageModel(
-        id: 'msg_wawel_2',
-        senderId: 's1',
-        conversationId: 'conv_wawel',
-        content: 'Dzień dobry! Wawel to wspaniały pies, bardzo przyjazny i energiczny. Jest u nas już od 6 miesięcy.',
-        timestamp: DateTime.now().subtract(Duration(hours: 2, minutes: 30)),
-        type: MessageType.text,
-      ),
-      MessageModel(
-        id: 'msg_wawel_3',
-        senderId: 'user123',
-        conversationId: 'conv_wawel',
-        content: 'Jak wygląda proces adopcyjny? Czy mogę przyjść go zobaczyć?',
-        timestamp: DateTime.now().subtract(Duration(hours: 2)),
-        type: MessageType.text,
-      ),
-    ];
-
-    // Przygotuj wiadomości dla drugiej konwersacji
-    _conversationMessages['conv_misia'] = [
-      MessageModel(
-        id: 'msg_misia_1',
-        senderId: 'user123',
-        conversationId: 'conv_misia',
-        content: 'Witam, zauważyłem że Misia jest oznaczona jako pilna do adopcji. Co to dokładnie oznacza?',
-        timestamp: DateTime.now().subtract(Duration(days: 1, hours: 5)),
-        type: MessageType.text,
-      ),
-      MessageModel(
-        id: 'msg_misia_2',
-        senderId: 's2',
-        conversationId: 'conv_misia',
-        content: 'Dzień dobry, Misia jest u nas na leczeniu i potrzebujemy dla niej domu na stałe jak najszybciej. Jest bardzo przyjazna i towarzyska.',
-        timestamp: DateTime.now().subtract(Duration(days: 1, hours: 4)),
-        type: MessageType.text,
-      ),
-      MessageModel(
-        id: 'msg_misia_3',
-        senderId: 'user123',
-        conversationId: 'conv_misia',
-        content: 'Czy Misia toleruje inne zwierzęta?',
-        timestamp: DateTime.now().subtract(Duration(days: 1)),
-        type: MessageType.text,
-      ),
-    ];
+  Future<String> _getCurrentUsername() async {
+    try {
+      if (_currentUser == null) {
+        _currentUser = await _userService.getCurrentUser();
+      }
+      return _currentUser?.username ?? '';
+    } catch (e) {
+      print('Error getting current username: $e');
+      return '';
+    }
   }
 
-  // Dodaj listener dla nowych wiadomości w konwersacji
+  Future<User?> getCurrentUser() async {
+    try {
+      if (_currentUser == null) {
+        _currentUser = await _userService.getCurrentUser();
+      }
+      return _currentUser;
+    } catch (e) {
+      print('Error getting current user: $e');
+      return null;
+    }
+  }
+
+  Future<void> _setupStompConnection() async {
+    if (_isStompConnected) return;
+
+    try {
+      final token = await _tokenRepository.getToken();
+      if (token == null) return;
+
+      final wsUrl = Settings.getServerUrl() + '/ws-chat';
+
+      _stompClient = StompClient(
+        config: StompConfig.sockJS(
+          url: wsUrl,
+          onConnect: (StompFrame frame) {
+            print('STOMP connected successfully');
+            _isStompConnected = true;
+          },
+          onWebSocketError: (dynamic error) {
+            print('STOMP WebSocket error: $error');
+            _isStompConnected = false;
+          },
+          onStompError: (StompFrame frame) {
+            print('STOMP error: ${frame.body}');
+            _isStompConnected = false;
+          },
+          onDisconnect: (StompFrame frame) {
+            print('STOMP disconnected');
+            _isStompConnected = false;
+            _subscribedRooms.clear();
+          },
+          stompConnectHeaders: {
+            'Authorization': 'Bearer $token',
+          },
+          webSocketConnectHeaders: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      _stompClient!.activate();
+    } catch (e) {
+      print('Error setting up STOMP connection: $e');
+    }
+  }
+
+  Future<void> _subscribeToRoom(String roomId) async {
+    if (_subscribedRooms.contains(roomId)) return;
+
+    try {
+      final currentUser = await getCurrentUser();
+      if (currentUser == null) return;
+
+      final username = currentUser.username;
+
+      if (!_isStompConnected) {
+        await _setupStompConnection();
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (!_isStompConnected) {
+          print('Failed to establish STOMP connection');
+          return;
+        }
+      }
+
+      print('Subscribing to /user/$username/queue/chat/$roomId');
+
+      _stompClient!.subscribe(
+        destination: '/user/$username/queue/chat/$roomId',
+        callback: (StompFrame frame) {
+          try {
+            print('Received STOMP message: ${frame.body}');
+            final messageData = json.decode(frame.body!);
+            final message = MessageModel(
+              id: messageData['id'].toString(),
+              senderId: messageData['sender'],
+              conversationId: roomId,
+              content: messageData['content'],
+              timestamp: DateTime.parse(messageData['timestamp']),
+              type: MessageType.text,
+            );
+
+            if (!_conversationMessages.containsKey(roomId)) {
+              _conversationMessages[roomId] = [];
+            }
+            _conversationMessages[roomId]!.add(message);
+
+            _handleIncomingMessage(message);
+
+            _notifyMessageListeners(roomId, message);
+          } catch (e) {
+            print('Error parsing STOMP message: $e');
+          }
+        },
+      );
+
+      if (_subscribedRooms.isEmpty) {
+        _stompClient!.subscribe(
+          destination: '/user/$username/queue/unread',
+          callback: (StompFrame frame) {
+            try {
+              final unreadCount = json.decode(frame.body!) as int;
+              print('Unread count updated: $unreadCount');
+              // TODO: Update unread count in UI if needed
+            } catch (e) {
+              print('Error parsing unread count: $e');
+            }
+          },
+        );
+      }
+
+      _subscribedRooms.add(roomId);
+    } catch (e) {
+      print('Error subscribing to room $roomId: $e');
+    }
+  }
+
+  Future<void> _handleIncomingMessage(MessageModel message) async {
+    try {
+      final currentUsername = await _getCurrentUsername();
+
+      if (_cachedConversations != null) {
+        final idx = _cachedConversations!.indexWhere((conv) => conv.id == message.conversationId);
+        if (idx != -1) {
+          final updatedConversation = ConversationModel(
+            id: _cachedConversations![idx].id,
+            petId: _cachedConversations![idx].petId,
+            petName: _cachedConversations![idx].petName,
+            petImageUrl: _cachedConversations![idx].petImageUrl,
+            shelterName: _cachedConversations![idx].shelterName,
+            lastMessage: message.content,
+            lastMessageTime: message.timestamp,
+            unread: message.senderId != currentUsername,
+          );
+
+          _cachedConversations![idx] = updatedConversation;
+          _cachedConversations!.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+        }
+      }
+
+      final cacheKey = 'messages_${message.conversationId}';
+      final currentMessages = _conversationMessages[message.conversationId] ?? [];
+      CacheManager.set(cacheKey, currentMessages, ttl: Duration(minutes: 10));
+
+      if (message.senderId != currentUsername) {
+        final conversation = _cachedConversations?.firstWhere(
+              (conv) => conv.id == message.conversationId,
+          orElse: () => ConversationModel(
+            id: message.conversationId,
+            petId: '',
+            petName: 'Nieznany zwierzak',
+            petImageUrl: 'assets/images/empty_pets.png',
+            shelterName: 'Schronisko',
+            lastMessage: message.content,
+            lastMessageTime: message.timestamp,
+            unread: true,
+          ),
+        );
+
+        if (conversation != null) {
+          await _notificationService.addChatNotification(
+            title: 'Nowa wiadomość o ${conversation.petName}',
+            body: message.content,
+            conversationId: message.conversationId,
+            petName: conversation.petName,
+          );
+        }
+      }
+    } catch (e) {
+      print('Error handling incoming message notification: $e');
+    }
+  }
+
   void addMessageListener(String conversationId, MessageNotificationCallback callback) {
     if (!_messageListeners.containsKey(conversationId)) {
       _messageListeners[conversationId] = [];
@@ -118,7 +243,6 @@ class MessageService {
     _messageListeners[conversationId]!.add(callback);
   }
 
-  // Usuń listener dla konwersacji
   void removeMessageListener(String conversationId, MessageNotificationCallback callback) {
     if (_messageListeners.containsKey(conversationId)) {
       _messageListeners[conversationId]!.remove(callback);
@@ -128,7 +252,6 @@ class MessageService {
     }
   }
 
-  // Notyfikuj subskrybentów o nowej wiadomości
   void _notifyMessageListeners(String conversationId, MessageModel message) {
     if (_messageListeners.containsKey(conversationId)) {
       for (final callback in _messageListeners[conversationId]!) {
@@ -137,156 +260,270 @@ class MessageService {
     }
   }
 
-  // Pobieranie listy konwersacji
-  Future<List<ConversationModel>> getConversations() async {
-    // Zwracanie lokalnej kopii konwersacji
-    return _conversations;
+  void clearCache() {
+    _cachedConversations = null;
+    _conversationMessages.clear();
   }
 
-  // Pobierz wiadomości dla konkretnej konwersacji
+  Future<List<ConversationModel>> getConversations({bool forceRefresh = false}) async {
+    const cacheKey = 'conversations_list';
+
+    if (forceRefresh) {
+      CacheManager.invalidate(cacheKey);
+      clearCache();
+    }
+
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _dio.get('/chat/rooms');
+
+        if (response.statusCode == 200) {
+          final List<dynamic> roomsData = response.data;
+
+          final conversations = <ConversationModel>[];
+
+          for (final roomData in roomsData) {
+            try {
+              final petResponse = await _dio.get('/pets/${roomData['petId']}');
+              final petData = petResponse.data;
+
+              String shelterName = 'Unknown Shelter';
+              try {
+                if (petData['shelterId'] != null) {
+                  final shelterResponse = await _dio.get('/shelters/${petData['shelterId']}');
+                  final shelterData = shelterResponse.data;
+                  shelterName = shelterData['name'] ?? 'Unknown Shelter';
+                }
+              } catch (e) {
+                print('Error fetching shelter details: $e');
+                shelterName = roomData['shelterName'] ?? 'Unknown Shelter';
+              }
+
+              String lastMessage = 'Naciśnij aby rozpocząć czat';
+              DateTime lastMessageTime = DateTime.now();
+
+              try {
+                final historyResponse = await _dio.get('/chat/history/${roomData['id']}?size=1');
+                if (historyResponse.statusCode == 200) {
+                  final historyData = historyResponse.data;
+                  final List<dynamic> lastMessages = historyData['content'] ?? [];
+                  if (lastMessages.isNotEmpty) {
+                    final lastMessageData = lastMessages.first;
+                    lastMessage = lastMessageData['content'] ?? 'Wiadomość';
+                    lastMessageTime = DateTime.parse(lastMessageData['timestamp']);
+                  }
+                }
+              } catch (e) {
+                print('Error fetching last message for room ${roomData['id']}: $e');
+              }
+
+              final conversation = ConversationModel(
+                id: roomData['id'].toString(),
+                petId: roomData['petId'].toString(),
+                petName: petData['name'] ?? 'Unknown Pet',
+                petImageUrl: petData['imageUrl'] ?? 'assets/images/empty_pets.png',
+                shelterName: shelterName,
+                lastMessage: lastMessage,
+                lastMessageTime: lastMessageTime,
+                unread: (roomData['unreadCount'] ?? 0) > 0,
+              );
+
+              conversations.add(conversation);
+            } catch (e) {
+              print('Error fetching pet details for pet ${roomData['petId']}: $e');
+
+              String lastMessage = 'Naciśnij aby rozpocząć czat';
+              DateTime lastMessageTime = DateTime.now();
+
+              try {
+                final historyResponse = await _dio.get('/chat/history/${roomData['id']}?size=1');
+                if (historyResponse.statusCode == 200) {
+                  final historyData = historyResponse.data;
+                  final List<dynamic> lastMessages = historyData['content'] ?? [];
+                  if (lastMessages.isNotEmpty) {
+                    final lastMessageData = lastMessages.first;
+                    lastMessage = lastMessageData['content'] ?? 'Wiadomość';
+                    lastMessageTime = DateTime.parse(lastMessageData['timestamp']);
+                  }
+                }
+              } catch (e) {
+                print('Error fetching last message for room ${roomData['id']} (fallback): $e');
+              }
+
+              final conversation = ConversationModel(
+                id: roomData['id'].toString(),
+                petId: roomData['petId'].toString(),
+                petName: 'Unknown Pet',
+                petImageUrl: 'assets/images/empty_pets.png',
+                shelterName: roomData['shelterName'] ?? 'Unknown Shelter',
+                lastMessage: lastMessage,
+                lastMessageTime: lastMessageTime,
+                unread: (roomData['unreadCount'] ?? 0) > 0,
+              );
+              conversations.add(conversation);
+            }
+          }
+
+          conversations.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+
+          _cachedConversations = conversations;
+          return conversations;
+        } else {
+          throw Exception('Failed to load conversations: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error loading conversations: $e');
+        return _cachedConversations ?? [];
+      }
+    }, ttl: Duration(minutes: 5));
+  }
+
   Future<List<MessageModel>> getMessages(String conversationId) async {
-    // Jeśli nie mamy wiadomości dla tej konwersacji, inicjalizujemy pustą listę
-    if (!_conversationMessages.containsKey(conversationId)) {
-      _conversationMessages[conversationId] = [];
+    final cacheKey = 'messages_$conversationId';
+
+    final cachedMessages = CacheManager.get<List<MessageModel>>(cacheKey);
+    if (cachedMessages != null) {
+      print('Returning CacheManager cached messages for conversation $conversationId: ${cachedMessages.length} messages');
+      _conversationMessages[conversationId] = cachedMessages;
+      await _setupStompConnection();
+      await _subscribeToRoom(conversationId);
+      return cachedMessages;
     }
 
-    return _conversationMessages[conversationId]!;
+    return cachedFetch(cacheKey, () async {
+      try {
+        if (_conversationMessages.containsKey(conversationId) && _conversationMessages[conversationId]!.isNotEmpty) {
+          print('Returning local cached messages for conversation $conversationId: ${_conversationMessages[conversationId]!.length} messages');
+          return _conversationMessages[conversationId]!;
+        }
+
+        print('Fetching message history for conversation $conversationId');
+        final response = await _dio.get('/chat/history/$conversationId');
+
+        if (response.statusCode == 200) {
+          final data = response.data;
+          print('Message history response: $data');
+          final List<dynamic> messagesData = data['content'] ?? [];
+          print('Found ${messagesData.length} messages in history');
+
+          final messages = messagesData.map((messageData) {
+            return MessageModel(
+              id: messageData['id'].toString(),
+              senderId: messageData['sender'],
+              conversationId: conversationId,
+              content: messageData['content'],
+              timestamp: DateTime.parse(messageData['timestamp']),
+              type: MessageType.text,
+            );
+          }).toList();
+
+          messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+          _conversationMessages[conversationId] = messages;
+
+          await _setupStompConnection();
+          await _subscribeToRoom(conversationId);
+
+          return messages;
+        } else {
+          throw Exception('Failed to load messages: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error loading messages for conversation $conversationId: $e');
+        return _conversationMessages[conversationId] ?? [];
+      }
+    }, ttl: Duration(minutes: 10));
   }
 
-  // Wyślij nową wiadomość
   Future<MessageModel> sendMessage(String conversationId, String content, {MessageType type = MessageType.text}) async {
-    const String currentUserId = 'user123'; // ID aktualnego użytkownika
+    try {
+      final currentUsername = await _getCurrentUsername();
 
-    // Tworzenie nowej wiadomości
-    final newMessage = MessageModel(
-      id: 'msg_${DateTime.now().millisecondsSinceEpoch}',
-      senderId: currentUserId,
-      conversationId: conversationId,
-      content: content,
-      timestamp: DateTime.now(),
-      type: type,
-    );
+      if (_isStompConnected && _stompClient != null) {
+        print('Sending message via STOMP to /app/chat/$conversationId: $content');
+        _stompClient!.send(
+          destination: '/app/chat/$conversationId',
+          body: content,
+        );
+      } else {
+        print('STOMP not connected, cannot send message');
+      }
 
-    // Dodajemy wiadomość do lokalnego przechowywania
-    if (!_conversationMessages.containsKey(conversationId)) {
-      _conversationMessages[conversationId] = [];
-    }
-    _conversationMessages[conversationId]!.add(newMessage);
-
-    // Aktualizujemy konwersację o ostatnią wiadomość
-    int idx = _conversations.indexWhere((conv) => conv.id == conversationId);
-    if (idx != -1) {
-      final updatedConversation = ConversationModel(
-        id: _conversations[idx].id,
-        petId: _conversations[idx].petId,
-        petName: _conversations[idx].petName,
-        petImageUrl: _conversations[idx].petImageUrl,
-        shelterName: _conversations[idx].shelterName,
-        lastMessage: content,
-        lastMessageTime: DateTime.now(),
-        unread: false, // Własna wiadomość jest zawsze przeczytana
+      final newMessage = MessageModel(
+        id: 'temp_${DateTime.now().millisecondsSinceEpoch}',
+        senderId: currentUsername,
+        conversationId: conversationId,
+        content: content,
+        timestamp: DateTime.now(),
+        type: type,
       );
 
-      _conversations[idx] = updatedConversation;
+      if (!_conversationMessages.containsKey(conversationId)) {
+        _conversationMessages[conversationId] = [];
+      }
+      _conversationMessages[conversationId]!.add(newMessage);
 
-      // Sortowanie konwersacji od najnowszej
-      _conversations.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+      _notifyMessageListeners(conversationId, newMessage);
+
+      if (_cachedConversations != null) {
+        final idx = _cachedConversations!.indexWhere((conv) => conv.id == conversationId);
+        if (idx != -1) {
+          final updatedConversation = ConversationModel(
+            id: _cachedConversations![idx].id,
+            petId: _cachedConversations![idx].petId,
+            petName: _cachedConversations![idx].petName,
+            petImageUrl: _cachedConversations![idx].petImageUrl,
+            shelterName: _cachedConversations![idx].shelterName,
+            lastMessage: content,
+            lastMessageTime: newMessage.timestamp,
+            unread: false,
+          );
+
+          _cachedConversations![idx] = updatedConversation;
+          _cachedConversations!.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+        }
+      }
+
+      CacheManager.invalidate('conversations_list');
+
+      final cacheKey = 'messages_$conversationId';
+      final currentMessages = _conversationMessages[conversationId] ?? [];
+      CacheManager.set(cacheKey, currentMessages, ttl: Duration(minutes: 10));
+
+      return newMessage;
+    } catch (e) {
+      print('Error sending message: $e');
+      throw Exception('Failed to send message: $e');
     }
-
-    // Symulacja odpowiedzi ze schroniska po 1-3 sekundach
-    _simulateShelterResponse(conversationId);
-
-    return newMessage;
   }
 
-  // Symulacja odpowiedzi ze schroniska
-  void _simulateShelterResponse(String conversationId) async {
-    // Znajdź konwersację
-    final conversationIndex = _conversations.indexWhere((conv) => conv.id == conversationId);
 
-    // Jeśli nie znaleziono konwersacji, przerwij
-    if (conversationIndex == -1) return;
-
-    // Pobierz konwersację
-    final conversation = _conversations[conversationIndex];
-
-    final random = Random();
-
-    // Lista możliwych odpowiedzi ze schroniska
-    final responses = [
-      'Z przyjemnością umówimy spotkanie. Kiedy byłby Panu/Pani dogodny termin?',
-    ];
-
-    // Losowy czas odpowiedzi (1-3 sekund)
-    final replyDelay = Duration(milliseconds: 1000 + random.nextInt(2000));
-
-    // Opóźnienie przed wysłaniem odpowiedzi
-    await Future.delayed(replyDelay);
-
-    // ID schroniska wyciągamy z ID zwierzaka
-    String shelterId = 's${conversation.id.replaceAll(RegExp(r'[^0-9]'), '')}';
-    if (shelterId == 's') {
-      // Fallback jeśli nie możemy wyciągnąć ID z konwersacji
-      shelterId = 'shelter${random.nextInt(5) + 1}';
-    }
-
-    // Tworzymy odpowiedź
-    final shelterMessage = MessageModel(
-      id: 'msg_${DateTime.now().millisecondsSinceEpoch}',
-      senderId: shelterId,
-      conversationId: conversationId,
-      content: responses[random.nextInt(responses.length)],
-      timestamp: DateTime.now(),
-      type: MessageType.text,
-    );
-
-    // Dodajemy odpowiedź do lokalnego przechowywania
-    _conversationMessages[conversationId]!.add(shelterMessage);
-
-    // Aktualizujemy konwersację o ostatnią wiadomość
-    int idx = _conversations.indexWhere((conv) => conv.id == conversationId);
-    if (idx != -1) {
-      final updatedConversation = ConversationModel(
-        id: _conversations[idx].id,
-        petId: _conversations[idx].petId,
-        petName: _conversations[idx].petName,
-        petImageUrl: _conversations[idx].petImageUrl,
-        shelterName: _conversations[idx].shelterName,
-        lastMessage: shelterMessage.content,
-        lastMessageTime: DateTime.now(),
-        unread: true, // Nowa wiadomość od schroniska jest nieprzeczytana
-      );
-
-      _conversations[idx] = updatedConversation;
-
-      // Sortowanie konwersacji od najnowszej
-      _conversations.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
-    }
-
-    // Powiadom nasłuchujących o nowej wiadomości
-    _notifyMessageListeners(conversationId, shelterMessage);
-  }
-
-  // Oznacz wiadomości jako przeczytane
   Future<void> markMessagesAsRead(String conversationId) async {
-    int idx = _conversations.indexWhere((conv) => conv.id == conversationId);
-    if (idx != -1 && _conversations[idx].unread) {
-      final updatedConversation = ConversationModel(
-        id: _conversations[idx].id,
-        petId: _conversations[idx].petId,
-        petName: _conversations[idx].petName,
-        petImageUrl: _conversations[idx].petImageUrl,
-        shelterName: _conversations[idx].shelterName,
-        lastMessage: _conversations[idx].lastMessage,
-        lastMessageTime: _conversations[idx].lastMessageTime,
-        unread: false, // Oznaczamy jako przeczytane
-      );
+    try {
+      // await _dio.post('/chat/rooms/$conversationId/read');
 
-      _conversations[idx] = updatedConversation;
+      if (_cachedConversations != null) {
+        final idx = _cachedConversations!.indexWhere((conv) => conv.id == conversationId);
+        if (idx != -1 && _cachedConversations![idx].unread) {
+          final updatedConversation = ConversationModel(
+            id: _cachedConversations![idx].id,
+            petId: _cachedConversations![idx].petId,
+            petName: _cachedConversations![idx].petName,
+            petImageUrl: _cachedConversations![idx].petImageUrl,
+            shelterName: _cachedConversations![idx].shelterName,
+            lastMessage: _cachedConversations![idx].lastMessage,
+            lastMessageTime: _cachedConversations![idx].lastMessageTime,
+            unread: false,
+          );
+
+          _cachedConversations![idx] = updatedConversation;
+        }
+      }
+    } catch (e) {
+      print('Error marking messages as read: $e');
     }
   }
 
-  // Utwórz nową konwersację
   Future<String> createConversation({
     required String petId,
     required String petName,
@@ -294,45 +531,111 @@ class MessageService {
     required String shelterName,
     required String petImageUrl,
   }) async {
-    // Sprawdź czy konwersacja dla tego zwierzaka już istnieje
-    final existingIndex = _conversations.indexWhere((conv) => conv.petId == petId);
+    try {
+      final conversations = await getConversations();
+      final existingConversation = conversations
+          .where((conv) => conv.petId == petId)
+          .toList();
 
-    if (existingIndex != -1) {
-      return _conversations[existingIndex].id;
+      if (existingConversation.isNotEmpty) {
+        return existingConversation.first.id;
+      }
+
+      final response = await _dio.get('/chat/room/$petId');
+
+      if (response.statusCode == 200) {
+        final roomData = response.data;
+
+        final conversationId = roomData['id'].toString();
+
+        String actualShelterName = shelterName;
+        try {
+          final shelterResponse = await _dio.get('/shelters/$shelterId');
+          final shelterData = shelterResponse.data;
+          actualShelterName = shelterData['name'] ?? shelterName;
+        } catch (e) {
+          print('Error fetching shelter details in createConversation: $e');
+        }
+
+        final newConversation = ConversationModel(
+          id: conversationId,
+          petId: petId,
+          petName: petName,
+          petImageUrl: petImageUrl,
+          shelterName: actualShelterName,
+          lastMessage: 'Nawiązano kontakt',
+          lastMessageTime: DateTime.now(),
+          unread: false,
+        );
+
+        if (_cachedConversations == null) {
+          _cachedConversations = [];
+        }
+        _cachedConversations!.insert(0, newConversation);
+
+        _conversationMessages[conversationId] = [];
+
+        CacheManager.invalidate('conversations_list');
+
+        final messagesCacheKey = 'messages_$conversationId';
+        CacheManager.set(messagesCacheKey, <MessageModel>[], ttl: Duration(minutes: 10));
+
+        await _setupStompConnection();
+        await _subscribeToRoom(conversationId);
+
+        return conversationId;
+      } else {
+        throw Exception('Failed to create conversation: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error creating conversation: $e');
+      throw Exception('Failed to create conversation: $e');
     }
-
-    // Tworzenie nowej konwersacji
-    final conversationId = 'conv_${DateTime.now().millisecondsSinceEpoch}';
-
-    final newConversation = ConversationModel(
-      id: conversationId,
-      petId: petId,
-      petName: petName,
-      petImageUrl: petImageUrl,
-      shelterName: shelterName,
-      lastMessage: 'Nawiązano kontakt', // Początkowo pusta wiadomość
-      lastMessageTime: DateTime.now(),
-      unread: false,
-    );
-
-    // Dodajemy nową konwersację na początku listy
-    _conversations.insert(0, newConversation);
-
-    // Inicjalizujemy pustą listę wiadomości dla tej konwersacji
-    _conversationMessages[conversationId] = [];
-
-    return conversationId;
   }
 
-  // Usuń konwersację
   Future<void> deleteConversation(String conversationId) async {
-    // Usuwamy konwersację z listy
-    _conversations.removeWhere((conv) => conv.id == conversationId);
+    try {
+      await _dio.delete('/chat/rooms/$conversationId');
 
-    // Usuwamy wiadomości powiązane z tą konwersacją
-    _conversationMessages.remove(conversationId);
+      _cachedConversations?.removeWhere((conv) => conv.id == conversationId);
 
-    // Usuwamy wszystkie listenery dla tej konwersacji
-    _messageListeners.remove(conversationId);
+      _conversationMessages.remove(conversationId);
+
+      if (_stompClient != null && _subscribedRooms.contains(conversationId)) {
+        final currentUser = await getCurrentUser();
+        if (currentUser != null) {
+          final username = currentUser.username;
+        }
+        _subscribedRooms.remove(conversationId);
+      }
+
+      _messageListeners.remove(conversationId);
+    } catch (e) {
+      print('Error deleting conversation: $e');
+      throw Exception('Failed to delete conversation: $e');
+    }
+  }
+
+  Future<int> getUnreadMessageCount() async {
+    try {
+      final response = await _dio.get('/chat/unread/count');
+      if (response.statusCode == 200) {
+        return response.data as int;
+      }
+      return 0;
+    } catch (e) {
+      print('Error getting unread count: $e');
+      return 0;
+    }
+  }
+
+  void dispose() {
+    if (_stompClient != null) {
+      _stompClient!.deactivate();
+    }
+    _stompClient = null;
+    _isStompConnected = false;
+    _subscribedRooms.clear();
+    _messageListeners.clear();
   }
 }

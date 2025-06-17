@@ -1,7 +1,8 @@
-import  'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/user.dart';
 import '../../styles/colors.dart';
+import '../../services/user_service.dart';
 
 class ProfileHeader extends StatelessWidget {
   final User user;
@@ -13,25 +14,39 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayName = [
+      if (user.firstName != null) user.firstName,
+      if (user.lastName != null) user.lastName,
+    ].whereType<String>().join(' ');
+    final nameToShow = displayName.isNotEmpty ? displayName : user.username;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
       child: Row(
         children: [
           Hero(
             tag: 'profileAvatar',
-            child: Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primaryColor, width: 2),
-                image: DecorationImage(
-                  image: user.profileImageUrl != null
-                      ? NetworkImage(user.profileImageUrl!)
-                      : const AssetImage('assets/images/default_avatar.jpg') as ImageProvider,
-                  fit: BoxFit.cover,
-                ),
-              ),
+            child: FutureBuilder<String?>(
+              future: user.hasProfileImage ? UserService().getProfileImage() : Future.value(null),
+              builder: (context, snapshot) {
+                final image = snapshot.data;
+                return Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.primaryColor, width: 2),
+                    image: DecorationImage(
+                      image: image != null
+                          ? (image.startsWith('http') || image.startsWith('data:'))
+                          ? NetworkImage(image)
+                          : AssetImage('assets/images/default_avatar.jpg') as ImageProvider
+                          : const AssetImage('assets/images/default_avatar.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 20),
@@ -40,7 +55,7 @@ class ProfileHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.firstName ?? user.username ?? 'Użytkownik',
+                  nameToShow,
                   style: GoogleFonts.poppins(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -48,30 +63,12 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _getUserRoleTitle(),
+                  _getUserRoleTitle(user.level),
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     color: AppColors.primaryColor,
                     fontWeight: FontWeight.w500,
                   ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.place_outlined,
-                      size: 16,
-                      color: Colors.grey[600],
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      user.location ?? 'Brak lokalizacji',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
@@ -81,9 +78,7 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 
-  String _getUserRoleTitle() {
-    final level = user.level ?? 1;
-
+  String _getUserRoleTitle(int level) {
     if (level >= 10) return 'Opiekun Zwierząt 🌟';
     if (level >= 7) return 'Przyjaciel Schroniska 🏆';
     if (level >= 5) return 'Aktywny Pomocnik 🔥';

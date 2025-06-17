@@ -92,3 +92,4 @@ build/
 ### Keys ###
 secrets.properties
 application.properties
+**/secrets.properties

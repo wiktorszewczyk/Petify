@@ -21,12 +21,12 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
   List<ShelterPost> _filteredPosts = [];
 
   final List<String> _placeholderImages = [
-    'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // pies
-    'https://images.pexels.com/photos/2352276/pexels-photo-2352276.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // karma dla kotów
-    'https://images.pexels.com/photos/1633522/pexels-photo-1633522.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // dzień otwarty
-    'https://images.pexels.com/photos/1254140/pexels-photo-1254140.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // spacer z psem
-    'https://images.pexels.com/photos/551628/pexels-photo-551628.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // kotek
-    'https://images.pexels.com/photos/1906153/pexels-photo-1906153.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // wolontariat
+    'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/2352276/pexels-photo-2352276.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/1633522/pexels-photo-1633522.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/1254140/pexels-photo-1254140.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/551628/pexels-photo-551628.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/1906153/pexels-photo-1906153.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
   ];
 
   @override
@@ -49,7 +49,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
     try {
       await Future.delayed(const Duration(seconds: 1));
 
-      // Symulacja danych z backendu
       final posts = [
         ShelterPost(
           id: '1',
@@ -223,7 +222,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
       ),
       child: Column(
         children: [
-          // Pole wyszukiwania
           TextField(
             controller: _searchController,
             decoration: InputDecoration(
@@ -251,7 +249,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
             },
           ),
           const SizedBox(height: 12),
-          // Filtry kategorii
           SizedBox(
             height: 40,
             child: ListView.builder(
@@ -383,7 +380,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
                     ),
                   ),
 
-                  // Kategoria ogłoszenia (jeśli istnieje)
                   if (post.supportOptions != null &&
                       post.supportOptions!['types'] != null &&
                       (post.supportOptions!['types'] as List).isNotEmpty)
@@ -433,7 +429,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
                   ],
                 ),
 
-                // Data publikacji
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
@@ -451,7 +446,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
                   ),
                 ),
 
-                // Lokalizacja (jeśli istnieje)
                 if (post.location != null)
                   Row(
                     children: [
@@ -473,7 +467,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
 
                 const SizedBox(height: 12),
 
-                // Tytuł ogłoszenia
                 Text(
                   post.title,
                   style: GoogleFonts.poppins(
@@ -486,7 +479,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
 
                 const SizedBox(height: 8),
 
-                // Opis ogłoszenia
                 Text(
                   post.description,
                   style: GoogleFonts.poppins(
@@ -499,7 +491,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
 
                 const SizedBox(height: 16),
 
-                // Przyciski akcji
                 Row(
                   children: [
                     OutlinedButton(
@@ -538,7 +529,6 @@ class _ShelterPostsViewState extends State<ShelterPostsView> {
     );
   }
 
-  // Funkcja pomocnicza do określania koloru kategorii
   Color _getCategoryColor(String category) {
     switch (category) {
       case 'Zbiórki':

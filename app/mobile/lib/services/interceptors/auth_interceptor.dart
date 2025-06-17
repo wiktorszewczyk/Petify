@@ -10,6 +10,7 @@ class AuthInterceptor extends Interceptor {
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
+    print('[AuthInterceptor] → ${options.method} ${options.path}  header Authorization=${options.headers['Authorization']}');
     handler.next(options);
   }
 

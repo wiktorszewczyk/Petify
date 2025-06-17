@@ -3,6 +3,7 @@ package org.petify.shelter.dto;
 import org.petify.shelter.enums.AdoptionStatus;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link org.petify.shelter.model.Adoption}
@@ -20,5 +21,6 @@ public record AdoptionResponse(
         boolean isHouseOwner,
         boolean hasYard,
         boolean hasOtherPets,
-        String description
+        String description,
+        LocalDateTime applicationDate
 ) implements Serializable {}

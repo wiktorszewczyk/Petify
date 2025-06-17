@@ -4,6 +4,8 @@ server:
 eureka:
   instance:
     hostname: ${EUREKA_HOST:localhost}
+    prefer-ip-address: true    # Wymuś rejestrację pod adresem IP
+    ip-address: 127.0.0.1
   client:
     registerWithEureka: false
     fetchRegistry: false
