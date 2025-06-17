@@ -1,5 +1,5 @@
 #!/bin/bash
-services=(config-server discovery auth-server chat feed funding image reservations shelter gateway)
+services=(funding) # (config-server discovery auth-server chat feed funding image reservations shelter gateway)
 
 for service in "${services[@]}"
 do
