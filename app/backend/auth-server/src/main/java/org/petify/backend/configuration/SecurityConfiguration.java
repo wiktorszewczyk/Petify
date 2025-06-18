@@ -78,31 +78,19 @@ public class SecurityConfiguration {
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler((request, response, authentication) -> {
                             try {
-                                String token = tokenService.generateJwt(authentication);
-
                                 org.springframework.security.oauth2.core.user.OAuth2User oauth2User =
                                         (org.springframework.security.oauth2.core.user.OAuth2User) authentication.getPrincipal();
-                                String email = oauth2User.getAttribute("email");
-
-                                org.petify.backend.models.ApplicationUser user = userRepository.findByUsername(email)
-                                        .orElseThrow(() -> new RuntimeException("User not found"));
-
-                                String frontendUrl = "http://localhost:5173/home?token=" + token + "&userId=" + user.getUserId();
+                                Integer userId = oauth2User.getAttribute("userId");
+                                String token = tokenService.generateJwt(authentication);
+                                String frontendUrl = "http://localhost:5173/home?token=" + token + "&userId=" + userId;
                                 response.sendRedirect(frontendUrl);
                             } catch (Exception e) {
-                                response.sendRedirect("http://localhost:5173/home?error=OAuth2%20authentication%20failed");
+                                response.sendRedirect("http://localhost:5173/login?error=OAuth2%20authentication%20failed");
                             }
                         })
-                        .failureHandler((request, response, exception) -> {
-                            try {
-                                response.sendRedirect("http://localhost:5173/home?error=OAuth2%20authentication%20failed");
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        })
-                        .failureHandler((request, response, exception) -> {
-                            response.sendRedirect("/auth/oauth2/error?error=" + exception.getMessage());
-                        })
+                        .failureHandler((request, response, exception) ->
+                                response.sendRedirect("http://localhost:5173/login?error=OAuth2%20authentication%20failed")
+                        )
                 );
 
         return http.build();
