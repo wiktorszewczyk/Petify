@@ -27,8 +27,8 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   final PageController _pageController = PageController();
   final MessageService _messageService = MessageService();
 
-  // Cache dla obrazów - zapobiega mruganiu
   final Map<String, ImageProvider> _imageCache = {};
+  static final Map<String, ImageProvider> _globalImageCache = {};
   bool _isImageLoaded = false;
 
   @override
@@ -42,16 +42,28 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _preloadImages() {
     final allImages = _getAllImages();
-    for (final imagePath in allImages) {
+    for (int i = 0; i < allImages.length; i++) {
+      final imagePath = allImages[i];
+
+      if (_globalImageCache.containsKey(imagePath)) {
+        _imageCache[imagePath] = _globalImageCache[imagePath]!;
+        if (i == 0) {
+          setState(() {
+            _isImageLoaded = true;
+          });
+        }
+        continue;
+      }
+
       final imageProvider = _getImageProvider(imagePath);
       if (imageProvider != null) {
         _imageCache[imagePath] = imageProvider;
+        _globalImageCache[imagePath] = imageProvider;
 
-        // Preload tylko pierwszy obraz
-        if (imagePath == allImages.first) {
+        if (i < 2) {
           imageProvider.resolve(const ImageConfiguration()).addListener(
             ImageStreamListener((info, _) {
-              if (mounted) {
+              if (mounted && i == 0) {
                 setState(() {
                   _isImageLoaded = true;
                 });
@@ -114,7 +126,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
           return _buildErrorImage();
         },
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          // Zapobiega mruganiu podczas ładowania
           if (wasSynchronouslyLoaded || frame != null) {
             return child;
           }
@@ -130,7 +141,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
       );
     }
 
-    // Fallback dla obrazów nie w cache
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return Image.network(
         path,
@@ -379,7 +389,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Używamy RepaintBoundary, żeby zapobiec niepotrzebnemu odświeżaniu
                 RepaintBoundary(
                   child: PageView.builder(
                     controller: _pageController,
@@ -655,17 +664,9 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                 const SizedBox(height: 8),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
+                  physics: const NeverScrollableScrollPhysics(),
                   child: Row(
-                    children: [
-                      _buildTraitChip(widget.pet.breed ?? widget.pet.typeDisplayName, Icons.pets),
-                      _buildTraitChip(widget.pet.genderDisplayName,
-                          widget.pet.gender == 'male' ? Icons.male : Icons.female),
-                      _buildTraitChip(widget.pet.sizeDisplayName, Icons.height),
-                      if (widget.pet.isChildFriendly)
-                        _buildTraitChip('Przyjazny dzieciom', Icons.child_care),
-                      if (widget.pet.isNeutered)
-                        _buildTraitChip('Sterylizowany', Icons.healing),
-                    ],
+                    children: _buildPriorityTraits(),
                   ),
                 ),
               ],
@@ -674,6 +675,21 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildPriorityTraits() {
+    final traits = <Widget>[];
+
+    if (widget.pet.breed?.isNotEmpty == true) {
+      traits.add(_buildTraitChip(widget.pet.breed!, Icons.pets));
+    } else {
+      traits.add(_buildTraitChip(widget.pet.typeDisplayName, Icons.pets));
+    }
+
+    traits.add(_buildTraitChip(widget.pet.genderDisplayName,
+        widget.pet.gender == 'male' ? Icons.male : Icons.female));
+
+    return traits;
   }
 
   Widget _buildTraitChip(String label, IconData icon) {
@@ -825,6 +841,8 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                 _buildDetailSection('Adres schroniska', widget.pet.shelterAddress),
 
+                _buildPetTraitsSection(),
+
                 const SizedBox(height: 20),
 
                 ElevatedButton(
@@ -870,6 +888,92 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildPetTraitsSection() {
+    final traits = <Map<String, dynamic>>[];
+
+    if (widget.pet.isVaccinated) {
+      traits.add({'value': 'Zaszczepiony', 'icon': Icons.medical_services, 'color': Colors.green});
+    }
+
+    if (widget.pet.isNeutered) {
+      traits.add({'value': 'Sterylizowany', 'icon': Icons.healing, 'color': Colors.blue});
+    }
+
+    if (widget.pet.breed?.isNotEmpty == true) {
+      traits.add({'value': widget.pet.breed!, 'icon': Icons.pets});
+    }
+
+    traits.add({'value': widget.pet.genderDisplayName, 'icon': widget.pet.gender == 'male' ? Icons.male : Icons.female});
+    traits.add({'value': widget.pet.sizeDisplayName, 'icon': Icons.height});
+    traits.add({'value': '${widget.pet.age} ${_formatAge(widget.pet.age)}', 'icon': Icons.cake});
+
+    if (widget.pet.isChildFriendly) {
+      traits.add({'value': 'Przyjazny dzieciom', 'icon': Icons.child_care});
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Cechy zwierzaka',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Column(
+          children: traits.map((trait) =>
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: _buildInfoTraitChip(trait),
+              ),
+          ).toList(),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+
+  Widget _buildInfoTraitChip(Map<String, dynamic> trait) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 44),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: (trait['color'] as Color? ?? AppColors.primaryColor).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: (trait['color'] as Color? ?? AppColors.primaryColor).withOpacity(0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            trait['icon'] as IconData,
+            color: trait['color'] as Color? ?? AppColors.primaryColor,
+            size: 18,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              trait['value'] as String,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: trait['color'] as Color? ?? AppColors.primaryColor,
+                height: 1.3,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }

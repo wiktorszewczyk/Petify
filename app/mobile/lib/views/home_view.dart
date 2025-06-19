@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/support_options_sheet.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import '../../styles/colors.dart';
 import '../../models/pet.dart';
 import '../../widgets/buttons/action_button.dart';
@@ -32,26 +33,16 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   bool _isLoading = true;
   bool _isError = false;
   int _currentIndex = 0;
-  late AnimationController _swipeController;
-  late Animation<Offset> _swipeAnimation;
-  late Animation<double> _rotationAnimation;
+  late CardSwiperController _cardController;
   FilterPreferences? _currentFilters;
 
-  Offset _dragPosition = Offset.zero;
-  SwipeDirection? _swipeDirection;
-
   int _selectedTabIndex = 0;
+  bool _isSwiping = false;
 
-  bool _isDragging = false;
-  bool _isAnimating = false;
-
-  final List<GlobalKey<State<StatefulWidget>>> _cardKeys = [];
-
+  final Set<int> _likedPetIds = {};
   final NotificationService _notificationService = NotificationService();
   final BehaviorTracker _behaviorTracker = BehaviorTracker();
   int _unreadNotificationCount = 0;
-
-  final Set<int> _likedPetIds = {};
 
   @override
   bool get wantKeepAlive => true;
@@ -59,12 +50,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _swipeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-
-    _initAnimations();
+    _cardController = CardSwiperController();
     _loadCachedDataFirst();
     _setupNotificationListener();
   }
@@ -87,27 +73,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     });
   }
 
-  void _initAnimations() {
-    _swipeAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _swipeController,
-      curve: Curves.easeOutCubic,
-    ));
-
-    _rotationAnimation = Tween<double>(
-      begin: 0,
-      end: 0,
-    ).animate(CurvedAnimation(
-      parent: _swipeController,
-      curve: Curves.easeOutCubic,
-    ));
-  }
-
   @override
   void dispose() {
-    _swipeController.dispose();
+    _cardController.dispose();
     super.dispose();
   }
 
@@ -130,11 +98,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           _isLoading = false;
           _isError = false;
           _currentIndex = 0;
-
-          _cardKeys.clear();
-          for (int i = 0; i < _pets.length; i++) {
-            _cardKeys.add(GlobalKey<State<StatefulWidget>>());
-          }
         });
 
         print('🚀 HomeView: Załadowano ${_pets.length} zwierząt z cache (po filtrowaniu ${_likedPetIds.length} polubionych)');
@@ -197,11 +160,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             final newUniquePets = filteredNewPets.where((p) => !currentPetIds.contains(p.id)).toList();
 
             if (newUniquePets.isNotEmpty) {
-              _pets.addAll(newUniquePets);
-              for (int i = 0; i < newUniquePets.length; i++) {
-                _cardKeys.add(GlobalKey<State<StatefulWidget>>());
+              final finalUniquePets = newUniquePets.where((p) => !_likedPetIds.contains(p.id)).toList();
+
+              if (finalUniquePets.isNotEmpty) {
+                _pets.addAll(finalUniquePets);
+                print('🔄 HomeView: Dodano ${finalUniquePets.length} nowych zwierząt (po podwójnym filtrowaniu)');
               }
-              print('🔄 HomeView: Dodano ${newUniquePets.length} nowych zwierząt (po filtrowaniu polubionych)');
             }
           });
         }
@@ -261,11 +225,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           _pets.addAll(filteredPets);
           _isLoading = false;
           _currentIndex = 0;
-
-          _cardKeys.clear();
-          for (int i = 0; i < _pets.length; i++) {
-            _cardKeys.add(GlobalKey<State<StatefulWidget>>());
-          }
         });
 
         print('✅ HomeView: Załadowano ${_pets.length} zwierząt, currentIndex: $_currentIndex');
@@ -285,133 +244,63 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     }
   }
 
-  void _onDragUpdate(DragUpdateDetails details) {
-    if (_isLoading || _pets.isEmpty || _isAnimating) return;
+
+  bool _onCardSwiped(int previousIndex, int? currentIndex, CardSwiperDirection direction) {
+    if (!mounted || _isSwiping) return false;
 
     setState(() {
-      _isDragging = true;
-      _dragPosition += details.delta;
-
-      if (_dragPosition.dx > 20) {
-        _swipeDirection = SwipeDirection.right;
-      } else if (_dragPosition.dx < -20) {
-        _swipeDirection = SwipeDirection.left;
-      } else {
-        _swipeDirection = null;
-      }
+      _isSwiping = true;
+      _currentIndex = currentIndex ?? 0;
     });
-  }
 
-  void _onDragEnd(DragEndDetails details) {
-    if (_isLoading || _pets.isEmpty || _isAnimating) return;
+    final swipedPet = _pets[previousIndex];
 
-    final swipedRight = _dragPosition.dx > MediaQuery.of(context).size.width * 0.2;
-    final swipedLeft = _dragPosition.dx < -MediaQuery.of(context).size.width * 0.2;
-
-    if (swipedRight) {
-      _finishSwipe(SwipeDirection.right);
-    } else if (swipedLeft) {
-      _finishSwipe(SwipeDirection.left);
+    if (direction == CardSwiperDirection.right) {
+      _likePet(swipedPet);
     } else {
-      _resetPosition();
+      print('❌ HomeView: Pominął pet ${swipedPet.id}');
     }
 
-    setState(() {
-      _isDragging = false;
-    });
-  }
+    if (_pets.length - _currentIndex <= 2) {
+      _loadMorePets();
+    }
 
-  void _resetPosition() {
-    setState(() {
-      _dragPosition = Offset.zero;
-      _swipeDirection = null;
-    });
-  }
-
-  void _completeSwipeReset() {
-    if (!mounted) return;
-
-    setState(() {
-      _dragPosition = Offset.zero;
-      _swipeDirection = null;
-      _swipeController.reset();
-      _initAnimations();
-      _isAnimating = false;
-    });
-  }
-
-  void _finishSwipe(SwipeDirection direction) {
-    if (_isAnimating) return;
-
-    setState(() {
-      _isAnimating = true;
-    });
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    final endX = direction == SwipeDirection.right ? screenWidth * 1.5 : -screenWidth * 1.5;
-
-    setState(() {
-      _swipeAnimation = Tween<Offset>(
-        begin: _dragPosition,
-        end: Offset(endX, 0),
-      ).animate(CurvedAnimation(
-        parent: _swipeController,
-        curve: Curves.easeOutCubic,
-      ));
-
-      _rotationAnimation = Tween<double>(
-        begin: _dragPosition.dx * 0.001,
-        end: direction == SwipeDirection.right ? 0.3 : -0.3,
-      ).animate(CurvedAnimation(
-        parent: _swipeController,
-        curve: Curves.easeOutCubic,
-      ));
-    });
-
-    _swipeController.forward().then((_) {
-      if (!mounted) return;
-
-      if (direction == SwipeDirection.right) {
-        _likePetAndRemove(_pets[_currentIndex]);
-      } else {
-        _moveToNextPet();
-      }
-
-      _completeSwipeReset();
-    });
-  }
-
-  void _likePetAndRemove(Pet pet) {
-    _likedPetIds.add(pet.id);
-    print('💖 HomeView: Dodano pet ${pet.id} do lokalnej listy polubionych');
-
-    _moveToNextPetAfterDelay();
-
-    _likePetInBackground(pet);
-  }
-
-  void _moveToNextPet() {
-    setState(() {
-      if (_currentIndex < _pets.length - 1) {
-        _currentIndex++;
-      } else {
-        _loadPets();
-      }
-    });
-  }
-
-  void _moveToNextPetAfterDelay() {
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {
         setState(() {
-          if (_currentIndex < _pets.length - 1) {
-            _currentIndex++;
-          } else {
-            _loadPets();
-          }
+          _isSwiping = false;
         });
       }
     });
+
+    return true;
+  }
+
+  void _likePet(Pet pet) {
+    _likedPetIds.add(pet.id);
+    print('💖 HomeView: Dodano pet ${pet.id} do lokalnej listy polubionych');
+    _likePetInBackground(pet);
+  }
+
+  void _loadMorePets() async {
+    try {
+      print('🔍 HomeView: Ładowanie więcej zwierząt...');
+      final petService = PetService();
+      final newPets = await petService.getPetsWithDefaultFilters();
+      final availablePets = newPets.where((pet) =>
+      !_likedPetIds.contains(pet.id) &&
+          !_pets.any((existingPet) => existingPet.id == pet.id)
+      ).toList();
+
+      if (availablePets.isNotEmpty) {
+        setState(() {
+          _pets.addAll(availablePets);
+        });
+        print('✨ HomeView: Dodano ${availablePets.length} nowych zwierząt');
+      }
+    } catch (e) {
+      print('❌ HomeView: Błąd podczas ładowania nowych zwierząt: $e');
+    }
   }
 
 
@@ -447,60 +336,14 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     }
   }
 
-  void _onActionButtonPressed(SwipeDirection direction) {
-    if (_isLoading || _pets.isEmpty || _isAnimating) return;
+  void _onActionButtonPressed(CardSwiperDirection direction) {
+    if (_isLoading || _pets.isEmpty || _isSwiping || _currentIndex >= _pets.length) return;
 
-    _animateButtonPress(direction);
-  }
-
-  void _animateButtonPress(SwipeDirection direction) {
-    if (_isAnimating) return;
-
-    setState(() {
-      _isAnimating = true;
-      _swipeDirection = direction;
-    });
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    final endX = direction == SwipeDirection.right ? screenWidth * 1.2 : -screenWidth * 1.2;
-
-    setState(() {
-      _swipeAnimation = Tween<Offset>(
-        begin: Offset.zero,
-        end: Offset(endX, 0),
-      ).animate(CurvedAnimation(
-        parent: _swipeController,
-        curve: Curves.easeInCubic,
-      ));
-
-      _rotationAnimation = Tween<double>(
-        begin: 0,
-        end: direction == SwipeDirection.right ? 0.2 : -0.2,
-      ).animate(CurvedAnimation(
-        parent: _swipeController,
-        curve: Curves.easeInCubic,
-      ));
-    });
-
-    _swipeController.duration = const Duration(milliseconds: 200);
-
-    _swipeController.forward().then((_) {
-      if (!mounted) return;
-
-      if (direction == SwipeDirection.right) {
-        _likePetAndRemove(_pets[_currentIndex]);
-      } else {
-        _moveToNextPet();
-      }
-
-      _swipeController.duration = const Duration(milliseconds: 300);
-
-      _completeSwipeReset();
-    });
+    _cardController.swipe(direction);
   }
 
   void _showSupportOptions() {
-    if (_isLoading || _pets.isEmpty) return;
+    if (_isLoading || _pets.isEmpty || _currentIndex >= _pets.length) return;
 
     final currentPet = _pets[_currentIndex];
 
@@ -532,9 +375,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       setState(() {
         _currentFilters = result;
         _isLoading = true;
-        _currentIndex = 0;
         _pets.clear();
-        _cardKeys.clear();
+        _currentIndex = 0;
       });
 
       await _loadPets();
@@ -580,6 +422,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        toolbarHeight: 60,
         title: Row(
           children: [
             SvgPicture.asset(
@@ -794,165 +637,142 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       );
     }
 
-    final currentPet = _pets[_currentIndex];
-
     return RefreshIndicator(
       onRefresh: _refreshAllData,
       color: AppColors.primaryColor,
-      child: Stack(
+      child: Column(
         children: [
-          ListView(
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height),
-            ],
-          ),
-          Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Stack(
-                    clipBehavior: Clip.none,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+              child: CardSwiper(
+                controller: _cardController,
+                cardsCount: _pets.length,
+                initialIndex: _currentIndex,
+                onSwipe: _onCardSwiped,
+                allowedSwipeDirection: const AllowedSwipeDirection.symmetric(horizontal: true),
+                threshold: 50,
+                maxAngle: 15,
+                scale: 0.95,
+                backCardOffset: const Offset(0, -8),
+                cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
+                  if (index >= _pets.length) return const SizedBox.shrink();
+
+                  return Stack(
                     children: [
-                      if (_currentIndex < _pets.length - 2)
-                        Positioned.fill(
-                          child: PetCard(
-                            pet: _pets[_currentIndex + 2],
-                            key: _cardKeys.length > _currentIndex + 2 ? _cardKeys[_currentIndex + 2] : null,
-                          ).animate().scale(
-                            begin: const Offset(0.90, 0.90),
-                            end: const Offset(0.90, 0.90),
-                          ),
-                        ),
+                      PetCard(
+                        pet: _pets[index],
+                        key: ValueKey('pet_${_pets[index].id}'),
+                      ),
 
-                      if (_currentIndex < _pets.length - 1)
-                        Positioned.fill(
-                          child: PetCard(
-                            pet: _pets[_currentIndex + 1],
-                            key: _cardKeys.length > _currentIndex + 1 ? _cardKeys[_currentIndex + 1] : null,
-                          ).animate().scale(
-                            begin: const Offset(0.95, 0.95),
-                            end: const Offset(0.95, 0.95),
-                          ),
-                        ),
-
-                      if (_currentIndex < _pets.length)
-                        Positioned.fill(
-                          child: GestureDetector(
-                            onPanUpdate: _onDragUpdate,
-                            onPanEnd: _onDragEnd,
-                            child: AnimatedBuilder(
-                              animation: _swipeController,
-                              builder: (context, child) {
-                                final offset = _isAnimating ? _swipeAnimation.value : _dragPosition;
-                                final angle = _isAnimating ? _rotationAnimation.value : _dragPosition.dx * 0.001;
-
-                                return Transform.translate(
-                                  offset: offset,
-                                  child: Transform.rotate(
-                                    angle: angle,
-                                    child: child,
-                                  ),
-                                );
-                              },
-                              child: PetCard(
-                                pet: currentPet,
-                                key: _cardKeys.length > _currentIndex ? _cardKeys[_currentIndex] : null,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                      if (_swipeDirection == SwipeDirection.right)
+                      if (horizontalOffsetPercentage > 0.1)
                         Positioned(
                           top: 40,
                           left: 20,
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: Colors.green,
+                              color: Colors.green.withOpacity(0.9),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: Colors.white, width: 2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.favorite, color: Colors.white, size: 30),
-                                const SizedBox(width: 8),
+                                const Icon(Icons.favorite, color: Colors.white, size: 24),
+                                const SizedBox(width: 6),
                                 Text(
                                   'POLUB',
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ],
                             ),
                           ).animate().scale(
                             duration: 200.ms,
-                            curve: Curves.easeOut,
+                            curve: Curves.elasticOut,
                           ),
                         ),
 
-                      if (_swipeDirection == SwipeDirection.left)
+                      if (horizontalOffsetPercentage < -0.1)
                         Positioned(
                           top: 40,
                           right: 20,
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: Colors.red,
+                              color: Colors.red.withOpacity(0.9),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: Colors.white, width: 2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.red.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.close, color: Colors.white, size: 30),
-                                const SizedBox(width: 8),
+                                const Icon(Icons.close, color: Colors.white, size: 24),
+                                const SizedBox(width: 6),
                                 Text(
                                   'POMIŃ',
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ],
                             ),
                           ).animate().scale(
                             duration: 200.ms,
-                            curve: Curves.easeOut,
+                            curve: Curves.elasticOut,
                           ),
                         ),
                     ],
-                  ),
-                ),
+                  );
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ActionButton(
-                      icon: Icons.close,
-                      backgroundColor: Colors.red,
-                      onPressed: () => _onActionButtonPressed(SwipeDirection.left),
-                    ),
-                    ActionButton(
-                      icon: Icons.favorite,
-                      backgroundColor: Colors.green,
-                      size: 70,
-                      onPressed: () => _onActionButtonPressed(SwipeDirection.right),
-                    ),
-                    ActionButton(
-                      icon: Icons.volunteer_activism,
-                      backgroundColor: Colors.blue,
-                      onPressed: _showSupportOptions,
-                    ),
-                  ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ActionButton(
+                  icon: Icons.close,
+                  backgroundColor: Colors.red,
+                  size: 60,
+                  onPressed: () => _onActionButtonPressed(CardSwiperDirection.left),
                 ),
-              ),
-            ],
+                ActionButton(
+                  icon: Icons.favorite,
+                  backgroundColor: Colors.green,
+                  size: 75,
+                  onPressed: () => _onActionButtonPressed(CardSwiperDirection.right),
+                ),
+                ActionButton(
+                  icon: Icons.volunteer_activism,
+                  backgroundColor: Colors.blue,
+                  size: 60,
+                  onPressed: _showSupportOptions,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -1021,7 +841,3 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 }
 
-enum SwipeDirection {
-  left,
-  right,
-}

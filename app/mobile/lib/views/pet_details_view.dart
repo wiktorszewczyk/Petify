@@ -9,6 +9,15 @@ import '../services/pet_service.dart';
 import '../services/message_service.dart';
 import 'chat_view.dart';
 
+class TraitItem {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color? color;
+
+  TraitItem(this.label, this.value, this.icon, {this.color});
+}
+
 class PetDetailsView extends StatefulWidget {
   final Pet pet;
   const PetDetailsView({Key? key, required this.pet}) : super(key: key);
@@ -218,14 +227,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                     style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
 
-                  if (_traits.isNotEmpty) ...[
+                  if (_allTraits.isNotEmpty) ...[
                     const SizedBox(height: 24),
-                    _section('Cechy'),
-                    Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _traits.map(_chip).toList(growable: false)
-                    ),
+                    _section('Cechy zwierzaka'),
+                    _buildTraitsGrid(),
                   ],
 
                   const SizedBox(height: 24),
@@ -497,6 +502,82 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     if (currentPet.isNeutered) t.add('Sterylizowany');
     if (currentPet.isChildFriendly) t.add('Przyjazny dzieciom');
     return t;
+  }
+
+  List<TraitItem> get _allTraits {
+    final traits = <TraitItem>[];
+
+    if (currentPet.isVaccinated) {
+      traits.add(TraitItem('', 'Zaszczepiony', Icons.medical_services, color: Colors.green));
+    }
+
+    if (currentPet.isNeutered) {
+      traits.add(TraitItem('', 'Sterylizowany', Icons.healing, color: Colors.blue));
+    }
+
+    if (currentPet.breed?.isNotEmpty == true) {
+      traits.add(TraitItem('', currentPet.breed!, Icons.pets));
+    }
+
+    traits.add(TraitItem('', currentPet.genderDisplayName, currentPet.gender == 'male' ? Icons.male : Icons.female));
+    traits.add(TraitItem('', currentPet.sizeDisplayName, Icons.height));
+    traits.add(TraitItem('', '${currentPet.age} ${_y(currentPet.age)}', Icons.cake));
+
+    if (currentPet.isChildFriendly) {
+      traits.add(TraitItem('', 'Przyjazny dzieciom', Icons.child_care));
+    }
+
+    return traits;
+  }
+
+  Widget _buildTraitsGrid() {
+    final traits = _allTraits;
+    return Column(
+      children: traits.map((trait) =>
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: _buildTraitChip(trait),
+          ),
+      ).toList(),
+    );
+  }
+
+  Widget _buildTraitChip(TraitItem trait) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 44),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: (trait.color ?? AppColors.primaryColor).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: (trait.color ?? AppColors.primaryColor).withOpacity(0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            trait.icon,
+            color: trait.color ?? AppColors.primaryColor,
+            size: 18,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              trait.value,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: trait.color ?? AppColors.primaryColor,
+                height: 1.3,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _contactShelter() async {
