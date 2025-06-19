@@ -1,28 +1,41 @@
 import { useEffect, useState } from "react";
-import { PawPrint, Save, User, Calendar, Phone, Mail, Users } from "lucide-react";
+import {
+  PawPrint,
+  Save,
+  User,
+  Calendar,
+  Phone,
+  Mail,
+  Users,
+  Trash2,
+} from "lucide-react";
 import "./Profile.css";
 import "./EditProfile.css";
 import Navbar from "../components/Navbar";
-import { fetchUserData,  updateUserData, uploadProfileImage} from "../api/auth";
+import {
+  fetchUserData,
+  updateUserData,
+  uploadProfileImage,
+  deleteProfileImage,
+} from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
-
 const pawSteps = [
-  { top: '55vh', left: '90vw', size: '8vw', rotate: '-100deg' },
-  { top: '38vh', left: '88vw', size: '8vw', rotate: '-100deg' },
-  { top: '39vh', left: '78vw', size: '8vw', rotate: '-115deg' },
-  { top: '25vh', left: '72vw', size: '8vw', rotate: '-120deg' },
-  { top: '37vh', left: '64vw', size: '8vw', rotate: '-135deg' },
-  { top: '24vh', left: '57vw', size: '8vw', rotate: '-145deg' },
-  { top: '42vh', left: '51vw', size: '8vw', rotate: '-160deg' },
-  { top: '30vh', left: '42vw', size: '8vw', rotate: '-165deg' },
-  { top: '48vh', left: '39vw', size: '8vw', rotate: '-165deg' },
-  { top: '44vh', left: '28vw', size: '8vw', rotate: '-165deg' },
-  { top: '61vh', left: '25vw', size: '8vw', rotate: '-160deg' },
-  { top: '52vh', left: '16vw', size: '8vw', rotate: '-150deg' },
-  { top: '67vh', left: '10vw', size: '8vw', rotate: '-145deg' },
-  { top: '55vh', left: '2vw', size: '8vw', rotate: '-135deg' },
-  { top: '70vh', left: '-3vw', size: '8vw', rotate: '-135deg' },
+  { top: "55vh", left: "90vw", size: "8vw", rotate: "-100deg" },
+  { top: "38vh", left: "88vw", size: "8vw", rotate: "-100deg" },
+  { top: "39vh", left: "78vw", size: "8vw", rotate: "-115deg" },
+  { top: "25vh", left: "72vw", size: "8vw", rotate: "-120deg" },
+  { top: "37vh", left: "64vw", size: "8vw", rotate: "-135deg" },
+  { top: "24vh", left: "57vw", size: "8vw", rotate: "-145deg" },
+  { top: "42vh", left: "51vw", size: "8vw", rotate: "-160deg" },
+  { top: "30vh", left: "42vw", size: "8vw", rotate: "-165deg" },
+  { top: "48vh", left: "39vw", size: "8vw", rotate: "-165deg" },
+  { top: "44vh", left: "28vw", size: "8vw", rotate: "-165deg" },
+  { top: "61vh", left: "25vw", size: "8vw", rotate: "-160deg" },
+  { top: "52vh", left: "16vw", size: "8vw", rotate: "-150deg" },
+  { top: "67vh", left: "10vw", size: "8vw", rotate: "-145deg" },
+  { top: "55vh", left: "2vw", size: "8vw", rotate: "-135deg" },
+  { top: "70vh", left: "-3vw", size: "8vw", rotate: "-135deg" },
 ];
 
 export default function EditProfile() {
@@ -38,48 +51,48 @@ export default function EditProfile() {
   const [imagePreview, setImagePreview] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [deleteImage, setDeleteImage] = useState(false);
   const navigate = useNavigate();
 
-
- 
-
   useEffect(() => {
-  const fetchProfile = async () => {
-    try {
-      const data = await fetchUserData();
-      setForm({
-  firstName: data.firstName || "",
-  lastName: data.lastName || "",
-  birthDate: data.birthDate || "",
-  gender: data.gender || "MALE",
-  phoneNumber: data.phoneNumber || "",
-  email: data.email || "",
-});
-    } catch (err) {
-      console.error("Błąd podczas ładowania profilu:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchProfile = async () => {
+      try {
+        const data = await fetchUserData();
+        setForm({
+          firstName: data.firstName || "",
+          lastName: data.lastName || "",
+          birthDate: data.birthDate || "",
+          gender: data.gender || "MALE",
+          phoneNumber: data.phoneNumber || "",
+          email: data.email || "",
+        });
+      } catch (err) {
+        console.error("Błąd podczas ładowania profilu:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchProfile();
-}, []);
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
- const handleFileChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    if (file.size > 5 * 1024 * 1024) {
-      alert("Plik jest zbyt duży. Maksymalny rozmiar to 5MB.");
-      return;
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Plik jest zbyt duży. Maksymalny rozmiar to 5MB.");
+        return;
+      }
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+      setDeleteImage(false); // Anuluj usuwanie jeśli użytkownik wybierze nowe zdjęcie
+      setMessage("");
     }
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
-  }
-};
+  };
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -87,32 +100,43 @@ export default function EditProfile() {
     if (file) {
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
+      setDeleteImage(false); // Anuluj usuwanie jeśli użytkownik przerzuci nowe zdjęcie
+      setMessage("");
     }
   };
 
-  
+  const handleDeleteImage = () => {
+    setDeleteImage(true);
+    setImageFile(null);
+    setImagePreview(null);
+    setMessage("Zdjęcie zostanie usunięte po zapisaniu zmian.");
+  };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  setMessage("");
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setLoading(true);
 
-  try {
-    await updateUserData(form);
+    try {
+      await updateUserData(form);
 
-    if (imageFile) {
-      await uploadProfileImage(imageFile);
+      if (deleteImage) {
+        await deleteProfileImage();
+      }
+
+      if (imageFile) {
+        await uploadProfileImage(imageFile);
+      }
+
+      setMessage("Dane zostały zaktualizowane.");
+      navigate("/profile", { state: { refresh: Date.now() } });
+    } catch (err) {
+      console.error(err);
+      setMessage("Wystąpił błąd.");
+    } finally {
+      setLoading(false);
     }
-
-    setMessage("Dane zostały zaktualizowane.");
-    navigate("/profile");
-  } catch (err) {
-    console.error(err);
-    setMessage("Wystąpił błąd.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   if (loading) {
     return (
@@ -126,7 +150,7 @@ export default function EditProfile() {
 
   return (
     <div className="profile-body">
-        <Navbar/>
+      <Navbar />
       <div className="paw-pattern-background">
         {pawSteps.map((step, i) => (
           <div
@@ -137,7 +161,7 @@ export default function EditProfile() {
               left: step.left,
               width: step.size,
               height: step.size,
-              '--rotation': step.rotate,
+              "--rotation": step.rotate,
               animationDelay: `${i * 0.5}s`,
             }}
           >
@@ -153,20 +177,31 @@ export default function EditProfile() {
             <h2>Edytuj Profil</h2>
           </div>
           {message && (
-            <div className={`edit-message ${message.includes('Błąd') ? 'error' : 'success'}`}>
+            <div
+              className={`edit-message ${
+                message.includes("Błąd") ? "error" : "success"
+              }`}
+            >
               {message}
             </div>
           )}
         </section>
 
         <div onSubmit={handleSubmit} className="edit-profile-form">
-          {/* Sekcja zdjęcia profilowego */}
           <section className="edit-profile-section">
             <h3 className="section-title">Zdjęcie profilowe</h3>
-            <div className="photo-upload-area" onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
+            <div
+              className="photo-upload-area"
+              onDrop={handleDrop}
+              onDragOver={(e) => e.preventDefault()}
+            >
               {imagePreview ? (
                 <div className="photo-preview">
-                  <img src={imagePreview} alt="Podgląd" className="preview-image" />
+                  <img
+                    src={imagePreview}
+                    alt="Podgląd"
+                    className="preview-image"
+                  />
                   <div className="photo-overlay">
                     <span>Kliknij aby zmienić</span>
                   </div>
@@ -184,9 +219,31 @@ export default function EditProfile() {
                 onChange={handleFileChange}
               />
             </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "15px",
+              }}
+            >
+              <button
+                type="button"
+                className="save-button delete-button"
+                onClick={handleDeleteImage}
+                disabled={loading}
+                style={{
+                  backgroundColor: "#e74c3c !important",
+                  borderColor: "#c0392b !important",
+                  color: "white !important",
+                }}
+              >
+                <Trash2 className="button-icon" />
+                Usuń zdjęcie profilowe
+              </button>
+            </div>
           </section>
 
-          {/* Sekcja danych osobowych */}
           <section className="edit-profile-section">
             <h3 className="section-title">Dane osobowe</h3>
             <div className="form-grid">
@@ -250,7 +307,6 @@ export default function EditProfile() {
             </div>
           </section>
 
-          {/* Sekcja kontaktowa */}
           <section className="edit-profile-section">
             <h3 className="section-title">Dane kontaktowe</h3>
             <div className="form-grid">
@@ -285,16 +341,15 @@ export default function EditProfile() {
             </div>
           </section>
 
-          {/* Przycisk zapisz */}
           <section className="edit-profile-actions">
-            <button 
-              className="save-button" 
+            <button
+              className="save-button"
               type="button"
               onClick={handleSubmit}
               disabled={loading}
             >
               <Save className="button-icon" />
-              {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
+              {loading ? "Zapisywanie..." : "Zapisz zmiany"}
             </button>
             <button
               className="cancel-button"
@@ -306,6 +361,6 @@ export default function EditProfile() {
           </section>
         </div>
       </div>
-         </div>
+    </div>
   );
 }

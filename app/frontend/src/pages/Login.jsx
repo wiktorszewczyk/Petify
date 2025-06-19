@@ -71,7 +71,7 @@ export default function Login() {
           <button
   className="btn btn-outline-dark w-100 mt-3"
   onClick={() => {
-    window.location.href = "http://localhost:9000/auth/oauth2/google";
+    window.location.href = "http://localhost:8222/auth/oauth2/google";
   }}
 >
   Zaloguj się przez Google
