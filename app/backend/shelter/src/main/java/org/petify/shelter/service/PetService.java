@@ -69,13 +69,6 @@ public class PetService {
                 .map(petMapper::toDtoWithImages);
     }
 
-    public List<PetResponseWithImages> getPets() {
-        return petRepository.findAll()
-                .stream()
-                .map(petMapper::toDtoWithImages)
-                .collect(Collectors.toList());
-    }
-
     @Transactional(readOnly = true)
     public SwipeResponse getFilteredPetsWithCursor(Boolean vaccinated, Boolean urgent, Boolean sterilized,
                                                    Boolean kidFriendly, Integer minAge, Integer maxAge,
