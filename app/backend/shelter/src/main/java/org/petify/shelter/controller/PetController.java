@@ -60,11 +60,6 @@ public class PetController {
         return ResponseEntity.ok(petService.getPets(pageable));
     }
 
-    @GetMapping("/old")
-    public ResponseEntity<?> getAllPetsOld() {
-        return ResponseEntity.ok(petService.getPets());
-    }
-
     // implements cursor-based pagination
     @PreAuthorize("hasAnyRole('USER', 'VOLUNTEER', 'ADMIN')")
     @GetMapping("/filter")
