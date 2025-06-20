@@ -14,6 +14,10 @@ x-common-variables: &common-variables
 
 services:
   # External services
+  
+  ### ---------------- ###
+  #   AZURE DEPLOYMENT   #
+  ### ---------------- ###
   postgres:
     container_name: petify-postgres-connection
     image: bitnami/postgresql:17
@@ -33,6 +37,25 @@ services:
       interval: 10s
       retries: 10
     mem_limit: 128m
+
+  ### ----------------- ###
+  #   LOCAL DEVELOPMENT   #
+  ### ----------------- ###
+  # postgres:
+  #   container_name: petify-postgres
+  #   image: postgres:17
+  #   environment:
+  #     POSTGRES_DB: ${DB_NAME}
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #   ports:
+  #     - "5432:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -h ${DB_HOST} -p 5432"]
+  #     timeout: 5s
+  #     interval: 10s
+  #     retries: 10
+  #   mem_limit: 128m
 
   rabbitmq:
     container_name: petify-rabbitmq

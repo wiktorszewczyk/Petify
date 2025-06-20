@@ -33,3 +33,15 @@ docker logs <container_name>
 # Healthcheck related logs
 docker inspect --format='{{json .State.Health}}' <container_name> | jq
 ```
+
+# Creating and using an access token to the ACR
+```sh
+# Creating the access token
+az acr scope-map create --name pullOnlyMap --registry petify --repository '*' content/read metadata/read --description "Read-only access to every repository in the registry"
+az acr token create --name pullAccessToken --registry petify --scope-map pullOnlyMap --no-passwords
+az acr token credential generate --name pullAccessToken --registry petify --password1 # --expiration-in-days 30
+
+# Using the access token
+echo "<TOKEN_PASSWORD>" | docker login petify-cwezgrfdd6ghehg8.azurecr.io --username pullAccessToken --password-stdin
+docker compose -f deployment/docker-compose.yml up -d
+```
