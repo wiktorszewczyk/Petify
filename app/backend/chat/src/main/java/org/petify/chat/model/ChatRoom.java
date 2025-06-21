@@ -56,4 +56,7 @@ public class ChatRoom {
 
     @Column(name = "shelter_last_read_at")
     private LocalDateTime shelterLastReadAt;
+
+    @Column(name = "last_message_timestamp")
+    private LocalDateTime lastMessageTimestamp;
 }

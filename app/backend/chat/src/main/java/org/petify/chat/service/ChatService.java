@@ -67,6 +67,9 @@ public class ChatService {
                 new ChatMessage(null, roomId, login, content.trim(), LocalDateTime.now())
         );
 
+        room.setLastMessageTimestamp(saved.getTimestamp());
+        roomRepo.save(room);
+
         String recipient = fromShelter ? room.getUserName() : room.getShelterName();
 
         if (Objects.equals(recipient, login)) {
@@ -80,6 +83,9 @@ public class ChatService {
         long totalUnread = totalUnreadFor(recipient);
         broker.convertAndSendToUser(recipient, "/queue/unread", totalUnread);
 
+        ChatRoomDTO updatedRoomForRecipient = map(room, recipient);
+        broker.convertAndSendToUser(recipient, "/queue/rooms", updatedRoomForRecipient);
+
         log.info("Message sent from {} to {} in room {}", login, recipient, roomId);
     }
 
@@ -87,14 +93,14 @@ public class ChatService {
     public List<ChatRoomDTO> myRooms(String login) {
         validateLogin(login);
 
-        return roomRepo.findAllByUserNameOrShelterName(login, login)
+        return roomRepo.findAllByUserNameOrShelterNameOrderByLastMessageTimestampDesc(login, login)
                 .stream()
                 .filter(r -> visibleFor(r, login))
                 .map(r -> map(r, login))
                 .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<ChatMessageDTO> history(Long roomId, String login, int page, int size) {
         validateRoomId(roomId);
         validateLogin(login);
@@ -140,11 +146,14 @@ public class ChatService {
         }
 
         ChatRoom room = roomRepo.findByPetIdAndUserName(petId, userLogin)
-                .orElseGet(() -> new ChatRoom(
-                        null, petId, userLogin, shelterOwner,
-                        true, false, null, null,
-                        LocalDateTime.now(),
-                        null));
+                .orElseGet(() -> {
+                    LocalDateTime now = LocalDateTime.now();
+                    return new ChatRoom(
+                            null, petId, userLogin, shelterOwner,
+                            true, false, null, null,
+                            now, null, now
+                    );
+                });
 
         room.setUserVisible(true);
         roomRepo.save(room);
@@ -213,7 +222,7 @@ public class ChatService {
     public long totalUnreadFor(String login) {
         validateLogin(login);
 
-        return roomRepo.findAllByUserNameOrShelterName(login, login).stream()
+        return roomRepo.findAllByUserNameOrShelterNameOrderByLastMessageTimestampDesc(login, login).stream()
                 .filter(r -> visibleFor(r, login))
                 .mapToLong(r -> unreadFor(r, login))
                 .sum();
@@ -277,7 +286,8 @@ public class ChatService {
                 r.getPetId(),
                 r.getUserName(),
                 r.getShelterName(),
-                unreadFor(r, login));
+                unreadFor(r, login),
+                r.getLastMessageTimestamp());
     }
 
     private ChatMessageDTO map(ChatMessage m, ChatRoom r) {
