@@ -6,3 +6,4 @@ python3 tools/db_loaders/pet_loader.py
 python3 tools/db_loaders/volunteer_loader.py
 python3 tools/db_loaders/funding_loader.py
 python3 tools/db_loaders/feed_loader.py
+python3 tools/db_loaders/reservations_loader.py
