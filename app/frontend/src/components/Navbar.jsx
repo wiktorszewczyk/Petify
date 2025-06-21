@@ -7,122 +7,127 @@ import { fetchProfileImage } from "../api/auth";
 import "./Navbar.css";
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState(userCircle);
-  const navigate = useNavigate();
-  const location = useLocation();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [profileImage, setProfileImage] = useState(userCircle);
+    const navigate = useNavigate();
+    const location = useLocation();
 
-  useEffect(() => {
-    const loadProfileImage = async () => {
-      try {
-        const imageUrl = await fetchProfileImage();
-        setProfileImage(imageUrl);
-      } catch (err) {
-        console.log("Brak zdjęcia profilowego w navbar, używam domyślnego");
-        setProfileImage(userCircle);
-      }
+    useEffect(() => {
+        const loadProfileImage = async () => {
+            try {
+                const imageUrl = await fetchProfileImage();
+                setProfileImage(imageUrl);
+            } catch (err) {
+                setProfileImage(userCircle);
+            }
+        };
+
+        loadProfileImage();
+    }, [location.state?.refresh, location.pathname]);
+
+    const handleLogout = () => {
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("userId");
+        setIsMenuOpen(false);
+        navigate("/login");
     };
 
-    loadProfileImage();
-  }, [location.state?.refresh, location.pathname]);
+    return (
+        <nav className="navbar navbar-expand-lg navbar-light position-relative">
+            <div className="container-fluid d-flex justify-content-between align-items-center">
+                <Link
+                    className="navbar-brand mx-auto d-flex align-items-center gap-2 fw-bold"
+                    to="/home"
+                >
+                    Petify
+                </Link>
 
-  const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("userId");
-    setIsMenuOpen(false);
-    navigate("/login");
-  };
+                <div className="profile-icon d-flex align-items-center">
+                    <Link to="/profile">
+                        <img
+                            src={profileImage}
+                            width="50"
+                            height="50"
+                            style={{
+                                cursor: "pointer",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                                border: "3px solid #ffc107",
+                            }}
+                            alt="Profil"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = userCircle;
+                            }}
+                        />
+                    </Link>
+                </div>
+            </div>
 
-  return (
-    <nav className="navbar navbar-expand-lg navbar-light position-relative">
-      <div className="container-fluid d-flex justify-content-between align-items-center">
-        <Link
-          className="navbar-brand mx-auto d-flex align-items-center gap-2 fw-bold"
-          to="/home"
-        >
-          Petify
-        </Link>
+            {!isMenuOpen && (
+                <div className="menu-tab" onClick={() => setIsMenuOpen(true)}>
+                    <Menu size={30} className="tab-icon" />
+                </div>
+            )}
 
-        <div className="profile-icon d-flex align-items-center">
-          <Link to="/profile">
-            <img
-              src={profileImage}
-              width="50"
-              height="50"
-              style={{
-                cursor: "pointer",
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: "3px solid #ffc107",
-              }}
-              alt="Profil"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = userCircle;
-              }}
-            />
-          </Link>
-        </div>
-      </div>
+            <div className={`offcanvas-menu ${isMenuOpen ? "open" : ""}`}>
+                <div className="close-btn" onClick={() => setIsMenuOpen(false)}>
+                    <ArrowLeft size={30} className="tab-icon" />
+                </div>
+                <div className="offcanvas-header">
+                    <h5 className="offcanvas-title">Menu</h5>
+                </div>
 
-      {!isMenuOpen && (
-        <div className="menu-tab" onClick={() => setIsMenuOpen(true)}>
-          <Menu size={30} className="tab-icon" />
-        </div>
-      )}
+                <div className="menu-content">
+                    <Link
+                        className="menu-button"
+                        to="/messages"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        Wiadomości
+                    </Link>
+                    <Link
+                        className="menu-button"
+                        to="/favourites"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        Polubione
+                    </Link>
+                    <Link
+                        className="menu-button"
+                        to="/shelters"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        Schroniska
+                    </Link>
 
-      <div className={`offcanvas-menu ${isMenuOpen ? "open" : ""}`}>
-        <div className="close-btn" onClick={() => setIsMenuOpen(false)}>
-          <ArrowLeft size={30} className="tab-icon" />
-        </div>
-        <div className="offcanvas-header">
-          <h5 className="offcanvas-title">Menu</h5>
-        </div>
+                    <div className="menu-divider"></div>
 
-        <div className="menu-content">
-          <Link
-            className="menu-button"
-            to="/messages"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Wiadomości
-          </Link>
-          <Link
-            className="menu-button"
-            to="/favourites"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Polubione
-          </Link>
-          <Link
-            className="menu-button"
-            to="/sheltersPage"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Schroniska
-          </Link>
+                    <button
+                        className="menu-button logout-button"
+                        onClick={handleLogout}
+                    >
+                        <LogOut size={18} className="logout-icon" />
+                        Wyloguj
+                    </button>
+                </div>
+            </div>
 
-          <div className="menu-divider"></div>
+            {isMenuOpen && (
+                <div
+                    className="menu-overlay"
+                    onClick={() => setIsMenuOpen(false)}
+                ></div>
+            )}
 
-          <button className="menu-button logout-button" onClick={handleLogout}>
-            <LogOut size={18} className="logout-icon" />
-            Wyloguj
-          </button>
-        </div>
-      </div>
-
-      {isMenuOpen && (
-        <div
-          className="menu-overlay"
-          onClick={() => setIsMenuOpen(false)}
-        ></div>
-      )}
-
-      {isMenuOpen && (
-        <div className="mobile-close-btn" onClick={() => setIsMenuOpen(false)}>
-          <ArrowLeft size={20} className="tab-icon" />
-        </div>
-      )}
-    </nav>
-  );
+            {isMenuOpen && (
+                <div
+                    className="mobile-close-btn"
+                    onClick={() => setIsMenuOpen(false)}
+                >
+                    <ArrowLeft size={20} className="tab-icon" />
+                </div>
+            )}
+        </nav>
+    );
 }
