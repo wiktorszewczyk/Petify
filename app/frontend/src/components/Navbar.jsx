@@ -95,7 +95,7 @@ export default function Navbar() {
                     </Link>
                     <Link
                         className="menu-button"
-                        to="/sheltersPage"
+                        to="/shelters"
                         onClick={() => setIsMenuOpen(false)}
                     >
                         Schroniska

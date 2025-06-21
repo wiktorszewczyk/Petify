@@ -83,9 +83,7 @@ const Shelters = () => {
                         <div
                             key={shelter.id}
                             className="shelter-card"
-                            onClick={() =>
-                                navigate(`/shelterProfile/${shelter.id}`)
-                            }
+                            onClick={() => navigate(`/shelter/${shelter.id}`)}
                         >
                             <div className="shelter-card-image">
                                 <img
