@@ -1,2 +1,13 @@
+@media (min-width: 1920px) {
+    .pet-modal {
+        animation: none !important;
+    }
 
-  
+    .custom-modal-content {
+        animation: none;
+    }
+
+    .pet-modal .btn {
+        transition: none !important;
+    }
+}

@@ -160,7 +160,7 @@ if (!pet) return null;
             className={`donate-option ${selectedAmount === amount ? 'selected' : ''}`}
             onClick={() => {
               setSelectedAmount(amount);
-              setCustomAmount(''); // Wyczyść custom amount gdy wybierasz predefiniowaną kwotę
+              setCustomAmount(''); 
             }}
           >
             <img src={img} alt={label} className="donate-img" />
@@ -177,7 +177,7 @@ if (!pet) return null;
         value={customAmount}
         onChange={(e) => {
           setCustomAmount(e.target.value);
-          setSelectedAmount(null); // Wyczyść wybór predefiniowanej kwoty
+          setSelectedAmount(null);
         }}
       />
       
@@ -185,7 +185,6 @@ if (!pet) return null;
         className="confirm-donate-btn" 
         disabled={!selectedAmount && !customAmount}
         onClick={() => {
-          // Przekaż wybraną kwotę do payment
           const finalAmount = selectedAmount || customAmount;
           window.location.href = `/payment?amount=${finalAmount}`;
         }}
@@ -239,7 +238,6 @@ if (!pet) return null;
 
         <section className="pet-profile-info">
 
-  {/* Nagłówek imię + lokalizacja */}
   <div className="pet-header">
     <h2 className="pet-name">{pet.name}, {pet.age} lata</h2>  
     <div className="pet-location-info"> 
@@ -257,7 +255,6 @@ if (!pet) return null;
     </div>
   </div>
 
-  {/* Przyciski akcji */}
   <section className="pet-action-buttons">
     <button className="action-btn btn-adopt" onClick={() => setShowAdoptPopup(true)}>
       <Heart className="btn-icon" />
@@ -278,7 +275,6 @@ if (!pet) return null;
   </section>
 
 
-  {/* Szczegóły podstawowe */}
   <div className="pet-details-grid">
     <div className="pet-detail-item">
       <span className="detail-label">Typ zwierzęcia:</span>
@@ -310,14 +306,11 @@ if (!pet) return null;
     </div>
     </div>
 
-  {/* Opis */}
   <section className="pet-description">
     <h3>Opis</h3>
     <p>{pet.description}</p>
   </section>
 
-
-  {/* Dopasowanie */}
   <section className="pet-suitability">
   <h3>Dopasowanie</h3>
   <div className="suitability-grid">

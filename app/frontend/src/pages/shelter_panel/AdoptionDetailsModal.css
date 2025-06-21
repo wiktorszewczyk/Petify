@@ -1,0 +1,152 @@
+/* ZAKTUALIZOWANY AdoptionDetailsModal.css z ujednoliconymi stylami */
+.custom-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    backdrop-filter: blur(3px);
+}
+
+.custom-modal-content {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    animation: fadeInModal 0.2s ease-out;
+}
+
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.custom-modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-modal-header h4 {
+    margin-bottom: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.btn-close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.15s ease-in-out;
+}
+.btn-close-modal:hover {
+    opacity: 1;
+}
+
+.custom-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.custom-modal-body p {
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+}
+
+.custom-modal-body strong {
+    color: #343a40;
+}
+
+.custom-modal-body .text-muted {
+    color: #6c757d !important;
+    font-size: 0.95rem;
+}
+
+/* UJEDNOLICONE STYLE DLA OPISÓW - GŁÓWNE */
+.description-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 1rem;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+}
+
+.description-box p {
+    margin-bottom: 0;
+    color: #6c757d;
+}
+
+/* STYLE DLA DŁUGICH TEKSTÓW (specjalnie dla wolontariuszy) */
+.scrollable-text {
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #495057;
+    white-space: pre-wrap; /* Zachowuje formatowanie ale łamie długie linie */
+    word-wrap: break-word; /* Łamie długie słowa */
+    margin-top: 0.5rem;
+}
+
+/* SPECJALNY STYLE DLA PÓL W MODALU WOLONTARIUSZY */
+.volunteer-field-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-top: 0.3rem;
+    font-size: 0.95rem; /* Zwiększony z 0.9rem */
+    line-height: 1.5;
+    color: #495057;
+    max-height: 120px;
+    overflow-y: auto;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.volunteer-field-box:empty::before {
+    content: "Brak informacji";
+    color: #adb5bd;
+    font-style: italic;
+}
+
+.custom-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+}
+
+.btn.btn-danger.me-2 svg {
+    position: relative;
+    bottom: 0.1rem;
+}
