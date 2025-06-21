@@ -1,0 +1,426 @@
+.shelter-adoptions-page .container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.adoption-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.adoption-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-left: 5px solid transparent;
+}
+
+.adoption-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.adoption-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+}
+
+.adoption-card .card-header .card-title {
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: #343a40;
+}
+
+.adoption-status-badge svg {
+    margin-right: 0.35em;
+}
+
+.adoption-card.status-pending {
+    border-left-color: var(--logo-color);
+}
+
+.adoption-card.status-pending svg {
+    position: relative;
+    right: 2px;
+    bottom: 1px;
+}
+
+.adoption-card.status-accepted {
+    border-left-color: #28a745;
+}
+
+.adoption-card.status-accepted svg {
+    position: relative;
+    right: 2px;
+    bottom: 1px;
+}
+
+.adoption-status-badge.status-accepted {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.adoption-card.status-rejected {
+    border-left-color: #dc3545;
+}
+
+.adoption-card.status-rejected svg {
+    position: relative;
+    right: 2px;
+    bottom: 1px;
+}
+
+.adoption-status-badge.status-rejected {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.adoption-card.status-cancelled {
+    border-left-color: #6c757d;
+}
+
+.adoption-card.status-cancelled svg {
+    position: relative;
+    right: 2px;
+    bottom: 1px;
+}
+
+.adoption-status-badge.status-cancelled {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.adoption-card .card-body {
+    padding: 1.25rem;
+    flex-grow: 1;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem !important;
+}
+
+.adoption-card-pet-image-wrapper {
+    flex-shrink: 0;
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.adoption-card-pet-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.adoption-card-no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+}
+
+.adoption-card-no-image svg {
+    width: 50px;
+    height: 50px;
+}
+
+.adoption-card-info p {
+    margin-bottom: 0.7rem;
+    font-size: 1rem;
+    color: #495057;
+    line-height: 1.5;
+}
+
+.adoption-card-info p:last-child {
+    margin-bottom: 0;
+}
+
+.adoption-card-info p strong {
+    color: #212529;
+    font-weight: 600;
+}
+
+.adoption-card-info small.text-muted {
+    font-size: 0.85rem;
+}
+
+.adoption-card .card-footer {
+    padding: 1rem 1.25rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    border-bottom-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+}
+
+.adoption-card .btn {
+    font-size: 0.9rem;
+    padding: 0.45rem 0.9rem;
+}
+
+.adoption-card .btn svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.35em;
+}
+
+/* --- STYLE DLA FILTRÓW --- */
+.filter-pills {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-pills .btn {
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    transition: all 0.2s ease-in-out;
+    border: 2px solid #dee2e6;
+    background-color: #fff;
+    color: #495057;
+}
+
+.filter-pills .btn:hover {
+    border-color: var(--logo-color);
+    background-color: rgba(255, 191, 0, 0.1);
+}
+
+.filter-pills .btn.active,
+.filter-pills .btn:active {
+    background-color: var(--logo-color);
+    color: #333;
+    border-color: var(--logo-color);
+    box-shadow: 0 2px 8px rgba(255, 191, 0, 0.25);
+}
+
+.adoption-card .btn-details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #007bff;
+    border: 2px solid;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.adoption-card .btn-details:hover {
+    background-color: #007bff;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
+}
+
+.adoption-card .btn-details svg,
+.adoption-card .dropdown-toggle svg {
+    position: relative;
+    top: 1px;
+}
+.adoption-card .dropdown-menu .dropdown-item {
+    font-family: inherit !important;
+    font-weight: 500 !important;
+    display: block !important;
+    width: 100% !important;
+    padding: 0.5rem 1rem !important;
+    clear: both !important;
+    font-size: 1rem !important;
+    color: #212529 !important;
+    text-align: inherit !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.adoption-card .dropdown-menu .dropdown-item:hover,
+.adoption-card .dropdown-menu .dropdown-item:focus {
+    color: #1e2125 !important;
+    background-color: #e9ecef !important;
+}
+
+.adoption-card .dropdown-menu .dropdown-item:active {
+    color: #fff !important;
+    background-color: #0d6efd !important;
+}
+
+.adoption-card .dropdown-menu .dropdown-item.text-danger {
+    color: #dc3545 !important;
+}
+
+.adoption-card .dropdown-menu .dropdown-item.text-danger:hover {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+}
+
+.adoption-card .dropdown-menu .dropdown-item:disabled,
+.adoption-card .dropdown-menu .dropdown-item.disabled {
+    color: #6c757d !important;
+    pointer-events: none !important;
+    background-color: transparent !important;
+    opacity: 0.65 !important;
+}
+
+.adoption-card .dropdown-menu .dropdown-divider {
+    height: 0 !important;
+    margin: 0.5rem 0 !important;
+    overflow: hidden !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.15) !important;
+    opacity: 1 !important;
+}
+
+.description-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 1rem;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+}
+
+.description-box p {
+    margin-bottom: 0;
+}
+
+/* RESPONSYWNOŚĆ */
+@media (max-width: 768px) {
+    .filter-pills {
+        margin-top: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Dropdown na mobile - większy z-index */
+    .adoption-card .dropdown-menu {
+        z-index: 1060 !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .adoption-card .card-header,
+    .adoption-card .card-body,
+    .adoption-card .card-footer {
+        padding: 1rem;
+    }
+
+    .adoption-card .card-header .card-title {
+        font-size: 1.05rem;
+    }
+
+    .adoption-card .card-footer {
+        flex-direction: column;
+    }
+
+    .adoption-card .card-footer .btn {
+        width: 100%;
+    }
+
+    .adoption-card .card-footer .btn:not(:last-child) {
+        margin-bottom: 0.5rem;
+    }
+
+    .adoption-card .card-body {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center;
+    }
+
+    .adoption-card-pet-image-wrapper {
+        margin-right: 0;
+        margin-bottom: 1rem;
+        width: 130px;
+        height: 130px;
+    }
+
+    .adoption-card-info {
+        text-align: center;
+    }
+
+    .adoption-card .btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+.badge.status-pending {
+    background-color: var(--logo-color);
+    color: #212529;
+    font-size: 1rem;
+    padding: 0.7em 1.2em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge.status-accepted {
+    background-color: #28a745;
+    color: white;
+    font-size: 1rem;
+    padding: 0.7em 1.2em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge.status-rejected {
+    background-color: #dc3545;
+    color: white;
+    font-size: 1rem;
+    padding: 0.7em 1.2em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge.status-cancelled {
+    background-color: #6c757d !important;
+    color: white !important;
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+}
+
+.btn-sm.btn-activate {
+    background-color: #ffffff;
+    color: #28a745;
+    border: 2px solid;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-sm.btn-activate:hover {
+    background-color: #28a745;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(57, 243, 94, 0.4);
+    border-color: #28a745;
+}
+
+.btn-sm.btn-deactivate {
+    background-color: #ffffff;
+    color: #dc3545;
+    border: 2px solid;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-sm.btn-deactivate:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+    border-color: #dc3545;
+}
