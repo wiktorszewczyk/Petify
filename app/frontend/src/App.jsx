@@ -9,6 +9,7 @@ import Favourites from "./pages/Favourites";
 import PetProfile from "./pages/PetProfile";
 import EditProfile from "./pages/EditProfile";
 import ShelterProfile from "./pages/ShelterProfile";
+import UserChat from "./pages/UserChat";
 import PrivateRoute from "./components/PrivateRoute";
 import RoleProtectedRoute from "./components/RoleProtectedRoute";
 
@@ -34,6 +35,11 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            <Route path="/shelters" element={<Shelters />} />
+            <Route path="/shelter/:id" element={<ShelterProfile />} />
+            <Route path="/pet/:id" element={<PetProfile />} />
+
             <Route
                 path="/home"
                 element={
@@ -51,10 +57,10 @@ function App() {
                 }
             />
             <Route
-                path="/sheltersPage"
+                path="/edit-profile"
                 element={
                     <PrivateRoute>
-                        <Shelters />
+                        <EditProfile />
                     </PrivateRoute>
                 }
             />
@@ -67,33 +73,17 @@ function App() {
                 }
             />
             <Route
-                path="/petProfile/:id"
+                path="/chat/:petId"
                 element={
                     <PrivateRoute>
-                        <PetProfile />
-                    </PrivateRoute>
-                }
-            />
-            <Route
-                path="/shelterProfile/:id"
-                element={
-                    <PrivateRoute>
-                        <ShelterProfile />
-                    </PrivateRoute>
-                }
-            />
-            <Route
-                path="/editProfile"
-                element={
-                    <PrivateRoute>
-                        <EditProfile />
+                        <UserChat />
                     </PrivateRoute>
                 }
             />
             <Route
                 path="/shelter-panel"
                 element={
-                    <RoleProtectedRoute requiredRole="SHELTER">
+                    <RoleProtectedRoute allowedRoles={["SHELTER"]}>
                         <ShelterPanel />
                     </RoleProtectedRoute>
                 }
@@ -101,15 +91,15 @@ function App() {
             <Route
                 path="/shelter-panel/add-pet"
                 element={
-                    <RoleProtectedRoute requiredRole="SHELTER">
+                    <RoleProtectedRoute allowedRoles={["SHELTER"]}>
                         <AddPetForm />
                     </RoleProtectedRoute>
                 }
             />
             <Route
-                path="/shelter-panel/edit-pet/:petId"
+                path="/shelter-panel/edit-pet/:id"
                 element={
-                    <RoleProtectedRoute requiredRole="SHELTER">
+                    <RoleProtectedRoute allowedRoles={["SHELTER"]}>
                         <EditPetForm />
                     </RoleProtectedRoute>
                 }
@@ -117,7 +107,7 @@ function App() {
             <Route
                 path="/shelter-panel/adoptions"
                 element={
-                    <RoleProtectedRoute requiredRole="SHELTER">
+                    <RoleProtectedRoute allowedRoles={["SHELTER"]}>
                         <ShelterAdoptionsPage />
                     </RoleProtectedRoute>
                 }
@@ -125,7 +115,7 @@ function App() {
             <Route
                 path="/shelter-panel/reservations"
                 element={
-                    <RoleProtectedRoute requiredRole="SHELTER">
+                    <RoleProtectedRoute allowedRoles={["SHELTER"]}>
                         <ShelterReservationsPage />
                     </RoleProtectedRoute>
                 }
@@ -133,7 +123,7 @@ function App() {
             <Route
                 path="/shelter-panel/messages"
                 element={
-                    <RoleProtectedRoute requiredRole="SHELTER">
+                    <RoleProtectedRoute allowedRoles={["SHELTER"]}>
                         <ShelterMessages />
                     </RoleProtectedRoute>
                 }
@@ -141,7 +131,7 @@ function App() {
             <Route
                 path="/shelter-panel/feed"
                 element={
-                    <RoleProtectedRoute requiredRole="SHELTER">
+                    <RoleProtectedRoute allowedRoles={["SHELTER"]}>
                         <ShelterFeed />
                     </RoleProtectedRoute>
                 }
@@ -149,15 +139,16 @@ function App() {
             <Route
                 path="/shelter-panel/funding"
                 element={
-                    <RoleProtectedRoute requiredRole="SHELTER">
+                    <RoleProtectedRoute allowedRoles={["SHELTER"]}>
                         <ShelterFunding />
                     </RoleProtectedRoute>
                 }
             />
+
             <Route
                 path="/admin-panel"
                 element={
-                    <RoleProtectedRoute requiredRole="ADMIN">
+                    <RoleProtectedRoute allowedRoles={["ADMIN"]}>
                         <AdminPanel />
                     </RoleProtectedRoute>
                 }
@@ -165,7 +156,7 @@ function App() {
             <Route
                 path="/admin-panel/users"
                 element={
-                    <RoleProtectedRoute requiredRole="ADMIN">
+                    <RoleProtectedRoute allowedRoles={["ADMIN"]}>
                         <AdminUsers />
                     </RoleProtectedRoute>
                 }
@@ -173,7 +164,7 @@ function App() {
             <Route
                 path="/admin-panel/shelter-activations"
                 element={
-                    <RoleProtectedRoute requiredRole="ADMIN">
+                    <RoleProtectedRoute allowedRoles={["ADMIN"]}>
                         <AdminShelterActivations />
                     </RoleProtectedRoute>
                 }
@@ -181,7 +172,7 @@ function App() {
             <Route
                 path="/admin-panel/volunteer-applications"
                 element={
-                    <RoleProtectedRoute requiredRole="ADMIN">
+                    <RoleProtectedRoute allowedRoles={["ADMIN"]}>
                         <AdminVolunteerApplications />
                     </RoleProtectedRoute>
                 }

@@ -37,61 +37,30 @@ const Favorites = () => {
     useEffect(() => {
         const loadFavorites = async () => {
             try {
-                console.log("💖 Loading favorite pets...");
                 const pets = await fetchFavoritePets();
-                console.log("💖 Favorite pets received:", pets);
 
                 const favoritesWithShelter = await Promise.all(
                     pets.map(async (pet) => {
-                        console.log(
-                            `🐾 Processing favorite pet: ${pet.name} (ID: ${pet.id})`
-                        );
-                        console.log(`🖼️ Pet imageUrl:`, pet.imageUrl);
-
                         let shelterName = "Nieznane schronisko";
                         let imageUrl = null;
 
-                        // Najpierw sprawdź czy pet ma główne zdjęcie
                         if (pet.imageUrl) {
                             imageUrl = pet.imageUrl;
-                            console.log(
-                                `✅ Using main image for ${pet.name}:`,
-                                imageUrl
-                            );
                         } else {
-                            // Jeśli nie ma głównego zdjęcia, spróbuj pobrać dodatkowe
                             try {
-                                console.log(
-                                    `🔍 Fetching additional images for ${pet.name}...`
-                                );
                                 const imageData = await fetchImagesByPetId(
                                     pet.id
                                 );
                                 imageUrl = imageData[0]?.imageUrl || null;
-                                console.log(
-                                    `📸 Found additional image for ${pet.name}:`,
-                                    imageUrl
-                                );
-                            } catch (err) {
-                                console.warn(
-                                    `⚠️ No additional images for ${pet.name}:`,
-                                    err
-                                );
-                            }
+                            } catch (err) {}
                         }
 
-                        // Pobierz dane schroniska
                         try {
                             const shelter = await fetchShelterById(
                                 pet.shelterId
                             );
                             shelterName = shelter.name;
-                        } catch (err) {
-                            console.warn(
-                                `⚠️ Could not fetch shelter for ${pet.name}:`,
-                                err
-                            );
-                        }
+                        } catch (err) {}
 
                         return {
                             ...pet,
@@ -101,13 +70,8 @@ const Favorites = () => {
                     })
                 );
 
-                console.log(
-                    "💖 Final favorites with images:",
-                    favoritesWithShelter
-                );
                 setFavorites(favoritesWithShelter);
             } catch (err) {
-                console.error("❌ Error loading favorites:", err);
                 setError(err.message);
             } finally {
                 setLoading(false);
@@ -157,9 +121,7 @@ const Favorites = () => {
                             <div
                                 key={animal.id}
                                 className="animal-card-favourites"
-                                onClick={() =>
-                                    navigate(`/petProfile/${animal.id}`)
-                                }
+                                onClick={() => navigate(`/pet/${animal.id}`)}
                             >
                                 <div className="animal-card-image">
                                     <img src={animal.image} alt={animal.name} />

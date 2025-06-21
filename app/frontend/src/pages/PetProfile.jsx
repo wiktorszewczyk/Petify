@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./PetProfile.css";
 import {
@@ -24,6 +24,7 @@ import {
     fetchImagesByPetId,
     fetchShelterById,
 } from "../api/shelter";
+import { openChatForPet } from "../api/chat";
 
 import dono5 from "../assets/pet_snack.png";
 import dono10 from "../assets/pet_bowl.png";
@@ -50,6 +51,9 @@ const pawSteps = [
 ];
 
 function PetProfile() {
+    const navigate = useNavigate();
+    const [loadingChat, setLoadingChat] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [showDonatePopup, setShowDonatePopup] = useState(false);
     const [showAdoptPopup, setShowAdoptPopup] = useState(false);
@@ -106,6 +110,37 @@ function PetProfile() {
             fetchPet();
         }
     }, [id]);
+
+    useEffect(() => {
+        const userData = localStorage.getItem("petify_user");
+        if (userData) {
+            setCurrentUser(JSON.parse(userData));
+        }
+    }, []);
+
+    const handleOpenChat = async () => {
+        if (!currentUser) {
+            navigate("/login");
+            return;
+        }
+
+        if (!pet) return;
+
+        try {
+            setLoadingChat(true);
+            const result = await openChatForPet(pet.id);
+
+            if (result.success) {
+                navigate(`/chat/${pet.id}`);
+            } else {
+                alert(result.error || "Błąd otwierania czatu");
+            }
+        } catch (err) {
+            alert("Błąd połączenia z czatem");
+        } finally {
+            setLoadingChat(false);
+        }
+    };
 
     const handlePrev = () => {
         setCurrentPhotoIndex((prevIndex) =>
@@ -330,9 +365,13 @@ function PetProfile() {
                             <HandCoins className="btn-icon" />
                             Wesprzyj
                         </button>
-                        <button className="action-btn btn-message">
+                        <button
+                            className="action-btn btn-message"
+                            onClick={handleOpenChat}
+                            disabled={loadingChat}
+                        >
                             <ScrollText className="btn-icon" />
-                            Wiadomości
+                            {loadingChat ? "Łączenie..." : "Wiadomości"}
                         </button>
                     </section>
 
