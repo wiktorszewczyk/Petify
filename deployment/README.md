@@ -17,7 +17,7 @@
 # Running the services on Azure
 ```sh
 # Copy docker-compose.yml and .env files to the VM
-scp -i ~/.ssh/petify.pem deployment/docker-compose.yml deployment/.env petify@backend.petify.x5z1fu.com:/home/petify
+scp -i ~/.ssh/petify.pem deployment/docker-compose.yml deployment/.env test_data/backup.sql petify@backend.petify.x5z1fu.com:/home/petify
 
 # Connect to the Azure VM
 ssh -i ~/.ssh/petify.pem petify@backend.petify.x5z1fu.com

@@ -24,11 +24,14 @@ services:
     environment:
       PGUSER: ${DB_USER}
       PGPASSWORD: ${DB_PASSWORD}
+    volumes:
+    - ./backup.sql:/backup.sql:ro
     entrypoint:
       [
         "bash", "-c",
         "psql -h ${DB_HOST} -d postgres -c 'DROP DATABASE IF EXISTS \"${DB_NAME}\";' && \
          psql -h ${DB_HOST} -d postgres -c 'CREATE DATABASE \"${DB_NAME}\";' && \
+         psql -h ${DB_HOST} -d ${DB_NAME} -f /backup.sql && \
          sleep infinity"
       ]
     healthcheck:
@@ -50,6 +53,8 @@ services:
   #     POSTGRES_PASSWORD: ${DB_PASSWORD}
   #   ports:
   #     - "5432:5432"
+  #   volumes:
+  #   - ../test_data/backup.sql:/docker-entrypoint-initdb.d/backup.sql:ro
   #   healthcheck:
   #     test: ["CMD-SHELL", "pg_isready -h ${DB_HOST} -p 5432"]
   #     timeout: 5s
