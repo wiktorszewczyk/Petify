@@ -40,7 +40,7 @@ class PetService with CacheableMixin {
   }
 
   /// Pobiera zwierzęta z domyślnymi filtrami
-  Future<List<Pet>> getPetsWithDefaultFilters() async {
+  Future<List<Pet>> getPetsWithDefaultFilters({int limit = 20}) async {
     final filterPrefs = await FilterPreferencesService().getFilterPreferences();
     final cacheKey = generateCacheKey('pets_default', {
       'vaccinated': filterPrefs.onlyVaccinated,
@@ -53,6 +53,7 @@ class PetService with CacheableMixin {
       'maxDistance': filterPrefs.maxDistance,
       'useCurrentLocation': filterPrefs.useCurrentLocation,
       'selectedCity': filterPrefs.selectedCity,
+      'limit': limit,
     });
 
     return cachedFetch(cacheKey, () async {
@@ -86,8 +87,9 @@ class PetService with CacheableMixin {
         userLat: userLat,
         userLng: userLng,
         radiusKm: filterPrefs.maxDistance,
+        limit: limit,
       );
-    }, ttl: Duration(minutes: 3));
+    });
   }
 
   String? _mapAnimalTypesToBackend(Set<String> types) {
@@ -153,8 +155,10 @@ class PetService with CacheableMixin {
     if (minAge != null) queryParams['minAge'] = minAge;
     if (maxAge != null) queryParams['maxAge'] = maxAge;
     if (type != null) queryParams['type'] = type;
-    if (userLat != null) queryParams['userLat'] = userLat;
-    if (userLng != null) queryParams['userLng'] = userLng;
+    // TYMCZASOWO: Swap latitude/longitude parameters to fix distance calculation
+    // Based on user report that distances show 4548km to Polish shelters
+    if (userLat != null) queryParams['userLng'] = userLat; // Send latitude as longitude
+    if (userLng != null) queryParams['userLat'] = userLng; // Send longitude as latitude
     if (radiusKm != null) queryParams['radiusKm'] = radiusKm;
     if (cursor != null) queryParams['cursor'] = cursor;
     if (limit != null) queryParams['limit'] = limit;
@@ -164,6 +168,9 @@ class PetService with CacheableMixin {
     return cachedFetch(cacheKey, () async {
       try {
         dev.log('Making request to /pets/filter with params: $queryParams');
+        if (userLat != null && userLng != null) {
+          dev.log('⚠️ COORDINATE SWAP: Original userLat=$userLat, userLng=$userLng → Sent as userLat=$userLng, userLng=$userLat');
+        }
         final response = await _api.get('/pets/filter', queryParameters: queryParams);
         dev.log('Response status: ${response.statusCode}');
 

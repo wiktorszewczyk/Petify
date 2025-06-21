@@ -12,7 +12,7 @@ class CacheEntry<T> {
 
   bool get isExpired => DateTime.now().isAfter(expiresAt);
 
-  bool get isStale => DateTime.now().isAfter(createdAt.add(Duration(minutes: 2)));
+  bool get isStale => DateTime.now().isAfter(createdAt.add(Duration(minutes: 5)));
 
   Duration get timeToLive => expiresAt.difference(DateTime.now());
 }
@@ -33,10 +33,30 @@ class CacheManager {
     return entry.data as T?;
   }
 
-  /// Zapisuje dane do cache'a z określonym TTL
-  static void set<T>(String key, T data, {Duration ttl = const Duration(minutes: 5)}) {
+  /// Zapisuje dane do cache'a z określonym TTL (auto-optymalizowane TTL)
+  static void set<T>(String key, T data, {Duration? ttl}) {
+    // Inteligentne TTL na podstawie typu danych
+    ttl ??= _getOptimalTTL(key);
+
     _cache[key] = CacheEntry<T>(data, ttl);
     dev.log('Cache SET: $key (TTL: ${ttl.inMinutes}min)');
+  }
+
+  /// Określa optymalny TTL na podstawie klucza cache
+  static Duration _getOptimalTTL(String key) {
+    if (key.contains('pets') || key.contains('favorites')) {
+      return Duration(minutes: 15); // Zwierzęta się rzadko zmieniają
+    } else if (key.contains('user') || key.contains('achievements')) {
+      return Duration(minutes: 20); // Dane użytkownika stabilne
+    } else if (key.contains('events') || key.contains('posts')) {
+      return Duration(minutes: 8); // Wydarzenia i posty częściej się zmieniają
+    } else if (key.contains('conversations') || key.contains('messages')) {
+      return Duration(minutes: 5); // Wiadomości szybko się zmieniają
+    } else if (key.contains('reservations') || key.contains('slots')) {
+      return Duration(minutes: 3); // Rezerwacje zmieniają się często
+    } else {
+      return Duration(minutes: 10); // Domyślne TTL
+    }
   }
 
   /// Sprawdza czy dane są w cache ale już stare (potrzebują odświeżenia w tle)
@@ -126,7 +146,7 @@ mixin CacheableMixin {
   Future<T> cachedFetch<T>(
       String key,
       Future<T> Function() fetcher, {
-        Duration ttl = const Duration(minutes: 5),
+        Duration? ttl,
         bool forceRefresh = false,
       }) async {
     if (!forceRefresh) {
@@ -149,7 +169,7 @@ mixin CacheableMixin {
   }
 
   /// Odśwież dane w tle bez wpływu na UI
-  void _refreshInBackground<T>(String key, Future<T> Function() fetcher, Duration ttl) {
+  void _refreshInBackground<T>(String key, Future<T> Function() fetcher, Duration? ttl) {
     fetcher().then((data) {
       CacheManager.set(key, data, ttl: ttl);
       dev.log('Background refresh completed: $key');

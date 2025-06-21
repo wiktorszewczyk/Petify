@@ -226,6 +226,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       final filteredPets = petsData.where((pet) => !_likedPetIds.contains(pet.id)).toList();
       print('🔍 HomeView: Po filtrowaniu polubionych: ${filteredPets.length} z ${petsData.length} (polubione: ${_likedPetIds.length})');
 
+      // Shuffluj listę zwierząt dla losowej kolejności
       filteredPets.shuffle();
       print('🔀 HomeView: Pomieszano kolejność zwierząt');
 
@@ -258,6 +259,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   bool _onCardSwiped(int previousIndex, int? currentIndex, CardSwiperDirection direction) {
     if (!mounted || _isSwiping) return false;
 
+    // Dodaj haptic feedback
     HapticFeedback.lightImpact();
 
     setState(() {
@@ -276,6 +278,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       print('❌ HomeView: Pominął pet ${swipedPet.id} "${swipedPet.name}", currentIndex: $_currentIndex');
     }
 
+    // Jeśli zostaje mało kart, załaduj więcej
     if (_pets.length - previousIndex <= 3) {
       print('🔍 HomeView: Mało kart (${_pets.length - previousIndex}), ładowanie więcej...');
       _loadMorePets();
@@ -293,27 +296,35 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   void _likePet(Pet pet) {
+    // NATYCHMIAST dodaj do lokalnej listy
     _likedPetIds.add(pet.id);
 
+    // Znajdź indeks polubiowanego zwierzęcia
     final petIndex = _pets.indexWhere((p) => p.id == pet.id);
 
     setState(() {
+      // Natychmiast usuń polubione zwierzę z listy
       _pets.removeWhere((p) => p.id == pet.id);
 
+      // Po usunięciu zwierzęcia, zostajemy na tym samym indeksie (automatycznie pokazuje się następne)
+      // Tylko sprawdź czy nie wyszliśmy poza zakres
       if (_currentIndex >= _pets.length && _pets.isNotEmpty) {
         _currentIndex = _pets.length - 1;
       } else if (_pets.isEmpty) {
         _currentIndex = 0;
       }
 
+      // Regeneruj CardSwiper z nową listą
       _cardSwiperKey++;
     });
 
+    // Usuń ze wszystkich cache'ów związanych ze zwierzętami
     CacheManager.invalidatePattern('pets_');
     CacheManager.invalidatePattern('favorites_pets');
 
     print('💖 HomeView: Natychmiast usunięto pet ${pet.id} z pozycji $petIndex (pozostało: ${_pets.length} zwierząt, currentIndex: $_currentIndex)');
 
+    // Sprawdź czy potrzeba załadować więcej zwierząt
     if (_pets.length - _currentIndex <= 1) {
       print('🔍 HomeView: Mało zwierząt po polubieniu (${_pets.length - _currentIndex}), ładowanie więcej...');
       _loadMorePets();
@@ -339,6 +350,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       print('🔍 HomeView: Po filtrowaniu: ${availablePets.length} dostępnych zwierząt (odfiltrowano ${newPets.length - availablePets.length})');
 
       if (availablePets.isNotEmpty) {
+        // Shuffluj nowe zwierzęta przed dodaniem
         availablePets.shuffle();
         print('🔀 HomeView: Pomieszano kolejność nowych zwierząt');
 
@@ -365,6 +377,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
         print('✅ HomeView: Pomyślnie polubiono pet ${pet.id} w backendzie');
 
+        // Po udanym polubienia, odśwież listę polubionych z backendu
         await _loadLikedPetsFromBackend();
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -375,14 +388,17 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ),
         );
       } else {
+        // Jeśli backend zwrócił błąd, usuń z lokalnej listy
         print('❌ HomeView: Backend odrzucił polubienie pet ${pet.id} (status: ${response.statusCode}), przywracanie stanu');
         _likedPetIds.remove(pet.id);
         throw Exception('Nie udało się polubić zwierzaka (${response.statusCode})');
       }
     } catch (e) {
       print('❌ HomeView: Błąd polubienia pet ${pet.id}: $e');
+      // W przypadku błędu, cofnij lokalną zmianę
       setState(() {
         _likedPetIds.remove(pet.id);
+        // Przywróć zwierzę do listy na aktualnej pozycji
         _pets.insert(_currentIndex, pet);
       });
 
@@ -400,10 +416,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   void _onActionButtonPressed(CardSwiperDirection direction) {
     if (_isLoading || _pets.isEmpty || _isSwiping || _currentIndex >= _pets.length) return;
 
+    // Dodaj haptic feedback dla przycisków
     if (direction == CardSwiperDirection.right) {
-      HapticFeedback.heavyImpact();
+      HapticFeedback.heavyImpact(); // Dla polubienia
     } else {
-      HapticFeedback.selectionClick();
+      HapticFeedback.selectionClick(); // Dla pominięcia
     }
 
     _cardController.swipe(direction);
@@ -515,7 +532,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: 60, // Zmniejszona wysokość AppBar
         title: Row(
           children: [
             SvgPicture.asset(
@@ -702,6 +719,35 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       color: Colors.grey[600],
                     ),
                   ),
+                  if (_currentFilters?.useCurrentLocation == true && _currentFilters?.maxDistance != null) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 32),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_off, color: Colors.orange[700], size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Włącz lokalizację w telefonie jeśli filtruje po lokalizacji swojej',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.orange[700],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   Text(
                     'Pociągnij w dół, aby odświeżyć',
@@ -731,6 +777,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       );
     }
 
+    // WAŻNE: Sprawdź czy mamy zwierzęta do wyświetlenia przed CardSwiper
     if (_pets.isEmpty || _currentIndex >= _pets.length) {
       return RefreshIndicator(
         onRefresh: _refreshAllData,
@@ -764,6 +811,35 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       color: Colors.grey[600],
                     ),
                   ),
+                  if (_currentFilters?.useCurrentLocation == true && _currentFilters?.maxDistance != null) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 32),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_off, color: Colors.orange[700], size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Włącz lokalizację w telefonie jeśli filtruje po lokalizacji swojej',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.orange[700],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
                     onPressed: _refreshAllData,
@@ -782,6 +858,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       );
     }
 
+    // Dodatkowe sprawdzenie dla bezpieczeństwa
     if (_pets.isEmpty) {
       return RefreshIndicator(
         onRefresh: _refreshAllData,
@@ -815,6 +892,35 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       color: Colors.grey[600],
                     ),
                   ),
+                  if (_currentFilters?.useCurrentLocation == true && _currentFilters?.maxDistance != null) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 32),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_off, color: Colors.orange[700], size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Włącz lokalizację w telefonie jeśli filtruje po lokalizacji swojej',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.orange[700],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   Text(
                     'Pociągnij w dół, aby odświeżyć',
@@ -831,6 +937,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       );
     }
 
+    // Zapewnij prawidłowy _currentIndex przed utworzeniem CardSwiper
     if (_currentIndex >= _pets.length) {
       _currentIndex = _pets.length - 1;
     }
@@ -867,6 +974,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           key: ValueKey('pet_${_pets[index].id}'),
                         ),
 
+                        // Wskazania swipe - POLUB (prawo)
                         if (horizontalOffsetPercentage > 0.1)
                           Positioned(
                             top: 40,
@@ -906,6 +1014,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                             ),
                           ),
 
+                        // Wskazania swipe - POMIŃ (lewo)
                         if (horizontalOffsetPercentage < -0.1)
                           Positioned(
                             top: 40,

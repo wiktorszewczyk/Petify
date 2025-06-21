@@ -525,6 +525,7 @@ class _EventsViewState extends State<EventsView> {
                       ),
                     ),
                   ),
+                // Pokaż badge tylko jeśli wydarzenie wymaga rejestracji
                 if (event.requiresRegistration)
                   Positioned(
                     top: 12,
@@ -532,11 +533,11 @@ class _EventsViewState extends State<EventsView> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: (event.capacity != null && event.capacity! > 0) ? Colors.orange : Colors.green,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Rejestracja',
+                        (event.capacity != null && event.capacity! > 0) ? 'Rejestracja' : 'Udział',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

@@ -172,6 +172,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     );
 
     if (result == true && mounted) {
+      // Uruchom konfetti przy sukcesie!
       _confettiController.play();
 
       await _loadFundraiserInfo();
@@ -487,8 +488,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           )
                               : Text(
                             _joined
-                                ? 'Zarejestrowano'
-                                : (event.requiresRegistration ? 'Zarejestruj się' : 'Dołącz do wydarzenia'),
+                                ? ((event.capacity != null && event.capacity! > 0) ? 'Zarejestrowano' : 'Zadeklarowano udział')
+                                : ((event.capacity != null && event.capacity! > 0) ? 'Zarejestruj się' : 'Zadeklaruj udział'),
                             style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
                           ),
                         ),
@@ -534,6 +535,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
             ),
           ),
         ),
+        // Konfetti overlay
         Align(
           alignment: Alignment.topCenter,
           child: ConfettiWidget(

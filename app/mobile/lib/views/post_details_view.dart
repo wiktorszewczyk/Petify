@@ -164,12 +164,14 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     );
 
     if (result == true && mounted) {
+      // Invalidate cache po donacji
       CacheManager.invalidatePattern('shelter_');
       CacheManager.invalidatePattern('fundraiser_');
       CacheManager.invalidatePattern('user_donations');
       CacheManager.invalidatePattern('posts_');
       print('🗑️ PostDetailsView: Invalidated cache after fundraiser donation');
 
+      // Uruchom konfetti przy sukcesie!
       _confettiController.play();
 
       await _loadFundraiserInfo();
@@ -207,7 +209,8 @@ class _PostDetailsViewState extends State<PostDetailsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildMainImage(),
+                // Pokaż główne zdjęcie tylko jeśli mainImageId istnieje
+                if (widget.post.mainImageId != null) _buildMainImage(),
 
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -298,8 +301,7 @@ class _PostDetailsViewState extends State<PostDetailsView> {
       decoration: BoxDecoration(
         color: Colors.grey[200],
       ),
-      child: widget.post.imageUrl.isNotEmpty
-          ? Image.network(
+      child: Image.network(
         widget.post.imageUrl,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
@@ -324,26 +326,6 @@ class _PostDetailsViewState extends State<PostDetailsView> {
             ),
           );
         },
-      )
-          : Container(
-        color: Colors.grey[300],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.image,
-              size: 50,
-              color: Colors.grey[600],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Brak zdjęcia',
-              style: GoogleFonts.poppins(
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

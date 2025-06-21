@@ -192,7 +192,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                             borderRadius: BorderRadius.circular(12)
                         ),
                         child: Text(
-                            '${currentPet.age} ${_y(currentPet.age)}',
+                            _formatDisplayAge(currentPet.age),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primaryColor
@@ -463,7 +463,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
       child: GestureDetector(
         onTap: enabled
             ? () {
-          HapticFeedback.selectionClick();
+          HapticFeedback.selectionClick(); // Dodaj haptic feedback
           left
               ? _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.elasticOut)
               : _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.elasticOut);
@@ -499,6 +499,13 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
   String _y(int n) => n == 1 ? 'rok' : (n >= 2 && n <= 4 ? 'lata' : 'lat');
 
+  String _formatDisplayAge(int age) {
+    if (age == 0) {
+      return '<1 rok';
+    }
+    return '${age} ${_y(age)}';
+  }
+
   List<String> get _traits {
     final t = <String>[
       currentPet.genderDisplayName,
@@ -513,6 +520,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
   List<TraitItem> get _allTraits {
     final traits = <TraitItem>[];
 
+    // Priorytet 1: Szczepienia i sterylizacja (z kolorami)
     if (currentPet.isVaccinated) {
       traits.add(TraitItem('', 'Zaszczepiony', Icons.medical_services, color: Colors.green));
     }
@@ -521,13 +529,14 @@ class _PetDetailsViewState extends State<PetDetailsView> {
       traits.add(TraitItem('', 'Sterylizowany', Icons.healing, color: Colors.blue));
     }
 
-    if (currentPet.breed?.isNotEmpty == true) {
+    // Reszta traitów (bez labelów, z domyślnym kolorem)
+    if (currentPet.breed?.isNotEmpty == true && currentPet.breed != null) {
       traits.add(TraitItem('', currentPet.breed!, Icons.pets));
     }
 
     traits.add(TraitItem('', currentPet.genderDisplayName, currentPet.gender == 'male' ? Icons.male : Icons.female));
     traits.add(TraitItem('', currentPet.sizeDisplayName, Icons.height));
-    traits.add(TraitItem('', '${currentPet.age} ${_y(currentPet.age)}', Icons.cake));
+    traits.add(TraitItem('', _formatDisplayAge(currentPet.age), Icons.cake));
 
     if (currentPet.isChildFriendly) {
       traits.add(TraitItem('', 'Przyjazny dzieciom', Icons.child_care));

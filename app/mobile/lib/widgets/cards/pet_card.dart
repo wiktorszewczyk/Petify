@@ -30,6 +30,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   final PageController _pageController = PageController();
   final MessageService _messageService = MessageService();
 
+  // Cache dla obrazów - zapobiega mruganiu
   final Map<String, ImageProvider> _imageCache = {};
   static final Map<String, ImageProvider> _globalImageCache = {};
   bool _isImageLoaded = false;
@@ -48,6 +49,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     for (int i = 0; i < allImages.length; i++) {
       final imagePath = allImages[i];
 
+      // Sprawdz globalny cache najpierw
       if (_globalImageCache.containsKey(imagePath)) {
         _imageCache[imagePath] = _globalImageCache[imagePath]!;
         if (i == 0) {
@@ -61,8 +63,9 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
       final imageProvider = _getImageProvider(imagePath);
       if (imageProvider != null) {
         _imageCache[imagePath] = imageProvider;
-        _globalImageCache[imagePath] = imageProvider;
+        _globalImageCache[imagePath] = imageProvider; // Dodaj do globalnego cache
 
+        // Preload pierwsze 2 obrazy dla lepszej wydajności
         if (i < 2) {
           imageProvider.resolve(const ImageConfiguration()).addListener(
             ImageStreamListener((info, _) {
@@ -98,20 +101,20 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _goToNextPhoto() {
     if (_currentPhotoIndex < widget.pet.galleryImages.length) {
-      HapticFeedback.selectionClick();
+      HapticFeedback.selectionClick(); // Dodaj haptic feedback
       _pageController.nextPage(
         duration: const Duration(milliseconds: 400),
-        curve: Curves.elasticOut,
+        curve: Curves.elasticOut, // Bardziej sprężysta animacja
       );
     }
   }
 
   void _goToPreviousPhoto() {
     if (_currentPhotoIndex > 0) {
-      HapticFeedback.selectionClick();
+      HapticFeedback.selectionClick(); // Dodaj haptic feedback
       _pageController.previousPage(
         duration: const Duration(milliseconds: 400),
-        curve: Curves.elasticOut,
+        curve: Curves.elasticOut, // Bardziej sprężysta animacja
       );
     }
   }
@@ -121,6 +124,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
+    // Używaj CachedNetworkImage dla lepszej wydajności
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return CachedNetworkImage(
         imageUrl: path,
@@ -370,6 +374,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             child: Stack(
               fit: StackFit.expand,
               children: [
+                // Używamy RepaintBoundary, żeby zapobiec niepotrzebnemu odświeżaniu
                 RepaintBoundary(
                   child: PageView.builder(
                     controller: _pageController,
@@ -520,7 +525,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '${widget.pet.age} ${_formatAge(widget.pet.age)}',
+                            _formatDisplayAge(widget.pet.age),
                             style: GoogleFonts.poppins(
                               fontSize: 18,
                               color: Colors.white,
@@ -646,11 +651,12 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     fontWeight: FontWeight.bold,
                     color: AppColors.textColor,
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(), // Wyłączamy scrollowanie
                   child: Row(
                     children: _buildPriorityTraits(),
                   ),
@@ -666,12 +672,15 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   List<Widget> _buildPriorityTraits() {
     final traits = <Widget>[];
 
-    if (widget.pet.breed?.isNotEmpty == true) {
+    // Priorytet 1: Rasa (jeśli dostępna i nie jest null/pusta), w przeciwnym razie wielkość
+    if (widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) {
       traits.add(_buildTraitChip(widget.pet.breed!, Icons.pets));
     } else {
-      traits.add(_buildTraitChip(widget.pet.typeDisplayName, Icons.pets));
+      // Jeśli brak rasy, pokaż wielkość
+      traits.add(_buildTraitChip(widget.pet.sizeDisplayName, Icons.height));
     }
 
+    // Priorytet 2: Płeć
     traits.add(_buildTraitChip(widget.pet.genderDisplayName,
         widget.pet.gender == 'male' ? Icons.male : Icons.female));
 
@@ -711,6 +720,13 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     } else {
       return 'lat';
     }
+  }
+
+  String _formatDisplayAge(int age) {
+    if (age == 0) {
+      return '<1 rok';
+    }
+    return '${age} ${_formatAge(age)}';
   }
 
   Future<void> _contactShelter() async {
@@ -803,7 +819,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                             ),
                           ),
                           Text(
-                            '${widget.pet.breed}, ${widget.pet.age} ${_formatAge(widget.pet.age)}',
+                            '${(widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) ? widget.pet.breed! : widget.pet.sizeDisplayName}, ${_formatDisplayAge(widget.pet.age)}',
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
@@ -881,6 +897,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   Widget _buildPetTraitsSection() {
     final traits = <Map<String, dynamic>>[];
 
+    // Priorytet 1: Szczepienia i sterylizacja (z kolorami)
     if (widget.pet.isVaccinated) {
       traits.add({'value': 'Zaszczepiony', 'icon': Icons.medical_services, 'color': Colors.green});
     }
@@ -889,13 +906,14 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
       traits.add({'value': 'Sterylizowany', 'icon': Icons.healing, 'color': Colors.blue});
     }
 
-    if (widget.pet.breed?.isNotEmpty == true) {
+    // Reszta traitów (bez labelów, z domyślnym kolorem)
+    if (widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) {
       traits.add({'value': widget.pet.breed!, 'icon': Icons.pets});
     }
 
     traits.add({'value': widget.pet.genderDisplayName, 'icon': widget.pet.gender == 'male' ? Icons.male : Icons.female});
     traits.add({'value': widget.pet.sizeDisplayName, 'icon': Icons.height});
-    traits.add({'value': '${widget.pet.age} ${_formatAge(widget.pet.age)}', 'icon': Icons.cake});
+    traits.add({'value': _formatDisplayAge(widget.pet.age), 'icon': Icons.cake});
 
     if (widget.pet.isChildFriendly) {
       traits.add({'value': 'Przyjazny dzieciom', 'icon': Icons.child_care});
