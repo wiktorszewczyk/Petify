@@ -1,0 +1,44 @@
+[
+    {
+        "title": "Dzień Otwarty Schroniska w Łodzi",
+        "shortDescription": "Przyjdź i spędź z nami wyjątkowe popołudnie oraz wesprzyj naszą działalność.",
+        "startDate": "2025-07-07T08:00:00.000000",
+        "endDate": "2025-07-07T20:00:00.000000",
+        "address": "Marmurowa 4. 91-610 Łódź, na placu za schroniskiem",
+        "mainImageId": 1,
+        "longDescription": "Czekają na Ciebie:\n🐾 Spotkanie z lekarzem weterynarii, psim i kocim behawiorystą oraz zoofizjoterapeutą - dowiedz się, jak dbać o zdrowie i dobre samopoczucie swoich pupili!\n🎨 Rozstrzygnięcie konkursu plastycznego „Ja i mój zwierzęcy przyjaciel” z nagrodami!\n🎉 Prezentacja schroniska i poznanie naszych psich i kocich podopiecznych\n🎈 Gry i zabawy dla dzieci, malowanie twarzy\n🎁 Stoiska informacyjno-edukacyjne\n🤝 Zbiórka darów dla psów i kotów - szczególnie potrzebne są smaczki naturalne, zabawki, smycze i obroże na zatrzask różnych rozmiarów\nZwiedzanie schroniska odbędzie się w grupach zorganizowanych co 30 minut przez pracowników - to świetna okazja, by zobaczyć, gdzie mieszkają nasi podopieczni!",
+        "fundraisingId": 3,
+        "latitude": 51.7972425,
+        "longitude": 19.5317806,
+        "capacity": 0,
+        "shelterId": 1
+    },
+    {
+        "title": "Szkolenie dla wolontariuszy (Łódź)",
+        "shortDescription": "Szkolenie dla osób chcących zostać wolontariuszami w Schronisku dla Zwierząt w Łodzi (pierwszy termin letni).",
+        "startDate": "2025-06-28T12:00:00.000000",
+        "endDate": "2025-06-28T16:00:00.000000",
+        "address": "Marmurowa 4. 91-610 Łódź, pokój 101",
+        "mainImageId": 2,
+        "longDescription": "W Schronisku dla Zwierząt w Łodzi funkcjonuje wolontariat w zakresie pracy z psami lub kotami.\nWolontariat odbywa się na terenie i w godzinach pracy schroniska.\nDo zadań i obowiązków wolontariuszy należy m.in.:\n\n- dbanie o dobro zwierząt przebywających w schronisku\n- spacery z psami\n- socjalizacja zwierząt\n- pielęgnacja zwierząt\n- wspomaganie opieki weterynaryjnej\n- wykonywanie prac porządkowych oraz innych czynności zależnych od bieżących potrzeb schroniska\n- wspomaganie obsługi procedury adopcji\n- promocja działalności schroniska w przestrzeni publicznej.",
+        "fundraisingId": null,
+        "latitude": 51.7972425,
+        "longitude": 19.5317806,
+        "capacity": 15,
+        "shelterId": 1
+    },
+    {
+        "title": "Szkolenie dla wolontariuszy (Warszawa)",
+        "shortDescription": "Szkolenie dla osób chcących zostać wolontariuszami w Schronisku Na Paluchu",
+        "startDate": "2025-07-15T16:00:00.000000",
+        "endDate": "2025-07-15T20:00:00.000000",
+        "address": "Paluch 2, 02-147 Warszawa, sala konferencyjna (I piętro)",
+        "mainImageId": 3,
+        "longDescription": "W Schronisku dla Zwierząt w Łodzi funkcjonuje wolontariat w zakresie pracy z psami lub kotami.\nWolontariat odbywa się na terenie i w godzinach pracy schroniska.\nDo zadań i obowiązków wolontariuszy należy m.in.:\n\n- dbanie o dobro zwierząt przebywających w schronisku\n- spacery z psami\n- socjalizacja zwierząt\n- pielęgnacja zwierząt\n- wspomaganie opieki weterynaryjnej\n- wykonywanie prac porządkowych oraz innych czynności zależnych od bieżących potrzeb schroniska\n- wspomaganie obsługi procedury adopcji\n- promocja działalności schroniska w przestrzeni publicznej.",
+        "fundraisingId": null,
+        "latitude": 51.7972425,
+        "longitude": 19.5317806,
+        "capacity": 15,
+        "shelterId": 2
+    }
+]

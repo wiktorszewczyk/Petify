@@ -7,7 +7,6 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost:8222")
 
 with open("data/fundings.json", "r", encoding="UTF-8") as f:
     fundings = json.load(f)
-
 with open("data/shelter_users.json", "r", encoding="UTF-8") as f:
     users = json.load(f)
 
