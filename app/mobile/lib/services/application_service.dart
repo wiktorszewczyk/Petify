@@ -53,6 +53,10 @@ class ApplicationService with CacheableMixin {
         CacheManager.invalidatePattern('my_adoption_applications');
         CacheManager.invalidate('adoption_details_$adoptionId');
         CacheManager.invalidatePattern('my_adoptions');
+        CacheManager.invalidatePattern('current_user'); // Invaliduj cache użytkownika żeby odświeżyć statystyki
+        CacheManager.invalidatePattern('user_');
+        CacheManager.invalidatePattern('achievements_'); // Osiągnięcia mogą się zmienić
+        dev.log('✅ CANCELLED ADOPTION APPLICATION $adoptionId - Invalidated user and adoption cache');
       } else {
         throw Exception('Nieprawidłowa odpowiedź serwera');
       }

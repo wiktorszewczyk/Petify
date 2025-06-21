@@ -297,101 +297,107 @@ class _ChatViewState extends State<ChatView> {
   }
 
   Widget _buildEmptyChat() {
-    return Center(
+    return RefreshIndicator(
+      onRefresh: _loadMessages,
+      color: AppColors.primaryColor,
       child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_conversation != null) ...[
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_conversation != null) ...[
+                Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: _getImageProvider(_conversation!.petImageUrl),
+                      onError: (exception, stackTrace) {
+                        return const AssetImage('assets/images/pet_placeholder.png');
+                      } as ImageErrorListener,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Rozpocznij czat o ${_conversation!.petName}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _conversation!.shelterName,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              const SizedBox(height: 32),
               Container(
-                width: 150,
-                height: 150,
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
+                  color: AppColors.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.chat_bubble_outline,
+                      size: 48,
+                      color: AppColors.primaryColor,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Napisz pierwszą wiadomość!',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Zapytaj o zwierzaka, proces adopcji lub umów się na spotkanie.',
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: _getImageProvider(_conversation!.petImageUrl),
-                    onError: (exception, stackTrace) {
-                      return const AssetImage('assets/images/pet_placeholder.png');
-                    } as ImageErrorListener,
-                  ),
                 ),
               ),
               const SizedBox(height: 24),
-              Text(
-                'Rozpocznij czat o ${_conversation!.petName}',
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _conversation!.shelterName,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-            const SizedBox(height: 32),
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
                 children: [
-                  Icon(
-                    Icons.chat_bubble_outline,
-                    size: 48,
-                    color: AppColors.primaryColor,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Napisz pierwszą wiadomość!',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Zapytaj o zwierzaka, proces adopcji lub umów się na spotkanie.',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: Colors.black87,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  _suggestionChip('Dzień dobry! Czy mogę dowiedzieć się więcej o tym zwierzaku?'),
+                  _suggestionChip('Kiedy mogę przyjechać na spotkanie?'),
+                  _suggestionChip('Jak wygląda proces adopcji?'),
+                  _suggestionChip('Czy zwierzak jest przyjazny dla dzieci?'),
                 ],
               ),
-            ),
-            const SizedBox(height: 24),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              alignment: WrapAlignment.center,
-              children: [
-                _suggestionChip('Dzień dobry! Czy mogę dowiedzieć się więcej o tym zwierzaku?'),
-                _suggestionChip('Kiedy mogę przyjechać na spotkanie?'),
-                _suggestionChip('Jak wygląda proces adopcji?'),
-                _suggestionChip('Czy zwierzak jest przyjazny dla dzieci?'),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -430,113 +436,127 @@ class _ChatViewState extends State<ChatView> {
 
 
   Widget _buildErrorState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red[300],
-          ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
-            child: Text(
-              _errorMessage!,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: Colors.red[700],
-              ),
-              textAlign: TextAlign.center,
+    return RefreshIndicator(
+      onRefresh: _loadConversationDetails,
+      color: AppColors.primaryColor,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red[300],
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Text(
+                    _errorMessage!,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.red[700],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: _loadConversationDetails,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Spróbuj ponownie'),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: _loadConversationDetails,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryColor,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
-            icon: const Icon(Icons.refresh),
-            label: const Text('Spróbuj ponownie'),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildChatMessages() {
-    return ListView.builder(
-      controller: _scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: _messages!.length,
-      itemBuilder: (context, index) {
-        final message = _messages![index];
-        final isMe = message.senderId == _currentUserId;
+    return RefreshIndicator(
+      onRefresh: _loadMessages,
+      color: AppColors.primaryColor,
+      child: ListView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        itemCount: _messages!.length,
+        itemBuilder: (context, index) {
+          final message = _messages![index];
+          final isMe = message.senderId == _currentUserId;
 
-        final showDate = index == 0 ||
-            !_isSameDay(_messages![index].timestamp, _messages![index - 1].timestamp);
+          final showDate = index == 0 ||
+              !_isSameDay(_messages![index].timestamp, _messages![index - 1].timestamp);
 
-        return Column(
-          children: [
-            if (showDate) _buildDateSeparator(message.timestamp),
+          return Column(
+            children: [
+              if (showDate) _buildDateSeparator(message.timestamp),
 
-            Align(
-              alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-              child: Column(
-                crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  if (!isMe && _conversation != null)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16, bottom: 4),
-                      child: Text(
-                        _conversation!.shelterName,
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
+              Align(
+                alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  children: [
+                    if (!isMe && _conversation != null)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, bottom: 4),
+                        child: Text(
+                          _conversation!.shelterName,
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                    ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: isMe ? AppColors.primaryColor : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.75,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          message.content,
-                          style: GoogleFonts.poppins(
-                            color: isMe ? Colors.black : Colors.black87,
-                            fontSize: 15,
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: isMe ? AppColors.primaryColor : Colors.grey[200],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.75,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            message.content,
+                            style: GoogleFonts.poppins(
+                              color: isMe ? Colors.black : Colors.black87,
+                              fontSize: 15,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          _formatMessageTimestamp(message.timestamp),
-                          style: GoogleFonts.poppins(
-                            color: isMe ? Colors.black87 : Colors.grey[600],
-                            fontSize: 11,
+                          const SizedBox(height: 2),
+                          Text(
+                            _formatMessageTimestamp(message.timestamp),
+                            style: GoogleFonts.poppins(
+                              color: isMe ? Colors.black87 : Colors.grey[600],
+                              fontSize: 11,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 

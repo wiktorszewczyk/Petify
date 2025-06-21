@@ -78,9 +78,12 @@ class _ProfileViewState extends State<ProfileView>
 
     try {
       CacheManager.invalidatePattern('user_');
+      CacheManager.invalidatePattern('current_user');
       CacheManager.invalidatePattern('achievements_');
+      CacheManager.invalidatePattern('favorites');
+      CacheManager.invalidatePattern('supported');
 
-      print('🔄 ProfileView: Odświeżanie danych profilu...');
+      print('🔄 ProfileView: Odświeżanie danych profilu i invalidacja cache...');
 
       final userData = await UserService().getCurrentUser();
       final allAchievements =

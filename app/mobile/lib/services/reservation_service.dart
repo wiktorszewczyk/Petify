@@ -103,6 +103,10 @@ class ReservationService with CacheableMixin {
         CacheManager.invalidatePattern('available_slots');
         CacheManager.invalidatePattern('my_reservations');
         CacheManager.invalidatePattern('pet_slots');
+        CacheManager.invalidatePattern('current_user'); // Invaliduj cache użytkownika żeby odświeżyć statystyki aktywności
+        CacheManager.invalidatePattern('user_');
+        CacheManager.invalidatePattern('achievements_'); // Osiągnięcia mogą się zmienić po aktywności wolontariackiej
+        dev.log('✅ RESERVED SLOT $slotId - Invalidated reservation and user cache');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -139,6 +143,10 @@ class ReservationService with CacheableMixin {
         CacheManager.invalidatePattern('available_slots');
         CacheManager.invalidatePattern('my_reservations');
         CacheManager.invalidatePattern('pet_slots');
+        CacheManager.invalidatePattern('current_user'); // Invaliduj cache użytkownika żeby odświeżyć statystyki aktywności
+        CacheManager.invalidatePattern('user_');
+        CacheManager.invalidatePattern('achievements_'); // Osiągnięcia mogą się zmienić po anulowaniu aktywności
+        dev.log('✅ CANCELLED RESERVATION $slotId - Invalidated reservation and user cache');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);

@@ -359,7 +359,10 @@ class PetService with CacheableMixin {
         CacheManager.invalidatePattern('favorites');
         CacheManager.invalidatePattern('supported');
         CacheManager.invalidatePattern('pets_'); // Invaliduj wszystkie cache zwierząt!
-        dev.log('✅ LIKED PET $petId - Invalidated all pets cache. Next fetch will get fresh data from API.');
+        CacheManager.invalidatePattern('current_user'); // Invaliduj cache użytkownika żeby odświeżyć statystyki
+        CacheManager.invalidatePattern('user_');
+        CacheManager.invalidatePattern('achievements_'); // Osiągnięcia mogą się zmienić po polubieniu
+        dev.log('✅ LIKED PET $petId - Invalidated all pets cache and user data. Next fetch will get fresh data from API.');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -377,7 +380,10 @@ class PetService with CacheableMixin {
         CacheManager.invalidatePattern('favorites');
         CacheManager.invalidatePattern('supported');
         CacheManager.invalidatePattern('pets_');
-        dev.log('Invalidated pets and favorites cache after unliking pet $petId');
+        CacheManager.invalidatePattern('current_user'); // Invaliduj cache użytkownika żeby odświeżyć statystyki
+        CacheManager.invalidatePattern('user_');
+        CacheManager.invalidatePattern('achievements_'); // Osiągnięcia mogą się zmienić po cofnięciu polubienia
+        dev.log('Invalidated pets, favorites and user cache after unliking pet $petId');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -614,6 +620,16 @@ class PetService with CacheableMixin {
         'hasOtherPets': hasOtherPets,
         'description': description,
       });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Invaliduj cache po pomyślnym złożeniu wniosku adopcyjnego
+        CacheManager.invalidatePattern('current_user'); // Invaliduj cache użytkownika żeby odświeżyć statystyki
+        CacheManager.invalidatePattern('user_');
+        CacheManager.invalidatePattern('my_adoption_applications');
+        CacheManager.invalidatePattern('my_adoptions');
+        CacheManager.invalidatePattern('achievements_'); // Osiągnięcia mogą się zmienić
+        dev.log('✅ CREATED ADOPTION FORM for pet $petId - Invalidated user and adoption cache');
+      }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
     } on DioException catch (e) {

@@ -129,7 +129,9 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
           _isLoading = false;
         });
         if (result == true) {
+          // Uruchom konfetti przy sukcesie!
           _confettiController.play();
+          // Odczekaj chwilę żeby konfetti było widoczne przed zamknięciem
           await Future.delayed(const Duration(milliseconds: 300));
 
           Navigator.of(context).pop();
@@ -200,14 +202,14 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
           duration: 400.ms,
           curve: Curves.easeOutQuart,
         ),
-        Align(
-          alignment: Alignment.topCenter,
+        // Konfetti overlay - pozycjonowane względem kontenera
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
           child: ConfettiWidget(
             confettiController: _confettiController,
-            blastDirection: 1.5708,
-            emissionFrequency: 0.05,
-            numberOfParticles: 30,
-            gravity: 0.1,
+            blastDirectionality: BlastDirectionality.explosive,
             shouldLoop: false,
             colors: const [
               Colors.green,
