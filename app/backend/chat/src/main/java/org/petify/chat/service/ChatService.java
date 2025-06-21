@@ -61,7 +61,6 @@ public class ChatService {
         if (!fromShelter && !room.isShelterVisible()) {
             room.setShelterVisible(true);
         }
-        roomRepo.save(room);
 
         ChatMessage saved = msgRepo.save(
                 new ChatMessage(null, roomId, login, content.trim(), LocalDateTime.now())
@@ -76,9 +75,7 @@ public class ChatService {
             throw new InvalidRoomStateException("Cannot send messages to yourself");
         }
 
-        broker.convertAndSendToUser(recipient,
-                "/queue/chat/" + roomId,
-                map(saved, room));
+        broker.convertAndSendToUser(recipient, "/queue/chat/" + roomId, map(saved, room));
 
         long totalUnread = totalUnreadFor(recipient);
         broker.convertAndSendToUser(recipient, "/queue/unread", totalUnread);
@@ -92,9 +89,8 @@ public class ChatService {
     @Transactional(readOnly = true)
     public List<ChatRoomDTO> myRooms(String login) {
         validateLogin(login);
-
-        return roomRepo.findAllByUserNameOrShelterNameOrderByLastMessageTimestampDesc(login, login)
-                .stream()
+        List<ChatRoom> rooms = roomRepo.findAllRoomsForUserSorted(login);
+        return rooms.stream()
                 .filter(r -> visibleFor(r, login))
                 .map(r -> map(r, login))
                 .toList();
@@ -111,18 +107,17 @@ public class ChatService {
 
         checkParticipantOrAdmin(room, login);
 
+        markAsRead(room, login);
+
         LocalDateTime afterHidden = login.equals(room.getUserName())
                 ? room.getUserHiddenAt()
                 : room.getShelterHiddenAt();
 
         PageRequest pr = PageRequest.of(page, size);
-        Page<ChatMessageDTO> result = (afterHidden == null
+        return (afterHidden == null
                 ? msgRepo.findByRoomIdOrderByTimestampDesc(roomId, pr)
                 : msgRepo.findByRoomIdAndTimestampAfterOrderByTimestampDesc(roomId, afterHidden, pr))
                 .map(m -> map(m, room));
-
-        markAsRead(room, login);
-        return result;
     }
 
     public ChatRoomDTO openForUser(Long petId, String userLogin) {
@@ -147,18 +142,16 @@ public class ChatService {
 
         ChatRoom room = roomRepo.findByPetIdAndUserName(petId, userLogin)
                 .orElseGet(() -> {
-                    LocalDateTime now = LocalDateTime.now();
-                    return new ChatRoom(
-                            null, petId, userLogin, shelterOwner,
-                            true, false, null, null,
-                            now, null, now
-                    );
+                    log.info("Creating new chat room for pet {} and user {}", petId, userLogin);
+                    return roomRepo.save(new ChatRoom(null, petId, userLogin, shelterOwner, true, true, null, null, null, null, null));
                 });
 
-        room.setUserVisible(true);
-        roomRepo.save(room);
+        if (!room.isUserVisible()) {
+            room.setUserVisible(true);
+            roomRepo.save(room);
+        }
 
-        log.info("Opened chat room for user {} and pet {}", userLogin, petId);
+        log.info("Opened/retrieved chat room {} for user {} and pet {}", room.getId(), userLogin, petId);
         return map(room, userLogin);
     }
 
@@ -168,16 +161,13 @@ public class ChatService {
 
         ChatRoom room = roomRepo.findById(roomId)
                 .orElseThrow(() -> new ChatNotFoundException("Chat room with ID " + roomId + " not found"));
-        if (!visibleFor(room, login)) {
-            throw new ChatAccessDeniedException("You do not have access to this chat room");
-        }
 
         checkParticipantOrAdmin(room, login);
 
-        if (login.equals(room.getShelterName())) {
+        if (login.equals(room.getShelterName()) && !room.isShelterVisible()) {
             room.setShelterVisible(true);
+            roomRepo.save(room);
         }
-        roomRepo.save(room);
 
         markAsRead(room, login);
         return map(room, login);
@@ -221,8 +211,7 @@ public class ChatService {
 
     public long totalUnreadFor(String login) {
         validateLogin(login);
-
-        return roomRepo.findAllByUserNameOrShelterNameOrderByLastMessageTimestampDesc(login, login).stream()
+        return roomRepo.findAllRoomsForUserSorted(login).stream()
                 .filter(r -> visibleFor(r, login))
                 .mapToLong(r -> unreadFor(r, login))
                 .sum();
@@ -308,12 +297,19 @@ public class ChatService {
 
     private void markAsRead(ChatRoom room, String login) {
         LocalDateTime now = LocalDateTime.now();
+        boolean updated = false;
         if (login.equals(room.getUserName())) {
             room.setUserLastReadAt(now);
+            updated = true;
         } else if (login.equals(room.getShelterName())) {
             room.setShelterLastReadAt(now);
+            updated = true;
         }
-        roomRepo.save(room);
+        if (updated) {
+            roomRepo.save(room);
+            long totalUnread = totalUnreadFor(login);
+            broker.convertAndSendToUser(login, "/queue/unread", totalUnread);
+        }
     }
 
     private boolean visibleFor(ChatRoom r, String login) {
