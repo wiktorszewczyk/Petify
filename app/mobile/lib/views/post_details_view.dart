@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:confetti/confetti.dart';
 import '../models/shelter_post.dart';
 import '../models/shelter.dart';
 import '../models/donation.dart';
 import '../services/image_service.dart';
 import '../services/shelter_service.dart';
 import '../services/payment_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../styles/colors.dart';
 import 'payment_view.dart';
 
@@ -33,11 +35,19 @@ class _PostDetailsViewState extends State<PostDetailsView> {
   bool _isLoadingShelter = false;
   FundraiserResponse? _fundraiser;
   bool _isLoadingFundraiser = false;
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
     _loadAdditionalData();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadAdditionalData() async {
@@ -154,6 +164,14 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     );
 
     if (result == true && mounted) {
+      CacheManager.invalidatePattern('shelter_');
+      CacheManager.invalidatePattern('fundraiser_');
+      CacheManager.invalidatePattern('user_donations');
+      CacheManager.invalidatePattern('posts_');
+      print('🗑️ PostDetailsView: Invalidated cache after fundraiser donation');
+
+      _confettiController.play();
+
       await _loadFundraiserInfo();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -168,88 +186,108 @@ class _PostDetailsViewState extends State<PostDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Ogłoszenie',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0.5,
-        actions: [
-          IconButton(
-            onPressed: _sharePost,
-            icon: const Icon(Icons.share),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildMainImage(),
-
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.post.title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  _buildShelterInfo(),
-                  const SizedBox(height: 16),
-
-                  if (_fundraiser != null) ...[
-                    _buildFundraiserCard(),
-                    const SizedBox(height: 24),
-                  ],
-
-                  if (widget.post.description.isNotEmpty) ...[
-                    Text(
-                      'Opis',
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.post.description,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
-
-                  if (_additionalImages.isNotEmpty) ...[
-                    Text(
-                      'Galeria',
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _buildImageGallery(),
-                    const SizedBox(height: 24),
-                  ],
-
-                  _buildActionButtons(),
-                ],
-              ),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Ogłoszenie',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
             ),
-          ],
+            backgroundColor: Colors.white,
+            elevation: 0.5,
+            actions: [
+              IconButton(
+                onPressed: _sharePost,
+                icon: const Icon(Icons.share),
+              ),
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildMainImage(),
+
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.post.title,
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      _buildShelterInfo(),
+                      const SizedBox(height: 16),
+
+                      if (_fundraiser != null) ...[
+                        _buildFundraiserCard(),
+                        const SizedBox(height: 24),
+                      ],
+
+                      if (widget.post.description.isNotEmpty) ...[
+                        Text(
+                          'Opis',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.post.description,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+
+                      if (_additionalImages.isNotEmpty) ...[
+                        Text(
+                          'Galeria',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildImageGallery(),
+                        const SizedBox(height: 24),
+                      ],
+
+                      _buildActionButtons(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            shouldLoop: false,
+            colors: const [
+              Colors.green,
+              Colors.blue,
+              Colors.orange,
+              Colors.purple,
+              Colors.red,
+              Colors.yellow,
+            ],
+          ),
+        ),
+      ],
     );
   }
 

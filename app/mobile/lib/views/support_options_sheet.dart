@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:confetti/confetti.dart';
 import '../../styles/colors.dart';
 import '../../models/pet.dart';
 import '../../models/donation.dart';
@@ -34,11 +35,19 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
   MaterialDonationItem? _selectedItem;
   int _quantity = 1;
   bool _isLoading = true;
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
     _loadItems();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadItems() async {
@@ -120,6 +129,9 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
           _isLoading = false;
         });
         if (result == true) {
+          _confettiController.play();
+          await Future.delayed(const Duration(milliseconds: 300));
+
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -143,48 +155,71 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHeader(),
-          if (_isLoading)
-            const Padding(
-              padding: EdgeInsets.all(32.0),
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-              ),
-            )
-          else
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildPetDetails(),
-                    _buildItemsList(),
-                    if (_selectedItem != null) _buildQuantitySelector(),
-                    _buildActionButtons(),
-                    _buildDisclaimerText(),
-                    SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 16),
-                  ],
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.85,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHeader(),
+              if (_isLoading)
+                const Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+                  ),
+                )
+              else
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildPetDetails(),
+                        _buildItemsList(),
+                        if (_selectedItem != null) _buildQuantitySelector(),
+                        _buildActionButtons(),
+                        _buildDisclaimerText(),
+                        SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 16),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-        ],
-      ),
-    ).animate().slideY(
-      begin: 1,
-      end: 0,
-      duration: 400.ms,
-      curve: Curves.easeOutQuart,
+            ],
+          ),
+        ).animate().slideY(
+          begin: 1,
+          end: 0,
+          duration: 400.ms,
+          curve: Curves.easeOutQuart,
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirection: 1.5708,
+            emissionFrequency: 0.05,
+            numberOfParticles: 30,
+            gravity: 0.1,
+            shouldLoop: false,
+            colors: const [
+              Colors.green,
+              Colors.blue,
+              Colors.orange,
+              Colors.purple,
+              Colors.red,
+              Colors.yellow,
+            ],
+          ),
+        ),
+      ],
     );
   }
 

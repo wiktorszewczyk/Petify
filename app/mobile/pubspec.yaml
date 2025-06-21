@@ -70,6 +70,11 @@ dependencies:
   image_picker: ^1.1.2
   mime: ^2.0.0
   flutter_card_swiper: ^7.0.2
+  shimmer: ^3.0.0
+  flutter_staggered_animations: ^1.1.1
+  cached_network_image: ^3.4.1
+  confetti: ^0.7.0
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

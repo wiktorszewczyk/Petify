@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/support_options_sheet.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../styles/colors.dart';
 import '../../models/pet.dart';
 import '../../widgets/buttons/action_button.dart';
@@ -32,6 +34,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   final List<Pet> _pets = [];
   bool _isLoading = true;
   bool _isError = false;
+  bool _isRefreshing = false;
   int _currentIndex = 0;
   late CardSwiperController _cardController;
   FilterPreferences? _currentFilters;
@@ -43,6 +46,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   final NotificationService _notificationService = NotificationService();
   final BehaviorTracker _behaviorTracker = BehaviorTracker();
   int _unreadNotificationCount = 0;
+  int _cardSwiperKey = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -91,24 +95,28 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       if (cachedPets != null && cachedPets.isNotEmpty) {
         final filteredCachedPets = cachedPets.where((pet) => !_likedPetIds.contains(pet.id)).toList();
 
-        setState(() {
-          _currentFilters = cachedFilters;
-          _pets.clear();
-          _pets.addAll(filteredCachedPets);
-          _isLoading = false;
-          _isError = false;
-          _currentIndex = 0;
-        });
+        if (filteredCachedPets.isNotEmpty) {
+          setState(() {
+            _currentFilters = cachedFilters;
+            _pets.clear();
+            _pets.addAll(filteredCachedPets);
+            _isLoading = false;
+            _isError = false;
+            _currentIndex = 0;
+          });
 
-        print('🚀 HomeView: Załadowano ${_pets.length} zwierząt z cache (po filtrowaniu ${_likedPetIds.length} polubionych)');
+          print('🚀 HomeView: Załadowano ${_pets.length} zwierząt z cache (po filtrowaniu ${_likedPetIds.length} polubionych)');
 
-        _refreshDataInBackground();
-
-        return;
+          _refreshDataInBackground();
+          return;
+        } else {
+          print('⚠️ HomeView: Cache zawierał tylko polubione zwierzęta, czyszczenie cache...');
+          CacheManager.invalidatePattern('pets_');
+        }
       }
     }
 
-    print('⚠️ HomeView: Brak cache, ładowanie standardowe...');
+    print('⚠️ HomeView: Brak używalnego cache, ładowanie standardowe...');
     await _loadFiltersAndPets();
   }
 
@@ -157,15 +165,14 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         if (remainingPets <= 3) {
           setState(() {
             final currentPetIds = _pets.map((p) => p.id).toSet();
-            final newUniquePets = filteredNewPets.where((p) => !currentPetIds.contains(p.id)).toList();
+            final newUniquePets = filteredNewPets.where((p) =>
+            !currentPetIds.contains(p.id) &&
+                !_likedPetIds.contains(p.id)
+            ).toList();
 
             if (newUniquePets.isNotEmpty) {
-              final finalUniquePets = newUniquePets.where((p) => !_likedPetIds.contains(p.id)).toList();
-
-              if (finalUniquePets.isNotEmpty) {
-                _pets.addAll(finalUniquePets);
-                print('🔄 HomeView: Dodano ${finalUniquePets.length} nowych zwierząt (po podwójnym filtrowaniu)');
-              }
+              _pets.addAll(newUniquePets);
+              print('🔄 HomeView: Dodano ${newUniquePets.length} nowych zwierząt w tle (polubione: ${_likedPetIds.length})');
             }
           });
         }
@@ -192,7 +199,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       _likedPetIds.clear();
       _likedPetIds.addAll(likedPets.map((pet) => pet.id));
 
-      print('💖 HomeView: Załadowano ${_likedPetIds.length} polubionych zwierząt z backendu');
+      print('💖 HomeView: Załadowano ${_likedPetIds.length} polubionych zwierząt z backendu: ${_likedPetIds.take(5).join(", ")}${_likedPetIds.length > 5 ? "..." : ""}');
     } catch (e) {
       print('❌ HomeView: Błąd ładowania polubionych zwierząt: $e');
     }
@@ -218,6 +225,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
       final filteredPets = petsData.where((pet) => !_likedPetIds.contains(pet.id)).toList();
       print('🔍 HomeView: Po filtrowaniu polubionych: ${filteredPets.length} z ${petsData.length} (polubione: ${_likedPetIds.length})');
+
+      filteredPets.shuffle();
+      print('🔀 HomeView: Pomieszano kolejność zwierząt');
 
       if (mounted) {
         setState(() {
@@ -248,20 +258,26 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   bool _onCardSwiped(int previousIndex, int? currentIndex, CardSwiperDirection direction) {
     if (!mounted || _isSwiping) return false;
 
+    HapticFeedback.lightImpact();
+
     setState(() {
       _isSwiping = true;
-      _currentIndex = currentIndex ?? 0;
     });
 
     final swipedPet = _pets[previousIndex];
 
     if (direction == CardSwiperDirection.right) {
+      HapticFeedback.heavyImpact();
       _likePet(swipedPet);
+      print('💖 HomeView: Polubiono pet ${swipedPet.id} "${swipedPet.name}", currentIndex: $_currentIndex');
     } else {
-      print('❌ HomeView: Pominął pet ${swipedPet.id}');
+      HapticFeedback.selectionClick();
+      _currentIndex = (_currentIndex + 1).clamp(0, _pets.length - 1);
+      print('❌ HomeView: Pominął pet ${swipedPet.id} "${swipedPet.name}", currentIndex: $_currentIndex');
     }
 
-    if (_pets.length - _currentIndex <= 2) {
+    if (_pets.length - previousIndex <= 3) {
+      print('🔍 HomeView: Mało kart (${_pets.length - previousIndex}), ładowanie więcej...');
       _loadMorePets();
     }
 
@@ -278,25 +294,60 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   void _likePet(Pet pet) {
     _likedPetIds.add(pet.id);
-    print('💖 HomeView: Dodano pet ${pet.id} do lokalnej listy polubionych');
+
+    final petIndex = _pets.indexWhere((p) => p.id == pet.id);
+
+    setState(() {
+      _pets.removeWhere((p) => p.id == pet.id);
+
+      if (_currentIndex >= _pets.length && _pets.isNotEmpty) {
+        _currentIndex = _pets.length - 1;
+      } else if (_pets.isEmpty) {
+        _currentIndex = 0;
+      }
+
+      _cardSwiperKey++;
+    });
+
+    CacheManager.invalidatePattern('pets_');
+    CacheManager.invalidatePattern('favorites_pets');
+
+    print('💖 HomeView: Natychmiast usunięto pet ${pet.id} z pozycji $petIndex (pozostało: ${_pets.length} zwierząt, currentIndex: $_currentIndex)');
+
+    if (_pets.length - _currentIndex <= 1) {
+      print('🔍 HomeView: Mało zwierząt po polubieniu (${_pets.length - _currentIndex}), ładowanie więcej...');
+      _loadMorePets();
+    }
+
     _likePetInBackground(pet);
   }
 
   void _loadMorePets() async {
     try {
-      print('🔍 HomeView: Ładowanie więcej zwierząt...');
+      print('🔍 HomeView: Ładowanie więcej zwierząt... (aktualnie ${_pets.length} zwierząt, polubione: ${_likedPetIds.length})');
       final petService = PetService();
       final newPets = await petService.getPetsWithDefaultFilters();
+
+      print('🔍 HomeView: Backend zwrócił ${newPets.length} zwierząt');
+
+      final existingPetIds = _pets.map((p) => p.id).toSet();
       final availablePets = newPets.where((pet) =>
       !_likedPetIds.contains(pet.id) &&
-          !_pets.any((existingPet) => existingPet.id == pet.id)
+          !existingPetIds.contains(pet.id)
       ).toList();
 
+      print('🔍 HomeView: Po filtrowaniu: ${availablePets.length} dostępnych zwierząt (odfiltrowano ${newPets.length - availablePets.length})');
+
       if (availablePets.isNotEmpty) {
+        availablePets.shuffle();
+        print('🔀 HomeView: Pomieszano kolejność nowych zwierząt');
+
         setState(() {
           _pets.addAll(availablePets);
         });
-        print('✨ HomeView: Dodano ${availablePets.length} nowych zwierząt');
+        print('✨ HomeView: Dodano ${availablePets.length} nowych zwierząt (łącznie: ${_pets.length})');
+      } else {
+        print('⚠️ HomeView: Brak nowych dostępnych zwierząt do dodania');
       }
     } catch (e) {
       print('❌ HomeView: Błąd podczas ładowania nowych zwierząt: $e');
@@ -312,8 +363,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       if (mounted && response.statusCode == 200) {
         _behaviorTracker.trackPetLike(pet.id);
 
-        CacheManager.invalidatePattern('favorites_pets');
-        print('🗑️ HomeView: Invalidated favorites cache after liking pet ${pet.id}');
+        print('✅ HomeView: Pomyślnie polubiono pet ${pet.id} w backendzie');
+
+        await _loadLikedPetsFromBackend();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -323,14 +375,23 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ),
         );
       } else {
+        print('❌ HomeView: Backend odrzucił polubienie pet ${pet.id} (status: ${response.statusCode}), przywracanie stanu');
         _likedPetIds.remove(pet.id);
-        throw Exception('Nie udało się polubić zwierzaka');
+        throw Exception('Nie udało się polubić zwierzaka (${response.statusCode})');
       }
     } catch (e) {
-      _likedPetIds.remove(pet.id);
+      print('❌ HomeView: Błąd polubienia pet ${pet.id}: $e');
+      setState(() {
+        _likedPetIds.remove(pet.id);
+        _pets.insert(_currentIndex, pet);
+      });
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Nie udało się polubić: $e')),
+          SnackBar(
+            content: Text('Nie udało się polubić ${pet.name}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -338,6 +399,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   void _onActionButtonPressed(CardSwiperDirection direction) {
     if (_isLoading || _pets.isEmpty || _isSwiping || _currentIndex >= _pets.length) return;
+
+    if (direction == CardSwiperDirection.right) {
+      HapticFeedback.heavyImpact();
+    } else {
+      HapticFeedback.selectionClick();
+    }
 
     _cardController.swipe(direction);
   }
@@ -395,6 +462,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   Future<void> _refreshAllData() async {
+    setState(() {
+      _isRefreshing = true;
+    });
+
     try {
       CacheManager.invalidatePattern('pets_');
       CacheManager.invalidatePattern('favorites_pets');
@@ -405,12 +476,34 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       await _loadFiltersAndPets();
 
       print('✅ HomeView: Odświeżanie zakończone pomyślnie');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Dane zostały odświeżone'),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            duration: Duration(milliseconds: 1500),
+          ),
+        );
+      }
     } catch (e) {
       print('❌ HomeView: Błąd podczas odświeżania: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Nie udało się odświeżyć danych: $e')),
         );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
       }
     }
   }
@@ -442,12 +535,30 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ],
         ),
         actions: [
-          if (_selectedTabIndex == 0)
+          if (_selectedTabIndex == 0) ...[
+            IconButton(
+              icon: _isRefreshing
+                  ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                ),
+              )
+                  : const Icon(Icons.refresh, color: Colors.black),
+              onPressed: _isRefreshing ? null : () {
+                HapticFeedback.lightImpact();
+                _refreshAllData();
+              },
+              tooltip: 'Odśwież',
+            ),
             IconButton(
               icon: const Icon(Icons.tune, color: Colors.black),
               onPressed: _showDiscoverySettings,
               tooltip: 'Ustawienia odkrywania',
             ),
+          ],
           Stack(
             children: [
               IconButton(
@@ -508,24 +619,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   Widget _buildSwipeView() {
     if (_isLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Wczytywanie zwierzaków...',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      );
+      return _buildShimmerLoading();
     }
 
     if (_isError) {
@@ -637,145 +731,254 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: _refreshAllData,
-      color: AppColors.primaryColor,
-      child: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-              child: CardSwiper(
-                controller: _cardController,
-                cardsCount: _pets.length,
-                initialIndex: _currentIndex,
-                onSwipe: _onCardSwiped,
-                allowedSwipeDirection: const AllowedSwipeDirection.symmetric(horizontal: true),
-                threshold: 50,
-                maxAngle: 15,
-                scale: 0.95,
-                backCardOffset: const Offset(0, -8),
-                cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
-                  if (index >= _pets.length) return const SizedBox.shrink();
-
-                  return Stack(
-                    children: [
-                      PetCard(
-                        pet: _pets[index],
-                        key: ValueKey('pet_${_pets[index].id}'),
-                      ),
-
-                      if (horizontalOffsetPercentage > 0.1)
-                        Positioned(
-                          top: 40,
-                          left: 20,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white, width: 2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.green.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.favorite, color: Colors.white, size: 24),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'POLUB',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ).animate().scale(
-                            duration: 200.ms,
-                            curve: Curves.elasticOut,
-                          ),
-                        ),
-
-                      if (horizontalOffsetPercentage < -0.1)
-                        Positioned(
-                          top: 40,
-                          right: 20,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white, width: 2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.red.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.close, color: Colors.white, size: 24),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'POMIŃ',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ).animate().scale(
-                            duration: 200.ms,
-                            curve: Curves.elasticOut,
-                          ),
-                        ),
-                    ],
-                  );
-                },
+    if (_pets.isEmpty || _currentIndex >= _pets.length) {
+      return RefreshIndicator(
+        onRefresh: _refreshAllData,
+        color: AppColors.primaryColor,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/empty_pets.png',
+                    height: 200,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Koniec zwierząt!',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Sprawdziliśmy wszystkie dostępne zwierzęta.\nPociągnij w dół, aby odświeżyć listę.',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: _refreshAllData,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Odśwież'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                      foregroundColor: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ActionButton(
-                  icon: Icons.close,
-                  backgroundColor: Colors.red,
-                  size: 60,
-                  onPressed: () => _onActionButtonPressed(CardSwiperDirection.left),
-                ),
-                ActionButton(
-                  icon: Icons.favorite,
-                  backgroundColor: Colors.green,
-                  size: 75,
-                  onPressed: () => _onActionButtonPressed(CardSwiperDirection.right),
-                ),
-                ActionButton(
-                  icon: Icons.volunteer_activism,
-                  backgroundColor: Colors.blue,
-                  size: 60,
-                  onPressed: _showSupportOptions,
-                ),
-              ],
+        ),
+      );
+    }
+
+    if (_pets.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: _refreshAllData,
+        color: AppColors.primaryColor,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/empty_pets.png',
+                    height: 200,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Brak zwierząt w okolicy',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Spróbuj zwiększyć zasięg poszukiwań\nlub zmienić filtry',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Pociągnij w dół, aby odświeżyć',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+      );
+    }
+
+    if (_currentIndex >= _pets.length) {
+      _currentIndex = _pets.length - 1;
+    }
+    if (_currentIndex < 0) {
+      _currentIndex = 0;
+    }
+
+    return Stack(
+      children: [
+        Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+                child: CardSwiper(
+                  key: ValueKey('cardswiper_$_cardSwiperKey'),
+                  controller: _cardController,
+                  cardsCount: _pets.length,
+                  initialIndex: _currentIndex,
+                  numberOfCardsDisplayed: _pets.length.clamp(1, 3),
+                  onSwipe: _onCardSwiped,
+                  allowedSwipeDirection: const AllowedSwipeDirection.symmetric(horizontal: true),
+                  threshold: 50,
+                  maxAngle: 15,
+                  scale: 0.95,
+                  backCardOffset: const Offset(0, -8),
+                  cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
+                    if (index >= _pets.length) return const SizedBox.shrink();
+
+                    return Stack(
+                      children: [
+                        PetCard(
+                          pet: _pets[index],
+                          key: ValueKey('pet_${_pets[index].id}'),
+                        ),
+
+                        if (horizontalOffsetPercentage > 0.1)
+                          Positioned(
+                            top: 40,
+                            left: 20,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.white, width: 2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.green.withOpacity(0.3),
+                                    blurRadius: 8,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.favorite, color: Colors.white, size: 24),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'POLUB',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ).animate().scale(
+                              duration: 200.ms,
+                              curve: Curves.elasticOut,
+                            ),
+                          ),
+
+                        if (horizontalOffsetPercentage < -0.1)
+                          Positioned(
+                            top: 40,
+                            right: 20,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.white, width: 2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.red.withOpacity(0.3),
+                                    blurRadius: 8,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.close, color: Colors.white, size: 24),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'POMIŃ',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ).animate().scale(
+                              duration: 200.ms,
+                              curve: Curves.elasticOut,
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ActionButton(
+                    icon: Icons.close,
+                    backgroundColor: Colors.red,
+                    size: 60,
+                    onPressed: () => _onActionButtonPressed(CardSwiperDirection.left),
+                  ),
+                  ActionButton(
+                    icon: Icons.favorite,
+                    backgroundColor: Colors.green,
+                    size: 75,
+                    onPressed: () => _onActionButtonPressed(CardSwiperDirection.right),
+                  ),
+                  ActionButton(
+                    icon: Icons.volunteer_activism,
+                    backgroundColor: Colors.blue,
+                    size: 60,
+                    onPressed: _showSupportOptions,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -839,5 +1042,100 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       ),
     );
   }
-}
 
+  Widget _buildShimmerLoading() {
+    return Stack(
+      children: [
+        Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 100,
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 16,
+                                width: double.infinity,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Container(
+                                    height: 12,
+                                    width: 80,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    height: 12,
+                                    width: 60,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(3, (index) =>
+                      Container(
+                        width: index == 1 ? 75 : 60,
+                        height: index == 1 ? 75 : 60,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}

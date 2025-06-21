@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:confetti/confetti.dart';
 import '../models/event.dart';
 import '../models/donation.dart';
 import '../models/shelter.dart';
@@ -32,12 +36,20 @@ class _EventDetailsViewState extends State<EventDetailsView> {
   bool _joining = false;
   bool _joined = false;
   bool _isLoadingFundraiser = false;
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
     _participants = widget.event.participantsCount;
     _loadAdditionalData();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadAdditionalData() async {
@@ -160,6 +172,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     );
 
     if (result == true && mounted) {
+      _confettiController.play();
+
       await _loadFundraiserInfo();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -211,286 +225,332 @@ class _EventDetailsViewState extends State<EventDetailsView> {
         ? 'Wolne miejsca: ${event.capacity! - _participants!.clamp(0, event.capacity!)}'
         : null);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Wydarzenie',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0.5,
-        iconTheme: const IconThemeData(color: Colors.black87),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              height: 200,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(event.imageUrl, fit: BoxFit.cover),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.7),
-                        ],
-                        stops: const [0.6, 1.0],
-                      ),
-                    ),
-                  ),
-                  if (event.eventType != null)
-                    Positioned(
-                      top: 16,
-                      left: 16,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: _getEventTypeColor(event.eventType!),
-                          borderRadius: BorderRadius.circular(20),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Wydarzenie',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Colors.white,
+            elevation: 0.5,
+            iconTheme: const IconThemeData(color: Colors.black87),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height: 200,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: event.imageUrl,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            color: Colors.white,
+                            child: Center(
+                              child: Icon(Icons.event, size: 50, color: Colors.grey[400]),
+                            ),
+                          ),
                         ),
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey[300],
+                          child: Center(
+                            child: Icon(Icons.image_not_supported, color: Colors.grey[400]),
+                          ),
+                        ),
+                        fadeInDuration: const Duration(milliseconds: 300),
+                        fadeOutDuration: const Duration(milliseconds: 100),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.7),
+                            ],
+                            stops: const [0.6, 1.0],
+                          ),
+                        ),
+                      ),
+                      if (event.eventType != null)
+                        Positioned(
+                          top: 16,
+                          left: 16,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: _getEventTypeColor(event.eventType!),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              event.eventType!,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ),
+                      Positioned(
+                        bottom: 16,
+                        left: 16,
+                        right: 16,
                         child: Text(
-                          event.eventType!,
+                          event.title,
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ),
-                  Positioned(
-                    bottom: 16,
-                    left: 16,
-                    right: 16,
-                    child: Text(
-                      event.title,
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 3.0,
-                            color: Colors.black.withOpacity(0.5),
-                            offset: const Offset(1.0, 1.0),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.home_work_outlined, size: 18, color: Colors.grey[700]),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _shelterName ?? event.organizerName,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            color: Colors.grey[700],
-                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 3.0,
+                                color: Colors.black.withOpacity(0.5),
+                                offset: const Offset(1.0, 1.0),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.calendar_month, size: 24, color: AppColors.primaryColor),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _formatEventDate(event.date, event.endDate),
-                                style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
-                              ),
-                              if (_isToday(event.date) || _isTomorrow(event.date)) ...[
-                                const SizedBox(height: 2),
-                                Text(
-                                  _isToday(event.date) ? 'Dzisiaj!' : 'Jutro!',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.red[600],
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.location_on, size: 24, color: AppColors.primaryColor),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                event.location,
-                                style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 4),
-                              InkWell(
-                                onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Otwieranie mapy...')),
-                                  );
-                                },
-                                child: Text(
-                                  'Pokaż na mapie',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: AppColors.primaryColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (_fundraiser != null) ...[
-                    _buildFundraiserCard(),
-                    const SizedBox(height: 24),
-                  ],
-                  Text(
-                    'O wydarzeniu',
-                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    event.description,
-                    style: GoogleFonts.poppins(fontSize: 14, height: 1.5),
-                  ),
-                  const SizedBox(height: 16),
-                  if (participantsCountText != null) ...[
-                    Row(
-                      children: [
-                        Icon(Icons.people, size: 18, color: Colors.grey[700]),
-                        const SizedBox(width: 8),
-                        Text(
-                          participantsCountText,
-                          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[700]),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                  if (seatsText != null) ...[
-                    Row(
-                      children: [
-                        Icon(Icons.event_available, size: 18, color: Colors.grey[700]),
-                        const SizedBox(width: 8),
-                        Text(
-                          seatsText,
-                          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[700]),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _joined || _joining ? null : _joinEvent,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: _joining
-                          ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                          : Text(
-                        _joined
-                            ? 'Zarejestrowano'
-                            : (event.requiresRegistration ? 'Zarejestruj się' : 'Dołącz do wydarzenia'),
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Udostępnianie wydarzenia...')),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.primaryColor),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Icon(Icons.share, size: 18, color: AppColors.primaryColor),
+                          Icon(Icons.home_work_outlined, size: 18, color: Colors.grey[700]),
                           const SizedBox(width: 8),
-                          Text(
-                            'Udostępnij',
-                            style: GoogleFonts.poppins(
-                              color: AppColors.primaryColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
+                          Expanded(
+                            child: Text(
+                              _shelterName ?? event.organizerName,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.calendar_month, size: 24, color: AppColors.primaryColor),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _formatEventDate(event.date, event.endDate),
+                                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
+                                  ),
+                                  if (_isToday(event.date) || _isTomorrow(event.date)) ...[
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      _isToday(event.date) ? 'Dzisiaj!' : 'Jutro!',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.red[600],
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.location_on, size: 24, color: AppColors.primaryColor),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    event.location,
+                                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  InkWell(
+                                    onTap: () {
+                                      HapticFeedback.lightImpact();
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Otwieranie mapy...')),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Pokaż na mapie',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: AppColors.primaryColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      if (_fundraiser != null) ...[
+                        _buildFundraiserCard(),
+                        const SizedBox(height: 24),
+                      ],
+                      Text(
+                        'O wydarzeniu',
+                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        event.description,
+                        style: GoogleFonts.poppins(fontSize: 14, height: 1.5),
+                      ),
+                      const SizedBox(height: 16),
+                      if (participantsCountText != null) ...[
+                        Row(
+                          children: [
+                            Icon(Icons.people, size: 18, color: Colors.grey[700]),
+                            const SizedBox(width: 8),
+                            Text(
+                              participantsCountText,
+                              style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[700]),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                      if (seatsText != null) ...[
+                        Row(
+                          children: [
+                            Icon(Icons.event_available, size: 18, color: Colors.grey[700]),
+                            const SizedBox(width: 8),
+                            Text(
+                              seatsText,
+                              style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[700]),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _joined || _joining ? null : () {
+                            HapticFeedback.mediumImpact();
+                            _joinEvent();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor,
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: _joining
+                              ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                              : Text(
+                            _joined
+                                ? 'Zarejestrowano'
+                                : (event.requiresRegistration ? 'Zarejestruj się' : 'Dołącz do wydarzenia'),
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Udostępnianie wydarzenia...')),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: AppColors.primaryColor),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.share, size: 18, color: AppColors.primaryColor),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Udostępnij',
+                                style: GoogleFonts.poppins(
+                                  color: AppColors.primaryColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            shouldLoop: false,
+            colors: const [
+              Colors.green,
+              Colors.blue,
+              Colors.orange,
+              Colors.purple,
+              Colors.red,
+              Colors.yellow,
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -615,7 +675,10 @@ class _EventDetailsViewState extends State<EventDetailsView> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: _donateToFundraiser,
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                _donateToFundraiser();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,
                 foregroundColor: Colors.black,

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:developer' as dev;
+import 'package:confetti/confetti.dart';
 import '../models/donation.dart';
 import '../models/shelter.dart';
 import '../services/payment_service.dart';
@@ -66,11 +67,13 @@ class _PaymentViewState extends State<PaymentView> {
     },
   ];
   double? _selectedQuickAmount;
+  late ConfettiController _confettiController;
   bool _useCustomAmount = false;
 
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
     if (widget.materialItem != null) {
       final amount = widget.materialItem!.price * (widget.quantity ?? 1);
       _amountController.text = amount.toStringAsFixed(0);
@@ -94,6 +97,7 @@ class _PaymentViewState extends State<PaymentView> {
     _amountController.dispose();
     _messageController.dispose();
     _blikController.dispose();
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -182,6 +186,9 @@ class _PaymentViewState extends State<PaymentView> {
             CacheManager.invalidatePattern('achievements_');
             print('🗑️ PaymentView: Invalidated cache after successful WebView payment');
 
+            _confettiController.play();
+            await Future.delayed(const Duration(milliseconds: 500));
+
             await _showPaymentResultDialog(
               success: true,
               title: 'Płatność zakończona sukcesem!',
@@ -252,6 +259,9 @@ class _PaymentViewState extends State<PaymentView> {
           CacheManager.invalidatePattern('achievements_');
           print('🗑️ PaymentView: Invalidated cache after successful polling payment');
 
+          _confettiController.play();
+          await Future.delayed(const Duration(milliseconds: 500));
+
           await _showPaymentResultDialog(
             success: true,
             title: 'Płatność zakończona sukcesem!',
@@ -283,6 +293,9 @@ class _PaymentViewState extends State<PaymentView> {
             CacheManager.invalidatePattern('user_');
             CacheManager.invalidatePattern('achievements_');
             print('🗑️ PaymentView: Invalidated cache after SUCCEEDED payment status');
+
+            _confettiController.play();
+            await Future.delayed(const Duration(milliseconds: 500));
 
             await _showPaymentResultDialog(
               success: true,
@@ -411,11 +424,34 @@ class _PaymentViewState extends State<PaymentView> {
         backgroundColor: AppColors.primaryColor,
         elevation: 0,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _paymentOptions == null
-          ? _buildDonationForm()
-          : _buildPaymentSelection(),
+      body: Stack(
+        children: [
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _paymentOptions == null
+              ? _buildDonationForm()
+              : _buildPaymentSelection(),
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirection: 1.5708,
+              emissionFrequency: 0.05,
+              numberOfParticles: 30,
+              gravity: 0.1,
+              shouldLoop: false,
+              colors: const [
+                Colors.green,
+                Colors.blue,
+                Colors.orange,
+                Colors.purple,
+                Colors.red,
+                Colors.yellow,
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

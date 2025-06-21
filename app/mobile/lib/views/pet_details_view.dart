@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/support_options_sheet.dart';
 import 'package:mobile/views/adoption_form_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../models/pet.dart';
 import '../styles/colors.dart';
 import '../services/pet_service.dart';
@@ -65,25 +69,17 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
   Widget _buildImage(String path, {BoxFit fit = BoxFit.cover}) {
     if (path.startsWith('http://') || path.startsWith('https://')) {
-      return Image.network(
-        path,
+      return CachedNetworkImage(
+        imageUrl: path,
         fit: fit,
-        errorBuilder: (_, __, ___) => _buildErrorImage(),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: Colors.grey[200],
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes!
-                    : null,
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
-            ),
-          );
-        },
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(color: Colors.white),
+        ),
+        errorWidget: (context, url, error) => _buildErrorImage(),
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 100),
       );
     }
 
@@ -280,7 +276,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _contactShelter,
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      _contactShelter();
+                    },
                     style: _btnStyle(
                       Colors.white,
                       Colors.black87,
@@ -302,7 +301,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                 Expanded(
                   flex: 2,
                   child: ElevatedButton(
-                    onPressed: _openAdoptionForm,
+                    onPressed: () {
+                      HapticFeedback.heavyImpact();
+                      _openAdoptionForm();
+                    },
                     style: _btnStyle(
                       AppColors.primaryColor,
                       Colors.white,
@@ -325,12 +327,15 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => SupportOptionsSheet(pet: currentPet),
-                    ),
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => SupportOptionsSheet(pet: currentPet),
+                      );
+                    },
                     style: _btnStyle(
                       Colors.white,
                       Colors.blue,
@@ -458,9 +463,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
       child: GestureDetector(
         onTap: enabled
             ? () {
+          HapticFeedback.selectionClick();
           left
-              ? _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut)
-              : _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+              ? _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.elasticOut)
+              : _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.elasticOut);
         }
             : null,
         child: Container(
@@ -532,13 +538,26 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
   Widget _buildTraitsGrid() {
     final traits = _allTraits;
-    return Column(
-      children: traits.map((trait) =>
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: _buildTraitChip(trait),
-          ),
-      ).toList(),
+    return AnimationLimiter(
+      child: Column(
+        children: traits.asMap().entries.map((entry) {
+          final index = entry.key;
+          final trait = entry.value;
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 375),
+            child: SlideAnimation(
+              verticalOffset: 50.0,
+              child: FadeInAnimation(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: _buildTraitChip(trait),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 

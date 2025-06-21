@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import '../../models/pet.dart';
 import '../../styles/colors.dart';
 import '../../views/chat_view.dart';
@@ -95,18 +98,20 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _goToNextPhoto() {
     if (_currentPhotoIndex < widget.pet.galleryImages.length) {
+      HapticFeedback.selectionClick();
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.elasticOut,
       );
     }
   }
 
   void _goToPreviousPhoto() {
     if (_currentPhotoIndex > 0) {
+      HapticFeedback.selectionClick();
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.elasticOut,
       );
     }
   }
@@ -116,47 +121,23 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
-    final cachedProvider = _imageCache[path];
-
-    if (cachedProvider != null) {
-      return Image(
-        image: cachedProvider,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildErrorImage();
-        },
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded || frame != null) {
-            return child;
-          }
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
-            ),
-          );
-        },
-      );
-    }
-
     if (path.startsWith('http://') || path.startsWith('https://')) {
-      return Image.network(
-        path,
+      return CachedNetworkImage(
+        imageUrl: path,
         fit: fit,
-        errorBuilder: (context, error, stackTrace) => _buildErrorImage(),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            color: Colors.white,
+            child: Center(
+              child: Icon(Icons.pets, size: 50, color: Colors.grey[400]),
             ),
-          );
-        },
+          ),
+        ),
+        errorWidget: (context, url, error) => _buildErrorImage(),
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 100),
       );
     }
 
@@ -524,12 +505,17 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            widget.pet.name,
-                            style: GoogleFonts.poppins(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          Flexible(
+                            child: AutoSizeText(
+                              widget.pet.name,
+                              style: GoogleFonts.poppins(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              maxLines: 1,
+                              minFontSize: 18,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(width: 8),

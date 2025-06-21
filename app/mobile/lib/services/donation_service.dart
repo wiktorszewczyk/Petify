@@ -61,6 +61,11 @@ class DonationService with CacheableMixin {
 
       if (donationIntentResponse.statusCode == 200) {
         final donationData = donationIntentResponse.data['donation'];
+        // Invalidate cache po dodaniu donacji materialnej
+        CacheManager.invalidatePattern('user_donations');
+        CacheManager.invalidatePattern('shelter_');
+        CacheManager.invalidatePattern('fundraiser_');
+        dev.log('🗑️ DonationService: Invalidated cache after adding material donation');
         return Donation.fromBackendJson(donationData);
       }
 
@@ -102,6 +107,11 @@ class DonationService with CacheableMixin {
 
       if (donationIntentResponse.statusCode == 200) {
         final donationData = donationIntentResponse.data['donation'];
+        // Invalidate cache po dodaniu donacji pieniężnej
+        CacheManager.invalidatePattern('user_donations');
+        CacheManager.invalidatePattern('shelter_');
+        CacheManager.invalidatePattern('fundraiser_');
+        dev.log('🗑️ DonationService: Invalidated cache after adding monetary donation');
         return Donation.fromBackendJson(donationData);
       }
 
@@ -198,6 +208,13 @@ class DonationService with CacheableMixin {
       final response = await _api.get('/donations/payment-status/$donationId');
 
       if (response.statusCode == 200) {
+        final paymentStatus = response.data['status'];
+        if (paymentStatus == 'COMPLETED' || paymentStatus == 'SUCCESS') {
+          CacheManager.invalidatePattern('user_donations');
+          CacheManager.invalidatePattern('shelter_');
+          CacheManager.invalidatePattern('fundraiser_');
+          dev.log('🗑️ DonationService: Invalidated cache after successful payment');
+        }
         return response.data;
       }
 

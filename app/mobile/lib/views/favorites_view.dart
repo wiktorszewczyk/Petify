@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../models/pet.dart';
 import '../widgets/cards/pet_mini_card.dart';
 import '../styles/colors.dart';
@@ -168,9 +170,7 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
             ),
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ))
+                  ? _buildSkeletonGrid()
                   : _errorMessage != null
                   ? Center(
                 child: Column(
@@ -200,42 +200,53 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                 color: AppColors.primaryColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.75,
-                    ),
-                    itemCount: _favoritePets!.length,
-                    itemBuilder: (context, index) {
-                      final pet = _favoritePets![index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PetDetailsView(pet: pet),
-                            ),
-                          );
-                        },
-                        onLongPress: () {
-                          _showRemoveDialog(pet);
-                        },
-                        child: PetMiniCard(
-                          pet: pet,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PetDetailsView(pet: pet),
+                  child: AnimationLimiter(
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.75,
+                      ),
+                      itemCount: _favoritePets!.length,
+                      itemBuilder: (context, index) {
+                        final pet = _favoritePets![index];
+                        return AnimationConfiguration.staggeredGrid(
+                          position: index,
+                          duration: const Duration(milliseconds: 375),
+                          columnCount: 2,
+                          child: ScaleAnimation(
+                            child: FadeInAnimation(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PetDetailsView(pet: pet),
+                                    ),
+                                  );
+                                },
+                                onLongPress: () {
+                                  _showRemoveDialog(pet);
+                                },
+                                child: PetMiniCard(
+                                  pet: pet,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PetDetailsView(pet: pet),
+                                      ),
+                                    );
+                                  },
+                                  onRemove: () => _removeFavorite(pet),
+                                ),
                               ),
-                            );
-                          },
-                          onRemove: () => _removeFavorite(pet),
-                        ),
-                      );
-                    },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -309,6 +320,68 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSkeletonGrid() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.75,
+          ),
+          itemCount: 6,
+          itemBuilder: (context, index) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 12,
+                            width: double.infinity,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(height: 4),
+                          Container(
+                            height: 10,
+                            width: 60,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

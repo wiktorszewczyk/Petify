@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/shelter_support_view.dart';
@@ -95,6 +96,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   void _navigateToShelterSupport() {
+    HapticFeedback.lightImpact();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ShelterSupportView()),
@@ -102,6 +104,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   void _navigateToVolunteerWalk() {
+    HapticFeedback.lightImpact();
     if (_isVolunteer) {
       Navigator.push(
         context,
@@ -113,6 +116,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   void _navigateToMyApplications() {
+    HapticFeedback.lightImpact();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const MyApplicationsView()),
@@ -120,6 +124,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   void _navigateToAnnouncements() {
+    HapticFeedback.lightImpact();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AnnouncementsView()),
@@ -127,6 +132,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   }
 
   void _navigateToEvents() {
+    HapticFeedback.lightImpact();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const EventsView()),

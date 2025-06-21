@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mobile/views/edit_profile_view.dart';
 import 'package:mobile/views/volunteer_application_view.dart';
+import 'package:shimmer/shimmer.dart';
 import '../models/user.dart';
 import '../models/achievement.dart';
 import '../services/user_service.dart';
@@ -25,7 +26,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late TabController _tabController;
   User? _user;
   List<Achievement> _recentAchievements = [];
@@ -44,14 +45,29 @@ class _ProfileViewState extends State<ProfileView>
         setState(() => _showToTop = shouldShow);
       }
     });
+    WidgetsBinding.instance.addObserver(this);
     _loadUserProfile();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollCtrl.dispose();
     _tabController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      final needsRefresh = CacheManager.isStale('user_data') ||
+          CacheManager.get<User>('user_data') == null;
+      if (needsRefresh && mounted) {
+        print('📱 ProfileView: App resumed, refreshing user data');
+        _loadUserProfile();
+      }
+    }
   }
 
   Future<void> _loadUserProfile() async {
@@ -199,21 +215,72 @@ class _ProfileViewState extends State<ProfileView>
   }
 
   Widget _buildLoadingView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(
-            color: AppColors.primaryColor,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Wczytywanie profilu...',
-            style: TextStyle(color: Colors.grey[700], fontSize: 16),
-          ),
-        ],
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  const CircleAvatar(radius: 40, backgroundColor: Colors.white),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(height: 20, width: double.infinity, color: Colors.white),
+                        const SizedBox(height: 8),
+                        Container(height: 16, width: 200, color: Colors.white),
+                        const SizedBox(height: 8),
+                        Container(height: 14, width: 120, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              height: 140,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...List.generate(2, (index) => Container(
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            )),
+          ],
+        ),
       ),
-    ).animate().fade(duration: 300.ms);
+    );
   }
 
   Widget _buildErrorView() {
