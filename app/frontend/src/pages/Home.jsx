@@ -96,9 +96,11 @@ const Home = () => {
             setIsLoadingMore(true);
             const nextCursor = isNextPage ? cursor + 1 : 1;
             const newAnimals = await fetchFilteredAnimals(filters, nextCursor);
+
             setAnimals((prev) =>
                 isNextPage ? [...prev, ...newAnimals] : newAnimals
             );
+
             if (!isNextPage) {
                 setCurrentAnimalIndex(0);
                 setCursor(1);
@@ -135,22 +137,43 @@ const Home = () => {
         if (direction === "right" && current) {
             try {
                 await likePet(current.id);
+
+                setAnimals((prev) =>
+                    prev.filter((animal) => animal.id !== current.id)
+                );
+
+                if (animals.length <= 1) {
+                    await fetchAnimals(false);
+                    setFade(false);
+                    return;
+                }
+
+                if (animals.length <= 3 && !isLoadingMore) {
+                    fetchAnimals(true);
+                }
             } catch (err) {}
         }
 
-        const nextIndex = currentAnimalIndex + 1;
+        if (direction === "left" || (direction === "right" && current)) {
+            setTimeout(() => {
+                if (direction === "left") {
+                    setCurrentAnimalIndex((prev) =>
+                        Math.min(prev + 1, animals.length - 1)
+                    );
+                }
 
-        if (nextIndex >= animals.length - 1 && !isLoadingMore) {
-            await fetchAnimals(true);
+                resetCard();
+                setFade(false);
+            }, 300);
+        } else {
+            setTimeout(() => {
+                setCurrentAnimalIndex((prev) =>
+                    Math.min(prev + 1, animals.length - 1)
+                );
+                resetCard();
+                setFade(false);
+            }, 300);
         }
-
-        setTimeout(() => {
-            setCurrentAnimalIndex((prev) =>
-                Math.min(prev + 1, animals.length - 1)
-            );
-            resetCard();
-            setFade(false);
-        }, 300);
     };
 
     const handleMouseDown = (e) => {

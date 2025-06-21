@@ -134,7 +134,7 @@ export const fetchFilteredAnimals = async (filters, cursor = 1) => {
     if (filters.distance) {
         params.append("radiusKm", filters.distance);
     }
-    params.append("limit", 10);
+    params.append("limit", 50);
     params.append("cursor", cursor);
 
     const response = await fetch(
@@ -153,8 +153,24 @@ export const fetchFilteredAnimals = async (filters, cursor = 1) => {
     }
 
     const data = await response.json();
+
+    const petsArray = data.pets || data.content || data;
+
+    if (!Array.isArray(petsArray)) {
+        console.error("Backend response:", data);
+        throw new Error("Backend nie zwrócił tablicy zwierząt");
+    }
+
     const enrichedAnimals = await Promise.all(
-        data.map(async (animal) => {
+        petsArray.map(async (animal, index) => {
+            console.log(`🐾 Processing animal ${index + 1}:`, {
+                id: animal.id,
+                name: animal.name,
+                imageUrl: animal.imageUrl,
+                images: animal.images,
+                imagesCount: animal.images?.length || 0,
+            });
+
             let shelterName = `Schronisko #${animal.shelterId}`;
             let shelterAddress = "";
 
@@ -173,17 +189,40 @@ export const fetchFilteredAnimals = async (filters, cursor = 1) => {
                     shelterName = shelter.name;
                     shelterAddress = shelter.address || "";
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.warn(
+                    `Nie udało się pobrać danych schroniska dla ID ${animal.shelterId}`
+                );
+            }
+
+            const processedPhotos =
+                animal.images?.map((img) => img.imageUrl) || [];
+
+            // Dodaj główne zdjęcie na początek jeśli istnieje
+            if (animal.imageUrl && !processedPhotos.includes(animal.imageUrl)) {
+                processedPhotos.unshift(animal.imageUrl);
+            }
+
+            console.log(`📸 Final photos for ${animal.name}:`, processedPhotos);
 
             return {
                 ...animal,
-                photos: animal.images?.map((img) => img.imageUrl) || [],
+                photos: processedPhotos,
                 characteristics: animal.characteristics || [],
                 location: shelterName,
                 shelterAddress,
                 shelterName,
             };
         })
+    );
+
+    console.log(
+        "✅ All enriched animals with photos:",
+        enrichedAnimals.map((a) => ({
+            name: a.name,
+            photos: a.photos,
+            photosCount: a.photos.length,
+        }))
     );
 
     return enrichedAnimals;

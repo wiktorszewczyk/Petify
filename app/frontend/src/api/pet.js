@@ -24,9 +24,20 @@ async function apiCall(endpoint, options = {}) {
         throw new Error(`API Error: ${response.status}`);
     }
 
+    const contentType = response.headers.get("content-type");
+    const contentLength = response.headers.get("content-length");
+
+    if (
+        options.method === "DELETE" ||
+        contentLength === "0" ||
+        response.status === 204 ||
+        !contentType?.includes("application/json")
+    ) {
+        return {};
+    }
+
     return response.json();
 }
-
 export async function getAllPets() {
     try {
         const response = await fetch(`${API_URL}/pets?size=10000`, {
