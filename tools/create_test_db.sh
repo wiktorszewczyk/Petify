@@ -1,3 +1,4 @@
+# Fill out and uncomment
 # export PGUSER="your_postgres_user"
 # export PGPASSWORD="your_postgres_password"
 
