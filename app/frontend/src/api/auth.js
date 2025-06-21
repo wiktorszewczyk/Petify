@@ -20,7 +20,6 @@ export async function login(loginIdentifier, password) {
 
             if (data.user) {
                 localStorage.setItem("petify_user", JSON.stringify(data.user));
-            } else {
             }
 
             return data;
@@ -48,6 +47,8 @@ export async function register(userData) {
             gender: userData.gender,
             phoneNumber: userData.phoneNumber,
             email: userData.email,
+            createShelter: userData.createShelter || false,
+            applyAsVolunteer: userData.applyAsVolunteer || false,
         }),
     });
 
@@ -92,6 +93,7 @@ export async function fetchUserData() {
         badgesCount: user.badgesCount,
         achievements: user.achievements || [],
         profileImageBase64: user.profileImage,
+        authorities: user.authorities || [],
     };
 }
 
@@ -363,7 +365,9 @@ export async function refreshUserData() {
             localStorage.setItem("petify_user", JSON.stringify(userData));
             return userData;
         }
-    } catch (error) {}
+    } catch (error) {
+        console.error("Refresh user data error:", error);
+    }
     return null;
 }
 
@@ -380,6 +384,7 @@ export async function handleOAuth2Success(token) {
         }
         return user;
     } catch (error) {
+        console.error("OAuth2 success handling error:", error);
         return null;
     }
 }
