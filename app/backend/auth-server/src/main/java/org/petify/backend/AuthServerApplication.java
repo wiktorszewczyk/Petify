@@ -13,6 +13,8 @@ import org.petify.backend.services.AchievementService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,10 +25,14 @@ import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication
+@EnableConfigurationProperties(AuthServerApplication.AdminProperties.class)
 public class AuthServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuthServerApplication.class, args);
     }
+
+    @ConfigurationProperties(prefix = "petify.admin.credentials")
+    public record AdminProperties(String username, String password, String email) {}
 
     @Bean
     CommandLineRunner run(
@@ -34,39 +40,40 @@ public class AuthServerApplication {
             UserRepository userRepository,
             AchievementRepository achievementRepository,
             AchievementService achievementService,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            AdminProperties adminProperties) {
         return args -> {
             Role adminRole = roleRepository.findByAuthority("ADMIN")
                     .orElseGet(() -> roleRepository.save(new Role("ADMIN")));
-
             Role userRole = roleRepository.findByAuthority("USER")
                     .orElseGet(() -> roleRepository.save(new Role("USER")));
 
-            Role volunteerRole = roleRepository.findByAuthority("VOLUNTEER")
+            roleRepository.findByAuthority("VOLUNTEER")
                     .orElseGet(() -> roleRepository.save(new Role("VOLUNTEER")));
-
-            Role shelterRole = roleRepository.findByAuthority("SHELTER")
+            roleRepository.findByAuthority("SHELTER")
                     .orElseGet(() -> roleRepository.save(new Role("SHELTER")));
 
-            Optional<ApplicationUser> existingAdmin = userRepository.findByUsername("admin");
+            Optional<ApplicationUser> existingAdmin = userRepository.findByUsername(adminProperties.username());
             if (existingAdmin.isEmpty()) {
                 Set<Role> adminRoles = new HashSet<>();
                 adminRoles.add(adminRole);
                 adminRoles.add(userRole);
 
                 ApplicationUser admin = new ApplicationUser();
-                admin.setUsername("admin");
-                admin.setPassword(passwordEncoder.encode("admin"));
-                admin.setEmail("admin@petify.org");
-                admin.setFirstName("Admin");
+                admin.setUsername(adminProperties.username());
+                admin.setPassword(passwordEncoder.encode(adminProperties.password()));
+                admin.setEmail(adminProperties.email());
+
+                admin.setFirstName("Petify");
                 admin.setLastName("Administrator");
                 admin.setBirthDate(LocalDate.of(1980, 1, 1));
                 admin.setGender("MALE");
-                admin.setPhoneNumber("+48123456789");
+                admin.setPhoneNumber("+48000000000");
                 admin.setVolunteerStatus(VolunteerStatus.NONE);
                 admin.setActive(true);
                 admin.setCreatedAt(LocalDateTime.now());
                 admin.setAuthorities(adminRoles);
+
                 admin.setXpPoints(1000);
                 admin.setLevel(10);
                 admin.setLikesCount(0);
@@ -76,66 +83,6 @@ public class AuthServerApplication {
 
                 ApplicationUser savedAdmin = userRepository.save(admin);
                 achievementService.initializeUserAchievements(savedAdmin);
-            }
-
-            Optional<ApplicationUser> existingShelterUser = userRepository.findByUsername("shelter");
-            if (existingShelterUser.isEmpty()) {
-                Set<Role> shelterRoles = new HashSet<>();
-                shelterRoles.add(shelterRole);
-                shelterRoles.add(userRole);
-
-                ApplicationUser shelterUser = new ApplicationUser();
-                shelterUser.setUsername("shelter");
-                shelterUser.setPassword(passwordEncoder.encode("shelter"));
-                shelterUser.setEmail("shelter@petify.org");
-                shelterUser.setFirstName("Schronisko");
-                shelterUser.setLastName("Testowe");
-                shelterUser.setBirthDate(LocalDate.of(1990, 1, 1));
-                shelterUser.setGender("OTHER");
-                shelterUser.setPhoneNumber("+48987654321");
-                shelterUser.setVolunteerStatus(VolunteerStatus.NONE);
-                shelterUser.setActive(true);
-                shelterUser.setCreatedAt(LocalDateTime.now());
-                shelterUser.setAuthorities(shelterRoles);
-                shelterUser.setXpPoints(0);
-                shelterUser.setLevel(1);
-                shelterUser.setLikesCount(0);
-                shelterUser.setSupportCount(0);
-                shelterUser.setBadgesCount(0);
-                shelterUser.setAdoptionCount(0);
-
-                ApplicationUser savedShelterUser = userRepository.save(shelterUser);
-                achievementService.initializeUserAchievements(savedShelterUser);
-            }
-
-            Optional<ApplicationUser> existingVolunteer = userRepository.findByUsername("volunteer");
-            if (existingVolunteer.isEmpty()) {
-                Set<Role> volunteerRoles = new HashSet<>();
-                volunteerRoles.add(volunteerRole);
-                volunteerRoles.add(userRole);
-
-                ApplicationUser volunteerUser = new ApplicationUser();
-                volunteerUser.setUsername("volunteer");
-                volunteerUser.setPassword(passwordEncoder.encode("volunteer"));
-                volunteerUser.setEmail("volunteer@petify.org");
-                volunteerUser.setFirstName("Anna");
-                volunteerUser.setLastName("Kowalska");
-                volunteerUser.setBirthDate(LocalDate.of(1995, 5, 15));
-                volunteerUser.setGender("FEMALE");
-                volunteerUser.setPhoneNumber("+48555123456");
-                volunteerUser.setVolunteerStatus(VolunteerStatus.ACTIVE);
-                volunteerUser.setActive(true);
-                volunteerUser.setCreatedAt(LocalDateTime.now());
-                volunteerUser.setAuthorities(volunteerRoles);
-                volunteerUser.setXpPoints(250);
-                volunteerUser.setLevel(3);
-                volunteerUser.setLikesCount(15);
-                volunteerUser.setSupportCount(8);
-                volunteerUser.setBadgesCount(2);
-                volunteerUser.setAdoptionCount(1);
-
-                ApplicationUser savedVolunteer = userRepository.save(volunteerUser);
-                achievementService.initializeUserAchievements(savedVolunteer);
             }
 
             long achievementCount = achievementRepository.count();

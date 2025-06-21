@@ -12,12 +12,12 @@ spring:
       client:
         registration:
           google:
-            client-id: ${google.client.id}
-            client-secret: ${google.client.secret}
+            client-id: ${GOOGLE_CLIENT_ID:${google.client.id}}
+            client-secret: ${GOOGLE_CLIENT_SECRET:${google.client.secret}}
             scope:
               - email
               - profile
-            redirect-uri: "http://localhost:8222/login/oauth2/code/google"
+            redirect-uri: "http://${GATEWAY_HOST:localhost}:${GATEWAY_PORT:8222}/login/oauth2/code/google"
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
@@ -27,9 +27,9 @@ spring:
             user-name-attribute: email
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/petify
-    username: admin
-    password: admin
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5433}/${PGDATABASE:petify}
+    username: ${PGUSER:admin}
+    password: ${PGPASSWORD:admin}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -39,11 +39,23 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-# Konfiguracja Eureka
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
   instance:
     prefer-ip-address: true
-    instance-id: ${spring.application.name}:${random.uuid}
+    instance-id: ${spring.application.name}:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+petify:
+  admin:
+    credentials:
+      username: ${PETIFY_ADMIN_USERNAME:admin}
+      password: ${PETIFY_ADMIN_PASSWORD:admin_password}
+      email: ${PETIFY_ADMIN_EMAIL:admin@petify.org}

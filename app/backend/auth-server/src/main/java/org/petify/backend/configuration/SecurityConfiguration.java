@@ -69,6 +69,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     auth.requestMatchers("/user/**").permitAll();
                     // auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER", "VOLUNTEER", "SHELTER");
+                    auth.requestMatchers("/actuator/health").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -92,7 +93,6 @@ public class SecurityConfiguration {
                                 response.sendRedirect("http://localhost:5173/login?error=OAuth2%20authentication%20failed")
                         )
                 );
-
         return http.build();
     }
 

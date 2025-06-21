@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Schronisko dla Zwierząt w Łodzi",
+        "address": "Marmurowa 4. 91-610 Łódź",
+        "phoneNumber": "426567842",
+        "longitude": 51.7972425,
+        "latitude": 19.5317806,
+        "description": "Schronisko dla Zwierząt w Łodzi jest jednostką samorządu terytorialnego w Łodzi. Zgodnie z Ustawą o Ochronie Zwierząt zajmuje się ono ochroną zwierząt, utrzymywaniem porzuconych, zagubionych i bezdomnych psów i kotów znalezionych na terenie miasta Łodzi, poszukiwaniem właścicieli zwierząt zagubionych oraz adopcją psów i kotów. Schronisko leczy i utrzymuje zwierzęta tu przebywające w możliwie najlepszym dobrostanie zgodnie z Rozporządzeniem Ministra Rolnictwa i Rozwoju Wsi w sprawie szczegółowych wymagań weterynaryjnych dla prowadzenia schronisk dla zwierząt. Zwierzęta są u nas czipowanie i rejestrowane w bazie danych Safe Animal, są szczepione, zabezpieczane przeciw pasożytom, kastrowane. W łódzkim schronisku regularnie przeprowadzane są różne kontrole zarówno jednostek administracyjnych i weterynaryjnych. Schronisko współpracuje ze Strażą Miejską sekcją Animal Patrol a także z organizacjami pozarządowymi zajmującymi się ochroną zwierząt. W Schronisku zatrudnionych jest około 30 osób w działach: weterynaryjnym, opiekunów zwierząt, adopcyjnym, technicznym i administracyjnym, oraz aktualnie posiadamy niespełna 50. wolontariuszy pomagających w pracach przy zwierzętach. Schronisko nie prowadzi hotelu dla zwierząt i nie przyjmuje zwierząt właścicielskich.",
+        "imagePath": "test_data/images/shelters/lodz.jpg"
+    },
+    {
+        "name": "Schronisko Na Paluchu",
+        "address": "Paluch 2, 02-147 Warszawa",
+        "phoneNumber": "228460236",
+        "longitude": 52.1562094,
+        "latitude": 20.9593782,
+        "description": "Schronisko na Paluchu im. Jana Lityńskiego jest jednostką budżetową m.st. Warszawy. W obecnym stanie organizacyjnym Schronisko funkcjonuje od 2001. Jesteśmy jednym z wykonawców Warszawskiego Programu Przeciwdziałania Bezdomności Zwierząt, przygotowywanym corocznie przez Biuro Ochrony Środowiska Urzędu m.st. Warszawy i akceptowanym przez Radę m.st. Warszawy.\nNasza misja: Chronimy bezdomne zwierzęta, Stwarzamy im druga szansę. Wiemy, że czują.\n\nSchronisko to nie dom docelowy dla bezdomnych zwierząt. To jedynie przystanek na ich trudnej drodze życia. Przystanek pomiędzy jednym a drugim domem. W najtrudniejszym dla nas okresie (lata 2010-2011) w Schronisku przebywało na co dzień 2400 zwierząt.\nObecnie w naszym Schronisku przebywa na co dzień ok. 470 psów i ok. 150 kotów. Miesięcznie do Schroniska trafia ok. 200 zwierząt, w tym: ok. 100 psów i ok. 80 kotów. Ilość zwierząt jest różna w zależności od pory roku.\n\nOd 2011 roku stan dzień zwierząt zmniejsza się, a największą dynamikę zmniejszenia odnotowaliśmy w 2015 i 2016 (aż o 600 zwierząt). Schronisko funkcjonuje na 3 ha powierzchni, z czego 1 ha należący do Miasta i 2ha użyczone przez P.P. „Porty Lotnicze”. Schronisko zatrudnia łącznie 63 etatowych pracowników w ramach trzech sekcji: ambulatorium, biura przyjęć i adopcji zwierząt, opieki bytowej.\nJesteśmy także jednostką, w której wiedzę pogłębiają praktykanci: z techników weterynaryjnych, Wydziału Medycyny Weterynaryjnej SGGW. Od 2014 roku stale współpracujemy z Kliniką Małych Zwierząt SGGW. W schronisku wykonywana jest także praca społecznie użyteczna.\nBudżet Schroniska na 2025 rok wynosi 23 423 260,00 zł.\nNieocenioną pomocą dla naszych podopiecznych jest również wsparcie finansowe, jakie otrzymujemy od społeczeństwa oraz dary rzeczowe.",
+        "imagePath": "test_data/images/shelters/warszawa.jpg"
+    },
+    {
+        "name": "Schronisko dla Bezdomnych Zwierząt Promyk",
+        "address": "Przyrodników 14, 80-298 Gdańsk",
+        "phoneNumber": "585223780",
+        "longitude": 54.3751671,
+        "latitude": 18.4488774,
+        "description": "Do roku 2005 gdańskie schronisko dla zwierząt mieściło się przy ul. Madalińskiego. Jego stan techniczno-sanitarny wzbudzał wiele emocji, mnożyły się skargi okolicznych mieszkańców na zagrożenia sanitarno-epidemiologiczne, hałas, zapach, olbrzymie ilości grasujących gryzoni, a zwłaszcza szczurów, notorycznie uciekające przez zniszczone ogrodzenia zwierzęta. W związku z tym powstała nagląca konieczność budowy nowego schroniska w lokalizacji nie wzbudzającej protestów sąsiedztwa. Spośród kilkunastu propozycji przyjęto projekt budowy obiektu w dzielnicy Kokoszki. Zakładał on powstanie kompleksu spełniającego wszelkie wymagania nowoczesnego schroniska, przystosowanego do świadczenia opieki nie tylko nad zwierzętami towarzyszącymi (psy, koty), ale również m. in. gospodarskimi. Pożar w schronisku oruńskim (październik 2002 r.), gdzie spłonęło zaplecze weterynaryjne, magazyny, kuchnia przyspieszył prace związane z budową i przenosinami zwierząt do nowego obiektu. Wobec wyższej konieczności zabezpieczenia ich podstawowych potrzeb postanowiono jak najszybciej dokończyć budowę nowego schroniska kosztem rezygnacji z części zaplanowanej infrastruktury. Działalność placówki w nowej lokalizacji rozpoczęła się w maju 2005 roku. W związku z wątpliwościami dotyczącymi obsługi schroniska (m.in. stanu infrastruktury, dobrostanu zwierząt) przez operatora władze Miasta postanowiły włączyć Schronisko w struktury MOZW, co stało się faktem 01 marca 2006.Tym samym Schronisko zaczęło działać jako jednostka budżetowa, finansowana ze środków gminy.",
+        "imagePath": "test_data/images/shelters/gdansk.jpg"
+    },
+    {
+        "name": "Schronisko dla Bezdomnych Zwierząt we Wrocławiu",
+        "address": "Ślazowa 2, 51-007 Wrocław",
+        "phoneNumber": "713625674",
+        "longitude": 51.153003,
+        "latitude": 16.9949271,
+        "description": "Schronisko dla Bezdomnych Zwierząt we Wrocławiu powstało w 1962 roku. Założyli je, wkładając w to wielką pracę i entuzjazm działacze Towarzystwa Opieki nad Zwierzętami we Wrocławiu.\n\nZnalezione bezdomne zwierzęta można do schroniska przywieźć przez całą dobę (ul. Ślazowa 2, Wrocław). Personel jest obecny na miejscu i zajmie się czworonogiem.\nMiędzy 8:00 a 22:00 kierowca pogotowia dla bezdomnych zwierząt może również odebrać na zgłoszenie znalezionego zwierzaka.\nUwaga! W godzinach nocnych kierowca pogotowia dla bezdomnych zwierząt wyjeżdża tylko po zwierzęta, które potrzebują natychmiastowej pomocy (ranne). Prosimy wtedy o kontakt z numerami: 71 362 56 74 lub 451 654 783",
+        "imagePath": "test_data/images/shelters/wroclaw.jpg"
+    }
+]

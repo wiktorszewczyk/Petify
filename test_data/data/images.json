@@ -1,0 +1,35 @@
+[
+    {
+        "imagePath": "test_data/images/feed/dzienotwarty.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/szkolenie1.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/szkolenie2.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/post4.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/post5.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/post6.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/post7.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/post8.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/post9.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/post10.jpg"
+    },
+    {
+        "imagePath": "test_data/images/feed/post11.jpg"
+    }
+]
