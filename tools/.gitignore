@@ -1,0 +1,5 @@
+venv
+.venv
+
+./test_data/data/pets.json
+./test_data/images/pets/*

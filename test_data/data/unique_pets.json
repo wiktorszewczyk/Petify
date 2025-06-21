@@ -1,0 +1,51 @@
+[
+    {
+        "name": "Mimi",
+        "type": "OTHER",
+        "breed": null,
+        "age": 1,
+        "description": "Samiczka, została znaleziona. Jest oswojona, aczkolwiek trochę nieśmiała.",
+        "gender": "FEMALE",
+        "size": "SMALL",
+        "vaccinated": false,
+        "urgent": false,
+        "sterilized": false,
+        "kidFriendly": true,
+        "mainImagePath": "test_data/images/unique_pets/guinea_pig/main.jpg",
+        "imagePaths": [
+            "test_data/images/unique_pets/guinea_pig/1.jpg"
+        ]
+    },
+    {
+        "name": "Charlie",
+        "type": "OTHER",
+        "breed": null,
+        "age": 1,
+        "description": "Charlie niezwykła papużka Aleksandretta obrożna, która do schroniska trafiła jako znaleziona. Obecnie przebywa na kwarantannie, po zakończeniu której będzie szukała nowego domu, osoby doświadczonej w opiece nad papużkami.",
+        "gender": "MALE",
+        "size": "SMALL",
+        "vaccinated": false,
+        "urgent": false,
+        "sterilized": false,
+        "kidFriendly": false,
+        "mainImagePath": "test_data/images/unique_pets/parrot/main.jpg",
+        "imagePaths": []
+    },
+    {
+        "name": "Luiza",
+        "type": "OTHER",
+        "breed": null,
+        "age": 1,
+        "description": "Samiczka, została znaleziona. Jest oswojona, aczkolwiek trochę nieśmiała.",
+        "gender": "FEMALE",
+        "size": "SMALL",
+        "vaccinated": false,
+        "urgent": false,
+        "sterilized": false,
+        "kidFriendly": true,
+        "mainImagePath": "test_data/images/unique_pets/rabbit/main.jpg",
+        "imagePaths": [
+            "test_data/images/unique_pets/rabbit/1.jpg"
+        ]
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "firstName": "Schronisko",
+        "lastName": "dla Zwierząt w Łodzi",
+        "birthDate": null,
+        "gender": null,
+        "phoneNumber": "426567842",
+        "email": "schronisko.lodz@petify.org",
+        "password": "schronisko.lodz",
+        "createShelter": true
+    },
+    {
+        "firstName": "Schronisko",
+        "lastName": "Na Paluchu",
+        "birthDate": null,
+        "gender": null,
+        "phoneNumber": "228460236",
+        "email": "schronisko.warszawa@petify.org",
+        "password": "schronisko.warszawa",
+        "createShelter": true
+    },
+    {
+        "firstName": "Schronisko",
+        "lastName": "dla Bezdomnych Zwierząt \"Promyk\"",
+        "birthDate": null,
+        "gender": null,
+        "phoneNumber": "585223780",
+        "email": "schronisko.gdansk@petify.org",
+        "password": "schronisko.gdansk",
+        "createShelter": true
+    },
+    {
+        "firstName": "Schronisko",
+        "lastName": "dla Bezdomnych Zwierząt we Wrocławiu",
+        "birthDate": null,
+        "gender": null,
+        "phoneNumber": "713625674",
+        "email": "schronisko.wroclaw@petify.org",
+        "password": "schronisko.wroclaw",
+        "createShelter": true
+    }
+]

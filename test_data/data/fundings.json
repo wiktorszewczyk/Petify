@@ -1,0 +1,79 @@
+[
+    {
+        "shelterId": 1,
+        "title": "Pomóż uratować nam Reksia",
+        "description": "Reksio potrzebuje pilnej operacji",
+        "goalAmount": 1000.00,
+        "currency": "PLN",
+        "type": "MEDICAL",
+        "endDate": "2025-06-30T23:59:59Z",
+        "isMain": false,
+        "needs": "Operacja, leki, opieka po operacji"
+    },
+    {
+        "shelterId": 1,
+        "title": "Termomodernizacja schroniska",
+        "description": "Zbieramy fundusze na termomodernizację schroniska, aby zapewnić lepsze warunki dla zwierząt.",
+        "goalAmount": 15000.00,
+        "currency": "PLN",
+        "type": "INFRASTRUCTURE",
+        "endDate": "2025-12-31T23:59:59Z",
+        "isMain": false,
+        "needs": null
+    },
+    {
+        "shelterId": 1,
+        "title": "Zbiórka w trakcie Dnia Otwartego",
+        "description": "Podczas Dnia Otwartego zbieramy karmę oraz datki dla naszych podopiecznych.",
+        "goalAmount": 2000.00,
+        "currency": "PLN",
+        "type": "EVENT_BASED",
+        "endDate": "2025-07-15T23:59:59Z",
+        "isMain": false,
+        "needs": "Karma, środki czystości, datki"
+    },
+    {
+        "shelterId": 1,
+        "title": "Zbiórka na schronisko",
+        "description": "Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.",
+        "goalAmount": 20000.00,
+        "currency": "PLN",
+        "type": "GENERAL",
+        "endDate": "2026-12-31T23:59:59Z",
+        "isMain": true,
+        "needs": "Rozwój"
+    },
+    {
+        "shelterId": 2,
+        "title": "Zbiórka na schronisko",
+        "description": "Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.",
+        "goalAmount": 20000.00,
+        "currency": "PLN",
+        "type": "GENERAL",
+        "endDate": "2026-12-31T23:59:59Z",
+        "isMain": true,
+        "needs": "Rozwój"
+    },
+    {
+        "shelterId": 3,
+        "title": "Zbiórka na schronisko",
+        "description": "Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.",
+        "goalAmount": 20000.00,
+        "currency": "PLN",
+        "type": "GENERAL",
+        "endDate": "2026-12-31T23:59:59Z",
+        "isMain": true,
+        "needs": "Rozwój"
+    },
+    {
+        "shelterId": 4,
+        "title": "Zbiórka na schronisko",
+        "description": "Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.",
+        "goalAmount": 20000.00,
+        "currency": "PLN",
+        "type": "GENERAL",
+        "endDate": "2026-12-31T23:59:59Z",
+        "isMain": true,
+        "needs": "Rozwój"
+    }
+]
