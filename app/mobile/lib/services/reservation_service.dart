@@ -38,8 +38,16 @@ class ReservationService with CacheableMixin {
 
         if (response.statusCode == 200 && response.data is List) {
           final slotsData = response.data as List;
-          dev.log('ReservationService: Received ${slotsData.length} slots');
-          return slotsData.map((slotJson) => ReservationSlot.fromJson(slotJson)).toList();
+          dev.log('🔢 ReservationService: Received ${slotsData.length} available slots');
+
+          final slots = slotsData.map((slotJson) => ReservationSlot.fromJson(slotJson)).toList();
+
+          // Log performance warning for large datasets
+          if (slots.length > 500) {
+            dev.log('⚠️ PERFORMANCE WARNING: ${slots.length} slots detected. Consider implementing pagination.');
+          }
+
+          return slots;
         }
 
         throw Exception('Nieprawidłowa odpowiedź serwera');
@@ -57,7 +65,7 @@ class ReservationService with CacheableMixin {
         dev.log('Unexpected error in getAvailableSlots: $e');
         throw Exception('Nieoczekiwany błąd: $e');
       }
-    }, ttl: Duration(minutes: 5));
+    }, ttl: Duration(minutes: 3)); // Reduced TTL for faster updates with large datasets
   }
 
   /// Pobiera moje rezerwacje (jako wolontariusz)
@@ -73,8 +81,9 @@ class ReservationService with CacheableMixin {
 
         if (response.statusCode == 200 && response.data is List) {
           final slotsData = response.data as List;
-          dev.log('ReservationService: Received ${slotsData.length} my reservations');
-          return slotsData.map((slotJson) => ReservationSlot.fromJson(slotJson)).toList();
+          final slots = slotsData.map((slotJson) => ReservationSlot.fromJson(slotJson)).toList();
+          dev.log('✅ ReservationService: Received ${slots.length} my reservations');
+          return slots;
         }
 
         throw Exception('Nieprawidłowa odpowiedź serwera');
@@ -92,23 +101,26 @@ class ReservationService with CacheableMixin {
         dev.log('Unexpected error in getMyReservations: $e');
         throw Exception('Nieoczekiwany błąd: $e');
       }
-    }, ttl: Duration(minutes: 3));
+    }, ttl: Duration(minutes: 2)); // Reduced TTL for more responsive updates
   }
 
   /// Rezerwuje slot na spacer z psem
   Future<BasicResponse> reserveSlot(int slotId) async {
     try {
+      dev.log('🔄 ReservationService: Starting reservation for slot $slotId');
       final response = await _api.patch('/reservations/slots/$slotId/reserve');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        CacheManager.markStalePattern('available_slots');
-        CacheManager.markStalePattern('my_reservations');
-        CacheManager.markStalePattern('pet_slots');
+        // Kompletne usunięcie cache zamiast tylko markowania jako stale
+        CacheManager.invalidate('available_slots');
+        CacheManager.invalidate('my_reservations');
+        CacheManager.invalidatePattern('pet_slots');
+        CacheManager.invalidatePattern('reservation_');
         CacheManager.markStalePattern('current_user'); // Odśwież statystyki w tle
         CacheManager.markStalePattern('user_');
         CacheManager.markStalePattern('achievements_'); // Osiągnięcia mogą się zmienić po aktywności wolontariackiej
         CacheScheduler.forceRefreshCriticalData();
-        dev.log('✅ RESERVED SLOT $slotId - Marked reservation and user cache as stale');
+        dev.log('✅ RESERVED SLOT $slotId - Completely invalidated reservation cache for immediate refresh');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -139,17 +151,20 @@ class ReservationService with CacheableMixin {
   /// Anuluje rezerwację
   Future<BasicResponse> cancelReservation(int slotId) async {
     try {
+      dev.log('🔄 ReservationService: Starting cancellation for slot $slotId');
       final response = await _api.patch('/reservations/slots/$slotId/cancel');
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        CacheManager.markStalePattern('available_slots');
-        CacheManager.markStalePattern('my_reservations');
-        CacheManager.markStalePattern('pet_slots');
+        // Kompletne usunięcie cache zamiast tylko markowania jako stale
+        CacheManager.invalidate('available_slots');
+        CacheManager.invalidate('my_reservations');
+        CacheManager.invalidatePattern('pet_slots');
+        CacheManager.invalidatePattern('reservation_');
         CacheManager.markStalePattern('current_user'); // Odśwież statystyki w tle
         CacheManager.markStalePattern('user_');
         CacheManager.markStalePattern('achievements_'); // Osiągnięcia mogą się zmienić po anulowaniu aktywności
         CacheScheduler.forceRefreshCriticalData();
-        dev.log('✅ CANCELLED RESERVATION $slotId - Marked reservation and user cache as stale');
+        dev.log('✅ CANCELLED RESERVATION $slotId - Completely invalidated reservation cache for immediate refresh');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);

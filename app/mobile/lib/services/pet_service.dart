@@ -361,6 +361,74 @@ class PetService with CacheableMixin {
     }, ttl: Duration(minutes: 10));
   }
 
+  /// Batch fetch pets by IDs - optimized for volunteer walks view
+  Future<Map<int, Pet>> getPetsByIds(List<int> ids) async {
+    if (ids.isEmpty) return {};
+
+    final Map<int, Pet> result = {};
+    final List<int> uncachedIds = [];
+
+    // Check cache first
+    for (final id in ids) {
+      final cacheKey = 'pet_detail_$id';
+      final cached = CacheManager.get<Pet>(cacheKey);
+      if (cached != null) {
+        result[id] = cached;
+      } else {
+        uncachedIds.add(id);
+      }
+    }
+
+    dev.log('🔍 getPetsByIds: ${ids.length} requested, ${result.length} from cache, ${uncachedIds.length} need fetching');
+
+    if (uncachedIds.isEmpty) {
+      return result;
+    }
+
+    try {
+      // Batch fetch uncached pets with chunks of max 50 IDs
+      const chunkSize = 50;
+      for (int i = 0; i < uncachedIds.length; i += chunkSize) {
+        final chunk = uncachedIds.skip(i).take(chunkSize).toList();
+        final idsParam = chunk.join(',');
+
+        try {
+          final response = await _api.get('/pets/batch?ids=$idsParam');
+
+          if (response.statusCode == 200 && response.data is List) {
+            final pets = (response.data as List)
+                .map((json) => Pet.fromJson(json))
+                .toList();
+
+            // Cache and add to result
+            for (final pet in pets) {
+              final cacheKey = 'pet_detail_${pet.id}';
+              CacheManager.set(cacheKey, pet, ttl: Duration(minutes: 10));
+              result[pet.id] = pet;
+            }
+
+            dev.log('✅ Batch fetched ${pets.length} pets for chunk of ${chunk.length} IDs');
+          }
+        } catch (e) {
+          dev.log('❌ Chunk batch fetch failed, falling back to individual fetching: $e');
+          // Fallback to individual fetching for this chunk
+          for (final id in chunk) {
+            try {
+              result[id] = await getPetById(id);
+            } catch (individualError) {
+              dev.log('❌ Failed to fetch pet $id individually: $individualError');
+            }
+          }
+        }
+      }
+    } catch (e) {
+      dev.log('❌ Błąd podczas batch pobierania psów: $e');
+    }
+
+    dev.log('📊 getPetsByIds completed: ${result.length}/${ids.length} pets successfully fetched');
+    return result;
+  }
+
   Future<BasicResponse> likePet(int petId) async {
     try {
       final response = await _api.post('/pets/$petId/like');
@@ -372,6 +440,8 @@ class PetService with CacheableMixin {
         CacheManager.markStalePattern('current_user'); // Oznacz użytkownika jako nieświeżego żeby odświeżyć statystyki
         CacheManager.markStalePattern('user_');
         CacheManager.markStalePattern('achievements_'); // Osiągnięcia mogą się zmienić po polubieniu
+        CacheManager.markStalePattern('available_slots'); // Invalidate volunteer slots cache
+        CacheManager.markStalePattern('my_reservations'); // Invalidate reservations cache
         CacheScheduler.forceRefreshCriticalData();
         dev.log('✅ LIKED PET $petId - Invalidated all pets cache and user data. Next fetch will get fresh data from API.');
       }
@@ -430,8 +500,13 @@ class PetService with CacheableMixin {
 
       if (response.statusCode == 200) {
         CacheManager.markStalePattern('supported');
+        CacheManager.markStalePattern('pets_');
+        CacheManager.markStalePattern('current_user');
+        CacheManager.markStalePattern('user_');
+        CacheManager.markStalePattern('available_slots'); // Invalidate volunteer slots cache
+        CacheManager.markStalePattern('my_reservations'); // Invalidate reservations cache
         CacheScheduler.forceRefreshCriticalData();
-        dev.log('Marked supported pets cache as stale after supporting pet $petId');
+        dev.log('✅ SUPPORTED PET $petId - Invalidated pets cache and volunteer data');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
