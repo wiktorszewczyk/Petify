@@ -923,13 +923,13 @@ COPY public.favorite_pets (id, status, username, pet_id) FROM stdin;
 --
 
 COPY public.feed_items (id, created_at, fundraising_id, long_description, main_image_id, shelter_id, short_description, title, updated_at) FROM stdin;
-1	2025-06-21 17:27:07.591678	3	Czekają na Ciebie:\n🐾 Spotkanie z lekarzem weterynarii, psim i kocim behawiorystą oraz zoofizjoterapeutą - dowiedz się, jak dbać o zdrowie i dobre samopoczucie swoich pupili!\n🎨 Rozstrzygnięcie konkursu plastycznego „Ja i mój zwierzęcy przyjaciel” z nagrodami!\n🎉 Prezentacja schroniska i poznanie naszych psich i kocich podopiecznych\n🎈 Gry i zabawy dla dzieci, malowanie twarzy\n🎁 Stoiska informacyjno-edukacyjne\n🤝 Zbiórka darów dla psów i kotów - szczególnie potrzebne są smaczki naturalne, zabawki, smycze i obroże na zatrzask różnych rozmiarów\nZwiedzanie schroniska odbędzie się w grupach zorganizowanych co 30 minut przez pracowników - to świetna okazja, by zobaczyć, gdzie mieszkają nasi podopieczni!	1	1	Przyjdź i spędź z nami wyjątkowe popołudnie oraz wesprzyj naszą działalność.	Dzień Otwarty Schroniska w Łodzi	2025-06-21 17:27:07.591698
-2	2025-06-21 17:27:09.921164	\N	W Schronisku dla Zwierząt w Łodzi funkcjonuje wolontariat w zakresie pracy z psami lub kotami.\nWolontariat odbywa się na terenie i w godzinach pracy schroniska.\nDo zadań i obowiązków wolontariuszy należy m.in.:\n\n- dbanie o dobro zwierząt przebywających w schronisku\n- spacery z psami\n- socjalizacja zwierząt\n- pielęgnacja zwierząt\n- wspomaganie opieki weterynaryjnej\n- wykonywanie prac porządkowych oraz innych czynności zależnych od bieżących potrzeb schroniska\n- wspomaganie obsługi procedury adopcji\n- promocja działalności schroniska w przestrzeni publicznej.	2	1	Szkolenie dla osób chcących zostać wolontariuszami w Schronisku dla Zwierząt w Łodzi (pierwszy termin letni).	Szkolenie dla wolontariuszy (Łódź)	2025-06-21 17:27:09.921176
-3	2025-06-21 17:27:10.109325	\N	W Schronisku dla Zwierząt w Łodzi funkcjonuje wolontariat w zakresie pracy z psami lub kotami.\nWolontariat odbywa się na terenie i w godzinach pracy schroniska.\nDo zadań i obowiązków wolontariuszy należy m.in.:\n\n- dbanie o dobro zwierząt przebywających w schronisku\n- spacery z psami\n- socjalizacja zwierząt\n- pielęgnacja zwierząt\n- wspomaganie opieki weterynaryjnej\n- wykonywanie prac porządkowych oraz innych czynności zależnych od bieżących potrzeb schroniska\n- wspomaganie obsługi procedury adopcji\n- promocja działalności schroniska w przestrzeni publicznej.	3	2	Szkolenie dla osób chcących zostać wolontariuszami w Schronisku Na Paluchu	Szkolenie dla wolontariuszy (Warszawa)	2025-06-21 17:27:10.109497
-4	2025-06-21 17:27:10.310517	1	Fundusze ze zbiórki zostaną przeznaczone na operację Reksia, specjalistyczne leki oraz profesjonalną opeiekę pooperacyjną.	4	1	Reksio to 5-letni pies, który potrzebuje pilnej operacji. Wesprzyj naszą zbiórkę!	Reksio potrzebuje pilnej operacji!	2025-06-21 17:27:10.310532
-5	2025-06-21 17:27:10.68771	\N		\N	1	Więcej informacji o zwierzętach znajdziesz na stronie schroniska.	Kefir, Elza, Anna i Denzel pilnie szukają domów!	2025-06-21 17:27:10.687721
-6	2025-06-21 17:27:11.234027	\N	Chcielibyśmy serdecznie podziękować wszystkim darczyńcom, którzy wsparli nasze schronisko w ostatnim czasie.\nDzięki Wam możemy zapewnić lepsze warunki naszym podopiecznym.\nPonadto chcielibyśmy wyróżnić naszych niezastąpionych wolontariuszy, którzy swoją ciężką pracą przyczyniają się do poprawy życia zwierząt w naszym schronisku.	\N	1	Podziękowania dla darczyńców i wolontariuszy od Zarządcy Schroniska.	Podziękowania	2025-06-21 17:27:11.234036
-7	2025-06-21 17:27:11.321029	\N	\N	9	1	Czarny kot z obrożą został znaleziony w okolicach ul. Pięknej 12. Prosimy o kontakt właściciela lub osoby, które mogą znać jego właściciela.	Znaleziono czarnego kota z obrożą!	2025-06-21 17:27:11.321037
+1	2025-06-22 12:46:01.098879	3	Czekają na Ciebie:\n🐾 Spotkanie z lekarzem weterynarii, psim i kocim behawiorystą oraz zoofizjoterapeutą - dowiedz się, jak dbać o zdrowie i dobre samopoczucie swoich pupili!\n🎨 Rozstrzygnięcie konkursu plastycznego „Ja i mój zwierzęcy przyjaciel” z nagrodami!\n🎉 Prezentacja schroniska i poznanie naszych psich i kocich podopiecznych\n🎈 Gry i zabawy dla dzieci, malowanie twarzy\n🎁 Stoiska informacyjno-edukacyjne\n🤝 Zbiórka darów dla psów i kotów - szczególnie potrzebne są smaczki naturalne, zabawki, smycze i obroże na zatrzask różnych rozmiarów\nZwiedzanie schroniska odbędzie się w grupach zorganizowanych co 30 minut przez pracowników - to świetna okazja, by zobaczyć, gdzie mieszkają nasi podopieczni!	1	1	Przyjdź i spędź z nami wyjątkowe popołudnie oraz wesprzyj naszą działalność.	Dzień Otwarty Schroniska w Łodzi	2025-06-22 12:46:01.098894
+2	2025-06-22 12:46:02.439332	\N	W Schronisku dla Zwierząt w Łodzi funkcjonuje wolontariat w zakresie pracy z psami lub kotami.\nWolontariat odbywa się na terenie i w godzinach pracy schroniska.\nDo zadań i obowiązków wolontariuszy należy m.in.:\n\n- dbanie o dobro zwierząt przebywających w schronisku\n- spacery z psami\n- socjalizacja zwierząt\n- pielęgnacja zwierząt\n- wspomaganie opieki weterynaryjnej\n- wykonywanie prac porządkowych oraz innych czynności zależnych od bieżących potrzeb schroniska\n- wspomaganie obsługi procedury adopcji\n- promocja działalności schroniska w przestrzeni publicznej.	2	1	Szkolenie dla osób chcących zostać wolontariuszami w Schronisku dla Zwierząt w Łodzi (pierwszy termin letni).	Szkolenie dla wolontariuszy (Łódź)	2025-06-22 12:46:02.439342
+3	2025-06-22 12:46:02.634089	\N	W Schronisku dla Zwierząt w Łodzi funkcjonuje wolontariat w zakresie pracy z psami lub kotami.\nWolontariat odbywa się na terenie i w godzinach pracy schroniska.\nDo zadań i obowiązków wolontariuszy należy m.in.:\n\n- dbanie o dobro zwierząt przebywających w schronisku\n- spacery z psami\n- socjalizacja zwierząt\n- pielęgnacja zwierząt\n- wspomaganie opieki weterynaryjnej\n- wykonywanie prac porządkowych oraz innych czynności zależnych od bieżących potrzeb schroniska\n- wspomaganie obsługi procedury adopcji\n- promocja działalności schroniska w przestrzeni publicznej.	3	2	Szkolenie dla osób chcących zostać wolontariuszami w Schronisku Na Paluchu	Szkolenie dla wolontariuszy (Warszawa)	2025-06-22 12:46:02.6341
+4	2025-06-22 12:46:02.855856	\N	Chcielibyśmy serdecznie podziękować wszystkim darczyńcom, którzy wsparli nasze schronisko w ostatnim czasie.\nDzięki Wam możemy zapewnić lepsze warunki naszym podopiecznym.\nPonadto chcielibyśmy wyróżnić naszych niezastąpionych wolontariuszy, którzy swoją ciężką pracą przyczyniają się do poprawy życia zwierząt w naszym schronisku.	\N	1	Podziękowania dla darczyńców i wolontariuszy od Zarządcy Schroniska.	Podziękowania	2025-06-22 12:46:02.855865
+5	2025-06-22 12:46:03.03022	\N	\N	4	1	Czarny kot z obrożą został znaleziony w okolicach ul. Pięknej 12. Prosimy o kontakt właściciela lub osoby, które mogą znać jego właściciela.	Znaleziono czarnego kota z obrożą!	2025-06-22 12:46:03.030231
+6	2025-06-22 12:46:03.599464	\N		\N	1	Więcej informacji o zwierzętach znajdziesz na stronie schroniska.	Kefir, Elza, Anna i Denzel pilnie szukają domów!	2025-06-22 12:46:03.599474
+7	2025-06-22 12:46:04.165229	1	Fundusze ze zbiórki zostaną przeznaczone na operację Reksia, specjalistyczne leki oraz profesjonalną opeiekę pooperacyjną.	11	1	Reksio to 5-letni pies, który potrzebuje pilnej operacji. Wesprzyj naszą zbiórkę!	Reksio potrzebuje pilnej operacji!	2025-06-22 12:46:04.165273
 \.
 
 
@@ -938,13 +938,13 @@ COPY public.feed_items (id, created_at, fundraising_id, long_description, main_i
 --
 
 COPY public.fundraisers (id, cancelled_at, completed_at, created_at, created_by, currency, description, end_date, goal_amount, is_main, needs, shelter_id, start_date, status, title, type, updated_at) FROM stdin;
-1	\N	\N	2025-06-21 17:28:46.995047+00	schronisko.lodz@petify.org	PLN	Reksio potrzebuje pilnej operacji	2025-06-30 23:59:59+00	1000.00	f	Operacja, leki, opieka po operacji	1	2025-06-21 17:28:46.995047+00	ACTIVE	Pomóż uratować nam Reksia	MEDICAL	2025-06-21 17:28:46.995047+00
-2	\N	\N	2025-06-21 17:28:47.163714+00	schronisko.lodz@petify.org	PLN	Zbieramy fundusze na termomodernizację schroniska, aby zapewnić lepsze warunki dla zwierząt.	2025-12-31 23:59:59+00	15000.00	f	\N	1	2025-06-21 17:28:47.163714+00	ACTIVE	Termomodernizacja schroniska	INFRASTRUCTURE	2025-06-21 17:28:47.163714+00
-3	\N	\N	2025-06-21 17:28:47.244153+00	schronisko.lodz@petify.org	PLN	Podczas Dnia Otwartego zbieramy karmę oraz datki dla naszych podopiecznych.	2025-07-15 23:59:59+00	2000.00	f	Karma, środki czystości, datki	1	2025-06-21 17:28:47.244153+00	ACTIVE	Zbiórka w trakcie Dnia Otwartego	EVENT_BASED	2025-06-21 17:28:47.244153+00
-4	\N	\N	2025-06-21 17:28:47.327929+00	schronisko.lodz@petify.org	PLN	Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.	2026-12-31 23:59:59+00	20000.00	t	Rozwój	1	2025-06-21 17:28:47.32793+00	ACTIVE	Zbiórka na schronisko	GENERAL	2025-06-21 17:28:47.32793+00
-5	\N	\N	2025-06-21 17:28:47.399548+00	schronisko.warszawa@petify.org	PLN	Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.	2026-12-31 23:59:59+00	20000.00	t	Rozwój	2	2025-06-21 17:28:47.399549+00	ACTIVE	Zbiórka na schronisko	GENERAL	2025-06-21 17:28:47.399548+00
-6	\N	\N	2025-06-21 17:28:47.475679+00	schronisko.gdansk@petify.org	PLN	Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.	2026-12-31 23:59:59+00	20000.00	t	Rozwój	3	2025-06-21 17:28:47.475679+00	ACTIVE	Zbiórka na schronisko	GENERAL	2025-06-21 17:28:47.475679+00
-7	\N	\N	2025-06-21 17:28:47.550753+00	schronisko.wroclaw@petify.org	PLN	Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.	2026-12-31 23:59:59+00	20000.00	t	Rozwój	4	2025-06-21 17:28:47.550753+00	ACTIVE	Zbiórka na schronisko	GENERAL	2025-06-21 17:28:47.550753+00
+1	\N	\N	2025-06-22 12:45:59.855078+00	schronisko.lodz@petify.org	PLN	Reksio potrzebuje pilnej operacji	2025-06-30 23:59:59+00	1000.00	f	Operacja, leki, opieka po operacji	1	2025-06-22 12:45:59.855079+00	ACTIVE	Pomóż uratować nam Reksia	MEDICAL	2025-06-22 12:45:59.855079+00
+2	\N	\N	2025-06-22 12:46:00.016277+00	schronisko.lodz@petify.org	PLN	Zbieramy fundusze na termomodernizację schroniska, aby zapewnić lepsze warunki dla zwierząt.	2025-12-31 23:59:59+00	15000.00	f	\N	1	2025-06-22 12:46:00.016278+00	ACTIVE	Termomodernizacja schroniska	INFRASTRUCTURE	2025-06-22 12:46:00.016278+00
+3	\N	\N	2025-06-22 12:46:00.154827+00	schronisko.lodz@petify.org	PLN	Podczas Dnia Otwartego zbieramy karmę oraz datki dla naszych podopiecznych.	2025-07-15 23:59:59+00	2000.00	f	Karma, środki czystości, datki	1	2025-06-22 12:46:00.154827+00	ACTIVE	Zbiórka w trakcie Dnia Otwartego	EVENT_BASED	2025-06-22 12:46:00.154827+00
+4	\N	\N	2025-06-22 12:46:00.239695+00	schronisko.lodz@petify.org	PLN	Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.	2026-12-31 23:59:59+00	20000.00	t	Rozwój	1	2025-06-22 12:46:00.239697+00	ACTIVE	Zbiórka na schronisko	GENERAL	2025-06-22 12:46:00.239696+00
+5	\N	\N	2025-06-22 12:46:00.31152+00	schronisko.warszawa@petify.org	PLN	Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.	2026-12-31 23:59:59+00	20000.00	t	Rozwój	2	2025-06-22 12:46:00.311527+00	ACTIVE	Zbiórka na schronisko	GENERAL	2025-06-22 12:46:00.311525+00
+6	\N	\N	2025-06-22 12:46:00.385894+00	schronisko.gdansk@petify.org	PLN	Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.	2026-12-31 23:59:59+00	20000.00	t	Rozwój	3	2025-06-22 12:46:00.385895+00	ACTIVE	Zbiórka na schronisko	GENERAL	2025-06-22 12:46:00.385895+00
+7	\N	\N	2025-06-22 12:46:00.460638+00	schronisko.wroclaw@petify.org	PLN	Zbieramy pieniądze na najważniejsze potrzeby zwierzaków oraz pokrycie bieżących kosztów operacyjnych.	2026-12-31 23:59:59+00	20000.00	t	Rozwój	4	2025-06-22 12:46:00.460638+00	ACTIVE	Zbiórka na schronisko	GENERAL	2025-06-22 12:46:00.460638+00
 \.
 
 
@@ -953,17 +953,17 @@ COPY public.fundraisers (id, cancelled_at, completed_at, created_at, created_by,
 --
 
 COPY public.images (id, created_at, entity_id, entity_type, image_name) FROM stdin;
-1	2025-06-21 17:27:09.812807	1	feed	8ee9329b-b19b-4c37-b539-21b92ff86eb2
-2	2025-06-21 17:27:10.033666	2	feed	88125490-9620-4544-aa10-e5b0e24b59d3
-3	2025-06-21 17:27:10.224533	3	feed	fc5ad96c-150a-4b13-9b99-df949d09d871
-4	2025-06-21 17:27:10.597471	4	feed	83fa45fd-7714-4b54-8cb7-ff5e67056ca9
-5	2025-06-21 17:27:10.818345	5	feed	64f191ff-9951-4a05-840e-4dafa8b7e39e
-6	2025-06-21 17:27:10.930289	5	feed	8b5d9682-cf9e-418a-ba3d-803d068f873a
-7	2025-06-21 17:27:11.042072	5	feed	9be8b13c-b2ec-4e3a-b5da-8438235256a0
-8	2025-06-21 17:27:11.15362	5	feed	ad9861ae-c115-4409-93da-667131a91fb1
-9	2025-06-21 17:27:11.444057	7	feed	32067303-ead7-470f-96d4-a9f718481ff2
-10	2025-06-21 17:27:11.538134	7	feed	708e1c41-08cb-4f09-8501-325b28f9785f
-11	2025-06-21 17:27:11.639035	7	feed	025ec66c-a66a-42dc-9711-7b9ab22c838b
+1	2025-06-22 12:46:02.212607	1	feed	6612dfdd-fce6-415f-b675-61d1d9a4eeb4
+2	2025-06-22 12:46:02.552243	2	feed	0cef6d7e-d0b8-4965-ba22-983eafc76e4c
+3	2025-06-22 12:46:02.758251	3	feed	79c2b5d2-a408-46e4-bb38-11052f941bc4
+4	2025-06-22 12:46:03.279971	5	feed	79f830cc-af04-4f0b-84ce-7514933527b1
+5	2025-06-22 12:46:03.400698	5	feed	9f4f4bde-a8bf-4093-9c09-474888531e4b
+6	2025-06-22 12:46:03.509973	5	feed	a022dfc9-bee9-4d3b-8ad2-485b0089e0f2
+7	2025-06-22 12:46:03.74122	6	feed	6fa947bb-e313-472e-af46-104b33d28d80
+8	2025-06-22 12:46:03.886128	6	feed	81a2af51-9077-4a0f-94c1-493429ebd44c
+9	2025-06-22 12:46:03.977137	6	feed	ff4940a2-28cf-43e1-a053-c747f1f00057
+10	2025-06-22 12:46:04.076978	6	feed	b5fa5de0-b5a6-4f67-a7ee-d8f9076c6fe2
+11	2025-06-22 12:46:04.274708	7	feed	d7082782-72b4-4526-8dd0-fa8d64e861da
 \.
 
 
@@ -1004,627 +1004,627 @@ COPY public.payments (id, amount, checkout_url, client_secret, created_at, curre
 --
 
 COPY public.pet_images (id, image_name, pet_id) FROM stdin;
-1	4749d28b-d2ac-46c6-83d6-5393ea68c2fb	1
-2	241fd165-c927-45fa-ba51-b547a56bdafb	1
-3	368e4fd9-6b21-4de5-a3a8-8c98ddd811fa	1
-4	19cd9a57-43d9-42b5-a829-ee78a07cfbe2	2
-5	099b6914-1a39-4f47-b5cf-f5b1713cac03	2
-6	f96102c6-fd2a-401f-80fa-f51c2602ddfe	3
-7	d31b2123-f166-4ad9-af17-124011696879	3
-8	80e8a687-cbf3-4fbe-b9b0-1826b4cc3153	4
-9	50bd61e0-0bb6-44b1-9aeb-aff3b7dda310	4
-10	bd8c8de3-0c96-4931-9d58-08e3f36186ed	4
-11	19870973-3416-4a5b-80b2-8b9992cb4546	5
-12	59601a2d-2803-4605-93a9-0c41ce3b7c24	5
-13	a92aea6e-1b35-4b71-a593-70f3ee82c1b1	5
-14	252a7f61-351b-405f-b8ce-b9c65cd8bb7e	6
-15	911f44b3-5681-4b84-a771-03d5c29cc2b0	7
-16	28d9b543-0898-41ec-825e-3d25138a7b2d	7
-17	41d37e4f-2e62-47e9-98f5-eddac23e0a8a	7
-18	86e4ef83-ad62-4862-9f6a-92e69a9380d3	8
-19	fb0b29cf-a800-4d8c-ba77-59553bbd9336	8
-20	4c4a7a83-95fb-4a8a-99ab-c04868dd05c8	9
-21	9ab23bcb-40f2-4611-98b9-3e6033b558cf	9
-22	4c604c60-ba82-4d91-ae92-ca75b0d2cb77	9
-23	da8bf325-284b-477c-801d-af21214c6ee3	10
-24	8e28b897-e511-446f-a8c1-c3d963100465	10
-25	6794c476-5a9c-48ff-b418-b2f9d5a02cf6	11
-26	6263c5b8-74aa-4e43-a826-61d63acf60d0	11
-27	0b0b3ce5-d4c7-4900-b250-c4e2802db2fb	11
-28	00fc3a5e-4fe8-44ba-a5ea-f378e3c0ef25	12
-29	03762189-b8be-4f21-b8b3-0c6aeac15f5e	12
-30	6cb0cffd-ddc4-4445-9c1f-c7c2975ff1f3	13
-31	d9a3a6c4-8877-487a-adab-1fd7c977170d	14
-32	e4dcdbd8-47ac-4a4e-a9ce-d0ed51e1b811	14
-33	3b362d64-cd78-42fa-9649-236af421a5bd	15
-34	7d2be977-744c-43db-a1d5-c6878d40b9c3	15
-35	39fdca77-b7f0-4ea0-8138-c18a61085d17	15
-36	67c869af-5136-4aef-a9d1-5f8570be3874	16
-37	76da5aa6-a98c-466b-8f32-caefe4912b15	16
-38	c8eff8f2-b4e8-4776-8d01-4e5e8a5c7b9c	17
-39	380aa2ff-c13e-4e97-a792-bd0e96918c32	17
-40	40ca0c9a-a76a-424c-afa3-b761f22622ea	18
-41	fe477aa2-aace-486c-a8f6-6bffa086c249	18
-42	4f395125-786f-4334-8321-e854cd444b5b	18
-43	c6a7bda2-caa0-4d74-83f1-4a2c40ba3d75	19
-44	669d85de-70cc-4a0a-a338-bf49949a655b	19
-45	9a1fc6f9-abbc-46a8-a950-f25916b8f0d1	19
-46	3f24293f-b5a0-4058-9c94-eef55708dd10	20
-47	a6dca6b8-e4a6-40a2-8419-f4d0e118a2a5	20
-48	b1e9d7ad-01a7-4bce-afa4-a7b4800a87e8	20
-49	261473b1-0606-4090-a478-59a1cde41be5	21
-50	0011a320-82ed-46e5-8bb7-0d622321b6e8	21
-51	aedeea7c-d78f-4326-9d2e-468085526230	21
-52	2fe5595e-cc5a-4d62-ba85-351d4910b162	22
-53	876f3121-c87a-4142-85e5-6a74f8d5f928	23
-54	92c524b1-20ed-4e23-a463-09fce3227021	23
-55	6b09dd21-860c-403a-b9c0-bb1c1d310e28	24
-56	804bf73d-5db4-4f86-91f7-2d9692535cbe	25
-57	d02b0617-823f-490d-8815-8bf67f8f10bb	25
-58	e1f13a0a-3d8d-46cb-a2cb-81df4347eba3	25
-59	a521f3f6-b0e2-4191-a4ad-24a937e2fea2	26
-60	7b37011f-c023-4f66-9941-cdc4767572f6	26
-61	d4033997-8ca2-4908-87d1-d50c6a8d279f	26
-62	6c0ce824-c132-47db-a954-90cb8e2efe30	27
-63	8a7fd056-b39d-4409-93d6-d271f29f151d	27
-64	4f693ecd-4a17-4eb6-9548-ee2b5c7b5dbc	27
-65	1a28f582-5498-4510-958d-a83f4359e201	28
-66	6695b7f0-4607-4c25-9e85-9b1ac2c85348	28
-67	fee22d3a-64dd-4b75-8f9e-5bf76bd15ac2	28
-68	04c573b3-979c-4c69-9cf4-aa5509472ed4	29
-69	89ee4a6c-85de-4eaf-99a3-e7565555e8ef	29
-70	69a369ea-1a9b-494a-a2a3-15f49a210901	30
-71	9234642a-e438-423e-a19c-878078f3d4f0	30
-72	fcb0dc98-f36b-4eff-bb29-7fd904265e2c	30
-73	c57644b5-3aca-4404-868c-e56b1b0f5c0c	31
-74	0357ee1e-47a3-4586-8228-08a4713d08f8	32
-75	2c133601-db9f-485c-a5d0-e098cce4be77	32
-76	d1395b8d-a10b-4115-ac22-5b7f89b97a16	33
-77	dbb9c525-7ce3-4b27-9a24-ec00376f41de	33
-78	d7ac9c51-8044-477b-9a89-e51cc0f6622b	34
-79	14ca2d04-29eb-46ed-8365-164efa2493d6	34
-80	28546159-780e-4cc3-b62e-e3030d887e29	35
-81	09a5543b-8f9e-483a-8783-754acec09127	35
-82	40d8a7eb-8c99-420e-a5e4-414578d25f20	35
-83	782c66d2-431a-4ebf-a53f-5e2d4fead41f	36
-84	c7daffa8-8152-45da-b8d5-1b0795fc80ad	36
-85	211a3965-65f7-4c6e-b6d7-9e6c059aad7c	36
-86	746b99bd-ae08-4429-ac55-d98093b67a64	37
-87	4786d86b-0d46-4c29-b764-2479f63ba608	37
-88	55f2e4e4-d079-4ad4-bb5d-ead3e8dca512	37
-89	0d35f3a1-08d8-4444-89bd-a63eb9b5895f	38
-90	4c472f28-1877-41ea-993e-78611d292e51	38
-91	adde8c87-6f4a-4320-9eca-b58277d07850	38
-92	35a7fa00-c44a-48aa-8a00-15958c3f7b84	39
-93	e617cb93-c5a0-4baa-ba7e-5b6d6afaab60	39
-94	5a254f0a-31f7-453a-b410-e19f6c5e5cd5	39
-95	0c450b81-7797-4369-a252-b2bc79ba2366	40
-96	d730b501-0565-4c93-918a-0f768cba4070	40
-97	0082e35b-dbe3-429b-b342-31a9a86ceebf	40
-98	74ec179f-63c0-4108-b7de-5645e3f02c98	41
-99	9a250c5b-b737-4002-b94d-9f31c9219a48	41
-100	2798a14c-a838-44ba-9d6b-06e012f00f5c	41
-101	36e0caab-6363-41ee-a31c-15fa63e38aec	42
-102	45626e1d-9da2-46d9-a9f1-9a057976782d	42
-103	c1ea23a1-8ede-4be2-9311-cbafd111e427	42
-104	ecf9b10d-0cc1-4a98-8ebd-fa0e5b05c72e	45
-105	afe64d88-895e-4c70-bd28-c02da73c8e4d	45
-106	592e4166-65be-4bb4-971b-efd6ed1ffae8	46
-107	73d93388-3d95-4287-8b21-802f17d52bed	46
-108	e133ec05-4134-4092-ac01-85bcf375d47b	47
-109	2fd5ad77-3165-4a13-9f7c-d4101810beeb	47
-110	362b44b4-5fb9-412b-bbf8-8993bf67b81f	48
-111	27d5d4ed-be32-4149-aa55-45c014dbb749	48
-112	960853bd-a63e-4cbb-aefe-ceb3d53277da	49
-113	0bb6853e-7d82-4c9d-976c-aedd5e5e7296	49
-114	a789c517-bba5-4752-9054-7cb35f0abea1	49
-115	639f2503-4a6a-487f-852f-7c8bb5454ece	50
-116	00080629-1a08-41b8-b38f-ffd8dcd4701a	50
-117	582fdeb2-b4aa-4b85-a586-bf652c876dea	51
-118	9e60efb9-6d10-48b6-b824-bbe0f216d51f	52
-119	91f169d3-92a2-4be9-9adc-a199e3939513	53
-120	ba5d840b-210d-498b-861f-4fe4f5a8d333	54
-121	69a98aad-79ba-4950-8588-34907e121463	54
-122	676e9fee-5eaf-4e92-a61e-f71a4e7cd7c4	54
-123	e7890e4f-79b0-43b3-b5dd-c5b3a4eb9900	55
-124	5d6d8e32-4fb8-4069-9636-213847cc85ab	55
-125	78bcd58a-efbf-4fd2-b15b-e67c991673a3	55
-126	4914b8ea-35a5-4d10-83b4-433f5f271997	56
-127	836854dc-f719-4a84-bbb5-0efaccd1de11	56
-128	575ffaf4-b9f1-4161-b718-78c746941ae3	56
-129	209263ab-4809-4d3e-bf95-64bbd4c9a69a	57
-130	0f920bac-40e4-4b36-981f-32b0dbc7719b	57
-131	6ce49255-0de8-490d-95fd-267ea6558bd4	57
-132	22753980-dab3-4e21-b7b6-3fd27e19f4f9	57
-133	f3d0ec30-c341-4531-b1a7-3d742e01cd9a	58
-134	bef8f536-3c1c-4e80-88ca-859014fe77ca	58
-135	9e4cc0f8-f45a-424d-8657-ded775366980	58
-136	cf7e438e-3c30-49c3-b143-72415a2470ad	58
-137	a81ac93c-0fb5-4458-ba66-80fc2e77b706	59
-138	9fd87ea0-5d79-4228-a4a6-54d3a214e0ac	59
-139	7efdd856-dc29-4c26-bb66-b7d4ef5b1fd8	59
-140	b71ca8f4-1e0c-4342-995f-0ff67e33ee04	62
-141	8764ff76-ea42-4cc5-acb1-0acfc6cffcab	62
-142	8089dbf5-f924-4597-aedd-1444473c5591	63
-143	6a3633da-4864-40a6-a68c-925f77f932af	64
-144	938b893a-b08a-4b3a-82db-eb2974739d34	64
-145	efd1c525-f8a5-44fc-9313-cd7a6111bb43	65
-146	73f65280-9354-42fb-a906-57be4f7bed5b	65
-147	54cea70c-78bc-4b71-b1d3-551a7f1688e2	65
-148	99d9f445-2053-446b-9ed8-11cebf31a05f	65
-149	67757592-0da3-4365-8c9e-b48704f876d5	66
-150	f7cdabdf-7a33-4340-9e7a-ae86b182cac1	66
-151	c369a013-e548-4d15-931f-34bba85a6609	66
-152	d4f8e5d6-5299-4057-af72-d890b645accd	66
-153	77298df7-5b5a-4fe6-85ef-3feef93e8754	67
-154	a3a58845-7042-47b0-be6d-072cf0e579dc	67
-155	18e9a977-4898-4198-a056-e5c61c7804cf	67
-156	06e5d17a-9594-4bca-9f66-47919059a86d	68
-157	a418a5ed-b2af-41b3-8856-580bde73eb19	68
-158	9e468a77-fb80-48c0-a90a-0ca9334b6f87	68
-159	d78ca0a4-ac6e-4886-8193-b666f8ccfade	69
-160	77bf5f59-c28b-4371-b0e9-a6ed0ebc72c1	69
-161	97335830-8c5a-451a-a630-ddce56b741d4	69
-162	f7ce659e-93d4-4dfb-a9e2-3bc71880c52e	69
-163	2847ef84-6816-4970-993a-efebe20b0724	70
-164	757cd59f-93eb-404a-960c-bb5defb20bee	70
-165	f40bb6a9-e6d8-4958-9753-a7eb2fc1cfbb	71
-166	f3c034c1-0370-4f64-9ddf-f912b509ad93	72
-167	727daef6-6a6b-4150-85d0-193e77ec2ead	72
-168	ec393fa6-dc87-4600-8c15-49032791506b	72
-169	2d1e6265-b782-48d2-85b9-0114238387d9	73
-170	ae7d12fb-975d-4ecf-a10c-6682f30bda08	73
-171	c772f5bd-54fd-42d6-afac-a0c284494889	73
-172	8aa80e66-5a33-49fa-9d14-1dc17fde8134	73
-173	843300c0-b43a-41c2-bd82-c8a8d6926a2b	74
-174	5a47910e-43c3-4fe1-85a9-d4910ba67de0	74
-175	20c43ec5-f937-4321-be57-73d91ad9f777	74
-176	010a64b1-9610-4832-a27d-8bf05f76ec9f	74
-177	35a563d0-668d-457a-b712-9ece9471d209	75
-178	a783a2a8-c7b5-45a0-86a3-92d2245f0435	75
-179	3c0b37e8-1bd9-4cf8-9def-6014672ec9ad	75
-180	7774fcdb-1ab2-4d66-894b-7b11604963c8	75
-181	8535cc07-08f0-43c8-b37a-c14e544ce11d	76
-182	c299049e-37c5-4f49-9599-763934649319	76
-183	d39d286a-824e-4adc-b8d7-a20509706e19	76
-184	adda8e89-0857-4c63-832e-1a267e14556b	77
-185	23733f57-968c-4d0d-b0a6-5c107fd533d8	77
-186	d7a47ec6-ac14-493b-874b-8027505ec6f3	77
-187	a9e648ec-1270-49f2-8279-e5d21f4627d7	78
-188	2355dd2f-967c-4090-b73f-726312620d0c	78
-189	19c00344-df18-473a-a2ee-83808c1daca4	78
-190	fc81ef47-4d86-4dc0-b79f-c2afc687bfb2	79
-191	ca6090b0-e551-497d-9769-7fd595ec4129	79
-192	aad83dc0-5a56-4b90-921b-2e4315a82cb5	79
-193	7a224e09-4b93-41ba-b196-babb352d19f1	79
-194	32fa3011-63c2-4334-b7c8-2f1745a15417	80
-195	4a264111-d61b-48cc-aafe-7c6426e824b6	80
-196	4105dba4-dabb-4daf-b0ae-0c08ee6f2e6f	80
-197	1e97c736-0a0b-4378-ab01-3a026e47fccc	80
-198	027f3f9a-aa4a-4278-a4dc-8ff49aa6dcba	81
-199	c0bfcf2c-9b28-455e-af41-6c7a3f5bd133	81
-200	8c740a4a-6503-4b26-82fc-c48bd2fff6d3	81
-201	a203cafa-9509-408d-a0d8-bcf679a1b444	81
-203	30013101-80f9-4337-b79c-70f1d5a35716	83
-204	9cf7166c-3481-41fd-a180-f09c978e9c54	83
-205	d8fbc77c-5665-4dd2-a403-8c0dbcc9d2c9	83
-206	dd9b7b0b-fbc1-4b01-99ff-c7e95fa1f815	83
-207	0b51e751-27d8-4825-82a0-fd295a8a41f4	84
-208	88433451-318a-44f7-a5d3-cf415c7eedc3	84
-209	85601ee4-7c3b-40be-ad7b-5056b071861c	84
-210	ae012e25-0d9c-489e-bbc5-247ef9ed3d7a	85
-211	482f4ead-6468-4206-a25e-548a78557356	85
-212	7e286c76-3f46-4733-97c4-9935a3641992	85
-213	dce0af2e-8e4c-4d47-8a98-db740b217cf6	86
-214	be878d25-4fe5-420f-8c54-0a2f5161806a	86
-215	b77e0180-cd0f-456d-80d6-9511d846e6a7	86
-216	49d40eec-0b6c-4ec6-a334-6e8050956b01	86
-221	f787a128-90a5-4229-b4e2-69a8eb5d73af	88
-222	62efd512-16de-4420-80ed-7c73f03c8d9e	88
-223	3606d35c-99bd-4c62-bbdd-b3669c8105d6	88
-224	cbefab3b-00d0-4d89-acf6-710538b2430d	88
-225	be6947bb-c3a9-4546-873c-f60e69bf6aa1	89
-226	ace086ed-abcb-4a32-8a71-bbe958cb6da2	89
-227	d9af4a2b-edcd-4ffe-97e8-bb3e3694a513	89
-228	f72898f8-0cc9-4391-b831-d8ba1f689896	90
-229	7139af5e-d110-430e-bff0-2e4dd6b0423a	90
-230	60908ab9-db20-4fd9-bc4e-0a77dddf6136	90
-231	119bc966-55f9-4e2a-809b-12baf14a8f03	90
-232	a7a343b3-e7ba-41e2-9cc5-4e1dbc2fae9f	91
-233	8b44dad0-3efd-426e-bd09-248e16041b75	91
-234	996d8e59-b04e-4f38-8ac9-e97e9447023a	91
-235	60f10ed8-e1fb-4bcb-bf24-31614029e810	91
-240	f9212016-6f4d-4f75-a6d9-b05debb1d453	93
-241	9bee6231-dbd4-443f-9d22-d2df45898ff9	93
-242	f5b22f44-56c8-4eef-ab8b-cf833a5a0586	93
-243	5af211c7-6c09-402c-a4f2-ca12e992f26a	95
-244	7a749c29-bd55-483d-b811-be239ad55d36	95
-245	d61492c9-c430-487f-b22d-b984c5cd79a5	95
-246	3b89f609-7923-447f-937a-3e7ecdb06af2	95
-247	a73ce136-1678-42b2-9975-e4cee8c2c897	96
-248	f421fa2e-0c8c-41cc-ba80-f93254179aa5	96
-249	ffa12955-9c8c-4532-b9a9-f06e10946f12	96
-250	6d757db0-9089-42de-b196-0af303544f3b	97
-251	3ef1eea2-650c-4c68-bb8b-4e2962883e7c	97
-252	8a8725b1-0d0c-4483-a34f-101950ebaec1	97
-253	47faae9f-06fd-4249-befa-93ebce5cf7f2	97
-254	59a8c65a-1219-4ebb-9a87-0aedf7a90bef	99
-255	ae57d529-e855-4727-91b3-87b6783a64b4	99
-256	4a2780de-cd81-44eb-abe3-256344784978	99
-257	41597267-df66-4cf3-9f11-5717e5ad9122	100
-258	53ebe631-d525-4495-a05f-6ad1eca6d6a0	100
-259	8a8ea230-3401-4992-a4c2-6bd709bb01d1	100
-260	05300a6e-f55f-490a-a6ae-f2fe8e6ad37a	100
-261	c8125c04-428f-4f33-b349-c1c62a59941b	101
-262	0be09863-1d3c-4351-8ee5-9f7c03f42f62	101
-263	7899e706-c475-4755-ab9e-b444da2e6240	101
-264	74879016-28e8-4ce9-a554-036ce579994e	101
-265	f8604b3a-4529-476f-bfaa-472cb87812c4	102
-266	d6a74ea5-b845-4074-853f-c78e9266d123	102
-267	a7764d06-9113-445e-b068-a1a9dd4f1375	102
-268	beeb9b42-35a3-4e1e-a187-e3be00da91e5	102
-272	1cdea2a5-7712-408e-a484-09d707467060	104
-273	da448f10-417a-4a37-aed6-8aaef15e213b	104
-274	2c099baf-b365-4979-b6c4-2bde86462998	104
-275	b63a7bb0-5a02-4c55-9176-40ad2e03c7a5	104
-276	4f82f922-3758-491a-a7ea-58420d18b281	105
-277	979b96c4-9077-4f26-b3b8-34f415a7abf6	105
-278	4e3a50dd-d90f-4bdc-89d1-4da21497b8bd	105
-279	c2bfe1db-4b9a-4354-a20c-a2932c52e856	106
-280	bd73472a-5132-473d-9b43-f656ca6a4a4a	106
-281	9c299992-f56b-42a0-b789-99cde99e7eb5	106
-282	4af05928-4877-43cd-956d-24f2825e4e58	106
-283	300b3f80-bd31-4495-b171-bcfab48188d4	107
-284	1b56063f-8a4f-4f2d-9251-19ba2d3a56ef	107
-285	6c3b25f8-338d-450b-bb83-1cdda23f6a71	107
-289	d99423d4-2494-48ab-a776-e527e7fe4932	109
-290	b1c58881-8e92-46c0-ba28-dc593c8cb60a	109
-291	dd485b12-c5d2-4d4b-8b46-813129569b2e	109
-292	42e64875-2e9a-4041-a114-8ff31cf31bce	109
-293	064fc0e2-44fa-41c0-b4c0-a18d22c70b67	110
-294	4bfd8a93-118d-43eb-a0fb-6955ed050f70	111
-295	8fa8306d-33f6-4cf1-9db7-08f7176a6fa0	112
-296	0b11b4e4-3dc6-4930-a584-dc321d74394b	112
-297	08fcf2ad-e0ec-49c9-a203-0291b388fc6a	112
-298	862fce82-1456-480e-8608-90cf283879fd	112
-301	fba70283-ba04-4112-817e-5bf5db61290d	114
-302	b128c8f0-7dc2-4e46-9954-3284f7ea91ea	114
-303	ceafe7f0-c5f4-4552-bd08-af2b63c4b31a	114
-304	3d37ffa0-8c9f-4ddc-8b5d-0d61a83dfcda	114
-305	577ce15b-f613-43da-8f58-79199a658333	115
-306	7d2b7a5b-2307-4998-8108-e9d2fc5b0a6e	115
-307	e184afdf-081a-407b-8a9b-c17ad07844f7	115
-308	9043a404-f64c-4310-806b-b36747f5c3c0	116
-202	1855affa-3148-4fc3-beed-c3887a01c204	82
-217	2a1dd9fd-3c57-4e08-9fe3-0197e59e8944	87
-218	a62b62c1-f0f8-4ffe-9e7d-ff6e3aef0c99	87
-219	69d5ccc4-e3e5-4fb6-adde-6c9ceacc65d7	87
-220	60e3ad02-d6d9-455c-9c24-aa8e1195ce7d	87
-236	9c0ba7a5-9701-42d8-863c-7bec7fea12f1	92
-237	0a388c63-389a-4a01-ad1b-8319a19559da	92
-238	5d01b75b-27c0-4412-bdd5-e7c568dd25db	92
-239	73f9da92-cd82-432b-8f97-60c763c8d103	92
-269	ad249bb2-2e06-4bfe-94a7-ab3e266f58f0	103
-270	bf3bfe42-4798-4cc9-b024-3612b6bc6b09	103
-271	a8c386e6-49f2-4e22-92bf-87a75048a56e	103
-286	08777911-268e-43bc-8716-6cf766d72ad4	108
-287	37afc60d-fc78-4a69-90c0-8e11daf1c48a	108
-288	18ade52b-614b-4bcf-a5c0-59045ef22fd1	108
-299	78e8fc1a-7b01-472b-a34a-7f9c56ef3f36	113
-300	775364e4-fa1a-4fe8-ac1d-4e19601055de	113
-316	52dcc317-f779-4f49-af50-8282afa98467	118
-317	db9ab9d4-2ed8-438d-8fb8-56b0568f24a6	118
-318	7dfc50fb-41f6-464b-805c-086e1c2bdb7f	118
-319	c4612138-9aa4-4709-9ecb-1205dca1d766	118
-335	8e482f1c-2367-4e1e-b71c-c79e6cab2ca6	123
-336	ceb09149-8a55-4dc2-ad14-773392c22637	123
-337	14f64334-91f5-4f3e-8992-6f1733ef1949	123
-338	2315ea09-08a8-489c-9c77-c7f67bbdcbcf	123
-355	0ea044b1-4937-4787-a97e-34b4f5eb65fd	128
-356	56b10b9f-5d56-479c-b802-044186f5dc75	128
-309	0bbbd2ed-d9db-4e82-92c2-972dd4602398	116
-310	47b91d69-8c71-4ea8-ada3-d8c205851310	116
-311	afe4e58c-0b75-47de-8907-e05a79570b69	116
-312	1aeb5eb6-5771-49e2-afcc-94847a11993a	117
-313	f68df983-28c9-4bd7-8324-daf02523c7b3	117
-314	c5cc3293-d979-4636-8203-048bce308a7c	117
-315	9850a269-64a1-402f-9a0f-60ce1cbf341a	117
-320	a6080b96-a9f7-4799-b58b-bacdf4a75378	119
-321	0cd13616-2d7f-4fc0-bd36-60155bf0700e	119
-322	9dbeaaea-dd8f-46fa-a441-0c80f5d4b33b	119
-323	80308d56-3adf-4e40-9074-340ee97f635c	119
-324	771c51e0-d93f-466c-a823-3ee0fafaa7a4	120
-325	d00816c4-27fd-48b4-ad33-70bc3cc4ba3d	120
-326	fb7b1be2-2c37-4fa4-912f-64585d9b91ed	120
-327	9fb26331-8096-4e24-95af-a5c8af17f67b	120
-328	135ba825-7290-4290-863f-1a75b1b1943e	121
-329	69fac6e2-022d-442c-8390-2db924d25177	121
-330	ad7f29ef-8d0d-445d-937f-b5df117878a0	121
-331	364846cf-fe3f-4574-9418-241e8596ec0c	122
-332	d2332ad0-dd7c-4460-8980-4922583b73d6	122
-333	7ef2fe0c-475c-4075-bb39-d5b272a1e718	122
-334	905a6836-a54e-4035-a85b-4c68ca4118ca	122
-339	7b8171a5-2c69-4afc-831c-c57802333afd	124
-340	80683333-fab6-4a6e-be5f-0073bc17293e	124
-341	62dc4712-fbc1-4a84-a403-c3fbb15bf4fc	124
-342	6c7ff5e4-10ed-4e00-bb47-ca9ffda9d772	124
-343	39d2387d-6405-4389-b155-006809350e75	125
-344	eccd1ae4-29f4-41d9-8fa0-1a4ead8b68fc	125
-345	784d3309-0a77-4367-b83a-a5aa55e3273f	125
-346	3c5bb13b-9ed2-4c53-b8fb-80b4b239edbc	125
-347	1b4f1b21-df23-455d-85c0-8a0f0d816821	126
-348	c1e076fa-195c-446d-9ee7-03f9b09d844a	126
-349	62a00adf-29aa-45c4-83ac-362d3558b082	126
-350	9647d75f-29d7-43fd-a1e6-06db82493ba1	126
-351	6ab3767d-31bb-48df-b4dd-2d57d868f503	127
-352	625800f5-96ea-45ec-be65-ee48982f2a81	127
-353	fe0902da-970e-4b8f-a7e1-c42401aeeb06	127
-354	ded1e975-6fb9-44e0-bac1-1ab44c1b503c	127
-357	ab31bcd6-bb2b-4a38-ac29-1e661ef92763	129
-358	2df61b46-e635-4935-b994-e516a875ea39	129
-359	8e75f435-f9ce-4bc2-a08b-19d3451af86d	129
-360	064d1d96-c5b8-429f-85aa-5c134a417556	130
-361	4c2edd5e-521a-4821-b6d1-0ae92cf12d78	130
-362	7f35d28c-0417-4d30-b2ad-0c984f328b28	130
-363	e529d57e-0eca-4b5e-adee-9b2c876e28db	131
-364	3ce1fb5c-6a90-4e8d-be08-58d678c136f9	131
-365	cda554b8-4725-4255-b900-07fb56c65964	131
-366	2fb21d0a-1c2e-4e73-a923-15def667d10b	132
-367	eaa3272f-1f1d-4e44-bd89-22053e36021b	132
-368	ff9f4f03-82ff-4d3f-bb72-55f81ce3e0cb	132
-369	ba3f35cc-615c-4170-9b72-1ea1c7c06e2a	133
-370	3c12a9c2-16e3-43d5-ac47-37ab62a19912	133
-371	b0f312d6-9b2e-4daf-bbe0-b54f73a5f988	133
-372	f27eeb77-983d-4ac5-a2f3-c7b35fb89983	133
-373	dad2eb79-7f8a-45e7-a315-04ced7cc0559	134
-374	72a93695-848e-4deb-bc4d-2678b2ecb1f7	134
-375	68990aa8-0fcf-4c8b-8afd-ffd89a41d3d0	134
-376	5ca00b47-f9be-491d-80ce-88f82c810635	135
-377	01d6cad7-c7de-4b2a-9832-671a849ca58e	135
-378	bd3bd9ba-0677-4159-8125-4d3939ea5b1c	135
-379	578c0c33-17f3-45fa-a236-618bf1e993f1	136
-380	7d4786c0-e0e7-42ef-b69e-c134facd38e5	136
-381	5e08cccd-6b7c-44dc-8bca-b752d15bb489	136
-382	ca96c373-4bed-4c29-bd69-3b196e0ad5de	137
-383	51352ee4-3efb-4332-a2a2-49d65c2db86d	137
-384	80414fe5-3b1c-4fc0-8ce0-c9ffe47a6219	137
-385	fe40d33a-e9ad-43d7-b2c8-f148c70cfe2b	138
-386	8ff6e113-0598-4c71-a887-98f295c4e4bc	138
-387	df18079e-5b6a-408c-bae9-4bf2c09c32e2	138
-388	28fb9efb-8d26-4ce6-8d11-969e67204ad4	139
-389	db59a663-7389-453f-9f38-254a6f539dd4	139
-390	a1942322-769a-47e7-8cfd-9df4ac776512	139
-391	6730d2c3-1fa6-49a8-a59f-fdb086695f9f	139
-392	a944a606-cdaf-4b65-bc38-82ab4319819f	140
-393	0b787bfd-1182-43ec-be78-e82dd1401189	140
-394	13fbdeff-c616-449c-9bce-dd6dc7dadf0b	140
-395	d2cb4be4-f3cb-41ed-bd09-2b6072641c37	140
-396	e565f153-e932-4c0f-a266-691a8170490d	141
-397	0775669a-9c43-4499-8718-dca6d0f77b3f	141
-398	3a2d21f8-518f-4bd6-92ca-fd7ce0500baa	141
-399	5626c6f0-9edb-4c42-8e2f-8f8bf876e160	141
-400	9edb8633-c379-4f86-a382-5db50a9cb0f6	142
-401	24877839-4ff0-4796-8d19-823700cf7bdc	142
-402	6fdb5b04-2dbb-4667-9551-2a6a8f4a07ee	142
-403	62008163-59aa-4199-aa5d-906b9d53c6bb	142
-404	6739ffed-5574-4b46-92fc-059f1d4924b8	143
-405	a22f2054-0d5d-4fcc-9cc3-d74c614fbab5	143
-406	c6f194ec-afb6-498f-97bc-1fc5eaf46e8f	143
-407	167cbb14-b5c5-4098-8831-0123cf48d582	144
-408	9d36e872-7b1b-4e90-9c33-b110e13859fb	144
-409	a60ef49c-01c1-4abf-9621-b430e767b044	144
-410	c946fa42-1101-4bf8-b4ae-dc5a51c3fd56	144
-411	16d247f7-e228-4d66-add2-4f0bd6cace6d	145
-412	45e154ac-395b-4d44-8fd1-546bd3e74df4	145
-413	2c6db164-7d02-42bc-9cea-f42d4d1b5bca	145
-414	f3ca9e7a-4e1f-441b-bbb7-94c274c5fe3a	146
-415	485c9664-f264-47a0-85f9-3ecf2f72b1b5	146
-416	8790fe19-c57b-46dc-8f60-0286bbe44d82	146
-417	be5f79d7-e4e7-4c68-8b23-0342cf6c68f9	146
-418	89ed5c6a-ad73-4d3a-9671-9268a02ec6b3	147
-419	b5dd50e4-1171-4a6a-9047-47da22b705d8	147
-420	cedeb9fd-c270-4a4b-b48b-fcfbe4ac50e0	147
-421	a786034b-13fd-43c1-a368-022aa49f2ea2	147
-425	c26db78b-77a9-4c78-98a4-a424217b9d0b	149
-426	2cfb8573-9bcf-47f2-9d60-18b6dc90c1e1	149
-427	9ddff810-1c67-4b76-b029-e177c5fbe592	149
-428	5782baaa-eaea-451b-829a-bb5112f4e459	150
-429	1f2a3438-e613-4f0a-a937-4fff707a8bce	150
-430	0033c8ce-3335-4aa6-9f4d-86c51dc4da5e	150
-431	c4854ea6-823f-46cc-95e9-52b5ef74a715	151
-432	23de127a-62cb-4ef7-8b7b-bfe32f327dd5	151
-433	73c36409-e3de-4754-97d3-dc79d33c2e4a	151
-434	dfa6c5f4-fa59-4e55-8a51-ef87b61fe908	151
-435	843e0ab5-4bd7-40e1-8dc3-5acb65f106ed	152
-436	e2b7f219-5b33-47e4-81dc-678e830c706b	152
-437	c2f23b59-fead-46d6-92c7-d00643b57114	152
-438	a50323b4-975c-4c0f-bad3-b104af66ce19	152
-442	101987ef-adb2-4dab-8871-58218e4b1376	154
-443	3cf6d8cb-01af-43a2-8c85-0533ab8148dd	154
-444	cb40d92c-9d2a-4433-874b-c550e801fb26	154
-445	7ddb6720-e72e-4714-9b45-a19dedc36583	154
-446	cff2b4e9-2930-4ec5-bf6f-67cafead451b	155
-447	2f171dc6-519f-4df3-87f7-2f71c2b5d449	155
-448	f4788265-b733-4258-9149-2d8fa14dff79	155
-449	2e37c341-9a8a-4259-89e8-c28ed860f5c4	155
-450	b081a276-17db-4f21-a158-e17a918f3f99	156
-451	8edf79a7-314e-4061-9ea1-a64b013d7254	156
-452	f6932c8e-da6d-4f8e-947e-1a30d6438aa8	156
-453	310062af-2e28-4193-ac98-f88b2101b7c3	157
-454	bcc76cdc-8d99-4fee-b4ba-e36ec0fa0985	157
-455	ef2b2441-3739-47bf-894b-3a6f6ce598cf	157
-456	47da79aa-80cf-4bb3-9b47-526f72179daa	157
-460	33d43f82-f1f0-4ea2-a1da-cec32c8ec28c	159
-461	f0db7b00-3051-4560-890d-aaf47b31eb38	159
-462	4da5e276-71f7-4e56-a13e-05ed11375718	159
-463	79b790a0-29f2-421c-9110-b21879e35008	160
-464	6b293658-71e0-42fa-a32a-a1e79d6a89d7	160
-465	ca0ee6d6-fa49-4572-a893-8b80d1a84fe0	160
-466	d02c71e0-ba42-4c57-8258-af83bef809de	160
-467	6e8ee9b1-6317-4440-9602-354b4fd2c9ce	161
-468	1f55b381-8cbf-4d0c-b580-ec4508cc9c30	161
-469	ee1625bd-9b2c-480e-a44a-69f0a93d0993	161
-470	e14e59cf-c3fc-4c6d-a264-b17b0fbfad00	161
-471	4c33a419-8730-48a8-8db9-9997edbff86c	162
-472	aaf65748-91d4-4e53-8931-90a69ce26df3	162
-473	d25bed5b-ef24-42e1-94cb-584025859259	162
-474	cd16b908-efd7-419c-a3f0-2e75e3cd0e34	162
-475	2799c1f0-2922-4dc8-9984-30a5e7ddd758	164
-476	b007ed55-81da-4603-8ed2-9bfe7aae5845	164
-477	21a110aa-7583-4644-9d66-998a007bd976	164
-478	e2ecb621-5820-48c1-b180-2e8b90c30f9f	164
-479	6877af0a-d55a-4da8-a2c6-0c00f5300437	165
-480	bf8fac3e-e82d-4575-a34e-02cd2ca233dd	165
-481	6da446c1-b858-4b36-8070-f635357b179d	165
-482	beaa0e61-b635-46db-8d37-d2873c4fb476	165
-483	0554ed51-be4a-419a-a992-e187c6b82566	166
-484	f4130ef5-91c3-45a9-ae78-c4b287658bdb	166
-485	b72f25e5-406f-46b9-bb25-a1c25910698b	166
-486	9368b12d-42f3-425e-a05c-442bd8b584e9	166
-487	8041d8d2-7999-45eb-a314-bb10eff10cbe	167
-488	b5e25369-dbc7-44b6-93f1-96371615736e	167
-489	d7a0960a-b3c5-4364-9fdd-4fbc5d166ca0	167
-490	c288f761-a22a-4c97-9047-8a4cbc6af8cc	167
-491	b8fcdbf8-5d21-43d3-b37e-b3523225ed86	168
-492	e3203dfd-c8f6-41c7-a905-0c8ce0c84339	168
-493	9813245e-7bd7-4fce-b637-8a04e5815764	168
-494	72d9302f-57b8-43e5-ad91-f32a40abd0d8	168
-495	259e8245-cbf5-45d6-a5fd-2dac5a8fe749	169
-496	1dc7d457-135c-4502-b749-92ce7bc442fa	169
-497	26fe1a21-4b56-4115-9808-85dae738b66b	169
-500	98916266-0330-4a62-a7db-0bc357bb0bff	171
-501	e9cdc517-52a5-43e8-a54e-a2775e246a92	171
-502	0ca9c4f3-749f-4fc1-b529-6eb0b6547e37	171
-503	462498ae-b0a9-47e8-8129-f0de0aee8fb1	172
-504	aef5b7b4-c2a9-4ab2-87b6-a7427bbe4429	172
-505	f3a75351-6440-40f0-af29-d2540d53673a	172
-506	3e6bfb02-82f2-41de-9586-19857c926fac	173
-507	54972852-9e52-479b-83cf-8b89c6f2d735	173
-508	557b60d7-c33f-484a-99c5-41b611ae2fa8	173
-509	a6ec0daa-3f41-4dfb-964a-3e9636cfc730	174
-510	b2a0b6b2-04bf-4c0d-89ba-b8afc89d9a41	174
-511	4fdcb25f-ffbc-4777-8bf9-3625b5724631	174
-515	6f7d23d5-70cf-451f-833e-0b88f12e4926	176
-516	2f57ec41-0fe1-4f03-b48b-a66241b11c2e	176
-517	d7129a5d-d4c0-47d2-b104-2e7b74c87c22	176
-518	ae7fcb77-0aba-4876-b6b1-a5d4a961d602	177
-519	bb47ad50-b4f0-48c7-ab72-8b58606fc5d7	177
-520	8971fe45-8bfd-48e2-b4e6-7ddb54ed1405	177
-521	ed496fea-adca-41c9-9ccb-2179fd3e91e5	177
-522	36ffd5e4-1f18-46bd-86a1-329ce99cf5f1	178
-523	8b2819d1-31fe-4a43-b4ec-2753b3612498	178
-524	e56aad06-2ed6-4ae6-8d4f-1ab81f6bae37	178
-525	15cee9bb-6163-4636-a500-376c355573e6	178
-526	eab66994-78eb-467f-b83f-566f8f927420	179
-422	321605e3-b038-44c6-a3fb-3a757504cbe5	148
-423	f54c60b9-fd76-4a9e-9c8a-67cb4f3995f4	148
-424	9cf035a8-c6b4-43c3-a816-d25802885f9d	148
-439	63aacaee-78a7-45d1-9578-71144c375fa9	153
-440	4fd235f5-c5aa-462f-9580-61a4038b9675	153
-441	2e3d465f-cbd4-411f-94f7-1a8d7cd17e45	153
-457	7fdb295e-c8de-487d-885f-512ccec9056f	158
-458	c98c0b48-ba7a-483b-b405-85ab855e3f12	158
-459	5d4bc8c0-541c-47db-978c-88f49aa941f9	158
-498	21078963-ef86-414e-a4d0-ddbe14a29183	170
-499	9626bdbb-9d02-47a4-9edb-4f28c90fff44	170
-512	5ad45772-2aae-4f08-b43d-0ed28ec6f30f	175
-513	8ff162e7-108f-4a65-9c1a-ed82fa207a11	175
-514	e9715650-10cd-4dfb-97b4-017c723c0efd	175
-530	bf9b1bcd-ac5f-465c-bc8a-a30cd6cbe6e6	180
-531	6a2a680d-e7ce-4c0f-b475-777fff3362c1	180
-532	5c142d94-07f6-4eba-9465-5bb22482b473	180
-548	dce5edce-7b3e-4eb6-899b-7c51062b5ed3	185
-549	0286cbc1-68a3-4f2a-9f0b-9db079f16488	185
-550	fd9a2db2-2e81-4f6d-93b9-a372794fbcd5	185
-551	c5cb7810-0b95-44bb-b13e-68053a15081e	185
-566	20f7b971-4b66-425b-bf4a-9959b8c0134c	190
-567	0f2179ac-3275-4799-9103-bbc4cef45b3d	190
-568	402d645c-f510-4319-b581-8b8c07428ae0	190
-569	c3ac1bd1-a10a-4c23-8b5e-692237c96fbd	190
-585	f3962371-a122-409e-8f9a-6d0e05a2fdd4	195
-586	959dd1e7-2a35-494d-b620-67fbae140362	195
-587	d5b03203-99c3-4560-94fd-3dc4aa942d00	195
-588	4fa8fefc-a230-4fd8-bebf-6dea798e2d5c	195
-604	b9b9fd39-0c34-4524-9b94-75663deaf8e3	200
-605	68194fe3-460b-40d0-8aad-0abce6d25052	200
-606	780a4e8e-d3be-4a0d-b0b2-933f5b4b53f1	200
-527	34df74d1-9d78-49ba-91a4-e7e62178ce31	179
-528	d6d79556-1651-45a4-9f04-0abf14159fe6	179
-529	59f622b5-0fb0-46aa-b2c6-ef09e5d864c1	179
-533	67e495d4-9837-4a29-90ff-4013a69d338a	181
-534	2d3dca88-21e6-4184-9e32-0586c707a843	181
-535	846ed515-0361-4a2f-beb4-a041de836844	181
-536	0764c67e-de51-4f5f-8ad0-9ab6ba99ced2	181
-537	97842912-91dd-4ff0-886b-eea3684b9191	182
-538	d630a5a0-4eff-411d-8ded-1d89da2bfa1e	182
-539	ae384f88-1331-4388-b9dc-e8f16b9b9e35	182
-540	d032016c-e8cd-45e6-9e89-915730f8a003	182
-541	56fc1bca-b6f8-46fa-ba4a-23bd321904b0	183
-542	ba7954c6-5edf-48a4-becb-4f2d4fb893e9	183
-543	605b82ed-9ee3-4b75-b7dd-896193d3b59f	183
-544	0d11b960-c497-477e-b922-a3aa951fa5ea	183
-545	0f9f270c-b124-4d0d-8436-f17454e207b0	184
-546	cc2d5724-891c-4fa0-a8e7-b6a07850b163	184
-547	dd625d07-3a20-462c-a08e-dd561167d54f	184
-552	203c3e47-0ef1-4fe8-92cf-ba29a0eff15a	186
-553	ac327199-0902-4fbc-b6f7-2e35270d7975	186
-554	62118582-d905-4693-a31a-cf2fe1544eb6	186
-555	7740feac-09e7-43ad-8987-fbcb54564ed0	186
-556	4bacac1a-2514-4061-8a06-95424d03eabd	187
-557	bac7f05c-dc79-4749-b16b-763a8b9e67e7	187
-558	09a18efc-9cd6-4676-8947-708a4e065556	188
-559	61824945-7a20-40e8-ae52-5aad13e9f41a	188
-560	8fe26782-c543-450f-ada3-56aaa502feed	188
-561	e0222ad0-5e31-467c-b6f2-ee8ad241c5b4	188
-562	c33064c1-5407-4afe-8e51-d93fcf8eda30	189
-563	8335e96d-5fda-4607-9f5b-612506462518	189
-564	109c0c24-b804-49b6-a9d7-682a72e46b74	189
-565	b4c0f3e4-fc3e-4f49-873f-a7728028e696	189
-570	a133f246-3e4e-48ce-84cd-d45545501c93	191
-571	25d2e1e1-5885-4ee0-8970-f9220393610e	191
-572	14a7ffac-b9dd-45c7-9524-a8fca3a63ccf	191
-573	b94df898-6ceb-4845-a44d-27a4a7a0655c	191
-574	0fbec948-8eba-4592-a159-959ade1445b9	192
-575	e9b6c238-a616-4653-b9db-9f388e94db33	192
-576	58aae9df-2a95-4ccc-88c6-d4f036e48b37	192
-577	a027cef5-e564-4175-9e48-d72794e4120e	192
-578	eb54b0d6-27dc-4264-bbcd-7c13c4b23a18	193
-579	7b8dde26-3320-48e4-966f-7a5170feaa24	193
-580	27fbf73d-4169-4405-b12a-b5517c293667	193
-581	78e0de85-1c7d-4fd0-a33a-27c9d57bae71	193
-582	9f82ad27-1b6a-4426-b3db-627c0845ad70	194
-583	c317bc2a-33ce-4688-bb6f-65016e80c799	194
-584	d71b47ca-69be-49e4-8484-5569964830be	194
-589	85c1dfd2-8046-41f8-9e39-d15d1464812d	196
-590	b27d6116-d4d3-4996-9cb6-57d2c0def346	196
-591	b481e1f7-a4e5-4d5c-9968-71bc7f254fe7	196
-592	9c34e012-46ef-43da-8d80-b97544dea4d9	196
-593	f6423761-dace-4f12-9a13-0537f15fd74a	197
-594	88ca2b57-2131-4775-8f8f-cac764444ca8	197
-595	61b2e321-649e-477f-9146-b30ee35e9cef	197
-596	6baed92b-8aa4-4898-90cd-049d66669d29	197
-597	08e59740-6ad5-46ff-bf50-b68f4318016c	198
-598	ab3a5292-b773-49aa-a222-0d89938f45b3	198
-599	8a488e1c-3956-4e0e-998e-f7e4c3920723	198
-600	0f301761-c0aa-46a6-beed-7b8200c291a8	199
-601	534e5f7c-b678-4c15-8fed-f617b99a420b	199
-602	8d2267d7-e7e3-44f9-9c97-13bb179d07b1	199
-603	d76576bf-7138-4095-b89e-f585492c2b90	199
-607	68969d07-47df-4a47-8e2d-9b59003c561a	201
-608	cc0cb8dd-7e3c-4a0e-a271-387baae26ed1	201
-609	3d8644d4-6568-43eb-9248-9ef3278624a8	201
-610	3db626ea-cfac-429d-abae-e191be1a4414	201
-611	6a9bd53e-407b-471c-b743-18c7f12f7c24	202
-612	e3395152-76f0-4899-aa33-297cb29486eb	202
-613	c967db06-a2e4-402f-b8b7-6a678861749c	202
-614	d94c849b-aaf1-46c2-af33-6c085a50adce	202
-615	7de03ae8-5223-4274-8b2b-8886e8e35cd7	203
-616	917f0227-1019-4521-8d6f-51071bc7248c	203
-617	ec9fc775-0bf8-4edb-a316-e5fe8d6198b9	203
-618	49aa6c8a-1a00-4442-8942-f577939ba3d1	205
-619	f611b7d9-2f76-4d63-8a2e-ca8504154c97	205
-620	4503788c-f842-4f92-b576-1d4f5514fdb8	206
-621	feaea7d2-7ebe-4952-bee9-caa2483e588f	208
+1	f2d60563-87c2-4f1f-b91a-3f881edafd2d	1
+2	6535e7a6-d7e5-494e-9b2c-0dabc38c9724	1
+3	4208c872-9a70-4529-acbe-11fcbce348f3	1
+4	3958c838-7312-4251-8bff-2179e918c57e	2
+5	32ff9151-7ba9-46dd-996e-28d9fa15ff6b	2
+6	0c7efc75-f29f-461c-bbfc-3f96fc83cf2b	3
+7	fecb8b51-5b5d-4438-aee5-5689856414b8	3
+8	8a0fed68-4781-4984-80f5-3efc878704ce	4
+9	8aae0e5b-4563-4eee-9faf-904dfaa2ac0e	4
+10	60f94224-1c43-4364-aefe-94c034082b31	4
+11	e5dae505-7ea4-4788-be64-404c74cdf6d8	5
+12	39d0b0ab-e774-4cb4-a66c-7484163f9f02	5
+13	e91d6ae5-e46b-45af-b2c9-34842fbc4cfa	5
+14	88bdc188-5250-49a1-9ff3-84183df4e4c2	6
+15	6c9bcb96-32b8-4cf5-9d27-fb55747848d5	7
+16	5c3ca629-2d89-48c8-a2e2-671564cb1ac9	7
+17	708916e0-cac9-45ba-a3eb-98bb73e89334	7
+18	70c67f7c-4076-4ec2-9bbb-b8c02c2d0165	8
+19	9bbb4c72-63a7-41de-bf9a-786e2a01a4a8	8
+20	40f671d1-8ae2-42f8-9bf5-ffecf1027ac4	9
+21	7605f928-c022-444d-a31e-1d469fa0a31f	9
+22	43d5327e-d7a8-4393-ba1b-66914410fef5	9
+23	caf2af5a-beea-4bbf-a852-7b47610d915f	10
+24	524ee354-5555-4d1a-845f-5e18d5aebf5e	10
+25	53eb576f-b1db-4b15-b7be-69f889a6ab0f	11
+26	43406f87-3edb-4701-aa7c-197c8ab0ce59	11
+27	d4a60942-2dcf-41bc-8951-dd29c28544a6	11
+28	aae4720a-b9fc-44a5-867f-e8cebca2f42b	12
+29	1bd471bd-b870-44e8-9282-40e458800ee6	12
+30	ec274524-73bd-4d1b-b584-eed63a7f64db	13
+31	aa502cda-e525-4760-a6c6-466cba4d3245	14
+32	5270f14b-7c9a-4a84-b5b5-fcf35d18efb7	14
+33	fe33cfbe-7d4e-40a2-b84f-cbf7bde79f16	15
+34	221f5e2a-a01e-493d-b6d9-18ca89e21a31	15
+35	142d1786-51a0-48ed-8445-9608da4c8e09	15
+36	cb8fac5c-5f76-461a-873c-d791f9601bc9	16
+37	d4fc9376-0f03-4bf1-a039-6a1c7d1aaa54	16
+38	43e046b6-1b16-4ba3-b4e6-30cd60664544	17
+39	0e761921-c8be-428b-83c7-35c071e2d2cb	17
+40	44f0fa4f-03f9-4f1d-a52e-c201c703d508	18
+41	16c37001-c240-49e3-b12d-581162999bd3	18
+42	8cc4bd00-1b1b-4fe4-b0f2-20feee396cac	18
+43	9a78621d-b350-4eaf-9fb6-bf6fa3bd19f0	19
+44	70d2f038-c58e-492d-83b0-be29ec70e807	19
+45	8d36437d-31f1-43ca-8b7d-5bd9c89984f7	19
+46	023216a0-8eeb-4a19-a9de-2c1d32380449	20
+47	63e75970-a94d-4ada-bbaa-d181666c152b	20
+48	29b332e0-bc3a-4ff1-99b2-3f88fda459c0	20
+49	c0e51809-d2a4-4695-b17d-c74bef8119e0	21
+50	d8dd95ac-62ce-4ea1-9b2d-d7a49a937362	21
+51	cdf5fc3e-735a-40e4-b2ca-2351934a31a3	21
+52	a49e246d-4fb4-4797-873e-43d3c87e51db	22
+53	ea7342d6-44e6-44e1-bdf9-3de441e5224c	23
+54	45b629a5-974e-4280-9036-4ebe6bfe8703	23
+55	da5ab706-5d66-4b0a-9c5a-232efa9b8a56	24
+56	3ac79c2a-819a-453b-9cc7-a980a0d22cfa	25
+57	11216dbc-a04d-4b78-afd8-bb9d70b48080	25
+58	fb874078-0a01-48cf-ab74-87d3dcf7d6f5	25
+59	7685093c-f51b-4c6c-83fd-e561a29c15b9	26
+60	65bbadd2-9282-40fa-9c6e-8bb6cb2abbdd	26
+61	c719c915-0d9e-4cfa-9326-fa4118bf76b8	26
+62	de4cbfc9-c47d-425b-95ff-7851db163665	27
+63	cfa4c2fb-83d9-4e20-acb2-2f0435aa39f1	27
+64	f81ae7a0-3ce8-4e55-ab4d-c1e7a318575b	27
+65	e3859c6d-4070-4806-99dc-18dc5e66d3be	28
+66	10e69b82-e0a5-41a5-8248-c70bc4e5f35d	28
+67	d5768fc2-8c26-4e4e-ad19-3960166de06a	28
+68	34772268-ffe2-414d-9f79-8e8c1e3fd6d8	29
+69	10332627-9546-462f-a27c-cc9278d0f0a2	29
+70	66995028-b87c-42ed-a647-e98ccb7bb521	30
+71	5afa53da-812c-4b67-b27a-db561ff0e54a	30
+72	c501cc77-3263-4ca7-8532-b162fa02f415	30
+73	9e2cd535-0cf4-4aa3-9192-d5390f800584	31
+74	d060cbeb-a8c9-435b-bf18-81d960e19d7e	32
+75	956b5ca9-d5ca-43ae-bab8-ff626536b56b	32
+76	5e00214e-e2c7-4c2d-b2c3-02a3c26c84da	33
+77	d17b7593-1ba0-4e59-958c-7fb4817234a3	33
+78	373b0de8-86fc-45a0-8e0b-d3463ee404ae	34
+79	b7d7f997-d2d7-4ebf-97b6-a1f56493ee18	34
+80	fc4c648e-3f3f-4039-b4fc-6ff22b835476	35
+81	cd1282b0-ed54-4ec8-8787-a0e55f1b4631	35
+82	9378db0e-84b3-421d-804b-89e685402ddb	35
+83	473bda76-bef7-407d-99c2-28fea1fd722d	36
+84	1c286cdc-3495-4c3c-932b-1dcd4e2b3e65	36
+85	ec94d3d1-1a2b-4502-b5e0-8be23324bb4b	36
+86	d664c625-3381-401c-a824-941518b162db	37
+87	4f37b10b-5a31-4d7a-a415-dcc216927830	37
+88	65d1bbaa-75d8-4eec-91a5-0c9a6e199f9c	37
+89	e4022aa0-afab-479e-b1bc-d94d80fffb49	38
+90	e4c054e4-922c-4afd-b017-71d1e99ffe91	38
+91	cac1b6a7-f068-410a-b102-b120ee600c66	38
+92	c5e02f58-5d7b-4006-8616-55680e63f6d4	39
+93	75395958-6101-4846-b012-cffed99cace5	39
+94	93b1c22a-5fec-460b-867c-2d2136e2c026	39
+95	5ac88f73-b98e-4277-925d-2181ffdffb7c	40
+96	0043ddab-7320-464c-ae8c-c8ea3a5089d1	40
+97	8031a5db-dc1c-4a0a-8edb-270dc58bbf88	40
+98	707dce8f-b530-417f-ac3a-2980c8d2d76a	41
+99	30ab1eeb-14b1-4859-bfbf-25f0266bc9ea	41
+100	b6f5b363-8454-4635-94cf-a09cae2f27f6	41
+101	1dc1b2c5-2d27-415c-9c9f-a859f1547333	42
+102	981257b9-c408-4cc0-9697-8e5c45571f1d	42
+103	1cdcc6a3-9906-4375-9ed1-4a5f4425c648	42
+106	54dbce7b-1417-442b-9462-c3a2ecb604b8	46
+107	e8160cd4-c0b4-4af8-b0a4-458d11ae5916	46
+108	0644816a-cb92-406f-a4d5-118d9d300fc6	47
+109	b3686941-f9c7-4e66-9b12-f77d388bfb1d	47
+110	44c7f224-bba9-4721-b7c5-cb0961186efa	48
+111	059c3535-2bc0-4f3c-b6ce-6882a1b572f7	48
+112	608e18a8-e15c-4d27-9686-a3b9a4edb8b9	49
+113	599d687a-84bd-4cac-bada-e709c9a1b482	49
+114	7c8059c9-6f26-41e3-af6e-6c8ce836f823	49
+117	1c449fb6-61f1-4d5b-b228-8c1a772add2c	51
+118	fd15b03e-9bbd-4b0c-a090-b508a923a18c	52
+119	5f5b9836-c2f6-4956-92c0-385abad55acf	53
+120	e9a063bb-99fd-485f-8bb0-3e5511dd9a59	54
+121	6db68166-b082-416e-89f1-212674e554dd	54
+122	c1e71576-af8e-4044-bea8-94e9518a8dbf	54
+126	74bcc412-f1aa-4264-9052-556b6c3ec2f2	56
+127	4bc37e01-e123-4b69-bf3b-366c3e7b83c8	56
+128	0bf7cf5e-9dc1-4b9a-93a9-cf024dd5d5c9	56
+129	977160a0-8aa5-46ec-abd6-0630a0c35fcb	57
+130	6e9e864b-1e85-413d-b4a9-2b7d98d4cf58	57
+131	aa6ac324-2d0a-4704-9755-37b0b8759ed9	57
+132	d734e084-b17e-4e27-b5da-c29585fa532e	57
+133	f3ff5ea3-495f-4407-9566-4aaf068ed9ee	58
+134	2e7d5b3b-a01e-4857-8404-282d1c3646bd	58
+135	596f3a7d-3eb7-40c4-9db3-0a002e1b1736	58
+136	16cfb4fd-7e5c-41f3-a9bb-bd6ec6e26872	58
+137	cc99a999-7ee5-4168-aa52-4341346983f8	59
+138	dff61ee3-cab2-4db1-ad29-39086d18c619	59
+139	917b8f5d-6a02-4ec2-93b8-d7117719e0f0	59
+140	fd3f1e18-79ba-4488-a876-82731d9046cc	62
+141	80af7349-4c0f-42ac-befc-6453c068e1d0	62
+142	bf1055b0-beb5-406e-b7b0-06be67da9bcf	63
+143	fe03b1a1-0ed0-4ea0-85e4-51b2067bd9f0	64
+144	a5667d3f-79eb-4eee-9627-c187f9fc3630	64
+145	b3a7730d-256e-475b-a380-920880468832	65
+146	bf937546-43ad-4507-97cf-b97ba11702cb	65
+147	e78e8569-ac8d-4889-b1de-808e498fc591	65
+148	76e59fe0-c4cd-4f0b-b3c6-86f64d9b3890	65
+153	70f170fd-64e9-4c62-a695-e2f5130ca8a9	67
+154	e154acb5-9d83-4570-9caa-93923657ff00	67
+155	fa913ef5-ad94-4252-85f1-3ab41d2df29b	67
+156	7f942063-a4d5-45c2-a72f-1090ffc29d43	68
+157	4a3050e3-6ac6-4a59-b2fd-7c81714f06e4	68
+158	f0c3e839-40d7-4d3e-95fd-0cb3ef8f16f8	68
+159	e1cf44cd-05a8-4783-8769-0b1834ced5a4	69
+160	82698977-1937-463d-828c-d21dd8f0ba0d	69
+161	056a9eab-a4c6-4b69-9780-a78aa46bea48	69
+162	33687e00-4fef-47c1-823e-0a4c2cd2b676	69
+163	5485d4a3-d00e-4c5a-982f-9da2ede5e6dc	70
+164	a4940387-4ebf-497a-a84f-4affe0bb5fb9	70
+166	ecd9a6cd-ea6b-490e-a501-aa8a7f9648ad	72
+167	c1302234-f835-4234-8fcf-259f2cb72d9d	72
+168	bafc5172-7612-49bd-98b6-a74b57814426	72
+169	ad206c61-252d-4e33-931b-7992f74eff26	73
+170	3c8dc765-1386-4865-8d75-4eee56a4bfc2	73
+171	5cae1c0e-cb3d-44b6-9976-5a53b9e26d07	73
+172	75cb4a30-01b2-4d06-9739-9ed22698abce	73
+173	ae7a4e9b-8cba-4ee9-997a-355685d63bb8	74
+174	a0f93222-b4ab-42e4-a913-5e14e5c9cbed	74
+175	92d12e58-f2ec-4d9c-8592-98e505a467ae	74
+176	6a90f8da-1d76-42f9-9bb7-b42cc816ee33	74
+177	a7ea1f76-c872-45f9-8448-6e4d132799b4	75
+178	71fa088e-e710-48d2-91c9-039ab0c00025	75
+179	13f92bfe-6ae4-4c9c-b521-cd71b85a1ba3	75
+180	377a976f-b26d-4da6-86d0-eb64480d010a	75
+184	fae2c3a7-7dc8-4fb4-8b37-57e9e55394b3	77
+185	edf2ab83-eb70-4176-8856-f8a3733ecc38	77
+186	6ff6d2a2-3a4c-4b9a-8daf-2aed1d863047	77
+187	bb8af77a-247e-42ff-9f07-358b556caaaa	78
+188	c1631bac-d3fd-4640-9582-5f2b125e02f3	78
+189	29f63687-ab1a-415f-ba5d-da9a555e62d8	78
+190	5ece87de-f46d-4c26-add9-c77079a82238	79
+191	9c49efde-c36d-4d9c-b30b-44a0f1a7d522	79
+192	20fb2c80-4387-4e67-8f81-89fed8be2dcb	79
+193	d6e511c3-7c93-4546-856b-0e3f5e56ab50	79
+198	cd3c50f8-ce14-469b-a5a6-3986b694b0c9	81
+199	d80cdcd5-a91d-411c-a87a-95e9b569dd34	81
+200	d629b31c-79af-4ace-b9b1-ea437e71fa23	81
+201	ca90ecf5-697e-4b5d-87e4-1856276e8b50	81
+202	ffca4964-b71b-404c-9d6e-fbd35834cfb6	82
+207	719c8096-f81c-4830-9b50-51927e6fee51	84
+208	c98d7dba-c9db-4b23-8ffd-48d0b48cb952	84
+209	97e33fd7-6e9b-4a2b-a81f-f9d40c524dba	84
+213	165f539c-9506-433a-bd4b-cd9a5d86d1b3	86
+214	4552df86-e851-4492-aed0-979173642a52	86
+215	63faa97c-55f5-49f5-8dfc-8902294243e6	86
+216	416326d1-78b2-4a1c-84a2-a845fe5b88f8	86
+217	7d0b721f-3032-430a-946b-1814bd8d94c1	87
+218	68ce7161-93d3-4ad8-8791-b5f24fc26b6e	87
+219	4dc3fe20-9ea5-4095-a13f-5db316cf9c45	87
+220	b4a03624-11f5-4a48-8d6d-607bafd477af	87
+104	3c07b878-bbee-4096-9960-e85692eefd8f	45
+105	13950e39-361c-4023-b980-e712c1d77c25	45
+115	24d29473-c3b8-42fd-a1f2-b1d152b98009	50
+116	9d97bf3e-3dfc-4e58-a027-807890809ee3	50
+123	35164833-bad5-4f9a-8a17-85685452c7ae	55
+124	5de6bed7-dcef-437d-a8be-cf7a8f2b4bb2	55
+125	1d89ae89-6dbf-4653-bf95-eabca3b76b52	55
+149	a5d7765b-54f4-4db7-9a27-9c8424eed732	66
+150	1c634de2-2e15-4c34-be1a-73cecca3640b	66
+151	551d2edc-626e-43f2-ade7-c5e3e9632f67	66
+152	ca5d5ebb-f6e7-4a2b-be4a-bc5c7d16db12	66
+165	5236613e-9b3a-4767-9146-dc97bdef98c1	71
+181	86af5d90-a1b4-4ea4-9998-1f96161260c7	76
+182	441259e9-a601-42c1-b229-275977b04654	76
+183	0bfc0eaa-1dda-4a5f-9321-5c4b71262873	76
+194	e2540bbb-f970-4087-98f4-aa8b8d4f8170	80
+195	33e1206f-d121-40a7-bdfe-75133853828e	80
+196	9b2c4874-0d24-4a7e-bc6e-dcd42b150c36	80
+197	59115025-822e-498f-8f11-f0f231d9c21b	80
+203	b3d9961c-d277-49dc-95b0-db5023173c4e	83
+204	fc27bed4-3ae3-4d8c-9ded-697b88bde56d	83
+205	06939941-332a-491d-9877-746c9e577119	83
+206	5edb90d3-a9bb-422d-9647-84d7a73d7d41	83
+210	ddcff15c-873f-4139-a29d-e0b0f39392f3	85
+211	eaa4ce6a-5d5c-41e3-b9c5-0e6d2cf368d8	85
+212	315eade8-32ef-4529-ad54-4338080e35b9	85
+221	7f3997b0-bb08-4c1a-932f-c2eb44f90c24	88
+222	316cf18d-4437-4c91-b181-380e4b54d8f8	88
+223	3644094e-5cd4-4e75-813a-22cf9202992c	88
+224	0c3629cb-a823-4b85-b815-4ab4c70478d4	88
+228	87bd2fc8-a4c5-4910-a0ef-acc126c8f868	90
+229	d8b9d270-7e0d-4056-bf8c-9c611f35bf23	90
+230	4c98bb2e-6edf-4b43-81a7-af89f42b801b	90
+231	fc84c302-37e1-435d-ba94-4fb0bd25f3bb	90
+240	e06e1004-59e7-4e26-aac8-3a74198625e9	93
+241	0ab650ee-ec2b-4e33-88f6-10bea75256b3	93
+242	877e4ba5-3332-4506-b8fc-649241ac6888	93
+254	10caf0c4-4850-4425-8704-f0d53ee983ba	99
+255	92a2c031-3fe0-4c17-9e76-ec5fd699d0f0	99
+256	f5ace582-6889-4a76-a5ff-521eaed19403	99
+261	1be38a96-f811-4394-8b28-1a690dcfba9d	101
+262	adff390d-e3f6-4c76-a72c-b8d23555254b	101
+263	fe331fee-7f3a-4fae-95d2-1b6a7a8b17c4	101
+264	250a9861-3dfe-4cfc-b549-5f6c8a637fed	101
+272	bcb0ab80-8862-4ee2-840b-fd15c5716281	104
+273	a9b60b6b-35ea-420a-8137-72a4bfe14716	104
+274	1eeddf9d-8f48-4d4a-8bd6-878d1f775ede	104
+275	9eecc7cf-51f7-4660-bd68-e977ed82755e	104
+279	97226f38-ebd1-43ed-8bc5-dc5dd1a1a98f	106
+280	27f55990-7de9-4bec-9204-781739d17a46	106
+281	32fbf64c-8f76-49fa-af0c-3619aa986bae	106
+282	c9b77928-41fc-45f7-91d5-ed8980a150c9	106
+289	6bcd0489-2f1f-4fc0-87e0-5beaa5bf8f3d	109
+290	7f8cb22f-910e-4987-b3ce-d50bb5387212	109
+291	b594f60f-8d25-4cd1-af51-bb25b52c4919	109
+292	a4d062b7-b2b0-4ac5-b63c-592c13c20128	109
+294	765491ee-03dd-4b33-ae2f-9743dab597f1	111
+301	e0de7d8e-cb32-4551-a055-39ae69f1cc63	114
+302	2dd9b591-7663-4a5a-ab6a-3635b047963c	114
+303	735c3fdb-58e9-4414-bb8d-2d2e6f0b7162	114
+304	ea69c424-7b27-4747-9cf1-b1e50d3e7a4d	114
+308	12cce8bc-4462-49fe-90bd-157f474b69c1	116
+309	4e3f6fb1-0494-4725-8dd4-063e1f034e29	116
+310	b9e75b4b-c5c6-4439-aed3-0205e9a15fd9	116
+311	20dd2f6d-5832-447e-8c3b-eb1cbbc56da0	116
+320	dc88e355-655e-4044-ac56-4f599fb9d3e0	119
+321	b3a561e3-e266-41bb-abdf-6d3ba98d301c	119
+322	6b1cdd48-ff6c-428c-b7ab-68c774a3340f	119
+323	35ce5e87-6eab-46d9-bfe1-95bae89cec16	119
+335	4f09e8b2-8b82-45f4-9b1c-d5ed5ab3a853	123
+336	80da23fc-c6c4-433b-9ca3-ffdc78cebde0	123
+337	676e340d-ab13-4045-a9a5-08ee1c1d7c47	123
+338	34b50853-079e-4887-a64e-0fa30635653e	123
+339	8ffa60fa-6018-4e3b-b7e2-4a050d9b9ee2	124
+340	41b01e2a-e8e6-4ac4-9cf2-d5b43b71fe20	124
+341	07835b6f-61cd-4fc4-99cd-4137c08bae8c	124
+342	00d98321-51e8-44e9-ab86-b9fb15bf55c8	124
+355	a348f8c7-cdd1-4a99-b172-4db78b3006fd	128
+356	e5aab173-460e-4c42-b99c-93421efc1a08	128
+357	9e188e26-2c4b-40e2-a09b-70c717430410	129
+358	18c3d42b-3378-43d2-88c4-378fb6c4f80b	129
+359	f7b968c3-576a-47dd-8e40-98c07c75c848	129
+369	7423a97f-a796-4f38-adca-e916cb2533f7	133
+370	6699ff9c-5636-429c-b34b-94c32064e008	133
+371	f5326198-db58-4ff3-882d-811e766f8d0a	133
+372	0cb3e9d9-abbe-42d2-a815-7d73ae66f7f8	133
+373	6f863852-eeda-4893-bba7-9fa12ba3aace	134
+374	158466d9-ec4c-410c-8958-1df995f7a497	134
+375	1929efb2-9c4c-489e-9b95-01cccdba5c13	134
+385	6fc9f9dc-da0f-44ac-9a8c-a11f661aaf04	138
+386	58b64eac-188e-4750-bded-b27064db26a4	138
+387	ce835917-b13e-4ed7-8912-bfc2386d98e5	138
+388	07e4e177-3760-4840-b131-59f85c1e35eb	139
+389	0ee5424f-1a94-482c-8a21-9beb028f4d1d	139
+390	b6a0591d-8351-4f00-ba37-b1f926f09494	139
+391	17dd4272-769d-451c-9558-b6ab76069e49	139
+404	f22dcc65-12a2-4cd6-a2c1-00b7c86f9900	143
+225	27186e31-a3b2-44db-9dd8-e9a34b5a1434	89
+226	aa87d9d4-5d1f-4ce9-a3a7-7007aa849f23	89
+227	4b3df523-3f69-4f56-9508-ca45da07acc3	89
+232	21f7e69b-fc70-45d0-8e88-bc039e56afe3	91
+233	a0acba81-93b7-4c96-b3d1-e2056c202603	91
+234	70c04929-7876-4b3d-914b-daeb47c5da00	91
+235	5850aeb8-6c4d-4252-a924-0c405298496f	91
+236	6c8e69e4-880c-4fde-a907-613626472319	92
+237	59faa7a5-4f4c-4452-ad33-7f3724fb52ce	92
+238	a5fb56fc-3963-4c7f-8b69-d6463365734b	92
+239	56d2143f-f8e8-4897-90e9-afdd852d5ad3	92
+243	35874f31-c774-4a1e-88a6-2c364bf9cb12	95
+244	064b88b4-bc9c-4826-8af1-502455d16c8d	95
+245	f048be52-cb9d-45bf-a9da-df35348bd77e	95
+246	e2d44aae-fab8-4955-9e62-b169e53220fd	95
+247	a59fcb20-f08a-4120-9017-f29dbf429055	96
+248	146dda04-44ae-40c8-a049-81c787abeca6	96
+249	8e8b48ab-c9ed-436c-85e7-efd1d3a43845	96
+250	472a1c76-5834-4330-9a1b-725a484ca991	97
+251	ad620589-4c49-4260-ae2e-d50753f5fc48	97
+252	575ad507-5ff9-4404-b8ef-0ceef99ac79e	97
+253	f74d3b33-9a5e-4f22-86ce-1faf08356be2	97
+257	891b512c-9419-4512-b3f1-82fa1812ed62	100
+258	c1a4a5e7-dcc1-4f92-a0b0-3ec153e4ed78	100
+259	76194b45-ea38-4e5d-aa0c-8aec2d6d85c8	100
+260	510d1147-6ec4-4b47-9b77-f92617928d01	100
+265	0b0b4907-0854-48fc-84f9-c6c398deb622	102
+266	5da21330-2482-4957-8b53-4c4894d2d612	102
+267	ffb042f9-7832-49cc-b195-6f27d04a7998	102
+268	4606e89d-77be-4d53-9a75-1cd2990727c9	102
+269	391ced82-6303-4982-a4ed-3a5376b45056	103
+270	8ab82a01-f143-4010-bf03-78ffb5907748	103
+271	8a224061-8cc9-461e-ac1b-3d762cf78cf1	103
+276	ea56cce0-228b-4bbc-8a62-4b9bfc1a6ed1	105
+277	859b7e39-6d17-42e0-ae00-61238fe1e749	105
+278	6b880f02-1a2c-4f6c-a6b0-5d967ee8312e	105
+283	d069cd05-8f42-4ee9-8ef2-a882da8c7400	107
+284	82e0013c-4ecb-4fc2-9188-134c1694700b	107
+285	c57daa69-c1b8-47a6-a86f-e5e99c1f0a65	107
+286	f204f2aa-164e-48fa-9c03-daa7adae44cc	108
+287	c99344b0-1013-4722-948e-146086e7939c	108
+288	456e3599-9c35-4bd8-ae79-1327f070bf7b	108
+293	9ca1ff23-cff2-4808-add2-3fc513f75841	110
+295	5d794197-2320-41ed-9f4b-9b244b2f2683	112
+296	5f869624-f6f1-4e2e-9898-a931bf4c11e9	112
+297	51371139-2b67-415e-8009-0585b53f3cf9	112
+298	0eb038c0-53a0-4ea9-acb4-c8b541b154a4	112
+299	1657b9a4-377b-49d1-b58b-c34deb95a6ad	113
+300	83ea1264-7e42-48f0-9398-d7ae843c1dd8	113
+305	22973e02-04eb-45d2-b555-8d12a50aa150	115
+306	a7d14128-b8db-4e7a-acf1-b13aa908a0b3	115
+307	5e09d12b-7546-4fba-896b-ae46ca5b7f80	115
+312	651cf0d8-c437-4c3b-81a9-5aee9bdfb604	117
+313	dbeea9e7-0fb5-443e-a8b8-00382d362d20	117
+314	cc532b18-6608-4def-90d2-ce4963197fc7	117
+315	d2a16b08-a028-4bfd-90a2-da82c79aa260	117
+316	d5fd887d-744a-4037-be08-1b60064c4a8b	118
+317	7c0f4d4b-2604-4257-a16c-f2015dfc66db	118
+318	505deda0-1196-4d1f-aa96-440a67b19497	118
+319	f203209a-13fe-428a-8894-64b4a50b83bc	118
+324	aa9b9fd6-a94c-463d-96d0-9b58d2d4d1ba	120
+325	287f9d39-0b40-44e0-ab49-ed26dd37fa7c	120
+326	1c3b3515-628d-4cec-bdbc-fee1f284df89	120
+327	962abafb-3b9e-4100-be7b-058aa61278aa	120
+328	9fdc471e-149b-4e75-bc0c-6dc0f7ee4a58	121
+329	8db49b5a-5a51-4ec8-834a-4d2d56ad9480	121
+330	f57e8020-8bf3-4851-a8a4-06d077ffefb5	121
+331	18469ddf-c292-4603-bd7a-a6a5680a5bce	122
+332	ff0a83cb-aa8b-4274-949d-cf2cef01d48d	122
+333	57b282a8-1e6b-4835-a739-14bbaf697816	122
+334	319edc98-f1f2-4ddd-8267-f6c5286522ff	122
+343	651d5a4b-7c43-46c6-ac39-eb35c712f0f7	125
+344	a71ac79b-81e1-4c5f-b41b-f0661aa94a88	125
+345	ddd95782-56c6-4809-a0ab-49efee998e00	125
+346	c3229912-562a-4786-b2c7-cebd5b5a86b6	125
+347	5b3231a8-7124-4d6e-b273-cca9c7baa6f8	126
+348	54c2ad3a-7807-4430-a0a2-c8b5aaded673	126
+349	e3564dd4-93d0-4a9e-9676-9ea6aa3272db	126
+350	d6512421-853e-4b4e-927d-0205110618c3	126
+351	20fccd6e-5c2f-4cf3-8859-74cbae6292d9	127
+352	8660d0e7-35ae-4c2b-99dd-7ccff8ea8251	127
+353	094eadf6-9e81-477a-930b-293771b634a7	127
+354	2bc194ff-8fa6-4b3d-9273-95ad452a5592	127
+360	968b726f-3596-4fad-878c-f1a0283b28a2	130
+361	55cd9ac1-723e-4c23-8175-bfd2450991f7	130
+362	11046e5d-273c-46f3-954d-fc449a620d54	130
+363	1307c9f4-41eb-4522-8cfb-29eca06d1a25	131
+364	87146daa-9014-4b50-82b2-7ac785e9f78c	131
+365	e4ad50ef-22f8-4db1-97ac-2aeda318ce6a	131
+366	0b0883b2-9a9a-4574-8685-8aadd5d473b3	132
+367	3ae52745-d264-4d87-8e98-2846a83f9095	132
+368	814397e8-b13b-41c7-af0a-aed59e7e0353	132
+376	ce719ceb-b3ba-414b-91de-a57f339f9e88	135
+377	62ae03b7-5419-4724-a1b6-e25b0b08454b	135
+378	3f104aef-8733-4ded-994e-70ed59cf2955	135
+379	b9f8a923-4574-4c9d-b899-b581b9aad2db	136
+380	f1326cbe-55cf-434b-bc92-22eb40432c91	136
+381	568dce84-e786-42ce-96ef-7cdf3c29c1e1	136
+382	6dec1cbf-c5ad-42a4-98d7-22e033d83303	137
+383	18f5f92c-fda1-4382-9137-b119fcdf854a	137
+384	44a937dd-afdd-492d-b48d-155a1637ec10	137
+392	e56a0eae-b610-4fb1-9b1c-15ad82e3985d	140
+393	2bacae58-28ae-4ef5-995d-5d85349e18b0	140
+394	63b73d57-233a-4a2a-86d3-fdbcbf71b23f	140
+395	2a05e7cd-d5a1-40a6-bd5a-0a21835ba084	140
+396	5b94042d-7fa5-4285-9697-92670eb58e31	141
+397	03b66844-1502-4e97-85e6-f730f6f9812c	141
+398	0cfb514f-4806-42a5-8a92-c3b14edc5def	141
+399	a20e515d-dd6e-4459-9daa-b4235a5bb963	141
+400	ed4f7393-73b7-4c77-a4f3-0351043927f1	142
+401	eff5022f-1bef-44e4-9688-ce07bfa61ab3	142
+402	803438be-1f7a-4f1e-8085-7e0d134311e9	142
+403	db30ca8d-ff75-4bf0-9f99-6864c490a6de	142
+411	2ee7bd4f-b82f-47b5-b58f-acdb8e0e6ccd	145
+412	6405b879-5d9c-4e9c-b1be-fb4eceed3cfd	145
+413	5602206a-dfbd-48e6-8ab1-0592ab9c7acc	145
+414	f62cf690-c717-494a-a564-85b0eeb61fe8	146
+415	319eb85d-0a7e-479b-9f5c-bec47c4ea312	146
+416	eb00566c-d2ab-4003-b1ac-a5143429c21b	146
+417	230f9d76-8c63-4089-96b6-c43b915db354	146
+418	e84373fb-7722-4a05-a35a-5aaaf81ffd31	147
+419	43a4dffc-9ad3-4797-a2af-2767ff82a0a5	147
+420	525b32cb-14d5-445e-8d6c-f54c4b5fd153	147
+421	dadaa82c-07c3-4708-8fe3-2b6011022535	147
+428	f30c5a55-9504-46e9-ab46-993c0e661745	150
+429	a35d5381-3514-46d1-af48-ca90c81ea65f	150
+430	15b8ece1-e41f-487a-bd57-db1a1c0f0f5b	150
+431	fd578ac0-536f-4ad4-8b48-8ba5bb1d7868	151
+432	2bfbe004-14c9-4ae5-8a74-3c961526c255	151
+433	0f4833f7-6950-402f-8af3-06d351c2b95f	151
+434	00d7da99-8bdf-4bf0-a0e7-5e4fdf3338f9	151
+435	8dd2d784-4f11-4ff7-ba59-f59cf363e089	152
+436	e03ff2b5-2982-44a0-acca-05b19df574a5	152
+437	1ee2edb0-0616-4dd6-9f24-a1e8413c26ad	152
+438	0ed3dc22-6d61-4bdf-a3ff-322fc1280435	152
+446	dba9194b-c330-4355-b7c2-c59281c79db8	155
+447	ffdbd9ce-cd06-4bf2-b5d8-8abbdb0c44dd	155
+448	e407c811-b6a9-4f78-9e45-e58556bf6c3d	155
+449	0a917d35-9206-44f6-9143-95d6a44ce137	155
+450	2bbb6a9a-4c56-4b71-8064-80627df701b2	156
+451	8bd5b711-da99-4f2f-96df-25c6983dcd4b	156
+452	09e1af3e-1e94-49b4-83e2-3fe7f9d136f3	156
+453	36ce6549-3d23-4361-a587-fd28b70bd094	157
+454	0e273d84-73d7-49fd-a25e-b2d692cb9377	157
+455	b5d46808-0888-4852-89f8-02fe66a5853e	157
+456	08c94f35-8481-4cd4-9881-9a45d4f36227	157
+463	4f495916-769c-43b1-8dff-41bc672628a6	160
+464	fa1ec7cf-cf04-480e-88fa-958479bdb014	160
+465	b577d2c8-9acf-4fea-9948-6f9ca8c19e81	160
+466	81866126-9617-4b22-86fd-f7f6ce722fcf	160
+467	9cb019f7-c462-4e61-93e0-3f68964ec326	161
+468	9a6a80f8-7332-46c1-846d-249b9d4de9a2	161
+469	7fa14b1a-a4d7-4790-9f74-429e60cce024	161
+470	39771f27-bee5-4cf8-ba7b-e39e98eb1c5b	161
+479	da4d41c7-2643-4a40-b9ca-8dd702b396fb	165
+480	8d570182-226d-48a6-b147-0c18ef8d1f7d	165
+481	15007329-ae20-4caf-9311-9c19e1ce5817	165
+482	5b5ebbe5-e65e-4c80-9fa4-2ed16799df58	165
+483	6ec07ac7-c61b-4200-a836-bb094f0dc0f2	166
+484	4b85cfd7-12c4-4f82-8452-37ee6d814920	166
+485	302002db-4435-41c7-ab44-03821170e0df	166
+486	7d52a943-9c75-4b84-8554-8ea4d9e044cf	166
+487	f46ab21c-7f1b-4670-ac48-30f81fcc6bc2	167
+488	28236d41-a9b6-44d3-9eee-06f333c01b34	167
+489	2db7e5c2-adae-42a4-865a-562abceef384	167
+490	d72f12e1-540e-4dfa-8a43-1326c2045306	167
+491	75703e39-7e0a-4394-b208-da78c33be0c5	168
+492	e74b21c6-afb7-49a8-b059-d994d19e058f	168
+493	5027c31b-5754-43e1-8ef3-3cb59c6c8398	168
+405	0a839dde-b1ed-43e8-b8fe-b906cffcf3da	143
+406	a4bd6912-d621-4c10-9a73-4335d82562df	143
+407	cd35033b-fa67-44eb-a48d-089aa79ca715	144
+408	954bcdf1-0e86-46bb-80fd-f8e39d81affd	144
+409	20319f5d-1b78-4401-8158-6e97b64f779b	144
+410	4ae7587e-a1c5-4fe8-9b4d-fb27349c0fe1	144
+422	088abdcc-ff1a-421a-b5af-4d863a78946d	148
+423	df05c0ed-6c55-4b62-ba48-9803f901e235	148
+424	866de439-d1e7-48ad-87b0-70da394a5bf2	148
+425	3c286da5-7785-4283-8d86-5f717d2acdfe	149
+426	f8d2adb5-e4a4-4137-a3fe-4fda763cf3fc	149
+427	242ba658-def5-4682-b925-8f24e33de1b0	149
+439	bc93f343-4d12-4859-b19a-b26dfb23739a	153
+440	c76bfc0e-8086-48c9-b59b-f5e9837909cd	153
+441	837b505f-6fee-4460-89cc-f203f9ed6555	153
+442	0893fdb5-cf5d-41a1-a9c6-3568c3b7a39c	154
+443	be4abb5a-d19e-4910-b526-82f36695c9f1	154
+444	35ec0809-b59f-4767-8a18-3476de321b34	154
+445	d26a62fb-832e-476d-a64f-4c83499022de	154
+457	d41f247d-c46b-4b75-906c-ae00b548de2f	158
+458	c4ac6b47-2817-4558-b261-7f78965e2326	158
+459	af4f3fc9-1f1d-4021-b34d-6ba2f3063b3e	158
+460	7d258571-37e8-45a4-bf8a-4b371d6aa93a	159
+461	80e60638-7bd8-446c-8fb8-508cdd0a9f6f	159
+462	092b67c7-9ad7-40b3-99e4-2c9b74f49e85	159
+471	d0d72cbc-0f0a-47e1-bce4-88116c98f935	162
+472	c4154a48-5c2b-463a-94ec-dab08999ce24	162
+473	f1862bff-ef65-48bb-b88b-f0b33cc20d05	162
+474	1a04d331-2700-4928-abb1-646e238b374d	162
+475	a5672591-acf1-4958-b211-65a429e79562	164
+476	3ed25b9b-e5d4-498f-a982-6c8d0f2f5d12	164
+477	383c742c-2ff4-4f1f-a7a4-8bfb7f922b74	164
+478	e9cd387e-be8a-4b2e-9498-0c99dc5a7e06	164
+494	51932e3e-23ec-4b6d-876c-d3b7c4c2fee4	168
+495	0b9c978d-1874-4251-96f1-eaf46224897a	169
+496	926a17f9-6c4b-43e7-a9b5-0dc24b565225	169
+497	c4562cd5-3c9d-491f-a539-b19166f99c6a	169
+498	756169c7-4768-4fb9-b4a9-bf9afaa717ee	170
+499	d857ffb9-5f76-4581-a9bf-09883d197088	170
+500	5e71969b-c6b9-4191-8269-7ea1ee351859	171
+501	8624795d-061a-4211-bb51-c9509d3dc03c	171
+502	9646516a-9081-4bb3-9bda-22c8e4094648	171
+503	d7e78e4a-c97c-4a8d-91b6-a676a4cc956e	172
+504	344950a8-dae6-4185-b937-0dcd36095d18	172
+505	65317bdf-9b36-4899-8371-14c8e56e693b	172
+506	1dd3f49d-968e-41b8-abf3-44c2caa63972	173
+507	3363a7ee-c558-402e-9ed5-e513703473c4	173
+508	888c4ade-00ae-4708-925b-cf61456eee14	173
+509	ca39248a-1913-40bb-9236-08688bd16d8f	174
+510	3b8a9631-5aa0-4900-a65c-6911f297ace2	174
+511	ac8238eb-fc65-4982-8dd6-d07b909f102e	174
+512	300f2c52-5e35-4579-8761-58e6e5262663	175
+513	2e791b35-4dbe-4a2f-b074-289692ad63f4	175
+514	af77a39f-8dad-4816-8d72-fb0a95f37323	175
+515	bcb08307-11bb-4663-b617-111087ccf2cd	176
+516	93303f23-7479-47ad-be72-6d5cf3e63272	176
+517	87114163-1ca7-45ac-a244-92224d2e8a47	176
+518	4d86c1a2-f086-4df4-b6b9-8757840ea084	177
+519	fa2f91df-b1cd-4b3e-83a0-c967ff25db0c	177
+520	3e03b37e-3970-484b-bacb-1cc8ec1e2525	177
+521	264e3fa7-5f1e-4733-a82d-a1ba6e9aba3f	177
+522	cdf29fa2-1097-4bc6-8029-3bddb328600d	178
+523	ca69b07a-aaaf-4610-849c-c2dd3d3638a8	178
+524	ae77d8d8-158c-4600-ba03-207afb88a8fa	178
+525	d68c81bd-cba6-4d7e-bd13-94191e7add24	178
+526	15063363-3b90-4473-af34-39133f19d040	179
+527	04be44cc-a7c4-4d5e-a60e-89fdd02f1548	179
+528	1803b002-bb46-4836-8d45-005978029d11	179
+529	83ddc972-5d92-4993-8a59-e210d9a5f135	179
+530	60573f7e-efa2-490d-8cd4-4b9cfcb43d56	180
+531	8283a73f-19f9-4aea-9deb-8f8ee87a11a8	180
+532	58dc3aa1-56c7-4eac-aeae-d76f6a95c191	180
+533	cf05e84d-1628-4d05-8421-c9ea19bc4342	181
+534	c64e7be7-c14f-41c1-a83c-766dcdd00bda	181
+535	519e65c5-d615-4404-984a-e327a359cb27	181
+536	2629559b-0013-4de5-887c-d71d554f3f9d	181
+537	bc600fd8-8471-4c3b-a2fe-586f3d7d842e	182
+538	c361595b-0774-4f04-8e11-62d4ca6f7653	182
+539	c55c942d-b9b6-4838-a981-0ad27aed029b	182
+540	99c97aa8-d7ea-46a9-918c-d1dfc7041104	182
+541	8dac5253-47c1-4683-a27a-8ad689457513	183
+542	8b74c29e-6215-402b-96e8-ddce07321cca	183
+543	a88fab55-7182-4c65-802e-09d0bc9b3ab4	183
+544	c346b99b-55a4-4d34-a04f-4e6697c55404	183
+545	7071b557-11e3-4386-b130-7740e10e65e4	184
+546	56253c4e-fbb7-4229-960d-ad7dba0c2bae	184
+547	eab1d0c2-08d0-46bb-b214-f98339d0f5e2	184
+548	462a48e5-d5d3-4096-80bc-1cb477acafa9	185
+549	dfa135d8-63fe-45c6-9790-9dc508ca01fa	185
+550	03c59832-be4c-4a11-80a8-8097788915d0	185
+551	3a9a1fa7-595c-489d-8c6f-d2b7be87f298	185
+552	d8b2ba86-7151-405f-bde0-56d9536ce642	186
+553	210fbdc5-4870-4564-9a92-f08e38e86fc7	186
+554	71a8bd96-7d3a-4414-8a82-0fa1794d0a8c	186
+555	97f3d952-f10d-4810-919c-e4fb41f1d632	186
+556	e62da02c-d791-44aa-a11a-0308a2cfbb6c	187
+557	4d8b7402-b56d-4794-aa66-9b05a544bfa9	187
+558	56920f14-14b8-4c5e-b4bc-1c0a8f5af60d	188
+559	5b92afbf-2b45-4bf2-b367-0f109e6bfcb1	188
+560	814f9143-9f99-47c9-8fab-b632bdd125af	188
+561	80941f83-f12e-4ea5-85cc-6a614a86d8d7	188
+566	9d60f232-3439-4fa0-a35b-e7d00e57d720	190
+567	d70bd883-466c-4884-aaa2-dedf525be1c7	190
+568	cdb6a83a-a244-4830-bce4-722dfaaaf8ab	190
+569	fd829c45-00bd-465d-bbac-2d185a8967f3	190
+570	25257c1d-6000-41b4-9a6b-bec3919fb50c	191
+571	2558100a-ad6c-4cdc-81cb-d5c43bf695df	191
+572	dbd64f36-61ac-46aa-b5d0-ffc5a62bd72c	191
+573	85ca872c-8782-450e-8d34-27bcade67bd7	191
+574	63e2aeee-ecb4-435d-bf10-06959c6bb463	192
+575	86ae0164-50e6-44c8-9f3f-c9c4f2ad9d75	192
+576	c5c4ad71-22b8-4eb8-89d6-bd474c8aac54	192
+577	7bef53d5-9fb5-4dc1-8dba-2a5769b50f18	192
+578	f370858c-9838-47d4-b853-42c968a00525	193
+579	23a9cbbf-529b-4961-85f0-20e2a43e05c3	193
+580	4948039e-8ea2-4b35-8c57-33d4ca1e5279	193
+581	6c34e61c-8f6e-4332-afd0-f95421312612	193
+585	1807d2af-3a23-4b80-aa02-9bceccee2c7b	195
+586	6dd0ae7a-eb81-4906-bd3f-dde26255bc1e	195
+587	6b49a158-ec54-482d-981f-40c320efaddd	195
+588	398d5a72-dafa-4b63-971d-f1dc12710248	195
+589	ca398d42-df61-45e6-b5ce-22fdd1ae6ead	196
+590	827e084a-b778-4ebf-87d2-e9e173e314f1	196
+591	b8b1f2d5-e978-4b6c-9841-79bfed537b83	196
+592	8125619e-35f4-41d0-b061-a8276a6c49ec	196
+593	de3fb47b-4cab-45b2-a73d-6117bbf79b4d	197
+594	fad843f9-e59a-4280-a8f9-d6bdd8c70085	197
+595	15a5de05-5d8b-48c5-b6a2-15900698072c	197
+596	86397d00-59a2-4427-931f-c4ebd54a1246	197
+597	9881d9ee-bf2d-4a7c-bec6-065f36f158e1	198
+598	3317b5b2-b8df-4b65-80ed-b532fd63371b	198
+599	17946678-4cb9-43e0-94d0-f30c27ee30cc	198
+604	f83be722-def0-4675-b50e-5f624a7d1d7f	200
+605	dfcadc54-0b75-43d0-bda6-4b616659537e	200
+606	7f62535d-be84-47db-8f4b-e9a4afe4f196	200
+607	ffd20fc9-c439-4d3b-8c4d-50930b2ea9a4	201
+608	6096edb8-8968-4135-80bc-dd31a4ae5851	201
+609	0824c197-24de-4a2f-a3ca-25bac4613510	201
+610	56c9feff-cf68-4b50-b14f-96ab0951c0b0	201
+611	28c2a164-dd98-43f4-a83e-891fc14908b8	202
+612	75f270b0-361d-42e3-910b-775cdd955974	202
+613	d213acb8-ce2f-4ece-8045-674306cb8e59	202
+614	b9ad6bb2-7dd3-44f5-9092-65032db945e1	202
+618	ff2cd81a-0351-4eef-8e3d-5a8bead99912	205
+619	06f0e806-cd69-430e-b48f-d8d3531f787b	205
+620	8343bd68-ee96-47de-a37b-1cf297ffc324	206
+621	5aa8425d-a671-49bf-b628-487fa6f2c3db	208
+562	b2f79356-223b-4bba-9c3a-5a42803a97b4	189
+563	9fbe1314-31eb-41d1-b199-3aac03c76356	189
+564	f882b625-70f2-46e0-9bef-49381750caf5	189
+565	7ec19ed4-4274-477c-980a-c19eabc0ce8e	189
+582	bda770db-38d1-4c2c-815c-0aee4431ba3b	194
+583	ccd6d74a-6a1a-4c9e-92eb-28bf2de8a558	194
+584	179bf754-3660-4268-b8b6-9c9d33cc2fba	194
+600	bca3b9e3-f9ce-4b83-be09-7b16934e1f2a	199
+601	3901a38d-1df4-42ff-b992-02f3233ca2c5	199
+602	6cc62963-fef5-42c8-951e-706a97c3172a	199
+603	d717f18f-78e6-4718-a4dc-f07e54f6d1b6	199
+615	959450ef-c1ee-4484-b808-5135566bb1b9	203
+616	a4fb45ab-45f6-403d-8ed6-5783359cfcbe	203
+617	a53c8277-c9a7-477a-948e-1ed1abce3ca6	203
 \.
 
 
@@ -1633,214 +1633,214 @@ COPY public.pet_images (id, image_name, pet_id) FROM stdin;
 --
 
 COPY public.pets (id, age, is_archived, breed, description, gender, image_name, is_kid_friendly, name, size, is_sterilized, type, is_urgent, is_vaccinated, shelter_id) FROM stdin;
-1	0	f	\N	BORÓWKA, JEŻYNKA, BARSZCZ i ŻUREK to prawdopodobnie rodzeństwo. Kociaki zostały znalezione w Łodzi na ul. Dąbrowskiego/Podgórna w pustostanie. Maluszki mają około 3-4 miesięcy i są bardzo spragnione bliskości człowieka. BORÓWKA waży 1,1kg. Malutka jest bardzo wychudzona i ma świerzb w uszach. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	c7ada29f-cfba-426c-9ca5-36034b129b84	t	Borówka	SMALL	t	CAT	f	f	1
-2	0	f	\N	JEŻYNKA, BORÓWKA, BARSZCZ i ŻUREK to prawdopodobnie rodzeństwo. Kociaki zostały znalezione w Łodzi na ul. Dąbrowskiego/Podgórna w pustostanie. Maluszki mają około 3-4 miesięcy i są bardzo spragnione bliskości człowieka. JEŻYNKA waży 1,4kg. Malutka jest bardzo wychudzona i ma świerzb w uszach. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	a2c2b4a6-cdad-4c31-8cd6-cbb392103830	t	Jeżynka	SMALL	t	CAT	f	t	1
-3	0	f	\N	BARSZCZ, ŻUREK, BORÓWKA i JEŻYNKA to prawdopodobnie rodzeństwo. Kociaki zostały znalezione w Łodzi na ul. Dąbrowskiego/Podgórna w pustostanie. Maluszki mają około 3-4 miesięcy i są bardzo spragnione bliskości człowieka. BARSZCZ waży 1,57kg. Maluszek jest wychudzony i ma świerzb w uszach. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a35cdbb9-afe7-474b-a4a7-41612b769659	f	Barszcz	SMALL	t	CAT	f	t	1
-4	0	f	\N	ŻUREK, BARSZCZ, JEŻYNKA i BARÓWKA i  to prawdopodobnie rodzeństwo. Kociaki zostały znalezione w Łodzi na ul. Dąbrowskiego/Podgórna w pustostanie. Maluszki mają około 3-4 miesięcy i są bardzo spragnione bliskości człowieka. ŻUREK waży 1,5kg. Maluszek jest wychudzony i ma świerzb w uszach. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f7a6a873-9668-429b-a36c-e71dd18e51ff	t	Żurek	SMALL	f	CAT	f	f	1
-5	0	f	\N	LULUŚ został znaleziony na ul. Elsnera. W schronisku przebywa od 21.06.2025 roku. Maluszek ma około 3 miesięcy i waży 6,3kg. Czipa brak. Osoby zainteresowane adopcją maluszka prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	86bcfc3d-37c0-4c94-8285-a4a99981baa0	t	Luluś	SMALL	t	DOG	t	t	1
-6	0	f	\N	NELA została znaleziona na ul. Piotrkowskiej. W schronisku przebywa od 20.06.2025 roku. Sunia ma około 10 miesięcy i waży 17,8 kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	5fccc3fe-efbb-4437-b435-1625d3fd3a95	f	Nela	MEDIUM	t	DOG	t	t	1
-7	8	f	\N	BONIFACY został znaleziony na ul. Okopowej. W schronisku przebywa od 20.06.2025 roku. Kot ma około 8 lat i waży 4,4kg. Czipa brak. Kastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	17867b6f-2b48-4ca2-a41e-99eb39fbffac	t	Bonifacy	BIG	t	CAT	t	f	1
-8	1	f	\N	PINIEK został znaleziony na ul. Kopernika/Gdańska. W schronisku przebywa od 20.06.2025 roku. Psiaczek ma około roku i waży 7,2kg. Czipa brak. Niekastrowany. Ma wypadniętą gruczoł trzeciej powieki w oku prawym. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	abd9ffe8-f71e-4a6e-8ff9-13924c5ab078	t	Piniek	SMALL	f	DOG	f	f	1
-9	2	f	\N	IGA, AGA (nr. ewid. 163/25k) i OLGA (nr. ewid. 165/25k) trafiły do schroniska w wniku zgonu właścicielki w Łodzi na ul. Łanowej. W schronisku przebywają od 20.06.2025 roku. IGA ma około 2 lat i waży 3,1kg. Czipa brak. Kotki po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	13e7ae92-fb6b-46f3-8805-256339c6bd1f	t	Iga	MEDIUM	t	CAT	f	t	1
-10	3	f	\N	AGA, IGA (nr. ewid. 164/25k) i OLGA (nr. ewid. 165/25k) trafiły do schroniska w wniku zgonu właścicielki w Łodzi na ul. Łanowej. W schronisku przebywają od 20.06.2025 roku. AGA ma około 3 lat i waży 2,4kg. Czipa brak. Kotki po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	f4013e7d-450f-4e05-90db-9d6e3ad525ba	f	Aga	MEDIUM	t	CAT	t	t	1
-11	2	f	\N	OLGA, IGA (nr. ewid. 164/25k) i AGA (nr. ewid. 163/25k) trafiły do schroniska w wniku zgonu właścicielki w Łodzi na ul. Łanowej. W schronisku przebywają od 20.06.2025 roku. OLGA ma około 2,5 roku i waży 3kg. Czipa brak. Kotki po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	3e24238b-9b7d-426b-b68c-96c396ff8082	f	Olga	MEDIUM	t	CAT	f	t	1
-12	1	f	\N	ELZA została znaleziona na ul. Zimnej Wody. W schronisku przebywa od 19.06.2025 roku. Sunia ma około 1 roku i waży 7kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	626d2e17-6a4f-4651-97d0-1facb33f9238	t	Elza	SMALL	t	DOG	f	t	1
-13	0	f	\N	IDUNIA została znaleziona na ul. Wiączyńskiej. W schronisku przebywa od 19.06.2025 roku. Kotka ma 4 tygodnie i waży 0,36 kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	21c92353-9c53-47e6-a34f-c0a73020c860	t	Idunia	SMALL	t	CAT	f	t	1
-14	1	f	\N	SAM został znaleziony na ul. Lutomierskiej. W schronisku przebywa od 19.06.2025 roku. Kot ma około 1,5 roku i waży 3,95 kg. Czipa brak. Niekastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1f531fc2-619b-4c24-9928-b427ccf584f5	f	Sam	MEDIUM	f	CAT	t	t	1
-15	2	f	\N	DYMKA została znaleziona na ul. Wyszyńskiego. W schronisku przebywa od 19.06.2025 roku. Kotka ma około 2 lat i waży 3,75kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	512ee807-3b14-47ca-8c65-2b48771f619b	t	Dymka	MEDIUM	t	CAT	f	t	1
-16	5	f	\N	FIONA została znaleziona na ul. Jana. W schronisku przebywa od 19.06.2025 roku. Kotka ma około 5 lat i waży 3,4kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	48a3c056-b27e-4376-896c-a3df9419ac15	t	Fiona	MEDIUM	t	CAT	f	t	1
-17	15	f	\N	GARY został znaleziony na ul. Jana i Cecylii. W schronisku przebywa od 16.06.2025 roku. Psiaczek ma około 15 lat i waży 7kg. Czipa brak. Niekastrowany. Psiaczek prawdopodobnie jest po wypadku komunikacyjnym. Ma krwotok z ucha prawego - przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6a6d7ee9-f4de-484a-995e-fc16a027ce3d	t	Gary	SMALL	t	DOG	f	f	1
-18	0	f	\N	LEYLA KOLEJNY RAZ W SCHRONISKU !!! LEYLA została znaleziona na ul. Niciarniana/Piłsudskiego. W schronisku przebywa od 16.06.2025 roku. Sunia urodzona 11.2024 roku i waży 18,6kg. Posiada zarejestrowany czip, ale tel. właściciela jest wyłączony. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl _________________________________________ LEYLA (nr. ewid. 227/25) została znaleziona na ul. Abramowskiego. W schronisku przebywała od 8.05.2025 - 14.05.2025 roku - odbiór właścicielski	FEMALE	279582bf-f0a4-4e58-9a2e-67248fc2c6cd	t	Leyla	MEDIUM	t	DOG	f	t	1
-19	2	f	\N	RIKO został znaleziony na ul. Jugosławiańskiej. W schronisku przebywa od 15.06.2025 roku. Psiaczek ma 2 lata i waży 24,3 kg. Czipa brak. Niekastrowany. Pies miał na sobie parcianą obrożę z wyszytym imieniem RIKO oraz przywieszony do obroży srebrny łańcuszek. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	2d888133-9360-4441-aa5f-41aeb3d1f3e3	f	Riko	BIG	t	DOG	f	t	1
-20	1	f	\N	EMI została znaleziona razem ze szczeniakiem AIDA (nr ewid. 283/25) w Łodzi na ul. Zgierskiej. W schronisku przebywa od 15.06.2025 roku. Sunia ma około 1,5 roku i waży 16,3 kg. Czipa brak. Niekastrowana. Suczka jeszcze karmi maluszka. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	e993061d-22b4-4a1b-88da-ccc322fd0b56	t	Emi	MEDIUM	t	DOG	f	t	1
-21	0	f	\N	AIDA została znaleziona razem ze swoją mamą EMI (nr. ewid. 284/25) w Łodzi na ul. Zgierskiej. W schronisku przebywa od 15.06.2025 roku. Sunia ma 7 tygodni i waży 2,6 kg. Czipa brak. Niunia jest jeszcze karmiona przez mamę. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	74bb6690-b44f-4d7e-af61-87e0b6f0c2d1	t	Aida	SMALL	t	DOG	t	t	1
-22	9	f	\N	BATMAN został znaleziony na ul. Nefrytowej. W schronisku przebywa od 14.06.2025 roku. Psiaczek ma 9 lat i waży 6,6kg. Posiada zarejestrowany czip. Niekastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e90bdcbf-dbb5-4c87-9ea4-826a4ecc60fc	t	Batman	SMALL	t	DOG	f	f	1
-23	3	f	\N	SHAGGY został znaleziony na ul. Kopernika. W schronisku przebywa od 14.06.2025 roku. Psiaczek ma około 3 lat i waży 26kg. Posiada niezarejestrowany czip. Niekastrowany. Ma czarno niebieskie szelki. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b4eedc11-1c25-4494-8580-2eae9d4dc51b	f	Shaggy	BIG	t	DOG	t	f	1
-24	4	f	\N	BLANKA została znaleziona na ul. Sienkiewicza. W schronisku przebywa od 13.06.2025 roku. Kotka ma około 4 lat i waży 2,6kg. Czipa brak. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	84bd40ea-9dba-4524-acc5-3650657866b0	f	Blanka	MEDIUM	f	CAT	t	f	1
-25	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „ W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia. ” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest FADO. W schronisku przebywa od 10.06.2025 roku. Psiaczek urodzony 05.2023 roku i waży 9,5kg. Niekastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ea60e5d7-ba32-427d-b2d7-8e2bbca4f150	f	Fado	SMALL	t	DOG	f	t	1
-26	7	f	\N	KUBA KOLEJNY RAZ W SCHRONISKU !!! KUBA został znaleziony na ul. Lipowej w parku. W schronisku przebywa od 10.06.2025 roku. Psiaczek urodzony 11.2017 roku i waży 10kg. Posiada zarejestrowany czip, ale nr tel do właścicieli jest nieaktualny. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl _____________________________________ KUBA (nr ewid.393/19) został znaleziony na ul. Srebrzyńskiej. W schronisku przebywał od 9.04.2019 - 11.04.2019 roku - odbiór właścicielski	MALE	cc89eeca-766f-40df-9d20-f71868ae88bb	t	Kuba	SMALL	t	DOG	t	t	1
-55	0	f	\N	IGOR został znaleziony przy dworcu PKP Łódź Widzew, ul. Adamieckiego . W schronisku przebywa od 25.05.2025 roku. Psiaczek ma około 10 miesięcy i waży około 10kg. Czipa brak. Niekastrowany. Miał kolczatkę. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	25a1eb1a-94cf-4873-8db0-d974173978dc	t	Igor	MEDIUM	t	DOG	f	t	1
-56	4	f	\N	EMMA została znaleziona na ul. Promowa/Oksywie. W schronisku przebywa od 24.05.2025 roku. Sunia ma około 4 lat i waży 32kg. Czipa brak. Niekastrowana. EMMA trafił do schroniska z kliniki VetMed. Ma rozpadającego się guza przy lewej łopatce - przebywa pod opieką weterynarzy !! Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	483131c8-cabf-4b0c-94fb-840b8c84c905	t	Emma	BIG	t	DOG	t	t	1
-207	1	f	\N	Charlie niezwykła papużka Aleksandretta obrożna, która do schroniska trafiła jako znaleziona. Obecnie przebywa na kwarantannie, po zakończeniu której będzie szukała nowego domu, osoby doświadczonej w opiece nad papużkami.	MALE	2df66627-84e3-4708-8890-41e3a181e4ce	f	Charlie	SMALL	f	OTHER	f	f	4
-27	10	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest AMICA. W schronisku przebywa od 10.06.2025 roku. Sunia urodzona 11.2014 roku i waży 7,5kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	3ea0de4a-bebb-467e-8746-bc81b65ce1b0	t	Amica	SMALL	t	DOG	t	t	1
-28	11	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest ROCKY. W schronisku przebywa od 10.06.2025 roku. Psiaczek urodzony 08.2013 roku i waży 17,5kg. Niekastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	42101042-4241-4afc-9858-b6c2b92060e3	t	Rocky	MEDIUM	t	DOG	f	t	1
-29	12	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest malutka LULU. W schronisku przebywa od 10.06.2025 roku. Sunia urodzona 02.2013 roku i waży 5kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	085b2355-22b9-4194-811e-7ab965be77d6	f	Lulu	SMALL	t	DOG	f	f	1
-30	12	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest ROSA. W schronisku przebywa od 10.06.2025 roku. Sunia urodzona 08.2012 roku i waży 13,7kg. Kastrowana. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	a8f937b0-febe-4d69-9857-ff2c75b09178	t	Rosa	MEDIUM	t	DOG	f	t	1
-31	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest MAŃKA vel. FRUZIA. W schronisku przebywa od 10.06.2025 roku. Sunia urodzona 04.2023 roku. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	891172bd-c332-4e71-a01d-5c304f611d7c	t	Mańka	MEDIUM	t	DOG	t	t	1
-208	1	f	\N	Samiczka, została znaleziona. Jest oswojona, aczkolwiek trochę nieśmiała.	FEMALE	2ed5f646-0b3f-4418-81c6-bb6c71855d7a	t	Luiza	SMALL	f	OTHER	f	f	4
-32	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest DRAK. W schronisku przebywa od 10.06.2025 roku. Kot urodzony 08.2022 roku i waży 3kg. Kastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	db42a995-8196-41d9-b22b-0a7ab9f131fa	f	Drak	MEDIUM	t	CAT	f	t	1
-33	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest NIUNIA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 04.2022 roku i waży 2kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	47d257e1-64f2-489b-b689-9a45d8b81675	t	Niunia	SMALL	t	CAT	f	t	1
-34	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest BALBINA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 05.2022 roku i waży 2,3kg. Prawdopodobnie po zabiegu kastracji - ma cięte ucho. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	62be86c2-8891-4bbc-899d-b13569d7d707	t	Balbina	SMALL	t	CAT	f	t	1
-35	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest NIBIA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 01.2022 roku i waży 3kg. Prawdopodobnie po zabiegu kastracji - ma cięte ucho. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	62cdf778-1471-466b-bbd6-e93dd6f82986	t	Nibia	MEDIUM	t	CAT	f	t	1
-36	14	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest KEN. W schronisku przebywa od 10.06.2025 roku. Kot urodzony 03.2011 roku i waży kg. Kastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	8dca3aa1-5079-4b9f-9305-94653615f7ee	t	Ken	MEDIUM	t	CAT	t	t	1
-37	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest BASIA. W schronisku przebywa od 10.06.2025 roku. Kotka ma około 3 lat i waży 3,5kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	ec509afb-4f3b-4a75-b2d0-c7d90a5697a9	t	Basia	MEDIUM	t	CAT	f	t	1
-38	4	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest FREJA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 02.2021 roku i waży 2,7kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	b66f7089-d062-4f62-8da4-837966ce9885	t	Freja	MEDIUM	f	CAT	t	t	1
-39	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest NOSEK. W schronisku przebywa od 10.06.2025 roku. Kot urodzony 10.2023 roku i waży 2,5kg. Kastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b773d19a-11ee-4df7-bd09-25a5ae7130fa	t	Nosek	MEDIUM	t	CAT	f	t	1
-40	0	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest LOLA. W schronisku przebywa od 10.06.2025 roku. Kotka ma około 8 miesięcy i waży 2kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	4286b969-6e69-453a-9055-863d06fb13c7	f	Lola	SMALL	f	CAT	f	t	1
-41	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest DRAKA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 09.2022 roku. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	602b3f56-8ab7-455a-b23f-856c519f6b1f	t	Draka	SMALL	t	CAT	t	t	1
-42	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest DYMISŁAW vel. DYMEK. W schronisku przebywa od 10.06.2025 roku. Kot urodzony 04.2023 roku i waży 2kg. Kastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	caaeee94-b10d-4740-8240-6a434f65f0f1	t	Dymek	SMALL	f	CAT	t	t	1
-43	15	f	\N	GIN został znaleziony na ul. Hiacyntowej. W schronisku przebywa od 8.06.2025 roku. Kot ma około 15 lat i waży 2,4kg. Czipa brak. Kastrowany. GIN trafił do schroniska skrajnie zaniedbany. Kot jest silnie odwodniony, wychudzony a jego drobne ciałko pokryte jest masą dredów i filcem - został wygolony. Przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e1e62a68-1178-4fba-ae3a-9dc6b80deee3	t	Gin	MEDIUM	f	CAT	t	t	1
-44	2	f	\N	CABAN został znaleziony na ul. Bartoka. W schronisku przebywa od 8.06.2025 roku. Kot ma około 2 lat i waży 5,2kg. Czipa brak. NIekastrowany. Kot ma rany na głowie, prawdopodobnie po pogryzieniu - przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	0f62b900-fde2-4b6c-bbde-d5304aa92380	t	Caban	MEDIUM	t	CAT	f	t	1
-45	1	f	\N	LUSI została znaleziona na ul. Senatorskiej. W schronisku przebywa od 8.06.2025 roku. Sunia ma około roku i waży 23,2kg. Czipa brak. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	e48b1d4f-ffe0-4706-b654-f90f23ff3c87	t	Lusi	MEDIUM	t	DOG	f	f	1
-46	8	f	\N	BRUNO został znaleziony na ul. Okólnej. W schronisku przebywa od 8.06.2025 roku. Psiaczek ma około 8 lat i waży 17kg. Czipa brak. Niekastrowany. Psiaczek jest zapchlony, ma pełno kleszczy i kuleje na łapkę - przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c6beff73-4c19-4b18-96df-700ea65f54ee	t	Bruno	MEDIUM	t	DOG	f	f	1
-47	3	f	\N	MIMI została znaleziona na ul. Wólczańskiej. W schronisku przebywa od 7.06.2025 roku. Kotka ma około 3 lat i waży 2,5kg. Czipa brak. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	00acae2e-53cc-41e3-92b0-f42501f37a07	t	Mimi	MEDIUM	f	CAT	t	t	1
-48	2	f	\N	!! POLICJA PROSI o POMOC W USTALENIU WŁAŚCICIELI ZWIERZĘCIA i SPRAWCÓW PRZESTĘPSTWA !! FARCIK został przerzucony 6.06.2025 roku przez 2 metrowe ogrodzenie na teren Schroniska dla Zwierząt w Łodzi. Po złapaniu, przerażony psiaczek został przewieziony do VetMed gdzie uzyskał pierwszą pomoc lekarsko weterynaryjną. W schronisku przebywa od 7.06.2025 roku. FARCIK obecnie ma niespełna 2 lata i waży 9,8kg. Czipa brak. Niekastrowany. Psiaczek po zakończeniu kwarantanny będzie szukał ODPOWIEDZIALNEGO domu tymczasowego z opcją domu stałego gdy już zostanie uregulowana jego sytuacja prawna. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Osoby, które rozpoznają psiaczka prosimy o bezpośredni kontakt: VI Komisariatem Policji w Łodzi przy ul. Wysoka 45 ☎ 47 841 13 00 Kontakt do SdZ w Łodzi: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a4180886-b57e-4f22-a9e3-23961de23cd3	t	Farcik	SMALL	t	DOG	f	t	1
-49	0	f	\N	SEZAM został znaleziony na ul. Smugowej. W schronisku przebywa od 6.06.2025 roku. Psiaczek ma około 8 miesięcy i waży 11 kg. Czipa brak. Niekastrowany. Jest bardzo wychudzony. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	0b4344ec-1115-4e0e-9c67-e2e202753059	t	Sezam	MEDIUM	t	DOG	t	f	1
-50	3	f	\N	LONIEK został znaleziony na ul. Babickiego. W schronisku przebywa od 1.06.2025 roku. Psiaczek ma około 3 lat i waży 18,2kg. Czipa brak. Niekastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	715f0a4f-cffb-4574-ac7b-bef64b721e80	t	Loniek	MEDIUM	t	DOG	f	t	1
-51	2	f	\N	TEKLA została znaleziona na ul. Telefonicznej. W schronisku przebywa od 30.05.2025 roku. Kotka ma około 2 lat. Czipa brak. Niekastrowana. TEKLA jest prawdopodobnie po wypadku komunikacyjnym - przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	ad984530-ddff-491d-8a8c-6642cbb774a9	t	Tekla	MEDIUM	f	CAT	f	t	1
-52	2	f	\N	LIDAR został znaleziony na ul. Sienkiewicza. W schronisku przebywa od 29.05.2025r. Kot ma około 2 lat i waży 3,2 kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1df08d61-69a7-4d9d-9486-0404465a0d94	t	Lidar	MEDIUM	t	CAT	f	t	1
-53	9	f	\N	FOX został znaleziony na ul. Plantowej. W schronisku przebywa od 26.05.2025 roku. Psiaczek ma około 9 lat i waży 8,2kg. Czipa brak. Niekastrowany. Pies ma rozcięcie pod lewą pachą i wypadnięte prącie - przebywa pod opieką weterynarzy. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	51435700-5154-4efe-aafb-bfd2f99d49e7	t	Fox	SMALL	f	DOG	f	f	1
-54	6	f	\N	ROY został znaleziony na ul. Retkińskiej. W schronisku przebywa od 26.05.2025 roku. Psiaczek ma około 6 lat i wazy +/-9kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	096dd065-a05a-4869-af9a-63e75a706d2c	t	Roy	SMALL	t	DOG	f	t	1
-57	0	f	\N	KICIA i KITEK zostali znalezieni na ul. Polarnej. W schronisku przebywają od 22.05.2025 roku. Prawdopodobnie są rodzeństwem, które łączy cudowna więź. Obecnie mają około 7-8 miesięcy. KICIA waży 2,45kg. Czipa brak. Niekastrowana. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	104ab7ec-d8e3-4797-ad62-6daf8eb822db	t	Kicia	MEDIUM	f	CAT	f	f	1
-58	0	f	\N	KITEK i KICIA zostali znalezieni na ul. Polarnej. W schronisku przebywają od 22.05.2025 roku. Prawdopodobnie są rodzeństwem, które łączy cudowna więź. Obecnie mają około 7-8 miesięcy. KITEK waży 2,9kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	63ec0fb4-f0d0-4733-9945-3320f49e62e2	f	Kitek	MEDIUM	f	CAT	f	t	1
-59	2	f	\N	BALU ponownie trafił do schroniska, tym razem z powodu zgonu właściciela z ul. Limanowskiego. W schronisku przebywa od 20 .05.2025 roku. Psiaczek ma około 2,5 roku i waży 18,4 kg. Czip zarejestrowany. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ____________________________________ BALU (nr ewid. 133/24) został znaleziony na ul. Paderewskiego. W schronisku przebywał od 23.02.2024 - 29.02.2024 roku - odbiór właścicielski	MALE	c3df1958-4d59-4a34-a04a-072295d2228a	t	Balu	MEDIUM	f	DOG	t	t	1
-60	4	f	\N	PALMA została znaleziona na ul. Rzgowskiej. W schronisku przebywa od 17.05.2025 roku. Kotka ma około 4 lat i waży 2,67 kg. Czipa brak. Kotka wolnożyjąca, rany kąsane. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	697710a8-ea8b-4546-98c2-e690f69f2bd7	t	Palma	MEDIUM	t	CAT	t	t	1
-61	10	f	\N	MANIA została znaleziona na ul. Przewodniej, skąd trafiła do kliniki VetMed. W schronisku przebywa od 15.05.2025 roku. Kotka ma około 10 lat i waży 2 kg. Czipa brak. Niekastrowana. Ropomacicze. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	661e1096-e088-48e7-a629-ee8d66490361	t	Mania	SMALL	t	CAT	t	t	1
-62	9	f	\N	PSOTKA została znaleziona na ul. Mielczarskiego. W schronisku przebywa od 15.05.2025 roku. Kotka ma około 9 roku i waży 3,3 kg. Posiada zarejestrowany czip, ale właściciel nie odbiera tel. Kastrowana Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	7e8bcba2-af12-4d02-ac7f-80e2d1c3dec3	t	Psotka	MEDIUM	t	CAT	f	f	1
-63	8	f	\N	RITA została znaleziona na ul. Łanowej. W schronisku przebywa od 11.05.2025 roku. Kotka ma około 8 lat i waży 3kg. Czipa brak. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	1a8329be-b007-4df0-be75-09e4b0d3059a	t	Rita	MEDIUM	f	CAT	f	f	1
-64	3	f	\N	HENIA została zabezpieczona przez policję w wyniku porzucenia przez wcześniejszego właściciela. W schronisku przebywa od 8.05.2025 roku. Kotka ma około 3,5 roku i waży 3,45kg. Czipa brak. Kotka po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będzie szukała ODPOWIEDZIALNEJ rodziny i domu tymczasowego z opcją domu stałego gdy już zostanie uregulowana jej sytuacja prawna. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	5ea11399-183e-4212-ad2b-29ec47a56ffd	t	Henia	MEDIUM	t	CAT	t	t	1
-65	7	f	\N	DEXTER został znaleziony na ul. Sobótki. W schronisku przebywa od 2.05.2025 roku. Psiaczek ma około 7 lat i waży 16kg. Czipa brak. Niekastrowany. Ma czarne szelki z odblaskową taśmą. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f28af850-9b70-4858-8b3f-fb738a90846e	f	Dexter	MEDIUM	t	DOG	f	t	1
-66	3	f	\N	DREDZIK został znaleziony na ul. Olkuskiej. W schronisku przebywa od 1.05.2025 roku. Psiaczek ma około 3 lat i waży 18,6kg. Czipa brak. Niekastrowany. Ma bardzo zaniedbaną, skołtunioną sierść. Ma zapalenie spojówek. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jest.uml.lodz.pl	MALE	61880966-ac8c-4678-8b27-56f7a05b350f	t	Dredzik	MEDIUM	t	DOG	f	t	1
-67	1	f	\N	BULI został znalezion na ul. Zelwerowicza. W schronisku przebywa od 24.04.2025 roku. Kot ma około roku i waży 3,6 kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ba8d6303-436e-48bf-b49b-7baec805adfe	f	Buli	BIG	f	CAT	t	t	1
-68	8	f	\N	LEON KOLEJNY RAZ W SCHRONISKU !!! LEON został znaleziony na ul. Folwarcznej. W schronisku przebywa od 21.04.2025 roku. Psiaczek urodzony 03.2017 roku i waży 33kg. Posiada zarejestrowany czip, ale właściciel nie odbiera. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl _________________________________ LEON (nr ewid. 251/20) został znaleziony na ul. Brzezińskiej. W schronisku przebywał 29.03.2020 – 31.03.2020 – odebrany przez właścicieli _________________________________ LEON (nr ewid. 224/23) został znaleziony w Parku Poniatowskiego. W schronisku przebywał 22.03.2023 – 24.04.2023 – odebrany przez właścicieli _________________________________ LEON (nr ewid. 391/23) został znaleziony w Parku Julianowskim. W schronisku przebywał 27.05.2023 – 29.05.2023 – odebrany przez właścicieli _________________________________ LEON (nr ewid. 447/23) został znaleziony w Parku Mickiewicza. W schronisku przebywał 20.06.2023 – 22.06.2023 – odebrany przez właścicieli _________________________________ LEON (nr ewid. 779/24) został znaleziony na ul. Konarowej. W schronisku przebywał od 28.12.2024 - 31.12.2024 - odbiór właścicielski	MALE	9952db4c-c4ee-4f4b-a944-d6f0e26ff2cd	t	Leon	BIG	t	DOG	f	t	1
-69	8	f	\N	NEMO został znaleziony na ul. Hodowlanej. W schronisku przebywa od 20.04.2025 roku. Psiaczek ma około 8 lat i waży 12,5kg. Czipa brak. Niekastrowany. NEMO jest tak zestresowany, że nawet nie staje na łapakach. Wciska się w kąt i chce być niewidzialny dla świata. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	d14b6b4f-6814-455a-8985-a8cab10ec179	t	Nemo	SMALL	t	DOG	f	t	1
-70	10	f	\N	LILI została znaleziona na ul. Brzezińskiej. W schronisku przebywa od 19.04.2025 roku. Kotka ma około 10 lat i waży 1,6kg. Czipa brak. LILI ma liczne kleszcze, ropną wydzielinę z uszu i krwisty wypływ z dróg rodnych - przebywa pod opieką weterynarzy !! Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	76344944-f730-4f7a-b9a9-44b63513e490	t	Lili	SMALL	f	CAT	f	t	1
-71	0	f	\N	STEFAN został prawdopodobnie podrzucony na teren schroniska - jesteśmy w trakcie zabezpieczania monitoringu. Kot jest bardzo przyjazny i towarzyski. W schronisku przebywa od 16.04.2025 roku. Kotek ma około 8 miesięcy i waży 3,5 kg. Czipa brak. Niekastrowany Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	bb34ef81-a9d6-42eb-ae6f-4c49b3c868ed	t	Stefan	BIG	f	CAT	f	t	2
-72	1	f	\N	DUSZEK został odebrany podczas interwencji policji w Łodzi na ul. Wschodniej. W schronisku przebywa od 16.04.2025 roku. Psiaczek ma około roku i waży 23,7kg. Czipa brak. Jest wnętrem jednostronnym. Psiaczek zakończył kwarantannę i po przejściu obsługi weterynaryjnej będzie szukał ODPOWIEDZIALNEJ rodziny i SUPER domu. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	378aec34-d378-4599-943a-6c876d807e7f	t	Duszek	MEDIUM	t	DOG	f	t	2
-73	6	f	\N	FIKUŚ KOLEJNY RAZ W SCHRONISKU !! FIKUŚ został znaleziony na ul. Łęczyckiej. W schronisku przebywa od 16.04.2025 roku. Psiaczek urodzony 07.2018 roku i waży 10,6kg. Posiada zarejestrowany czip, ale nr tel do właścicielki jest nieaktualny. Niekastrowany. Ma czerwoną skórzaną obroże. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ______________________________ FIKUŚ (nr. ewid. 74/22) został znaleziony na ul. Piłsudskiego. W schronisku przebywał od 23.01.2022 - 24.01.2022 - odbiór właścicielski FIKUŚ (nr. ewid. 544/20) został zabezpieczony podczas interwencji. W schronisku przebywał od 20.07.2020 - 31.07.2020 - odbiór właścicielski	MALE	49937df8-7d6e-4615-8588-6159d702316b	f	Fikuś	SMALL	t	DOG	f	t	2
-74	1	f	\N	MIŁOSZ został znaleziony na ul. Wysokiej. W schronisku przebywa od 13.04.2025 roku. Psiaczek ma około roku i waży 31kg. Czipa brak. Niekastrowany. Ma szarą obroże i smycz. Kontakt w sprawie adopcji: 500 099 995; 501 437 232; 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	ff51cb06-0387-4592-b497-f1cebeb39f87	t	Miłosz	BIG	t	DOG	t	t	2
-75	7	f	\N	WASYL 🐹 szuka domu 🏠 WASYL trafił do schroniska 27.12.2024 roku prawdopodobnie po wypadku komunikacyjnym. Został znaleziony w Łodzi na ul. Konstantynowskiej. Psiaczek słaniał się na łapkach 😔 ale dzięki determinacji weterynarzy i opiekunów, udało  się postawić na łapki tego około 7 letniego #sŁODZIAKA. Wszystko wskazywało, że jest gotowy rozpocząć nowy rozdział życia u boku ODPOWIEDZIALNEJ rodziny. Tak też się stało… WASYL 17.03.2025 roku znalazł dom 🏠 Niestety po kilku tygodniach wystąpiły u niego gromadne napady drgawkowe. Od tamtej pory przeszedł szeroką diagnostykę łącznie z konsultacją neurologiczną. Przyjmuje leki przeciwdrgawkowe. Napady się nie powtórzyły jednak rodzinę to przerosło. Nie mając możliwości zapewnienia WASYL prawidłowej opieki, psiaczek ponownie trafił do schroniska 🥺 WASYL to otwarty, kontaktowy i bezkonfliktowy samiec. Jest stateczny, zrównoważony i nie ma problemów w nawiązywaniu relacji z nowo poznanymi osobami. Chętnie chodzi na spacery podczas których pięknie skupia uwagę na opiekunie. Ceni bliskość człowieka i jest wdzięczny za każdą poświęconą chwilę. Jak na łasucha przystało uwielbia smaczki 😊 WASYL jest psem całkowicie samodzielnym, który niewątpliwie potrzebuje miłości i troski ze strony opiekuna Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl __________________________________ WASYL (nr ewid. 775/24) w schronisku przebywał od 27.12.2024 - 17.03.2025	MALE	2e0e4f96-ef0f-4400-a8e1-c120453dc714	t	WASYL	BIG	f	DOG	f	t	2
-76	4	f	\N	IKAR został znaleziony na ul. Maratońskiej. W schronisku przebywa od 11.04.2025 roku. Kot ma około 4 lat i waży 4kg. Czipa brak. Niekastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: 500 099 995; 501 437 232; 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	fa0d7140-91e4-4f6f-88e0-be42907515d4	t	Ikar	MEDIUM	t	CAT	t	f	2
-77	10	f	\N	FRANIO został zabezpieczony przez Policje po zgonie właścicielki w Łodzi na ul. Kilińskiego. W schronisku przebywa od 11.04.2025 roku. Kot ma około 10 lat i waży 1,8kg. Po miesiącu bez opieki FRANIO jest skrajnie wycieńczony i przebywa pod opieką weterynarzy. Czipa brak. Kastrowany. FRANIO po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będzie szukał ODPOWIEDZIALNEJ rodziny i SUPER domu. Osoby zainteresowane adopcją prosimy o wypłenienie ankiety  przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	2bee5a1e-d0e1-416f-a221-9c553b6014e5	t	Franio	SMALL	t	CAT	f	f	2
-78	5	f	\N	HENIO został znaleziony na ul. Paderewskiego. W schronisku przebywa od 6.04.2025 roku. psiaczek ma około 5 lat i waży 11,4kg. Czipa brak. Kastrowany. Ma czarną, skórzaną obroże. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	36f1661d-883f-4d1b-9ba1-5b5bc48c4c24	t	Henio	SMALL	t	DOG	f	t	2
-79	1	f	\N	BALBINKA została znaleziona na ul. Pomorska/Juhasowa. W schronisku przebywa od 4.04.2025 roku. Sunia ma około roku i waży 12,3 kg Czipa brak. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	c50c797b-4675-4586-a187-5f449385acc6	f	Balbinka	SMALL	t	DOG	f	t	2
-80	2	f	\N	KOSTA została znaleziona na ul. Przybyszewskiego. W schronisku przebywa od 3.04.2025 roku. Sunia ma około 2 lat i waży 26 kg Czipa brak. Niekastrowana. Ma czarną obroże. Brak paliczka w palcu u lewej kończyny piersiowej. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	3cdb4c7a-829c-464e-b18a-1c60cfc30782	t	Kosta	BIG	t	DOG	f	f	2
-81	2	f	\N	ZEFIR został znaleziony na ul. Spornej. W schronisku przebywa od 2.04.2025 roku. Psiaczek ma około 2 lat i waży 7,7 kg Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	0c36e33a-fb20-4ce4-a26c-bb61a74d3bcd	t	Zefir	SMALL	f	DOG	f	t	2
-82	10	f	\N	GARFIELD został znaleziony na ul. Fabrycznej. W schronisku przebywa od 30.03.2025 roku. Kot ma około 10 lat i waży 4kg. Czipa brak. Niekastrowany. Ma ogromną ilość kleszczy !! Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	5a362016-d8a7-4370-84e6-f58195cf9261	t	Garfield	MEDIUM	t	CAT	f	t	2
-83	9	f	\N	GRUBSON trafił do schroniska w wyniku interwencji Policji. Został odebrany z opuszczonego mieszkania w Łodzi na ul. Solnej. W schronisku przebywa od 30.03.2025 roku. Przyjechał do nas z VetMed. Psiaczek ma około 9 lat i waży 16,8kg. Jest bardzo otyły !! Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f2cf1f35-04b6-4756-9333-ff29fa46c8e9	f	Grubson	SMALL	t	DOG	f	t	2
-84	2	f	\N	SZCZUREk został znaleziony na ul. Traktorowej. W schronisku przebywa od 29.03.2025 roku. Kot ma około 2 lat i waży 2,8kg. Czipa brak. Niekastrowany. SZCZUREK przyjechał do nas z VetMed. Prawdopodobnie jest po wypadku komunikacyjnym - przebywa pod opieką weterynarzy. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6c0c6fc0-6a81-46d2-9e7d-efbd07713faa	f	Szczurek	MEDIUM	t	CAT	f	t	2
-85	3	f	\N	PIXEL KOLEJNY RAZ W SCHRONISKU !! PIXEL został znaleziony na ul. Krzemienieckiej. W schronisku przebywa od 26.03.2025 roku. Psiaczek ma około 3 lat i waży 10,2 kg. Posiada zarejestrowany czip, ale nr tel. do właścicieli jest nieaktualny. Niekastrowany. Ma zaniedbaną sierść. Kontakt w sprawie odbioru zwierzęcia/ adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ________________________ PIXEL nr. ewid. 337/24 został znaleziony na ul. Armii Krajowej/ Napierskiego W schronisku przebywał od 21.05.2024 - 24.05.2024 roku - odbiór właścicielski.	MALE	f0b949c6-20c2-4932-b392-38ee6d35eb51	t	Pixel	SMALL	t	DOG	f	f	2
-86	12	f	\N	JOGI KOLEJNY RAZ W SCHRONISKU !! JOGI i SABINKA zostali znalezieni przywiązani razem czarną smyczą na ul. Dąbrowskiego. W schronisku przebywają od 14.03.2025 roku. Psiaczek ma 12 lat i waży 9,5kg. Posiada zarejestrowany czip, ale właściciel nie odbiera tel. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ______________________________________ JOGI (nr. ewid. 974/19) został znaleziony na ul. Tamka. W schronisku przebywał od 2.09.2019 - 4.09.2019 roku - został odebrany przez właściciela.	MALE	2f10174d-507f-4772-afd6-7e187fb09a0b	t	Jogi	SMALL	t	DOG	f	t	2
-87	16	f	\N	SABINA KOLEJNY RAZ W SCHRONISKU !!! SABINKA i JOGI zostali znalezieni przywiązani razem czarną smyczą na ul. Dąbrowskiego. W schronisku przebywają od 14.03.2025 roku. Sunia ma 16 lat i waży 18kg. Posiada zarejestrowany czip, ale połączenie z wybranym nr jest zablokowane. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ____________________________________ SABINA (nr. ewid. 356/22) została znaleziona na ul. Limanowskiego. W schronisku przebywała od 2.05.2022 - 3.05.2022 - została odebrana przez właścicielkę.	FEMALE	35752bea-8c30-46f1-bc80-74d789f8db6d	t	Sabina	MEDIUM	t	DOG	f	t	2
-88	1	f	\N	FRANEK 🐹 szuka domu 🏠 Szukasz PSYjaciela NA ZAWSZE ⁉ Kogoś, kto po przekroczeniu progu drzwi, będzie na Twój widok merdał ogonkiem i witał Cię z uśmiechem na pyszczku ⁉. FRANEK będzie WSPANIAŁYM towarzyszem dla całej rodziny 🐾🐾. Psiaczek do schroniska trafił 13.03.2025 roku z ul. Przyszkole. Swój początkowy strach zamienił na wdzięczność za okazaną mu uwagę oraz poczucie bezpieczeństwa, co mówi więcej niż tysiąc słów o warunkach, w jakich przebywał nim trafił do SdZ w Łodzi. FRANEK to roczny #sŁODZIAK ważący 20kg. Bardzo ładnie chodzi na smyczy i jest ciekawy świata. Podczas spacerów dużo węszy jednocześnie systematycznie, zerkając w stronę opiekuna. Raczej jest ostrożny w relacjach z innymi psami, co może wynikać ze złych doświadczeń, ale nie przejawia agresji i po mądrym zapoznaniu może być fajnym kompanem dla psa rezydenta. Młodzieniaszek jest bardzo łasy na smaczki wszelakie 😁. FRANEK mimo młodego wieku jest spokojnym, statecznym i zrównoważonym psiaczkiem o niebanalnym umaszczeniu i UROCZYM uśmiechu pełnym wdzięczności. Psy garnij #sŁODZIAKA i daj mu prawdziwy dom 👉 pełen ciepła, LO❤E i troski. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42. 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d3390511-2c4e-4b7f-ab78-67d367ab0805	t	FRANEK	MEDIUM	t	DOG	f	t	2
-89	8	f	\N	SZOGUN został znaleziony na ul. Sienkiewicza. W schronisku przebywa od 13.03.2025 roku. Kot ma około 8 lat i waży 3kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	460adc67-1ee4-424f-8f4b-285117e8bc30	f	Szogun	MEDIUM	t	CAT	f	t	2
-90	2	f	\N	TALAR 🐹 szuka domu 🏠 Psiaczek został znaleziony na ul. Chóralnej i od 5.03.2025 roku przebywa w SdZ w Łodzi. Obecnie ma około 2 lat i waży niespełna 30kg. Jest psem o niewątpliwie pięknym, czarnym umaszczeniu i bursztynowych oczach, ale jak wiadomo przy doborze nowego członka rodziny priorytetem jest charakter 💪 TALAR jest bardzo inteligentny i szybko się uczy. Pięknie komunikuje się z innymi psami nie wykazując przy tym żadnej agresji, ale też nie da się zdominować czy wejść sobie na głowę. Po mądrym zapoznaniu bez większych problemów dogada się z psim rezydentem. Psiaczek wymaga asertywnego i konsekwentnego opiekuna, który wyznaczy jasne granice jak również otoczy go troską i wykorzysta potencjał. Osoby aktywnej, która zapewni mu odpowiednią dozę ruchu, bodźców i nauczy zasad życia domowego. Jeśli szukasz PSYjaciela na długie lata a jednocześnie masz czas i chęć popracować z psem energicznym, inteligentnym i posiadającym niesamowity potencjał zachęcamy do zapoznania z tym #sŁODZIAKIM Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 721 024 609 - Aneta Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	061fd7a5-825c-4b08-92d1-45fe9a377250	t	TALAR	BIG	f	DOG	t	t	2
-91	8	f	\N	POMPON został znaleziony na ul. Zgierskiej przy pętli tramwajowej. W schronisku przebywa od 2.03.2025 roku. Psiaczek ma około 8 lat. Czipa brak. Niekastrowany. Ma atopowe pchle zapalenie skóry. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e2175d0f-03af-446b-a239-4d9417122e6a	t	Pompon	SMALL	t	DOG	f	t	2
-92	2	f	\N	BAMBO 🐹 szuka domu 🏠 BAMBO trafił do schroniska 28.02.2025 roku po zgonie właściciela w Łodzi na ul. Franciszkańskiej. Psiaczek obecnie ma około 2 lat i jest początkowo zdystansowanym, ale ciekawym świata #sŁODZIAKIEM. Gdy już zaufa i nabierze pewności siebie 👉 jest bardzo kontaktowym, spragnionym uwagi i nastawionym na zabawę kawalerem. UWIELBIA mizianie, lizać opiekunów po rękach i nadstawia doopkee do drapania 😁 Nie jest typem psa nachalnego, ale widać że jest spragniony zarówno uwagi jak i bliskości człowieka. W chwilach euforii poszczekuje a swym donośnym głosem wzbudza respekt i szacunek by po chwili zachowywać się jak szczeniak biegając jak szalony po wybiegu. BAMBO ma uroczy tik - unosi górną wargę. Podczas spacerów bardzo ładnie chodził na smyczy. Jest obyty i przyzwyczajony do życia w mieście - nie reaguje na samochody oraz mijanych ludzi a do psów podchodzi z zaciekawieniem. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 691 521 551 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	621089c4-53ac-43eb-b0c9-67fa68ece015	f	BAMBO	BIG	t	DOG	t	t	2
-93	6	f	\N	AGAT został znaleziony na ul. Zbiorczej. Był przywiązany w kolczatce i kagańcu przy bloku. W schronisku przebywa od 25.02.2025 roku. Psiaczek ma około 6 lat. Czipa brak. Niekastrowany. Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt: art. 6 ust. 1a - zabrania się znęcania nad zwierzętami, art. 6 ust. 2 pkt 11 - znęcaniem jest porzucenie zwierzęcia, a w szczególności psa lub kota, przez właściciela bądź przez inną osobę, pod której opieką zwierzę pozostaje, art. 35 - kto porzuca zwierzę, podlega karze pozbawienia wolności do 3 lat Jeśli ktoś rozpoznaje psa BARDZO PROSIMY o kontakt ze Straż Miejska w Łodzi: ☎ (42) 250 22 01 ☎ (42) 632 21 07 Psiaczek przebywa w Schronisko dla Zwierząt w Łodzi. Osoby zainteresowane adopcją prosimy o kontakt: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1342a289-3bc8-4dcc-be63-a734b12ba590	t	Agat	BIG	f	DOG	f	t	2
-94	1	f	\N	KOKOSZKA została znaleziona 19.02.2025 roku w Łodzi na ul. Sacharowa. Przyjechała do nas z VetMed. Prawdopodobnie jest po wypadku komunikacyjnym - przebywa pod opieką weterynarzy. W schronisku przebywa od 21.02.2025 roku. Kotka ma około roku i waży 2,3kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	61f579db-b613-453b-8404-280dcc7f66fc	t	Kokoszka	MEDIUM	t	CAT	f	t	2
-95	13	f	\N	GIENEK był łapany na torach kolejowych między stacją Łódź Dąbrowa a Chojny. Został zabezpieczony na ul. Dąbrowskiego. W schronisku przebywa od 11.02.2025 roku. Psiaczek ma około 13 lat i waży 8,7kg. Czipa brak. Niekastrowany. Ma guza jądra prawego. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7a998038-1a07-4074-a388-8c4088195aa8	t	Gienek	SMALL	t	DOG	f	t	2
-96	0	f	\N	DYZIO 🐹 szuka domu 🏠 Jak to możliwe, że tak młody psiaczek kolejny raz „zaginął” swojej właścicielce i trafił za kraty 😡 👉 DYZIO (nr ewid. 636/24) jako 6 miesięczny maluszek, został znaleziony na ul. Radwańskiej. W schronisku przebywał 13.10.2024 roku i jeszcze tego samego dnia został odebrany przez właścicielkę. 👉 Kolejny raz, jako 10 miesięczny psiaczek, został znaleziony na ul. Sienkiewicza. Do schroniska trafił 9.02.2025 roku i tkwi za kratami po dzień dzisiejszym. Młodzieniaszek był wychowywany po przez zadawanie bólu. Miał na szyi zaciśniętą paskudną kolczatkę 😡 Po kilku tygodniach wreszcie udało nam się skontaktować z właścicielką, której dalszy los psa jest całkowicie obojętny. Postępowaniem zajmie się mecenas a my skupmy się na DOBRU ZWIERZĘCIA i znalezieniu dla tego #sŁODZIAKA ODPOWIEDZIALNEJ rodziny oraz SUPER domu w którym pod troskliwą opiekę spędzi resztę życia. DYZIO 🐹 obecnie ma około roku i waży 15kg. Tyle razy zawiódł go człowiek, że początkowo zachowuje dystans i podczas pierwszego zapoznania jest przestraszony i nieufny. Dzięki PSIEpysznym smaczkom można wdać się w jego łaski i dołączyć do grona PSYjaciół godnych zaufania 😊 Jest młodziutkim, rozbrykanym kawalerem, który lubi aktywnie spędzać czas. Na smyczy początkowo ciągnie a ilość zapachów sprawia, że trudno mu skupić uwagę na opiekunie. Jak wiadomo, nie miał fajnego startu na tym świecie, ale jeśli trafi pod opiekę świadomej rodziny, która poświęci mu odrobinę czasu na naukę to nie mamy wątpliwości, że będzie fantastycznym towarzyszem dla całej rodziny. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	91779aff-d847-44d6-af2e-7ab30c495494	t	DYZIO	MEDIUM	t	DOG	f	f	2
-97	1	f	\N	DoDo został porzucony w Parku Moniuszki. Niespełna roczny psiaczek został przywiązany do drzewa. Obok stała torba z „dorobkiem życia” psa. Sprawą zajmuje się policja. Monitoringi zostały zabezpieczone a my przypominamy, że zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt: art. 6 ust. 1a - zabrania się znęcania nad zwierzętami, art. 6 ust. 2 pkt 11 - znęcaniem jest porzucenie zwierzęcia, a w szczególności psa lub kota, przez właściciela bądź przez inną osobę, pod której opieką zwierzę pozostaje, art. 35 - kto porzuca zwierzę, podlega karze pozbawienia wolności do 3 lat DoDo w schronisku przebywa od 5.02.2025 roku. Psiaczek ma niespełna rok i waży 26kg. Jest młodzieniaszkiem w typie dobermana. Czipa brak. Niekastrowany. W przypadku DoDo nie szukamy właścicielki bo jej poszukiwaniem zajmie się policja. Dla #sŁODZIAKA po kwarantannie będziemy szukali ODPOWIEDZIALNEJ rodziny i domu tymczasowego z opcją domu stałego gdy już sytuacja prawna psiaczka zostanie uregulowana. Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d28144c3-40d1-48a1-aed3-81c2beecd271	f	DoDo	MEDIUM	f	DOG	t	t	2
-98	8	f	\N	BURASEK, YUKA i KROPKA trafiły do schroniska w wyniku interwencji Policji. W schronisku przebywają od 31.01.2025 roku. Cała trójka była kiedyś kotami dzikimi, żyjącymi na wolności (mają cięte uszy). Ich właścicielka trafiła do szpitala, a koty zostały pozostawione same w mieszkaniu na kilka dni !! Dzięki kontaktowi ze strony sąsiadów mamy informacje: YUKA i KROPKA to siostry, które przyszły na świat w maju 2016 roku. Kotki pod koniec 2017 roku zostały otrute i w klinice weterynaryjnej wygrały walkę o życie. Po opuszczeniu szpitalika, Pani zabrała je do swojego mieszkania. Ich socjalizacja trwała kilka miesięcy i tak naprawdę nigdy nie były super miziastymi kotkami, ale żyły w otoczeniu człowieka w poszanowaniu ich przestrzeni. Od końca 2017 roku są też kotami NIEWYCHODZĄCYMI !! YUKA waży 4,3kg. Czipa brak. Kastrowana. Niestety już wiemy, że nawet jeśli właścicielka wyjdzie ze szpitala, to nie będzie osobą samodzielną. Pani nie będzie mogła opiekować się 3 kotami. Dla dobra kotów, które ostatnie lata spędziły w warunkach domowych, małymi kroczkami rozglądamy się za ODPOWIEDZIALNYMI rodzinami i domami stałymi. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	fbf4f87e-7b14-47f1-8433-504991685d99	t	Yuka	MEDIUM	f	CAT	t	t	2
-113	4	f	\N	MINIA 😻 zmieniła zdanie co do ludzi, więc PILNIE szukamy dla niej człowieka, który udowodni że da się nas kochać ❤️ Do schroniska trafiła 9.10.2024 roku z ulicy Zygmunta, po wypadku komunikacyjnym. Miała złamana żuchwę i stary uraz lewej łapki, która musiała być amputowana. Ma 4 lata, waży 3,6kg, czipa nie posiada. MINIA była kotką kompletnie dziką i nic nie wskazywało na to, że kiedykolwiek otworzy się na ludzi. A JEDNAK 😉 Pewnego dnia ciekawość zwyciężyła i kicia zaczęła podchodzić do opiekunów coraz bliżej. Obecnie przesiaduje w niewielkiej odległości od człowieka, spokojnie go obserwuje 👀 i powoli mruga, co na nasze można tłumaczyć jako uśmiech 😹 Przy odpowiedzialnym opiekunie z pewnością rozkwitnie i pokocha całym kocim serduszkiem 💓💓 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	3bf4d84b-92f8-4bb3-ad1e-adea4c105846	t	MINIA	MEDIUM	t	CAT	f	f	2
-99	8	f	\N	BURASEK, YUKA i KROPKA trafiły do schroniska w wyniku interwencji Policji. W schronisku przebywają od 31.01.2025 roku. Cała trójka była kiedyś kotami dzikimi, żyjącymi na wolności (mają cięte uszy). Ich właścicielka trafiła do szpitala, a koty zostały pozostawione same w mieszkaniu na kilka dni !! Dzięki kontaktowi ze strony sąsiadów mamy informacje: YUKA i KROPKA to siostry, które przyszły na świat w maju 2016 roku. Kotki pod koniec 2017 roku zostały otrute i w klinice weterynaryjnej wygrały walkę o życie. Po opuszczeniu szpitalika, Pani zabrała je do swojego mieszkania. Ich socjalizacja trwała kilka miesięcy i tak naprawdę nigdy nie były super miziastymi kotkami, ale żyły w otoczeniu człowieka w poszanowaniu ich przestrzeni. Od końca 2017 roku są też kotami NIEWYCHODZĄCYMI !! KROPKA waży 4,5kg. Czipa brak. Kastrowana. Niestety już wiemy, że nawet jeśli właścicielka wyjdzie ze szpitala, to nie będzie osobą samodzielną. Pani nie będzie mogła opiekować się 3 kotami. Dla dobra kotów, które ostatnie lata spędziły w warunkach domowych, małymi kroczkami rozglądamy się za ODPOWIEDZIALNYMI rodzinami i domami stałymi. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	193df59f-c886-4b83-9d3d-a78e1cda23ad	t	Kropka	MEDIUM	f	CAT	f	f	2
-100	13	f	\N	DEJZI została znaleziona na ul. Wysoka/Nawrot. W schronisku przebywa od 29.01.2025 roku. Sunia ma około 13 lat i waży 15 kg. Posiada zarejestrowany czip, ale nie mamy kontaktu z właścicielem. Ma czerwone szelki. Sunia na przedniej łapce ma bardzo dużego guza. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	2763720c-2685-4b2c-9003-f238b28a42a5	t	Dejzi	MEDIUM	t	DOG	f	t	2
-101	2	f	\N	LUNA została odebrana podczas czynności interwencyjnych w Łodzi na ul. Żeromskiego. Do schroniska trafiły 2 sunie i 5 kotów, które przebywały w tragicznych warunkach. W schronisku przebywają od 20.01.2025 roku. LUNA obecnie ma około 2 lat i waży 33kg. Czipa brak. Niekastrowana. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	793269ad-5753-4672-8392-1482f7d4b537	f	Luna	BIG	t	DOG	f	t	2
-102	5	f	\N	LEX został znaleziony na ul. Włókniarzy. W schronisku przebywa od 16.01.2025 roku. Psiaczek ma około 5 lat i waży 22kg. Czipa brak. Niekastrowany. Ma brązową skórzaną obroże. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f60ccecd-9baf-4e13-89ff-f754bd89ab25	t	Lex	MEDIUM	t	DOG	f	t	2
-103	1	f	\N	MATI 🐹 szuka domu 🏠 Jedna z delikatniejszych istot jakiej trafiły pod naszą tymczasową opiekę 😔 MATI został znaleziony 6.01.2025 roku na ul. Matek Polskich. Miał wtedy 1,5 roku, ważył 21kg i chciał być niewidzialny dla całego świata. Po przybyciu do schroniska, schował się za budą i telepiąc ze strachu przed człowiekiem obserwował świat zza krat. Jest uroczym psiaczkiem, który każdego dnia toczy walkę z własnymi lękami. Uczy się zaufania i życia w społeczeństwie. Jego pyszczek kryje smutek i niepewność ale w oczkach tli się nadzieja na lepsze jutro. Po zachowaniu MATIEGO widać, że ma za sobą pokłady złych doświadczeń z ludźmi co sprawia, że w pierwszym kontakcie z nowo poznanymi osobami jest bardzo przestraszony, niepewny i zdystansowany, ale też w sumie swoich strachów nie przejawia cienia agresji. Systematyczną pracą osiągamy małe sukcesy i liczymy, że pewnego dnia ten skrzywdzony psiaczek nauczy się cieszyć z bliskości człowieka. MATI nieśmiało macha swym połamanym ogonkiem na widok znanych mu osób, podchodzi na smaczki i w chwilach zapomnienia bawi się na wybiegu. Podczas ostatniego spaceru z suczką, zauważyliśmy, że towarzystwo otwartego i zsocjalizowanego czworonoga bardzo pomaga mu w poznawaniu świata…spacer odbył się znacznie płynniej a na wybiegu mieliśmy przyjemność obserwować jego zaczepki do wspólnej zabawy 💖 Psiaczka czeka amputacja ogonka dla PILNIE szukamy dla #sŁODZIAKA super domu  🏠 oraz ODPOWIEDZIALNEJ i spokojnej rodziny, która zrozumie, że pies po przejściach potrzebuje czasu by się otworzyć, zaufać i pokazać swój fantastyczny i niesamowicie delikatny charakter 💕 Dodatkowych informacji na temat #sŁODZIAKA udzielą wolontariuszki: ☎ 721 024 609 - Aneta ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f75cfa95-dd0d-434c-b7c6-5b575f91e9b1	t	MATI	MEDIUM	t	DOG	t	f	2
-104	1	f	\N	PUTEK 🐈‍ nieśmiała kulka do pokochania 🥰 Kocurek jest uroczy, około roczny, życie nie było dla niego łaskawe. Do schroniska trafił po wypadku komunikacyjnym, po którym zostały mu drobne problemy z równowagą, ale mimo to nieźle sobie radzi z codziennymi czynnościami, a nawet wspinaniem na drapaki. PUTEK jest nieufny i wycofany ale maślanymi oczami patrzy, jak wolontariusze bawią się z innymi kotami ❤️ Po czasie nieśmiało podchodzi bliżej i delikatnie próbuje włączyć się do zabawy. Podejrzewamy, że jak już pokocha swojego człowieka to calutkim sobą 😊 PUTEK został znaleziony na ul. Elbląskiej. Do schroniska trafił 30.12.2024 roku z kliniki lancet. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	16256cd3-842a-444e-afaa-2f3a2225f2c1	f	PUTEK	MEDIUM	t	CAT	f	t	2
-105	7	f	\N	SZADO został znaleziony na ul. Byszewskiej. W schronisku przebywa od 29.12.2024 roku. Psiaczek ma około 7 lat i waży 32kg. Czipa brak. Niekastrowany. Ma skórzaną brązową obroże. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9ecd45fd-9915-4f65-bb3f-860fe9cc2776	t	Szado	BIG	t	DOG	f	t	2
-106	5	f	\N	TROI został znaleziony na ul. Pomorskiej. W schronisku przebywa od 15.12.2024 roku. Psiaczek ma około 5 lat i waży 9kg. Czipa brak. Niekastrowany. TROI ma stare złamanie wieloodłamowe w prawym stawie łokciowym - przebywa pod opieką weterynarzy ! Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d8567f14-c5d6-464d-89ce-53aeb895aabb	t	Troi	SMALL	f	DOG	f	f	2
-107	16	f	\N	FAKIR został zabezpieczony z powodu śmierci właściciela z ul. Sienkiewicza. W schrpnisku przebywa od 2.12.2024 roku. Psiaczek ma 16 lat i waży 10,4 kg. Czipa zarejestrowany. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	db787471-f178-4a38-b399-7d86264cc62d	t	Fakir	MEDIUM	t	DOG	f	f	2
-108	8	f	\N	KOREK został znaleziony na ul. Łagiewnickiej. W schrpnisku przebywa od 1.12.2024 roku. Psiaczek ma około 8 lat i waży 13 kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4de8b1fa-6cf1-4a90-a534-cbd09ab5b3e6	t	Korek	MEDIUM	f	DOG	f	t	2
-109	15	f	\N	PILNIE szukamy ODPOWIEDZIALNEJ rodziny 🤩 i SUPER domu 🏠 dla seniorka BARNABY 🐹 BARNABA przyjechał do schroniska 10.11.2024 roku z kliniki Lancet. Został z naleziony w Łodzi na ul. Inowrocławskiej. Staruszek ledwo poruszał się o własnych siłach i sporo czasu przebywał pod opieką weterynarzy. Po stanie psa w dniu przyjęcia do schroniska łatwo ocenić, że wcześniejsze życie go nie rozpieszczało 😔 DZISIAJ 👉 to dziarski #sŁODZIAK, którzy bardzo ceni kontakt z człowiekiem. Bez większych problemów dogaduje się z suczkami. Z samcami bywa równie, ale mądre zapoznanie niewątpliwie zwiększy szanse na nawiązanie PSYjacielskich relacji . Ładnie chodzi na smyczy w swym powolnym tempie. Dla BARNABY szukamy spokojnej, statecznej rodziny, która otoczy psiaczka po przejściach domowym ciepłem 💞 BARNABA obecnie ma około 15 lat i waży 20kg. Jest zaszczepiony, odrobaczony, zaczipowany oraz po zabiegu kastracji. Psiaczek ma niedoczynność tarczycy w związku z czym dożywotnio musi przyjmować leki. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	596edc78-61f6-4e96-96db-a1c2eacc830d	t	BARNABA	MEDIUM	t	DOG	t	t	2
-110	3	f	\N	GIENIA została znaleziona na ul. Rzgowskiej. W schronisku przebywa od 30.10.2024 roku. Kotka ma około 3 lat i waży 3,1 kg. Kotka ma przepuklinę przeponową, nieoperacyjną. Czipa brak. Niekastrowana. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	c1056c6f-208e-4fe1-bc38-cec6f390128f	t	Gienia	MEDIUM	t	CAT	f	t	2
-111	5	f	\N	ZOSIA i KASIA zostały znalezione w Łodzi na ul. Piotrkowskiej. W schronisku przebywają od 23.10.2024 roku. Kotka ma około 5 lat i waży 3,5 kg. Posiada niezarejestrowany czip. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	c7c822f7-fba4-4f5c-9a04-784fde88a2da	f	Zosia	MEDIUM	t	CAT	t	t	2
-112	5	f	\N	FISZKA 🐹 PILNIE szuka ODPOWIEDZIALNEJ rodziny i SUPER domu 🏠 Sunia została znaleziona 22.10.2024 roku w Łodzi na ul. Sienkiewicza. Miała cieczkę i na szyi różową obroże z ćwiekami. Obecnie ma około 5 lat i waży 20kg. Dla FISZKI 🐹 PILNIE szukamy rodziny by w warunkach domowych mogła dochodzić do siebie po zalecanej przez okulistę i planowanej operacji usunięcia lewej gałki ocznej. FISZKA od pewnego czasu niepokojąco interesuje się swoim ogonem, który zaczęła podgryzać. Badania wykazały, że ma zmiany zwyrodnieniowe kręgów ogonowych. Przenieśliśmy sunie w „spokojniejsze” miejsce na terenie schroniska, ale nadal to buda i kojec a po zachowaniu oceniając, sunia wcześniejsze lata życia spędziła w domu u boku człowieka. FISZKA to przykład kumulacji psiego nieszczęścia 😢 Została prawdopodobnie świadomie porzucona przez cZŁOwieka i w warunkach schroniskowych przyszło jej toczyć walkę zarówno z emocjami jak i o sprawność fizyczną. Nie o takim losie marzymy dla naszych podopiecznych 😔 dlatego BARDZO PROSIMY 🙏 otwórzcie swoje serca na tą skrzywdzoną przez los istotę i razem znajdźmy jej CUDOWNY dom, pełen miłości, troski i ciepła. FISZKA to bardzo łagodna, zrównoważona psinka. Początkowo jest trochę nieśmiała, ale bez większych problemów przełamuje pierwsze lody i nawiązuje pozytywną relację z człowiekiem. Ceni bliskość 💗 przychodzi na głaski. UWIELBIA zabawki 👉 piłeczka jest SUPER, ale to szarpak zdecydowanie jest jej faworytem 😁 Bardzo ładnie wykonuje podstawowe komendy jak siad i łapa. Lubi aktywnie spędzać czas i nie tak łatwo ją zmęczyć. Bieganie i szaleństwa na wybiegu sprawiają jej ogrom radości. Na smyczy początkowo ciągnie co prawdopodobnie wynika z ekscytacji związanej ze spacerem. W stosunku do mijanych psów, jest obojętna – podchodzi na zapoznanie i ignoruje ich obecność. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	9d12b6fb-8466-4dda-bd74-42fb11448650	f	FISZKA	MEDIUM	t	DOG	t	f	2
-114	1	f	\N	FRED i BARNEY 🐹 PILNIE szukają domu 🏠 razem lub osobno 🐾🐾 Prawdopodobnie bracia, znalezieni 7.10.2024 roku w Łodzi na ul. 1 Korpusu Pancernego Wojska Polskiego. Obecnie mają niespełna 2 lata i ważą +/- 25kg. #sŁODZIAKI mają OGROM UROKU OSOBISTEGO a w duecie są prawdopodobnie najfajniejszymi cudaczkami w SdZ w Łodzi 🤩 FRED (ciemniejszy) jest zdecydowanie ostrożniejszy w pierwszym kontakcie. BARNEY (jaśniejszy) wychodzi z założenia, że świat powstał aby go kochać 💗 Oprócz faktu, że UWIELBIAJĄ swoje towarzystwo, to cenią 👉 długie spacery, możliwość wspólnych szaleństw na wybiegu, PSIEpyszne jedzonko i wszelkiego rodzaju smaczki 😁 Dogadują się REWELACYJNIE ➡️ prawdopodobnie od szczeniaka są razem, w schronisku od pierwszych dni dzielą kojec, żyją w pełnej komitywie a podczas spacerów zawsze oglądają się za sobą i czekają na siebie. Nie chcemy zablokować ich drogi do domów, dlatego podjęliśmy trudną decyzję o ewentualnym ich rozdzieleniu 💔 PSYgarnij #sŁODZIAKA 💞 ze Schroniska dla Zwierząt w Łodzi ❣️ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9799d6fd-38a6-432b-8247-9f459c092a19	t	FRED	MEDIUM	t	DOG	f	t	2
-115	1	f	\N	FRED i BARNEY 🐹 PILNIE szukają domu 🏠 razem lub osobno 🐾🐾 Prawdopodobnie bracia, znalezieni 7.10.2024 roku w Łodzi na ul. 1 Korpusu Pancernego Wojska Polskiego. Obecnie mają niespełna 2 lata i ważą +/- 25kg. #sŁODZIAKI mają OGROM UROKU OSOBISTEGO a w duecie są prawdopodobnie najfajniejszymi cudaczkami w SdZ w Łodzi 🤩 FRED (ciemniejszy) jest zdecydowanie ostrożniejszy w pierwszym kontakcie. BARNEY (jaśniejszy) wychodzi z założenia, że świat powstał aby go kochać 💗 Oprócz faktu, że UWIELBIAJĄ swoje towarzystwo, to cenią 👉 długie spacery, możliwość wspólnych szaleństw na wybiegu, PSIEpyszne jedzonko i wszelkiego rodzaju smaczki 😁 Dogadują się REWELACYJNIE ➡️ prawdopodobnie od szczeniaka są razem, w schronisku od pierwszych dni dzielą kojec, żyją w pełnej komitywie a podczas spacerów zawsze oglądają się za sobą i czekają na siebie. Nie chcemy zablokować ich drogi do domów, dlatego podjęliśmy trudną decyzję o ewentualnym ich rozdzieleniu 💔 PSYgarnij #sŁODZIAKA 💞 ze Schroniska dla Zwierząt w Łodzi ❣️ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6f0ba7a3-3d5a-4c1b-9e43-33aab5a18649	f	BARNEY	MEDIUM	t	DOG	f	t	2
-116	7	f	\N	PSIEkochany SIMON 🐹 szuka domu 🏠 Psiaczek został znaleziony na ul. Próchnika/Piotrkowska i od 29.09.2024 roku odsiaduje wyrok za niewinność. Obecnie ma około 7 lat i wazy 15kg. Jest po pełnej obsłudze weterynaryjnej GOTOWY wyruszyć w podróż życia i stać się pełnoprawnym członkiem ODPOWIEDZIALNEJ rodziny 💞 SIMON to bardzo emocjonalna istota, która przywiązuje się do opiekunów i oddaje im całe swe serduszko. Jest miły, grzeczny i spragniony bliskości człowieka na którym skupia swą uwagę w 100%. Nie przejawia cienia agresji i dogaduje się z innymi psiaczkami, ale zdecydowanie w docelowym domu stałym chciałby być jedynakiem, by ręce człowieka głaskały tylko jego i zawsze miał miejsce na położenie pyszczka na kolanach opiekuna w którego niewątpliwie bardzo chętnie będzie się wtulał. Dzięki systematycznym spacerom ładnie zachowuje czystość. Na smyczy z osobami które zna i darzy zaufaniem chodzi poprawnie. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	58b82e26-755f-40a7-abe7-f79ee3ebbabb	t	SIMON	MEDIUM	t	DOG	f	t	2
-117	8	f	\N	FIDO 🐹 szuka domu 🏠 FIDO 🐹 trafił do schroniska 11.09.2024 roku w wyniku zgonu właścicielki. Całe życie spędził mieszkając w kamienicy na ul. Tymienieckiego. Niestety, jego życie nie było sielanką 😔 ale dalece odbiegało od codziennego zgiełku, kojca i budy do której trafił. Psiaczek ma około 8 lat i waży 20kg. Ma komplet sczepień, jest zaczipowany i po zabiegu kastracji. PILNIE szukamy dla smutnego i tracącego nadzieję na lepsze jutro 🥺 FIDO ODPOWIEDZIALNEJ rodziny, która otoczy psiaczka po przejściach troską i domowym ciepłem. Jaki jest FIDO 👇 👇 👇 ✅ w kojcu przestraszony i zdezorientowany, ale grzeczny ✅ na wybiegu lubi aktywnie spędzać czas ✅ nie jest nachalny w okazywaniu uczuć w tym wdzięczności, ale lubi głaskanie ✅ bardzo przyjazny ✅ ładnie chodzi na smyczy ✅ zna podstawowe komendy - siad, łapa i poproś ✅ ma neutralny stosunek do innych psów Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: ➡ https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7e757601-7055-4f9c-b124-866d73302189	t	FIDO	MEDIUM	t	DOG	f	t	2
-118	8	f	\N	CZARLI został znaleziony w Parku 3-go Maja. W schronisku przebywa od 25.08.2024 roku. Pies ma około 8 lal i waży 29 kg Czipa brak. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1e45255d-62c6-4367-90e1-966e3610e6e7	f	Czarli	BIG	f	DOG	f	t	2
-119	1	f	\N	BARY 🐹 szuka domu 🏠 Samiec w typie belga znaleziony 6.08.2024 roku na ul . Składowej przy parku Helenów. Miał kolczatkę, kaganiec i był przywiązany do drzewa 😡 Trafił do nas jako młody, około roczny psiaczek ważący 27kg. Początkowo był bardzo zdystansowany, zwłaszcza w relacjach z mężczyznami, których nie wpuszczał do swojego kojca. BARY to pies z „urazem” do mężczyzn i nie to, że ich nie akceptuje - potrzebuje DUŻO CZASU by nabrać do mężczyzn zaufania. Trzeba uzbroić się w cierpliwość i tylko dzięki systematycznej pracy, licznym spacerom, i determinacji można zyskać jego zaufanie. W relacjach z kobietami jest prawdziwym dżentelmenem, który szybko otwiera się i pokazuje swój młodzieńczy charakter. Łaknie bliskości i ma w sobie ogromne pokłady miłości oraz niespożytkowanej energii. Za chwilę uwagi wdzięczy się niczym szczeniak. PSYjaciel o radosnym usposobieniu, który chętnie spędza czas na pieszczotach. Swą pozytywną energią zaraża każdego. UWIELBIA smaczki za które chętnie wykonuje komendy. Jest bystry i skory do nauki. Pięknie chodzi na smyczy a spacery z nim to prawdziwa przyjemność. BARY nie toleruje innych psów. Jest indywidualistą, który w docelowym domu stałym powinien być jedynakiem ‼ Dla BAREGO szukamy opiekunów świadomych potrzeb rasy i nastawionych na pracę z belgiem, którego potencjał należy wykorzystywać każdego dnia. Dodatkowych informacji na temat psiaczka udzielą wolontariusze: ☎ 882 117 880 - Jula ☎ 574 775 494 - Daniel Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e2f171cf-dd47-4d79-a7f1-4989c47690df	f	BARY	BIG	t	DOG	f	t	2
-120	5	f	\N	DŻEKI został odebrany interwencyjnie w Łodzi na ul. Wodnej. Do schroniska trafił 1.08.2024 roku razem z samcem LOLKIEM. Psiaczek ma około 5 lat i waży 28kg. Czipa brak. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4c3eaad0-40fc-4548-a1a4-7cd17daf535b	t	Dżeki	BIG	t	DOG	t	f	2
-121	10	f	\N	MIRANDA została znaleziona na ul. Szczecińskiej. W schronisku przebywa od 30.07.2024 roku. Kotka ma około 10 lat i waży 2,6kg. Ma braki w uzębieniu, ranę na prawym łuku skroniowym, prawdopodobnie jest po wypadku - przebywa pod opieką weterynarzy. Czipa brak. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	54bb1a40-0183-4699-8515-6cef8d66cb69	t	Miranda	MEDIUM	t	CAT	f	t	2
-122	6	f	\N	BALTO został znaleziony na ul. Zimna Woda. W schronisku przebywa od 29.07.2024 roku Psiaczek ma około 6 lat i waży 40kg Posiada czip - wiadomość że pies jest w schronisku została przekazana. Czekamy na kontakt z właścicielem i odbiór psiaczka. Ma zapalenie prawego przewodu słuchowego Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	25008ebe-0f16-40c7-b041-f255bcf54f16	t	Balto	BIG	t	DOG	f	f	2
-123	4	f	\N	GRYZAK 🐹 szuka domu 🏠 Psiaczek został znaleziony 24.07.2024 roku w Łodzi na ul. Aleksandrowskiej. Był wykastrowany i miał łańcuszkową obroże, ale właściciele nie zgłosili się po zgubę 😔 dlatego rozglądamy się za ODPOWIEDZIALNĄ rodziną dla „kabanosa” 🙈 GRYZAK po przybyciu do schroniska był bardzo zestresowany i warczeniem oraz pokazywaniem uzębienia pięknie wyznaczał granice. Minęły tygodnie i zaufał tymczasowym opiekunom na widok których nieśmiało merda ogonem. Lubi przebywać w otoczeniu ludzi, ale zdecydowanie stresuje go nadmierna aprobata oraz zainteresowanie. Ceni własną przestrzeń i w docelowym domu stałym raczej powinien być jedynakiem. Ładnie chodzi na smyczy i podczas spacerów jest aktywnym młodzieniaszkiem. GRYZAK obecnie ma około 4 lat. Jest zaszczepiony, zaczipowany, ma komplet szczepień i jest po zabiegi kastracji. Na swoją wymarzoną, świadomą i ODPOWIEDZIALNĄ rodzinę 💞 czeka za kratami schroniskowego kojca 😢 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f0c07acb-2d83-4b4a-ae4f-21e2459e69bc	t	GRYZAK	MEDIUM	t	DOG	f	t	2
-124	3	f	\N	BANDZIOR został znaleziony na ul. Padewskiego przywiązany na tyłach kancelarii kościoła. W schronisku przebywa od 21.07.2024 roku. Psiaczek ma około 3 lat i waży 17kg. Czipa brak. Niekastrowany. Ma czarną, materiałową obrożę. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.p l	MALE	3a07dce7-02b6-4099-815f-4ebc3b4d5745	f	Bandzior	MEDIUM	f	DOG	t	t	2
-125	7	f	\N	REMI 🐹 szuka domu 🏠 Sunia ma około 6 lat i do schroniska trafiła 14.05.2024 roku z ul. Czechosłowackiej. Jej właściciel zmarł a bidulka przez miesiąc siedziała w opuszczonym mieszkaniu. Czasem ktoś przypomniał sobie o jej istnieniu, ale nikt nie otoczył wiernej psinki opieką. REMI początkowo była przerażona otaczającą ją rzeczywistością. Prosto z kanapy trafiła za kraty 🥺 Podobno czas leczy rany i po kilku tygodniach pracy nad zdobyciem jej zaufania pojawiły się pierwsze efekty. Stres opadł i dzięki opiekunom i wolontariuszom w oczach tej istoty ponownie zaczęła tli się iskierka nadziei, że zazna jeszcze troski i domowego ciepła. REMI jest piękna, ułożona i zapewne szybko przypomni sobie, co to domowe pielesze oraz rodzina. Sunia jest bardzo mądra, miła i oddana ale potrzebuje czasu by poznać i zaufać człowiekowi. Wychowała się u boku starszego pana i każdego dnia tęskni za bliskością. Nie jest typem psa nachalnego, ale nie wzgardzi pieszczotami oraz smaczkami. Skora do nauki  👉 uroczo wykonuje komendę "poproś" siadając na doopcee jak surykatka. W początkowej fazie spaceru mocno ciągnie, ale po chwili sama opanowuje emocje i uspakaja się. Na wybiegu węszy nie tracąc czasu na zabawę. REMI wychowała się jako jedynaczka. W schronisku kojec zamieszkuje sama, ale podjęliśmy kilka prób połączenia REMI z innymi psami i niestety, ma charakter dominujący. Jest też zasobowa jeśli chodzi o relacje z opiekunem, którego chciałaby mieć tylko dla siebie. Podczas spacerów raczej lekceważy inne czworonogi. Dodatkowych informacji na temat suni udzieli wolontariuszka: ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	9fffe79d-6297-464e-baac-d78f3292b74a	t	REMI	MEDIUM	t	DOG	t	f	2
-126	13	f	\N	CZIKO 🐹 szuka domu 🏠 CZIKO został odebrany interwencyjnie z mieszkania na ul. Przewodniej ➡️ był przywiązany w kagańcu do segmentu ‼ W schronisku przebywa od 10.05.2024 roku. Psiaczek obecnie ma około 12 lat i waży 19kg. CZIKO nie słyszy, ale nie przeszkadza mu to w codziennym funkcjonowaniu. Miał guza w okolicy odbytu, który został usunięty a jego stan zdrowia jest dobry. Psiaczek jest sympatycznym seniorem o wyjątkowych oczach. Początkowo jest ostrożny w kontakcie z ludźmi. Osoby których nie zna mogą początkowo mieć trudność w zapięciu go na smyczy, jednak jak na głodomorka przystało PSIEpysznym smaczkiem daje się przekonać. CZIKO zawiódł człowiek i na jego zaufanie trzeb zapracować. Gdy już kogoś polubi, obdarzy zaufaniem i zyska poczucie bezpieczeństwa oraz stabilizację, pokazuje swój PSYjacielski charakter i okazuje wdzięczność. Smutna prawda, ale dla niektórych psów, pobyt w schronisku jest szansą na „normalne życie”. To właśnie w schronisku, dzięki pracownikom i wolontariuszom, którzy poświęcają im czas odbudowują swą wiarę w człowieka. Zaczynają cieszyć się spacerami, wspólną zabawą. CZIKO to niewątpliwie fantastyczny pies. Jest żywiołowy, energiczny i obala stereotyp, że wiek decyduje o aktywności czworonoga. Na jego pyszczku pojawia się nieśmiały uśmiech, oczka świecą się ze szczęścia a nam serca pękają, bo po chwilach zapomnienia ponownie wraca do kojca i budy 😔 BARDZO PROSIMY 🙏 od dobry domek i ODPOWIEDZIALNĄ rodzinę dla psiaczka po przejściach 💔 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	fe2717d1-08b5-4d2e-9dc1-58f4edc13fd2	t	CZIKO	MEDIUM	t	DOG	f	t	2
-127	5	f	\N	PORTO 🐹 szuka domu 🏠 Psiaczek trafił do schroniska 8.05.2024 roku z ul. Sokołowskiej. Obecnie ma około 4 lat i waży 31kg. Ładnie chodzi na smyczy. Na spacerach skupia się na węszeniu i poznawaniu świta od jak najlePSIEjszej strony. Przywołany skupia uwagę na opiekunie. W stosunku do innych psów nie przejawia agresji, ma stosunek raczej obojętny. W kojcu jest bardzo grzeczny, nie szczeka nie skacze na kraty. Zna podstawowe komendy i na pewno będzie skory do dalszej nauki. Nie ma większych problemów w nawiązaniu kontaktu z nowo poznanymi osobami. W chwilach stresowych wsparcia szuka w opiekunie. PORTO to bardzo miły, zrównoważony kawaler dla którego PILNIE szukamy ODPOWIEDZIALNEJ i dość spokojnej rodziny i super domu 🏠 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b9d3663e-1b29-47a4-8958-06da4b275913	t	PORTO	BIG	t	DOG	f	t	2
-128	4	f	\N	LOTEK 🐱 szuka domu 🏠 89% dzikuska i 11% szansy na miłość! Kotek ma dopiero 3 lata i przy bardzo odpowiedzialnym i cierpliwym właścicielu może się otworzyć i zaufać. Obecnie większość czasu spędza w zamkniętych budkach, ukrywając się przed światem. Da się go ostrożnie pogłaskać, co daje nadzieję na oswojenie. Natomiast w warunkach schroniskowych zajmie to zdecydowanie więcej czasu, niż w domu. Jeśli pracować ostrożnie, na zasadach Lotka, można pomoc mu znaleźć rodzinę ❤️ Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	5ad4765e-3a9f-421b-84b9-14c5872aef58	t	LOTEK	BIG	t	CAT	f	f	2
-129	11	f	\N	FELICJAN 🐹 szuka domu 🏠 Około 10 letni psiaczek, 18.02.2024 roku został znaleziony na ul. Artyleryjskiej. Jego wcześniejsze życie nie było sielanką 🥺 Z opowieści sąsiadów, którzy skontaktowali się z nami po przybyciu FELICJANA do schroniska, wynikało że był traktowany wyjątkowo podle i okrutnie przez właściciela. Był bity, kopany, przywiązywany do kaloryfera, gdzie całe dnie spędzał w swoich odchodach. Upodlony do granic możliwości 😭 Tutaj nie jest głodny, ma wodę, ma spacery, wolontariuszy, ale schronisko to nie dom mimo, że jego warunki bytowania znacznie poprawiły się. FELICJAN to psiaczek w oczach którego widać ból i cierpienie. Jest niezwykle kochany, łagodny ale też pogodzony ze swym losem ❣️ Na widok wolontariuszy cieszy się. Mimo dojrzałego wieku jest bardzo energiczny i skory do zabaw. Przez większość czasu na wybiegu zajmuje się sobą. Na smyczy chodzi bardzo ładnie a podczas spacerów obwąchuje każdy krzaczek. Niespecjalnie przepada za pieszczotami, potrzebuje czasu by zaufać człowiekowi i nabrać pewności siebie. Ma obojętny stosunek do innych psów – nie szuka zwady ani nie zachęca do wspólnej zabawy. FELICJAN szuka ODPOWIEDZIALNYCH i cierpliwych opiekunów. Osób które zrozumieją, że pies po przejściach potrzebuje czasu zarówno na zaaklimatyzowanie się domu jak i zbudowaniu pozytywnej relacji. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 799 056 050 - Iza Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	8bcd1f11-2fc5-41e5-bdae-0369b7e099b2	f	FELICJAN	MEDIUM	t	DOG	f	t	2
-130	3	f	\N	GULIWER został znaleziony na ul. Łaskowice. W schronisku przebywa od 5.02.2024 roku. Psiaczek ma około 2 lat. GULIWER jest w trakcie socjalizacji !! Uczy się zaufania do człowieka, chodzenia na smyczy i budowania pozytywnej relacji. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	785b0d6a-bc5e-4323-a45e-299472577f27	t	Guliwer	BIG	t	DOG	f	t	2
-131	5	f	\N	KSIĄŻE 🐹 szuka domu 🏠 Około 4 letni samiec, 28.01.2024 roku na ul. Rudzkiej w Łodzi, został przekazany Animal Patrol przez kobietę, która twierdziła, że go znalazła. Od przybycia KSIĘCIA do schroniska wiedzieliśmy, że było to kłamstwo ‼ W pierwszych dniach w schronisku KSIĄŻE przejawiał agresję. Nie pozwalał się dotknąć, zbliżyć się do siebie, wejść do kojca, zdjąć szelek. Pierwsze tygodnie to była żmudna praca opiekuna, który robił wszystko, by zyskać jego zaufanie i zbudować pozytywną relację. Wyjścia na wybieg to była szarpanina. Opiekun niczym wóz ciągnięty przez stado koni, był szarpany na wszystkie strony 🙈 Na wybiegu praca okazała się znacznie łatwiejsza 💪 KSIĄŻE nie zna zabawek ani zabaw więc swą uwagę skupia na człowieku i węszeniu. Jest bardzo grzeczny, posłuszny i stateczny. Zna podstawowe komendy. Do znanych osób podchodzi pewnie i domaga się minimalnej dawki pieszczot. P odejrzewamy, że wcześniejszy właściciel traktował KSIĘCIA jak cżłonka rodziny, dlatego psiaczek tak bardzo tęsknił za nim każdego dnia. Chcemy aby ten początkowo zdystansowany a jednocześnie zagubiony i przytłoczony #sŁODZIAK, zaznał prawdziwego, domowego ciepła u boku ODPOWIEDZIALNYCH ludzi, którzy poświęcą mu trochę czasu by zbudować relację, która zaowocuje na lata. ➡️ Nie znamy stosunku KSIĘCIA do innych psów, przechodząc przez schronisko czy podczas spacerów nie jest nimi zainteresowany, ale jak zareaguje dzieląc opiekuna z innym czworonogiem nie mamy pojęcia. ➡️ Raczej nie powinien zamieszkać w domu z dziećmi ‼ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4bb757d3-adcc-4b2e-b794-72b626e1c62b	t	KSIĄŻE	BIG	t	DOG	f	t	2
-132	4	f	\N	KAMEL 🐹 szuka domu 🏠 Psiaczek do schroniska trafił 20.01.2024 roku z ul. Kolumny. Obecnie ma około 3-4 lat i jest GOTOWY rozpocząć nowy rozdział życia u boku ODPOWIEDZIALNYCH opiekunów. KAMEL to bardzo miły #sŁODZIAK wdzięczny za okazaną mu uwagę i poświęcony czas. BARDZO CENI BLISKOŚĆ CZŁOWIEKA 💗 Nie ma problemów w nawiązywaniu pozytywnej relacji. Ładnie chodzi na smyczy. Jest grzeczny i skupiony na opiekunie. KAMEL jest ugodowy i bezkonfliktowy w stosunek do suń, ale nie akceptuje samców. Na wybiegu lubi aktywnie spędzać czas systematycznie skupiając na sobie uwagę człowieka. Psiaczek ma przyjazne i łagodne usposobieniu. Zmarnował już wystarczająco dużo czasu za kratami schroniskowego kojca 😢 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat KAMELA udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	8cb32659-b5f0-48b4-9f2f-8121052a8820	f	KAMEL	MEDIUM	t	DOG	f	t	2
-133	11	f	\N	LIZAK 🐹 szuka domu 🏠 Ten żywiołowy, około 10 letni #sŁODZIAK szuka ODPOWIEDZIALNEJ rodziny ‼ Jaki jest LIZAK 👇 👇 ✅ wspaniały, otwarty, kontaktowy, wesoły i bezproblemowy ✅ mimo 10 wiosenek na karku i lekko siwego pyszczka jest psem energicznym i UWIELBIAJĄCYM zabawy z piłeczką, którą pięknie aportuje ✅ łaknie bliskości człowieka i docenia każdą chwilę poświęconej mu uwagi ✅ lubi aktywnie spędzać czasu ✅ ładnie chodzi na smyczy LIZAK waży 21kg i głową sięga przed kolano. Do schroniska trafił 1.12.2023 roku z ul. Maratońskiej. Nikt nie szukał zguby a chłopak trochę się „zasiedział” w schronisku 🥺 Jest po pełnej obsłudze weterynaryjnej GOTOWY ruszyć w świat 🐾🐾 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	fbf4c6e7-4d30-48d3-8db1-c27b3031801e	t	LIZAK	MEDIUM	t	DOG	f	f	2
-157	4	f	\N	IMBIR 🐹 szuka domu 🏠 Psiaczek został znaleziony na ul. Andrzejewskiej w Łodzi. W schronisku przebywa od 3.02.2022 roku. Obecnie ma około 4 lat i jest małym psiaczkiem stroniącym od bliskości człowieka. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1f52856b-06cf-45ee-8b98-983bc4866ff6	t	Imbir	SMALL	t	DOG	f	t	3
-134	8	f	\N	FELEK 🐹 szuka domu 🏠 domu z ogrodem ‼ Do schroniska trafił 26.11.2023 roku. Został znaleziony na ul. Dożynkowej. Początkowo był bardzo wystraszony, ale szybko przejął rolę herszta bandy #sŁODZIAKÓW podczas szaleństw na wybiegu 😁 Maluszek waży 10kg i obecnie ma około 7-8 lat. Jest charakternym psiaczkiem ➡️ j akiś czort w jego głowie, blokuje go w chodzeniu na smyczy a samo jej przypięcie czy też założenie obroży, najczęściej kończy się pokazaniem pełnego uzębienia 🙈 Długo trzeba pracować na zaufanie tego kawalera ale uwierzcie 👉 WARTO 💪 FELEK jest bezkonfliktowy w relacjach z samcami, sunie raczej stara się zdominować. Do osób, które zna podchodzi ufnie, daje się pogłaskać i chętnie bierze smaczki, ale nie jest wylewny w okazywaniu uczuć. Gdyby nie fakt, że znacznie chętniej bryka po ogrodzonym terenie niż spaceruje na smyczy, z apewne już dawno, miałby FANTASTYCZNĄ rodzinę i SUPER dom. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	358c927b-3095-4624-bf71-75fdab89aaea	f	FELEK	SMALL	t	DOG	f	t	2
-135	2	f	\N	RAFAELKA 🐹 szuka domu 🏠 To młodziutka, niespełna 2 letnia sunia, która trafiła do schroniska 12.10.2023 roku z ul. Trybunalskiej. Jest po pełnej obsłudze weterynaryjnej 👉 GOTOWA zamieszkać u boku ODPOWIEDZIALNEJ rodziny ❣❣ Jaka jest RAFAELKA 👇 👇 ➡ ma charakterek 😁 i własnym zdaniem na niemal każdy temat ➡ na wybiegu wulkan energii, jest bardzo aktywna, prawie cały czas biega i zaczepia inne psiaczki do zabawy ➡ wobec osób które zna jest otwarta, kontaktowa, chętnie przybiega na zawołanie, zaczepiając zdarza się że podgryza i nie ma czasu na nadmierną czułość ➡ w stosunku do nowo poznawanych osób zachowuje dystans, jest nieufna i szczekaniem zniechęca do nadmiernej bliskości 😔 jednak warto poświęcić trochę czasu by skraść jej serduszko i zbudować pozytywną relacje. RAFAELKA powinna trafić pod opiekę aktywnej rodziny, która spożytkuje jej energię i wychowa na mądrą psinkę. Jeśli miałaby zamieszkać z drugim psiaczkiem, to rezydent powinien być spolegliwy i znosić jej zaczepki. Dodatkowych informacji na temat suni udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	b4bfef1c-0142-475a-a3c8-939a8ed33cf4	t	RAFAELKA	MEDIUM	f	DOG	f	t	2
-136	6	f	\N	ARNI 🐹 szuka domu 🏠 Psiaczek został znaleziony w lesie Łagiewnickim i od 7.10.2023 roku przebywa w schronisku. Jest ni skopodłogowym kawalerem o zadziornym charakterze. Na smyczy chodzi bardzo ładnie ale samo jej przypięcie jest małym wyzwaniem ➡️ nie przepada za dotykiem w okolicy karku i w momencie zapinania smyczy, zastyga w bezruchu na kilka sekund. Nie jest wylewny w okazywaniu uczuć i raczej nie przepada za pieszczotami. Nie wiemy jaki los spotkał wcześniej ARNIEGO i co doprowadziło do takiego dyskomfortu a jednocześnie strachu 😔 Maluszek g dy opuszcza boks i idzie na spacer lub wybieg, szaleje niczym szczeniak 😁 Sam sobie podrzuca zabawki, biega jak szalony chcąc prześcignąć wiatr i tarza się szczęśliwie na trawie. ARNIEGO pod swe skrzydła wzięła wolontariuszka Ania, która regularnie pracuje ze #sŁODZIAKIEM czego widać już pierwsze efekty 💪 Około 5 letni kawaler zaczyna otwierać się na relacje z człowiekiem. ARNI czeka na swojego człowieka 💞 Osobę, która pokocha go takim, jakim jest i stworzy mu stabilny i ODPOWIEDZIALNY dom 🏠 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	86d378b1-d1fa-440e-8143-573ecef9b87a	t	ARNI	SMALL	t	DOG	t	t	3
-137	4	f	\N	FELIKS 🐹 szuka domu 🏠 Swoją odsiadkę rozpoczął 11.09.2023 roku jako młodziutki, około 3 letni psiaczek. Został znaleziony w Lesie Łagiewnickim przy ul. Herbowej. Jak to możliwe, że przez ponad rok, nie skradł niczyjego serca 😔 FELIKS to młody i aktywny kawaler w typie teriera. Bezkonfliktowy w relacjach z samcami i trochę dominujący jeśli chodzi o suczki. Lubi zabawę i długie spacery, zwłaszcza w doborowym towarzystwie człowieka 🤩 Gdy już pozna, zaufa i pokocha zabiega o uwagę, której od tak dawna mu brakuje. Bardzo ładnie chodzi na smyczy i niechętnie oddala się na odległość dalszą, niż wyciągnięcie ręki. Ma w sobie bardzo dużo uroku i chwilami zachowuje się jak szczeniak. Jest radosnym i kontaktowym #sŁODZIAKIEM, ale boi się gwałtownych ruchów. Pomóżmy FELIKSOWI zaznać domowego ciepła u boku ODPOWIEDZIALNEJ rodziny 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	42afb4de-19c9-4e4b-83c6-0d17f6d6ed15	t	FELIKS	MEDIUM	t	DOG	t	t	3
-138	2	f	\N	LIRA 🐹 szuka DOMU TYMCZASOWEGO z opcją DOMU STAŁEGO 🏠 gdy już zostanie uregulowana jej sytuacja prawna ‼ Ta niespełna 3 letnia sunia trafiła do schroniska 13.08.2023 roku w wyniku interwencji w Łodzi na ul. Rzgowskiej. Była jednym z 12 odebranych psów i 4 kotów. Jej sytuacja prawna po dziś dzień nie jest uregulowana, co nie oznacza, że ma tkwić za kratami schroniskowego kojca ‼ LIRA do 7 miesiąca życia nie była prawidłowo zaopiekowana 😡 Nikt nie poświęcał jej czasu na naukę manier, nie potrafiła chodzić na smyczy, była wychudzona i zaniedbana a jedyną jej zaletą był fakt, że świetnie odnajdywała się w stadzie ogonków. W schronisku przeszła pewną metamorfozę, ale szuka świadomych opiekunów, którzy popadną w swoistą rutynę i pomogą psince po przejściach zapanować nad emocjami. LIRA bardzo szybko ekscytuje się wszystkim 👉 przypięciem smyczy i perspektywą spaceru, listkiem powiewającym na wietrze, otaczającą ją przestrzenią. Każdy bodziec jest motywacją do podgryzania smyczy, która musi być BARDZO SOLIDNA stając się tym samym przeszkodą do ucieczki. W relacjach innymi psami jest zgodna ale dla statecznego psa może być zbyt aprobująca. Wymaga cierpliwości i spokojnych opiekunów. Nie koniecznie powinna zamieszkać w domu z dziećmi, które dodatkowo będą ją nakręcać prowokując niechciane zachowania. LIRA to młodziutka sunia, która wychowywała się w patologicznych warunkach na posesji ludzi, którzy nie nauczyli ją niczego 😔 Wiemy, że u boku świadomych, ODPOWIEDZIALNYCH i nastawionych na pracę opiekunów czeka ją WSPANIAŁE życie. Musimy jedynie pomóc jej odnaleźć drogę do domu 🙏 UDOSTĘPNIAMY 🙏 Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	cec9161d-4052-4742-95b0-bb4ea8177759	t	LIRA	SMALL	t	DOG	t	t	3
-139	2	f	\N	LORA 🐹 szuka DOMU TYMCZASOWEGO z opcją DOMU STAŁEGO 🏠 gdy już zostanie uregulowana jej sytuacja prawna ‼ Sunia trafił do schroniska 13.08.2023 roku w wyniku interwencji w Łodzi na ul. Rzgowskiej. Wraz z 12 innymi psami i 4 kotami zaczęła odsiadywać wyrok przez bezmyślność ludzką 😔 Miała wtedy około 7 miesięcy i kompletnie nie znała życia 😔 Bała się własnego cienia, nie wychodziła zza legowiska i telepała ze strachu na widok człowieka. LORA to bardzo żywiołowa, energiczna i skoczna sunia. Już podczas pierwszego zapoznania nawiązuje pozytywną relację z człowiekiem, rozdaje buziaki i pcha się na kolana. Na smyczy, wychodząc p za teren schroniska początkowo bardzo ciągnie. Zafascynowana i ciekawa otoczenia chce wyznaczać trasę. Jest skoczna, zabawowa i rozbrykana. LORA to młodziutka, niespełna 2 letnia sunia, która szuka ODPOWIEDZIALNEJ rodziny. Osób, które wykorzystają jej potencjał, spożytkują energię 💪 i po święcą czas na naukę prawidłowych zachowań. Jak zachowa się w domu? Nie wiemy ‼ LORA 🐹 ma niespełna 2 lata i NIGDY NIE ZAZNAŁA DOMOWEGO CIEPŁA 🥺 Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	a2d057c2-6775-4cb4-a7ae-ab35d4ba3d4e	t	LORA	MEDIUM	t	DOG	f	f	3
-140	2	f	\N	BEREK 🐹 szuka DOMU TYMCZASOWEGO z opcją DOMU STAŁEGO 🏠 gdy już zostanie uregulowana jego sytuacja prawna ‼ Ten niespełna 3 letni #sŁODZIAK trafił do schroniska 13.08.2023 roku w wyniku interwencji w Łodzi na ul. Rzgowskiej. Był jednym z 12 odebranych psów i 4 kotów. Jego sytuacja prawna po dziś dzień nie jest uregulowana, co nie oznacza, że ma tkwić za kratami schroniskowego kojca ‼ BEREK do 7 miesiąca życia nie był prawidłowo zaopiekowany 😔 Nikt nie poświęcił mu czasu na naukę manier, nie potrafił chodzić na smyczy, był wychudzony i zaniedbany a jedyną jego zaletą był fakt, że świetnie odnajdywał się w stadzie ogonków. DZIŚ, ten uroczy psiaczek nadal wymaga cierpliwości i nauki, jednak są to „mankamenty” które można bez większych problemów wypracować w warunkach domowych u boku świadomych i ODPOWIEDZIALNYCH opiekunów. 👉 Psiaczek ma ogromne pokłady energii oraz targają nim emocje wszelakie. Rozładowuje je skakaniem i podgryzaniem co należy systematycznie korygować wyznaczając mu „małe zadania” do wykonania. Dodatkowo pomaga mu to w skupieniu uwagę na człowieku. 👉 Podczas spacerów podgryza smycz co w jego mniemaniu jest zabawą, ale może poskutkować ucieczką. 👉 Bardzo uspakaja się w relacjach 1:1 z opiekunem, gdy uwagę skupia na człowieku a nie ekscytuje się i nakręca obecnością PSYjaciół. 👉 Nie ma problemów w nawiązywaniu relacji z innymi czworonogami oraz ludźmi, ale początkowo nie jest wylewny w okazywaniu uczyć. 👉 Podczach chodzenia na smyczy nie czuje się pewnie, ale też nie protestuje wpadając w rytm nadany przez człowieka. 👉 Nie przejawia agresji. 👉 Szybko się uczy, ale wymaga asertywnych i konsekwentnych opiekunów. Jak zachowa się w domu? Nie wiemy‼ BEREK 🐹 ma niespełna 2 lata i NIGDY NIE ZAZNAŁ DOMOWEGO CIEPŁA 🥺 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 691 521 551 - Kasia Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a973a09e-918f-4755-a9bb-6a10b6338cfc	t	BEREK	SMALL	t	DOG	f	t	3
-141	4	f	\N	Pajączek (553/23) jest w schronisku od 5 sierpnia 2023 roku. Miał wtedy około 3 lata. Został znaleziony na ulicy Sobolowej. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	cb6bce43-6399-4714-a51e-420d383eb7a4	f	Pajączek	MEDIUM	t	DOG	f	t	3
-142	2	f	\N	MAKS 🐹 szuka domu 🏠 Jest samcem w typie owczarka belgijskiego, więc pobyt w schronisku to dla niego codzienna trauma ze względu na zbyt małą dozę ruchu 😔 dlatego PILNIE szuka ODPOWIEDZIALNYCH, świadomych i bardzo aktywnych opiekunów ❣️❣️❣️ Do schroniska trafił 29.07.2023 roku 🥺 jako młodziutki, około roczny psiaczek ‼ MAKS ceni kontakt z człowiekiem i jest go bardzo spragniony, ale początkowy kontakt odbywa się na wyznaczonych przez niego zasadach. Zanim pokocha, musi zaufać a na to należy zapracować. Często PSYtula się do swojej ulubionej wolontariuszki, domaga się głasków oraz zabwy, ale też skacze i podgryza. Bardzo nie lubi samotności i przy odprowadzaniu ze spacerów, coraz gorzej radzi sobie z rozstaniem 🥺 Widać, że mezalians nagromadzonej i nie spożytkowanej energii oraz uczuć, wpływa na jego codzienne funkcjonowanie i frustrację. MAKS jest 2 letnim samcem ważącym 26kg po pełnej obsłudze weterynaryjnej. Potrzebuje bardzo dużej dawki ruchu 💪 która zarówno spożytkuje jego energię jak i wysili umysł, dlatego szukamy doświadczonych, nastawionych na pracę i aktywnych opiekunów. DOMU BEZ INNYCH ZWIERZĄT i BEZ DZIECI ‼ Należy pamiętać, że jest psem bardzo inteligentnym więc liczymy, że przyszli opiekunowie wykorzystają jego potencjał na 👉 naukę komend, sztuczek, poprawnych zachowań w domu i poznawaniu świata. Połączenie przyjemności z pożytecznym poskutkuje więzią na długie lata. Chodzenie na smyczy wymaga lekkiego dopracowania. 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b5498a5a-52fc-4b6c-a3ca-94ebd8762ca6	t	MAKS	BIG	t	DOG	f	t	3
-143	7	f	\N	EDEK 🐹 PILNIE szuka domu 🏠 Do schroniska trafił 23.06.2023 roku z ul. Dyspozytorskiej. Kilka dni później dołączyła do niego KAJA z którą dzielił kojec i świetnie się dogadywali. Sunia pojechała do domu a EDEK został sam 😔 Doskwiera mi samotność. Siedzi smutny przy kratach i wypatruje towarzystwa swojego człowieka. #sŁODZIAK obecnie ma skończone 6 lat. Ma bardzo pozytywne usposobienie. Łatwo nawiązuje relacje z człowiekiem. UWIELBIA aktywnie spędzać czas np. biegając, bawiąc się piłką czy też na długich spacerach u boku opiekuna. Zdecydowanie w warunkach schroniskowych brakuje mu bliskości człowieka oraz ruchu. Ładnie chodzi na smyczy, ale czasem ciągnie więc wymaga to lekkiego „doszlifowania”. Psiaczek jest bardzo pojętny, skory do współpracy i chętny do nauki. Niewątpliwie będzie WIERNYM TOWARZYSZEM dla aktywnej rodziny. UDOSTĘPNIAMY ❣️ SUPER rodzinki dla EDKA szukamy ‼ Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 795 588 422 - Agata ☎ 792 304 770 - Iwona Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1d3b1e46-1429-407e-b3db-74bc5ec8cba3	f	EDEK	BIG	t	DOG	f	t	3
-144	5	f	\N	„ETYKIETY” przypinane zwierzętom na podstawie zdjęć z dnia przyjęcia do schroniska często prześladują je latami ‼ Ludzie zapominają, że zwierzęta przekraczając bramę schroniska przeżywają stres a często już sama tułaczka, która nie wiemy ile trwa, nie ułatwia otworzenia się na nowych, zupełnie obcych ludzi w nieznanym miejscu. BASTER 🐹 trafił do schroniska 18.06.2023 roku z ul. Serwituty. Psiaczek posiadał zarejestrowany czip ale właściciel postanowił zlekceważyć upomnienia, że jego czworonóg trafił za kraty 😡 BASTER w chwili przyjęcia do schroniska był całkowicie zdezorientowany, przestraszony i jak nie jeden pies bronił się przed nieznanym. Obsługę weterynaryjną odbył w kagańcu. BASTER to bardzo fajny, kontaktowy, około 3 letni samiec ważący 30kg. Ma niesamowity potencjał i u boku ODPOWIEDZIALNYCH i asertywnych opiekunów stanie się REWELACYJNYM kompanem rodziny. Jak na młodego psa przystało jest skory do zabawy a o smaczki prosi siedząc niczym surykatka. W opiekuna jest wpatrzony jak w obrazek i nie przejawia cienia agresji, ale wymaga stanowczości. Psiaczek jest po pełnej obsłudze weterynaryjnej 👉 GOTOWY rozpocząć nowy rozdział życia ‼ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	62608096-a35b-4382-b564-8feaeed10115	t	BASTER	BIG	t	DOG	t	t	3
-164	7	f	\N	PACO 🐹 i jego smutna historia 🥺 Miał dom i rodzinę, ale taką, która tylko wymagała a o nauce zapomniała. Gdy pojawiło się kolejne dziecko, aby nie tracić czasu na ułożenie psa, odwieziono go do schroniska kłamiąc, że jest agresywny‼️ Już pierwszy kontakt pokazał, że to kompletna bzdura i pretekst do zatajenia własnej ułomności i braku chęci. PACO od 21.09.2021 roku przebywa w schronisku. W tym czasie nigdy nie wykazał zachowań agresywnych‼️ Wolontariusze naprawili to, co inny cZŁOwiek zniszczył 💔 i ten cudny około 6 letni psiaczek rozgląda się za ODPOWIEDZIALNĄ rodziną i domem. Pies to NIE ZABAWKA 😡 Jaki jest PACO 👇 👇 👇 ✅ pięknie chodzi na smyczy ✅ zna podstawowe komendy ✅ aportuje zabawki, które bez problemu oddaje opiekunowi ✅ daje brzuch do głaskania domagając się bliskości, czułości i uwagi ze strony człowieka ✅ prosi o smaczki Niestety, kawaler nie zdaje sobie sprawy ze swej siły i gabarytów, dlatego docelowo nie powinien zamieszkać w domu z małymi dziećmi. Rozpędzony w chwili euforii potrafi staranować wszystko, co stoi na jego drodze 🙈 Dodatkowych informacji na temat psiaczka udzielą wolontariusze: ☎ 503 652 679 - Kasia ☎ 661 512 200 - Patryk Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1daa8e31-8832-49aa-b95a-923ccde22941	t	PACO	BIG	t	DOG	t	t	3
-145	4	f	\N	KUDŁATY 🐹 już dawno powinien wylegiwać się na kanapie u boku fantastycznych opiekunów w swoim wymarzonym domu 🏠 ale rzeczywistość jest zupełnie inna 😔 od 2.04.2023 roku odsiaduje wyrok za niewinność ‼ Psiaczek został znaleziony w Łodzi na ul. 6-go Sierpnia/Wólczańska i NIKT się po zgubę nie zgłosił. Mimo, że w schronisku jest od ponad roku, nie stracił wiary w człowieka 💪 Ma pozytywny stosunek do ludzi i świata. W relacjach z innymi psami nie jest wyrywny, raczej neutralny/obojętny, chyba że jakiś psi koleżka go zainteresuje, wówczas nie omieszka radośnie unieść ogon. Brak systematycznych spacerów sprawił, że KUDŁATY na smyczy wyrywa do przodu szarpiąc opiekuna. Jest ciekawym świata, dość silnym psem z którym będzie trzeba trochę popracować, nauczyć manier i zapewnić mu odpowiednią dozę ruchu. Jak na młodzieniaszka przystało ma wesołe usposobienie. Jest kontaktowy i łagodny. Niczym surykatka staje na tylnych łapkach i obserwuje otoczenie - niestety nadal zza krat 😔 Lubi głaskanie i sam przybiega do wolontariuszki dając znać, że jest gotowy na przytulanie. KUDŁATY ma niespełna 3 lata. Jest po pełnej obsłudze weterynaryjnej. Do pełni szczęścia brakuje mu ODPOWIEDZIALNYCH opiekunów. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 601 710 654 - Agnieszka Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	32ae774a-13e1-4a88-8325-36937886bdda	t	KUDŁATY	MEDIUM	t	DOG	f	t	3
-146	6	f	\N	GASTON 🐹 szuka domu 🏠 Psiaczek został znaleziony 17.03.2023 roku w okolicy Partu Łódź. Obecnie ma około 5 lat, waży 36kg i jest bardzo pozytywnym #sŁODZIAKIEM. W stosunku do innych psów jest obojętny. Na smyczy idzie bardzo ładnie, nie ciągnie, skupia uwagę na opiekunie a przechodząc przez schronisko nie jest zainteresowany psami w mijanych kojcach. GASTON to bardzo miły, mądry i zrównoważony psiaczek. Nie przejawia agresji. Lubi pieszczoty, ale nie jest nachalny w zabieganiu o bliskość człowieka. Dla tego UROCZEGO kawalera szukamy ODPOWIEDZIALNEJ rodziny 💞 🙏 UDOSTĘPNIAMY 🙏 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	17dbdd61-b1e8-4581-833d-e67c5efdab03	t	GASTON	BIG	t	DOG	f	t	3
-147	3	f	\N	BĄBEL 🐹 PILNIE szuka domu 🏠 Do schroniska trafił 25.02.2023 roku jako młodziutki, około roczny psiaczek znaleziony na ul. Retkińskiej. Jeszcze dobrze życia nie poznał a już wylądował za kratami 🥺 Obecnie ma niespełna 3 lata i jest jednym z tych czworonogów, dla których PILNIE szukamy ODPOWIEDZIALNEJ i świadomej rodziny. BĄBEL żyje w dwóch światach: ▪️ SCHRONISKOWYM 👉 gdzie panuje hałas, ogromna ilość bodźców i codzienność, na każdym kroku przytłacza oraz ▪️ ŚWIECIE ZEWNĄTRZNYM 👉 pełnym równowagi i błogiego spokoju, gdzie stabilizacja daje możliwość nauki i rozwoju oraz skupienia się na opiekunie Jest niesamowicie mądry i potrzebuje równie mądrego, świadomego opiekuna, który stanie się jego kompanem, ostoją i wsparciem NA ZAWSZE ❣️ BĄBEL to piękny pies o bystrym umyśle ➡️ zna komendy „siad” i „łapa”. Jest skory do nauki i ma ogromny potencjał. Na smyczy chodzi ładnie, ale jego niepewność sprawia, że potrzebuje doświadczonego opiekuna, który będzie gotowy na współpracę być może pod okiem behawiorysty lub psiego trenera. Niewątpliwie pomoże to zapanować nad emocjami a człowiekowi, lepiej zrozumieć jego potrzeby. Jak w każdej pracy, od przyszłych opiekunów będzie wymagany czas i cierpliwość co zaowocuje relacją i więzią na długie lata 💪 #sŁODZIAK, gdy już zaufa i pozna człowieka, jest wpatrzony w niego jak w obrazek. Chętnie okazuje wdzięczność, wierność i miłość. Ma obojętny stosunek do innych psiaczków i prawdopodobnie, przy mądrym zapoznaniu dogada się z psim rezydentem. Mimo swej ostrożności, BĄBEL w odpowiednim otoczeniu otwiera się na ludzi. Potrzebuje domu, który stanie się jego azylem wypełnionym poczuciem bezpieczeństwa i stabilizacją. Idealnie odnajdzie się w spokojnej rodzinie bez małych dzieci. Jeśli szukasz PSYjaciela jednocześnie nie idąc na łatwiznę, umów się na spacer zapoznawczy z BĄBLEM 🐹 Dodatkowych informacji udzieli wolontariuszka: ☎ 721 024 609 - Aneta Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6b1ebb0d-201d-4506-83d2-87b6e8ed4ba3	t	BĄBEL	MEDIUM	t	DOG	t	t	3
-148	10	f	\N	BOBO 🐹 szuka domu 🏠 Kiedyś miał dom i rodzinę a mimo to od 11.01.2023 roku odsiaduje wyrok za ich bezmyślność 😡 Został znaleziony na ul. Więckowskiego. Posiadał czip, ale nikt nie pofatygował się odebrać wiernego PSYjaciela. Rodzina pozbyła się psa ➡️ żywej, czującej istoty, jak zbędnej rzeczy 😡 BOBO początkowo nie potrafił odnaleźć się w schroniskowej rzeczywistości do której trafił w wieku około 8 lat 😔 System obronny nakazywał mu odstraszać od siebie ludzi pokazując przez kraty zęby. Przecież jeśli nikt się nim nie zaopiekuje, to też nikt go nie pokocha, nie przygarnie a co za tym idzie, NIE ZAWIEDZIE JEGO ZAUFANIA KOLEJNY RAZ ‼ Skakał, szczekał, pokazywał zęby, ale na Marmurowej mamy UPARTYCH 😊 wolontariuszy, którym nie straszne wrzaski psa zza krat. Systematyczna praca i smaczki zrobiły swoje 💪 Jaki obecnie jest BOBO 👇 👇 👇 ✅ inteligentny, zna podstawowe komendy ✅ ładnie chodzi na smyczy ✅ bez problemu daje założyć sobie kaganiec ✅ chętnie aportuje ✅ mimo wieku jest psem energicznym lubiącym aktywnie spędzać czas, ale po ponad roku schroniskowego życia, trzeba nastawić się na pracę nad kondycją kawalera ❌ w docelowym domu stałym raczej powinien być jedynakiem, niestety nie przepada za psim towarzystwem. BOBO potrzebuje opiekuna cierpliwego. Nastawionego na kilka spacerów zapoznawczych by jeszcze przed adopcją zbudować pozytywną relacje z człowiekiem. Preferujemy dom bez małych dzieci. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4370dae2-e55b-4142-af33-063105b54e33	f	BOBO	BIG	t	DOG	f	t	3
-149	5	f	\N	LILA 🐹 szuka domu 🏠 Sunia trafiła do schroniska 26.12.2022 roku. Została znaleziona na ul. Kopernika przywiązana przed lecznicą dla zwierząt. Obecnie ma około 5,5 roku i połowę życia spędziła w warunkach schroniskowych 😔 Jaka jest LILA 👇 👇 👇 ✅ energiczna i aktywna ✅ ł adnie chodzi na smyczy, chętnie poznaje nowe tereny, węszy ✅ l ubi biegać za piłką i latem kąpać się w basenie na psim wybiegu 😁 ❌ nie dogaduje się z innymi psami, bywa wobec nich napastliwa i w docelowym domu stałym powinna być jedynaczką LILA nie jest wylewna w okazywaniu uczuć. Nie narzuca się swoją obecnością. Nie zabiega o uwagę, zainteresowanie, bliskość i kontakt z człowiekiem. Dotyk nie wzbudza w niej entuzjazmu dlatego raczej unika głaskania i innych pieszczot. Być może w zaciszu domowym przy cierpliwych opiekunach, odrobinie systematycznej pracy, poczuciu stabilizacji i bezpieczeństwa, jej indywidualny charakter ulegnie zmianie. Sunia nie przejawia żadnej agresji wobec człowieka. Przyszli opiekunowie powinni być osobami cierpliwymi i świadomymi, że nawiązanie więzi z LILĄ zajmie trochę czasu lub uszanować jej indywidualny charakter. Niewątpliwie ta 18kg psinka będzie dobrym kompanem podczas długich spacerów oraz zabaw. Dodatkowych informacji na temat ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	aa02464d-ed63-4887-a880-a6ee9f25216a	f	LILA	MEDIUM	t	DOG	t	t	3
-150	7	f	\N	BEMOL 🐹 szuka domu 🏠 Około 6 letni, spokojny, przyjazny i kontaktowy psiaczek PILNIE szuka ODPOWIEDZIALNEJ rodziny. BEMOL ceni sobie bliskość człowieka, ale też szanuje jego przestrzeń. Nie jest nachalny, cierpliwie czeka aż wolontariuszka pogłaszcze go, poklepie czy też tylko położy na nim rękę. Lubi zabawy z piłeczką za którą chętnie biega. Przy przeprowadzaniu przez schronisko na wybieg, BEMOL często doskakuje do innych boksów, przy czym dość silnie ciągnie na smyczy. Po za terenem schroniska wędruje poprawnie, spokojnie z pełną gracją. Podejrzewamy że zmiana zachowania wynika z frustracji oraz zaczepek współtowarzyszy psiej niedoli znajdujących się w schronisku. BEMOL to duży, dostojny samiec, który trafił do schroniska 27.11.2022 roku. Został znaleziony na ul. 6-go Sierpnia z guzem przy pachwinie. Guz został usunięty jak również ogarnięte pozostałe kwestie weterynaryjne więc co ten kawaler nadal robi e schronisku? Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji #sŁODZIAKA ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a0635948-84b8-4211-b386-1363d8a8c011	t	BEMOL	BIG	t	DOG	f	t	3
-151	8	f	\N	ATOM 🐹 szuka domu 🏠 Do schroniska trafił 18.11.2022 roku. Został znaleziony na ul. Felińskiego z bliznami i ranami po pogryzieniach 😔 Posiada zarejestrowany czip, ale dane właściciela są nieaktualne. Psiaczek obecnie ma około 8 lat i jego jedynym szczęściem są spacery i czas spędzony z wolontariuszami. Przy pierwszym kontakcie jest nieufny i szczekaniem oraz pokazywaniem uzębienia chce zniechęcić ludzi do nawiązywania z nim jakichkolwiek relacji. P rzy odrobinie cierpliwości i konsekwencji, bardzo ładnie się otwiera i zaczyna pokazywać swój fantastyczny charakter. Nie jest agresywny tylko lękowy, a jego azylem stała się buda z której wystawiając pyszczek, może obserwować otoczenie. Nie wiemy przez co przeszedł we wcześniejszym życiu, ale gdy już zaufa opiekunowi, chętnie zaczepia do zabaw, podchodzi na głaski i smaczki. Bardzo ładnie chodzi na smyczy. Inne psy ignoruje i nie szuka zwady pod warunkiem, że nie jest przez nie zaczepiany. Zdecydowanie woli towarzystwo człowieka, którego gdy już pokocha, to całym swym poturbowanym serduszkiem 💔 ATOM to korpulentny 🙈 koleżka, ale wiemy, że podczas spacerów u boku ODPOWIEDZIALNYCH opiekunów szybko zgubi zbędne kilogramy 😁 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat #sŁODZIAK udzieli wolontariuszka: ☎ 691 521 551 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f3ec838f-d4b8-4ada-af9b-18699799b776	t	ATOM	SMALL	t	DOG	t	t	3
-152	3	f	\N	TOM 🐹 szuka domu 🏠 Został znaleziony w parku Szarych Szeregów i od 23.10.2022 roku przebywa w schronisku 😢 Trafił do nas jako młodziutki, niespełna 1,5 roczny psiaczek i większość życia spędził za kratami 🥺 TOM to średniej wielkości kawaler ważący 16kg. Początkowo nie jest wylewny w okazywaniu uczyć, wręcz lekko ostrożny. Trzeba zaskarbić sobie jego zaufanie 😊 co zaowocuje wzajemnym szczęściem wynikającym z możliwości wspólnego przebywania. Ładnie chodzi na smyczy dokładnie sprawdzając oraz obwąchując wszystkie górki i dołki, listki, patyczki i źdźbła trawy 😁 Nie jest typem psa wymagającego dużej aktywności. Nie zaczepia do wspólnych zabaw i nie interesuje się zabawkami. TOM będzie wymagał pomocy przyszłych opiekunów by wzmocnić swą pewność siebie 💪 Najlepiej odnajdzie się w dość spokojnej okolicy, gdzie nie będzie musiał być wystawiony na mnogość bodźców od pierwszych dni. TOM to około 3 letni #sŁODZIAK, który marnuje czas w schronisku 🥺 Jeśli jakaś rodzina da mu szansę, otoczy miłością, wykaże się cierpliwością i zaprosi do swojego domu, zyska wspaniałego PSYjaciela na długie lata ❣️ Dodatkowych informacji na temat #sŁODZIAKA udzieli wolontariuszka: ☎ 604-532-022 - Magda, ☎ 660 777 499 - Asia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a26be4fe-58f7-4257-a4c1-72d3ebfb25df	t	TOM	MEDIUM	t	DOG	f	t	3
-153	6	f	\N	wesoły i pogodny ROCKY 🐹 szuka domu 🏠 Psiaczek jest pełen energii 😊 Na wybiegu szaleje. Z ciekawością poznaje świat obwąchując wszystkie kąty. UWIELBIA bieganie za piłeczką. Ma pozytywny stosunek do innych psów. Kojec dzielił z samcem i żyli w komitywie, a na wybiegu, nieśmiało zachęcał do wspólnych zabaw. Ładnie chodzi na smyczy. ROCKY nie jest typem pieszczocha ani psa zabiegającego o uwagę człowieka. Zafascynowany możliwością biegania, nie ma czasu na słuchanie przywołań opiekunów. Gdy po dłuższym nawoływaniu, wreszcie podejdzie, bez większego entuzjazmu daje się pogłaskać. Zdecydowanie w warunkach schroniskowych, bardziej brakuje mu ruchu niż bliskości człowieka. ROCKY rewelacyjnie odnajdzie się u boku aktywnej rodziny, u boku której będzie zwiedzał świat i miał możliwość wyszaleć się podczas wspólnych zabaw i spacerów. Psiaczek trafił do schroniska 26.09.2022 roku. Został znaleziony na ul. 1-go Maja. Miał na sobie czerwone szelki, ale nikt nie szukał zguby 🥺 Obecnie ma około 7 lat i waży 17kg. Jest po pełnej obsłudze weterynaryjnej gotowy wyruszyć w podróż życia do swojego domku najjj…. 🐾🐾 ‼ UDOSTĘPNIAMY ‼ Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	58c506b2-ebc2-4ba2-97e1-94ae4cf5a831	t	ROCKY	MEDIUM	t	DOG	f	t	3
-154	9	f	\N	SAMI 🐹 szuka domu 🏠 ‼ Psiaczek odsiaduje wyrok za niewinność od 3.08.2022 roku 😢 Obecnie ten uroczy sŁODZIAK ma około 7 lat i waży 18kg. Jest pełnym energii PSIEsympatycznym kawalerem, który łatwo nawiązuje kontakt z ludźmi. Chętnie przychodzi na zawołanie i merdając ogonkiem daje znać, że jest gotów na głaskanie. Zawsze skory do zabawy. Bardzo lubi aportować. Ładnie chodzi na smyczy i jest niestrudzonym towarzyszem podczas długich spacerów, które dają mu ogrom szczęścia. Kiedyś dzielił kojec z sunią i dogadywali się bez żadnych problemów. Towarzyszka potuptała do swojego wymarzonego domu, a SAMI został sam 😢 Przechodząc po schronisku, zaczął doskakiwać do innych kojcy, co nie koniecznie jest oznaką nietolerancji innych psów, a frustracją wynikającą z miejsca, w którym utknął na ponad 2 długie lata 😔 SAMI to bardzo pozytywny psiaczek, który już dawno powinien maszerować przez życie u boku swoich ODPOWIEDZIALNYCH opiekunów. Ludzi, którzy dając mu poczucie stabilizacji i bezpieczeństwa, skradną jego serduszko 💗 NA ZAWSZE ‼ Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	cd4453df-42db-486e-8115-e9549578c322	t	SAMI	MEDIUM	t	DOG	t	t	3
-155	8	f	\N	PILOT 🐹 szuka domu 🏠 Psiaczek został znaleziony 29.06.2022 roku na ul. Ostowej i zaczął odsiadywać wyrok za niewinność w wieku około 6 lat. Jak wyglądało wcześniej jego życie ➡️ nie wiemy, ale po zachowaniu łatwo stwierdzić, że nie była to sielanka 🥺 PILOT to samiec o dwóch „pyszczkach”. 👉 Dla osób które zna, szanuje i wie, że może coś zyskać - jest uroczy, delikatny i miły. 👉 W relacjach z obcymi - potrafi złośliwie pokazać ząbki, ale nie jest już tak energicznym i dziarskim psiaczkiem, by zrobić krzywdę. NA ZAUFANIE TRZEBA ZAPRACOWAĆ 💪 ‼ Początkowo zachowuje dystans. Potrzebuje czasu, cierpliwości i odrobiny uwagi by nawiązać kontakt z człowiekiem i zbudować pozytywną relacje. Bardzo ładnie chodzi na smyczy, ale samo jej podpięcie początkowo może być wyzwanie. UWIELBIA spokojne spacery, na których z zaciekawieniem węszy. Nie gardzi smaczki za które chętnie wykonuje komendy. Jest spokojnym, statecznym kawalerem, który w docelowym domu stałym raczej powinien być jedynakiem. Potrzebuje bezpiecznej przestrzeni i wyrozumiałości ponieważ każdego dnia walczy z własnymi lękami ➡️ boi się hałasów, zgiełku i tłumów. Nie przepada za nadmiernym dotykiem i nie jest wylewny w okazywaniu uczuć. PILOT popadł w rutynę schroniskowego życia 😔 Jego jedynym celem jest oczekiwanie na przybycie wolontariuszy, którzy zabiorą go na spacer. Marzymy, aby zaznał domowego ciepła u boku ODPOWIEDZIALNYCH opiekunów, którzy zapewnią mu spokój, stabilizację i poczucie bezpieczeństwa, bo tak naprawdę, do szczęścia nie potrzebuje wiele więcej. Psiaczek ma niedoczynność tarczycy i na stałe przyjmuje leki. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 660 053 757 - Maja Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a0607780-47b5-461d-ad4d-b0e80b003249	t	PILOT	BIG	t	DOG	f	f	3
-156	4	f	\N	KIRA 🐹 szuka ODPOWIEDZIALNYCH i świadomych opiekunów ‼‼ Takich na chwilę już miała 😡😔 Sunia 11.04.2022 roku, po kilku dniach od adopcji ponownie wróciła do schroniska 🥺 Obecnie ma skończone 2 lata i jest bardzo przyjazna w stosunku do ludzi, energiczna i żywiołowa. Lubi aktywnie spędzać czas zwłaszcza na bieganiu. Zna podstawowe komendy. Ładnie chodzi na smyczy. Podczas spacerów jest mocno zainteresowana ludźmi i psami ale ze względu, że ma skłonność do kłapania zębami na widok czworonogów, powinna chodzić w kagańcu 😔 jak również w docelowym domu stałym raczej być jedynaczką. KIRA jest wpatrzona w opiekuna jak w obrazek i NIESTETY MA LĘK SEPARACYJNY. Szukamy dla psinki świadomego i nastawionego na pracę opiekuna. Schroniskowa rzeczywistość, w której ma ograniczony kontakt z człowiekiem, to codzienny dramat dla jej psychiki 😢 Lęk separacyjny trzeba przepracować bo NIE zniknie sam‼ Taka praca jest możliwa jedynie w warunkach domowych, u boku ODPOWIEDZIANYCH i systematycznych opiekunów, którzy potrafią cierpliwie czekać na efekty, ewentualnie stworzenie psince warunków, w których nie będzie zostawała sama np. w domu wielopokoleniowym. KIRA jest psem w OGROMNEJ POTRZEBIE i znalezienie dla niej świadomej rodziny jest naszym priorytetem, dlatego BARDZO PROSIMY O POMOC 🙏 ‼ UDOSTĘPNIAMY ‼ Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	34e3bab0-2075-4414-a776-49ffbc06ede0	t	KIRA	MEDIUM	t	DOG	f	t	3
-158	4	f	\N	DIEGO 🐹 szuka domu 🏠 Psiaczek został znaleziony 27.01.2022 roku w Łodzi na ul. Admiralskiej. Był wówczas młodym, aktywnym psem pełnym nadziei, że szybko znajdzie ODPOWIEDZIALNĄ rodzinę i SUPER dom 🏠 Tymczasem, od ponad 3 długich lat odsiaduje wyrok za niewinność 😔 DIEGO bez problemu nawiązuje pozytywną relację z nowo poznanymi osobami oraz innymi psiaczkami. Jest towarzyski i bezkonfliktowy. UWIELBIA aktywnie spędzać czas np. podczas długich spacerów czy też zabaw szarpakiem. Nigdy nie przejawia agresji, nawet w stresujących dla niego sytuacjach. Bardzo ładnie i spokojnie chodzi na smyczy. Na wybiegu, gdy już się wyszaleje, zachowuje spokój i zabiega o uwagę człowieka 💞 Jest ciekawy świata i podczas spacerów dużo węszy. Bezbłędnie reaguje na przywołanie. Czasem jest lękliwy zwłaszcza w sytuacjach które są mu kompletnie obce np. wejścia do autobusu, ale odpowiednie podejście oraz doza cierpliwości ze strony opiekuna pomogą mu w przełamywaniu lęków i pokonywaniu własnych strachów. DIEGO będzie wspaniałym przyjacielem zarówno dorosłego, jak i dziecka. DIEGO jest po pełnej obsłudze weterynaryjnej ➡ GOTOWY wyruszyć w podróż życia do ODPOWIEDZIALNEJ rodziny i SUPER domu 🏠 Dodatkowych informacji na temat #sŁODZIAKA udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	858679df-3372-4e13-8730-12907a044a09	t	DIEGO	BIG	t	DOG	f	t	3
-159	5	f	\N	SKUBI 🐹 to duży, silny, około 4 letni samiec. Nie ma w sobie cienia agresji. Bardzo lubi przebywać wśród ludzi 💞 Akceptuje znane mu osoby, lubi też nawiązywać NOWE psio-ludzkie relacje. Domaga się pieszczot wszelakich i UWIELBIA smaczki. Zna podstawowe komendy i chętnie je wykonuje ale nie za free 😁 Wymaga doszlifowania w kwestii nauki chodzenia na smyczy bo zdarza mu się ciągnąć. Toleruje inne psiaczki ale lubi szefować 💪 ale po mądrym zapoznaniu, dogada się ze spokojną, towarzyską sunią. ‼ UDOSTĘPNIAMY ‼ SKUBI trafił do schroniska 30.11.2021 roku. Połowę swego życia spędził za kratami 🥺 #sŁODZIAK jest po pełnej obsłudze weterynaryjnej 👉 GOTOWY rozpocząć nowy rozdział życia u boku ODPOWIEDZIALNEJ rodziny 🐾🐾 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 605 744 010 - Kamila Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d6daf69c-ae77-4bf5-9342-fa2250a26ee6	t	SKUBI	MEDIUM	t	DOG	t	t	3
-160	5	f	\N	NIKO 🐹 szuka domu 🏠 Do schroniska trafił 27.11.2021 roku z ul. Pstrągowa/Telimeny. Był wówczas 2 letnim #sŁODZIAKIEM. Już prawie 3 lata tkwi za kratami schroniskowego kojca a w jego oczach przestaje tlić się nadzieja na lepsze jutro 😔 Psiaczek w docelowym domu stałym powinien być jedynakiem. W nawiązywaniu pozytywnej relacji z ludźmi, nie ma większych problemów jednak opiekunowie, w początkowej fazie aklimatyzacji psiaczka muszą być osobami stanowczymi i asertywnymi by wyznaczyć jasne granice. W sytuacjach stresowych potrafi pokazać ząbki jednak są to sporadyczne zachowania przed którymi zawsze ostrzega. Jest skory do zabawy i chętny do nauki ➡️ oczywiście za smaczki. Ładnie chodzi na smyczy, nie ciągnie i skupia się na opiekunie. NIKO jest kundelkiem jakich tysiące w schroniskach 🥺 Ginie w tłumie innych psów, które podobnie jak on potrzebują domu, rodziny i własnego człowieka. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 601 206 013 - Ewelina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	8ec1680a-38c2-45f0-aa28-b7715dbe4a8e	t	NIKO	BIG	t	DOG	f	t	3
-161	7	f	\N	ASAN 🐹 szuka domu 🏠 To bardzo energiczny i pragnący bliskości człowieka psiaczek. Uwielbia zabawę i bez wątpienia potrzebuje sporej dawki ruchu. Ładnie chodzi na smyczy. Raczej ma pozytywny stosunek do innych psów. Jest chętny do nauki. ASAN trafił do schroniska 19.11.2021 roku z ul. Brylantowej jako młodziutki, około roczny samiec. Był wulkanem energii zafascynowanym poznawaniem świata - nie w głowie była mu nuda i marnowanie czasu. Wówczas zdarzało się, że wyszedł z kojca i przechadzał się schroniskowymi ścieżkami 😁 Obecnie jest zrównoważonym 6 letnim samcem ważącym 25 kg GOTOWYM WYRUSZYĆ W PODRÓŻ ŻYCIA do swojego domku naj pod opiekę ODPOWIEDZIALNEJ rodziny 💪 ❣ Psiaczek szybko nawiązać bardzo pozytywną relacją z człowiekiem 👉 ZAPRASZMY na zapoznanie z ASANEM 🐾🐾 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6a5ef0a7-ed2c-41b5-88f2-11fdf12274f4	t	ASAN	BIG	f	DOG	f	f	3
-162	10	f	\N	MIRO 🐹 szuka domu 🏠 Został znaleziony 22.10.2021 roku na ul. Wilczej. Miał wtedy około 7 lat i posiadał czip, ale właściciel nie zamierzał odebrać swojego czworonoga. MIRO od początku pobytu w schronisku bardzo źle znosi otaczającą go i przytłaczającą rzeczywistość. Hałasie i samotność żyje od prawie 3 długich lat. Jak drzewo do życia potrzebuje wody tak MIRO potrzebuje ludzkiego przewodnika. Osoby, która poświęci temu obecnie około 10 letniemu seniorowi odrobine czasu, otoczy troską i pomoże przywrócić wiarę w człowieczeństwo. Lata w kojcu sprawiły, że miro kręci się dookoła często ganiając swój ogon. Jest to stereotypowe zachowanie występujące u zwierząt, mające na celu próbę poradzenia sobie z lękiem i stresem. Psiaczek ma łagodne i przyjazne usposobienie. Chętnie nawiązuje kontakt z nowo poznanymi osobami ale nie jest wylewny w okazywaniu uczuć. ‼ PILNIE ‼ szukamy dla MIRO 🐹 ODPOWIEDZIALNEJ rodziny i spokojnego, stabilnego domu. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9c40aebe-f9a0-4dd1-b3fd-a9465d0a0316	t	MIRO	BIG	t	DOG	f	t	3
-163	11	f	\N	Tymon jest w schronisku od 15.10.2021 roku. Miał wtedy około 8 lat. Trafił do schroniska razem z Furią i Arionem. To dziki kot, nie jest oswojony. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi. Ucieka przed człowiekiem, a przyparty do muru reaguje agresją. Oczywiście adopcja kota jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d91f7eeb-b8fa-46a9-bfd2-bea3416877f2	f	TYMON	SMALL	t	CAT	f	t	3
-165	7	f	\N	NATAN 🐹 PILNIE szuka ODPOWIEDZIALNEJ rodziny i SUPER domu 🏠 ➡️ Pierwszy raz trafił do schroniska 10.05.2017 roku. Był wówczas kilku miesięcznym, żywiołowym, energicznym i rozbrykanym psiaczkiem. Miesiące za kratami zamieniały się w lata a on dorastał w schroniskowej rzeczywistości 🥺 Złudne szczęście, uśmiechnęło się do NATANA 30.03.2019 roku - został adoptowany ‼ ➡️ 7.09.2021 roku ponownie wrócił za kraty, ale jako trójłapek 🥺 Co wydarzyło się w „domu” wiedzą tylko byli już właściciele 😡 NATAN 🐹 to obecnie około 7-8 letni psiaczek o BARDZO POZYTYWNYM usposobieniu. P rzyjmuje życie takim, jakie jest. Żyje chwilą i nie opuszcza go radość i optymizm. Jest bardzo grzeczny i posłuszny. Na wybiegu pięknie skupia uwagę na opiekunie przychodząc na każde zawołanie. UWIELBIA smaczki 😁 za które wykonuje komendę - „siad”. Ładnie chodzi na smyczy i m imo braku jednej łapki, jest silnym, aktywnym i energicznym psem. NATAN kiedyś dzielił kojec z innymi psiaczkami, których zachowania chętnie naśladował. Uczył się od nich i zaczepiał do wspólnych zabaw. Niestety od powrotu do schroniska, przechodząc między kojcami, zdarza się, że doskakuje do innych psów jednak podczas spacerów, jeśli nikt go nie zaczepi, nie interesuje się. Być może, po mądrym zapoznaniu u boku doświadczonych opiekunów przypomni sobie jak fajne może być życie w stadzie. Niestety, na przykładzie NATANA widzimy jak w rękach NIEodpowiedzialnych 😡 ludzi zmienia się nie tylko ciało ale i psychika psa 🥺 Czas biegnie nieubłaganie. Psiaczek obecnie ma około 7-8 lat, które ZMARNOWAŁ. Tego czasu nie zwróci mu nikt, ale możemy NA ZAWSZE odmienić jego los pomagając w znalezieniu ODPOWIEDZIALNEJ rodziny 💞 NATAN potrzebuje opiekunów, którzy zapewnią mu stabilizację, której brakuje mu przez niemal całe dotychczasowe życie. Ludzi, którzy otoczą tego cudownego psiaczka troską, miłością ale też lubiących aktywnie spędzać czas. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ad756469-6d3b-4c96-b397-0e5a999d78e4	t	NATAN	MEDIUM	t	DOG	t	t	3
-174	7	f	\N	Maniuś jest w schronisku od 8.03.2021 roku. Miał wtedy około 3 lat. Został znaleziony na ulicy Marysińskiej 100. To dziki kot, nie jest oswojony. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi. Ucieka przed człowiekiem, a przyparty do muru reaguje agresją. Oczywiście adopcja kota jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	3b88bb4d-c3be-475e-a234-3128c3f16c7c	f	MANIUŚ	SMALL	t	CAT	t	t	3
-166	3	f	\N	ODI 🐹 szuka domu 🏠 Do schroniska trafił 13.07.2021 roku jako 8 miesięczny maluszek. Został znaleziony w Łodzi na ul. Odyńca. Prawdopodobnie był jedną z setek corocznych „ofiar wakacji” 😡 ODI zmarnował już ponad 3 lata życia ‼ Czasu nie cofniemy, ale możemy NA ZAWSZE odmienić jego los 💪 ❣️🙏 UDOSTĘPNIAMY 🙏❣️ ODI przez lata nauczył się cieszyć z małych rzeczy. Bliskość człowieka, chwili wspólnej zabawy, pieszczot, szaleństwa na wybiegu, spacer czy też smaczka. Wszystko to ekscytuje go i sprawia, że na chwilę staje się pobudzony. Skacze na człowieka, podgryza i maślanymi oczami prosi, by dana chwila trwała wiecznie. Jest posłuszny, zna podstawowe komendy, ładnie skupia uwagę na opiekunie. Ma pozytywny stosunek do innych psów, zwłaszcza skorych do wspólnych zabaw. IDEAŁ a mimo to, po dziś dzień niczyje serce nie zabiło mocniej właśnie do niego 😔 ODI to fantastyczny, wesoły, pogodny i aktywny #sŁODZIAK, który w docelowym domu stałym powinien mieć zapewnioną odpowiednią dozę ruchu. Nie mamy wątpliwości, że gdy już zazna domowego ciepła, opiekunom odda całe swe serduszko 💗 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7a71c357-39fd-4239-b079-b1d19df9df46	t	ODI	MEDIUM	t	DOG	t	t	3
-167	5	f	\N	MALINKA 🐹 szuka domu 🏠 Sunia trafiła do schroniska 7.06.2021 roku gdy miała około roku. Początkowo była bardzo przestraszona i zestresowana. Stroniła od bliskości człowieka. Minęły prawie 3 lata i psinka pogodzona ze swym losem i otaczającą ją rzeczywistością, otworzyła się i niestety wpadła w rytm życia schroniskowego 😔 Z utęsknieniem patrzy przez kraty czekając na swoją kolej by wyjść na spacer. MALINKA to bardzo energiczna, żywiołowa i rozbrykana psinka. Lubi aktywnie spędzać czas. Podczas letnich wyjść na wybieg UWIELBIA wbiegać do basenu 😁 Nie aportuje, ale chętnie rusza w pogoń za rzuconą jej zabawką. W kojcu mieszka z samcem GACUSIEM i świetnie się dogadują mimo, że mają zupełnie inny potencjał. Sunia gdy już zaufa, jest skora do pieszczot i bardzo usłuchana. Sunia szuka aktywnych opiekunów, którzy spożytkują jej energię. Poświęcą trochę czasu by nauczyć ją życia domowego. Wywołają uśmiech na pyszczku psinki po przejściach i sprawią, że już zawsze będzie szczęśliwa a w zamian zyskają wiernego PSYjaciela na długie lata ❣️ 🙏 UDOSTĘPNIAMY 🙏 szukamy domku naj ‼ Dodatkowych informacji na temat #sŁODZIAKA udzieli wolontariuszka: ☎ 792 304 770 - Iwona Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	433c83e5-8638-42a4-bbc7-21bc93539617	t	MALINKA	MEDIUM	t	DOG	f	t	3
-169	9	f	\N	Ares (375/21) jest w schronisku od 7 maja 2021 roku. Miał wtedy około 5 lat. Został znaleziony na ulicy Gdańskiej. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7f35c9c8-d779-4a9a-b2a9-a7072bdd901a	t	Ares	BIG	t	DOG	f	t	3
-170	6	f	\N	ERWIN 🐱 szuka domu 🏠 Kocur trafił do schroniska 6.05.2021 roku z ul. Syrenki. Obecnie ma około 5 lat i większość życia spędził za kratami. Trafił do nas jako dziki kot wymagający socjalizacji. Żyje z innymi kotami w komitywie, ale unika kontaktu z ludźmi 👉 ucieka a przyparty do muru reaguje agresją. Dla kociaka szukamy ODPOWIEDZIALNEJ rodziny świadomej, że oswajanie kota może zająć miesiące/lata, albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1de479ce-6fc7-450e-a623-3a5764d3e963	t	ERWIN	MEDIUM	f	CAT	t	t	3
-171	10	f	\N	FADO 🐹 szuka domu 🏠 Do schroniska trafił 18.03.2021 roku jako około 6 letni samiec. Podobno został porzucony przez osobę, która nie podołała ułożeniu psa ‼ Początkowo kobieta poświęcała mu ogrom czasu i rozpuściła od szczeniaka do granic możliwości. Nie uczyła psa zasad prawidłowego wychowania a na koniec zamiast zasięgnąć porad czy pomocy, od tak pozbyła się „problemu”. FADO od ponad 3 lat szuka ODPOWIEDZIALNEJ, świadomej rodziny i domu 🏠 Niestety, telefon w sprawie jego adopcji milczy jak zaczarowany 😔 Dzięki pracy wolontariuszy psiaczek zna podstawowe komendy, które chętnie wykonuje. Jest bardzo pojętnym uczniem, który mimo 9 wiosenek na karku lubi aktywnie spędzać czas. Pięknie aportuje i przynosząc pod nogi piłkę, czeka na kontynuacje zabawy. W taki sposób spożytkowuje nagromadzony podczas pobytu w kojcu nadmiar energii. Ładnie chodzi na smyczy, pilnuje opiekuna, nie ciągnie i nie narzuca tempa. Podczas spacerów nie wyrywa się do innych psów chyba że zostanie sprowokowany jakimś agresywnym zachowaniem. FADO to duży pies o cechach indywidualisty. Musi mieć świadomych opiekunów, którzy stanowczo wyznaczą granicę. W docelowym domu stałym, ze względu na zachowania terytorialne, powinien być psim jedynakiem. Podobno w domu sam się wyciszał, był grzeczny i nie niszczył, ale jak zachowa się po ponad 3 latach w schronisku to loteria ‼ Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9aaa0d76-5a03-4f9e-be83-759b62a9b5d2	t	FADO	BIG	f	DOG	f	t	3
-172	12	f	\N	MAX 🐹 szuka domu 🏠 ➡️ Pierwszy raz trafił do schroniska 10.07.2016 roku gdy miał około 3 lat. Po ponad 4 długich latach, jego los się odmienił ➡️ 8.12.2020 roku został adoptowany. ➡️ Szczęście jednak nie trwało długo 💔 1 5.03.2021 roku wrócił za kraty i w schroniskowym kojcu tkwi po dziś dzień 😢 MAX obecnie ma około 11 lat z czego większość życia spędził w schronisku 🥺 Jest psem z charakterkiem, który szanuje własną przestrzeń. Nie lubi nadmiernych pieszczot i reaguje nerwowo, gdy dotyka się go w okolicach karmu. Mimo dominującego charakteru, kojec od zawsze dzieli z psami i suniami z którymi żył w komitywie i które niejednokrotnie żegnał, bo znajdowali swych opiekunów. Ładnie chodzi na smyczy, nie ciągnie i nie narzuca tempa. MAX to bardzo fajny, ale też zrezygnowany pies. W jego oczach przestaje tlić się nadzieja że zazna jeszcze domowego ciepła. Odskoczną od zgiełku, hałasu i rutyny są dla niego spacery z wolontariuszami, którzy nigdy nie szczędzą mu smaczków za które odwdzięcza się uroczym uśmiechem. Ten psi senior BARDZO PROSI 🙏 zabierzcie go na spacer po Internecie udostępniając wieści o jego istnieniu. Może wspólnie odmienimy jego los i dotrzemy do ODPOWIEDZIALNYCH, asertywnych i cierpliwych ludzi, którzy PSYgarną psiaczka po przejściach i otoczą go miłością, troską oraz opieką. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c271982e-f8ee-43fa-a060-c31af8e5c47a	t	MAX	MEDIUM	t	DOG	t	t	3
-175	13	f	\N	MAKS 🐹 szuka domu 🏠 Pamiętacie co robiliście w walentynki 2021 roku? MAKS pamięta ‼ Tego właśnie dnia zawalił się cały jego świat 💔 Kolejny raz został znaleziony podczas tułaczki na ul. Jaracza i trafił za kraty schroniskowego kojca 🥺 gdzie tym razem utknął na ponad 3 długie lata 😭 MAKS miał kiedyś dom i właścicielkę 👉 skrajnie nieodpowiedzialną kobietę, która wielokrotnie nie upilnowała swego PSYjaciela przez co systematycznie trafiał do schroniska ➡️ 23.03.2020 ➡️ 9.07.2020 ➡️ 25.09.202 ➡️ 16.11.2020 ➡️ 29.12.2020 ➡️ 13.01.2021 Obecnie MAKS ma około 12 lat i jest łagodnym oraz przyjaznym psiaczkiem. Bez problemu wpuszcza ludzi do swego kojca nie broniąc przy tym zasobów. Nie jest też terytorialny. Bardzo ładnie chodzi na smyczy lekceważąc mijające go auta, ludzi i inne psy z którymi w warunkach schroniskowych nie ma bezpośredniego kontaktu. MAKS nie jest zbyt wylewny w okazywaniu uczuć. Nie zabiega o głaskanie, mizianie i nie jest typem przytulasa. Nawiązuje kontakt z człowiekiem, ale na dotyk nie reaguje entuzjastycznie. Lubi biegać za piłeczką i innymi zabawkami, które niechętnie oddaje wracając do kojca. W sytuacjach dla niego niekomfortowych np. u weterynarza, zachowuje się nerwowo. MAKS to psi senior, którzy szuka ODPOWIEDZIALNYCH opiekunów, którzy uszanują jego przestrzeń oraz zrozumieją, że nie każdy pies po przejściach na starcie w nowe żucie musi okazywać wdzięczność za mięciutkie legowisko, systematyczne spacery czy PSIEpyszne jedzenie. Gdy pies ma 12 lat to wiemy, że GONI NAS CZAS by znaleźć mu dom i rodzinę, która spojrzy na seniora sercem i otoczy miłością oraz troską, po kres jego dni ❣️ 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	14911c79-6453-4857-8f50-abb9c2f003d1	f	MAKS	BIG	t	DOG	f	t	3
-168	6	f	\N	LULU 🐹 szuka domu 🏠 Sunia trafiła do schroniska 10.05.2021 roku z ul. Wojska Polskiego. Kilka tygodni zajęła praca, by opanowała emocje i przestała podgryzać w chwilach ekscytacji. Dzisiaj, ta piękna niespełna 5 letnia panienka to ZUPEŁNIE INNY PIES 👇 👇 Jest otwarta, kontaktowa i ciekawa świata a marnuje kolejny rok w schronisku 😢 Idąc na wybieg zatrzymuję się przy każdej rzeczy, którą uzna za atrakcyjną. Dopiero po szczegółowym rozpoznaniu i obwąchaniu 😁 jest gotowa ruszyć w dalszą drogę. Na wybiegu porusza się swobodnie, rozładowuje nadmiar energii biegając, ale też skupia się na opiekunie i z radością wraca na zawołanie. Jest bardzo skoczna. Nie przejawia agresji, nie jest też nachalna w relacjach z człowiekiem. LULU w docelowym domu stałym powinna być jedynaczką - nie akceptuje innych zwierząt. 🙏 UDOSTĘPNIAMY 🙏 szukamy ODPOWIEDZIALNEJ rodzinki dla super psinki 💪 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	4f0cf53e-e14d-4bcf-8347-c888c9a8a723	t	LULU	MEDIUM	t	DOG	f	t	3
-173	5	f	\N	EMPIK 🐹 szuka domu 🏠 Psiaczek został znaleziony 14.03.2021 roku przywiązany smyczą do przystanku MPK przy ul. Marmurowej 😡 Ktoś od tak postanowił pozbyć się, wówczas około rocznego maluszka. EMPIK posiada WYBITNY charakter ‼ Malutki psiaczek o wielkim sercu i równie ogromnym przywiązaniu do opiekuna. Jak pokocha to NA ZAWSZE i będzie bronił swego człowieka przez każdym i wszystkim – nawet źdźbłem trawy powiewającym na wietrze. EMPIK ładnie chodzi na smyczy. Kojec dzielił z sunią MAMITĄ i dogadywali się bez żadnych problemów. MAMITA znalazła dom i własną rodzinę a psiaczek został sam 😔 siedzi bidulek przy kratach i maślanymi oczkami domaga się głaskania. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	5c2d5803-30a0-4658-82d1-de638ea05d55	t	EMPIK	SMALL	t	DOG	t	t	3
-178	7	f	\N	MAX 🐹 to obecnie około 6 letni psiaczek, który odsiaduje wyrok za niewinność od 20.11.2020 roku. Jego początki w schronisku były trudne ➡ bał się własnego cienia, był zestresowany i przerażony. W przełamywaniu własnych lęków bardzo pomogły mu wolontariuszki i koleżka z kojca, BERCIK. MAX z czasem zapragnął bliskości człowieka, zaczął podchodzić na smaczki, nadstawiać się do głaskania. Otworzył swe wrażliwe serduszko 💞 Aktualnie wypatruje opiekunów i wita ich rozmerdanym ogonem oraz uśmiechem na pyszczku. Ładnie chodzi na smyczy. UWIELBIA zabawę, mizianie i przytulanie. Jest delikatnym, wrażliwym samcem. Człowiek go zawiódł więc potrzebuje czasu by zaufać. Zmarnował część życia w schronisku i czas by potuptał 🐾🐾 pod opiekę odpowiedzialnych, świadomych, cierpliwych i troskliwych ludzi, którzy pokażą mu że życie może być piękne. Dodatkowych informacji na temat #sŁODZIAKA udzielą wolontariuszki: ☎ 501 243 206 - Ania ☎ 792 304 770 - Iwona Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9cd9b1d2-edbb-4987-bbba-00ed22bf1ec7	t	MAX	MEDIUM	t	DOG	f	t	4
-183	7	f	\N	BUNIA 🐹 szuka domu 🏠 Sunia trafił do schroniska 30.06.2020 roku. Była młodą, około 3-4 letnią psinką, przerażoną otaczającą ją rzeczywistością. Po dziś dzień potrzebuje czasu by zaufać nowo poznanej osobie, otworzyć się i pokazać swój fantastyczny charakter. Jest typem psiej indywidualistki. Nie zna podstawowych komend, ale jest skora do nauki za smaczki 😁 Po 4 latach za kratami ma dość kiepską kondycję i szybko się męczy, jednak UWIELBIA aktywnie spędzać czas. Chętnie aportuje i zaczepia do wspólnej zabawy. Ładnie chodzi na smyczy. W docelowym domu stałym BUNIA raczej powinna być jedynaczką. Gdy już pokocha to całym sercem i niechętnie będzie dzieliła się opiekunem. Dodatkowo broni zasobów. BUNIA to PSIEkochana psinka, która ceni bliskość człowieka, ale jak każdy pies po przejściach, wymaga odrobiny cierpliwości, wyrozumiałości i czasu na zbudowanie pozytywnej relacji, która zaowocuje na lata. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	ae352d96-55ca-4aee-a70b-8c58e08f2331	t	BUNIA	MEDIUM	t	DOG	f	t	4
-188	8	f	\N	ERNEST 🐹 szuka domu 🏠 Do schroniska trafił 30.11.2019 roku 🙈 Został znaleziony na ul. Kasprowicza. Był wówczas około 3 letnim, otwartym, kontaktowym i kochającym cały świat młodzieniaszkiem. Dni… miesiące… lata minęły bezpowrotnie a w jego oczach przestała tlić się nadzieja. Niestety, pewnego dnia na wybiegu rzucił się na niego inny pies, co wpłynęło na jego psychikę 😢 zamknął się w sobie, stracił chęci do zabawy i nadzieję na HAPPY END. Przestał też tolerować inne zwierzęta 😔 Ten około 7 letni psiaczek ważący 30kg większość życia spędził za kratami 😭 ERNEST jest bardzo skoczny. Bez większych problemów pokonuje każdy płot. Niestety z kojca też zdążało mu się nawiać. Dla jego bezpieczeństwa najlepiej, aby zamieszkał w bloku lub kamienicy. Ładnie chodzi na smyczy i akceptuje kaganiec. Do obcych osób podchodzi z dystansem ale nie przejawia cienia agresji. Gdy już zaufa jest bardzo miły, radosny, kontaktowy 💗 lubi głaskanie oraz przytulanie. Nie przepada za rowerzystami i blisko przejeżdżającymi samochodami. ‼ PILNIE ‼ szukamy ODPOWIEDZIALNEJ rodziny dla tego spryciarza 🐹 Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	32124c01-7cbe-4c6c-885b-dc6b4a9a8032	f	ERNEST	BIG	t	DOG	f	t	4
-193	8	f	\N	CEZAR 🐹 w grudnia „świętował” 5 rocznicę odsiadki. Psiaczek wpatrzony w opiekunów jak w obrazem, trafił do schroniska 20.12.2018 roku jako około 1-2 letni młodzieniaszek. Większość życia spędza ogląda świat zza krat 😢 NIE O TAKIM ŻYCIU MARZYMY DLA SCHRONISKOWYCH PODOPIECZNYCH ‼ 🙏 UDOSTĘPNIAMY 🙏 ODPOWIEDZIALNEJ rodziny szukamy 🤩 Początki w schronisku to nigdy nie jest bajka. CEZAR jak większość psów, po przyjęciu był przerażony i zaszył się w budzie. Dużo czasu minęło nim zaczął współpracować i robić pierwsze postępy. Dzisiaj ten radosny kawaler z utęsknieniem czeka na wolontariuszy, ale zachowuje dystans w stosunku do osób obcych i nie dąży do kontaktu jak również stroni od ich dotyku. Potrzebuje czasu by zaufać i pokazać swój fantastyczny charakter. Nie wykazuje agresji. Opiekunom wskakuje na kolana, rozdaje buziaki i domaga się pieszczot. Zna podstawowe komendy ➡️ siad, łapa. Kojec zamieszkuje ze spokojną suczką DORĄ i nie ma między nimi żadnych konfliktów, ale jest sceptycznie nastawiony do samców z którymi sąsiaduje. Poza terenem schroniska ładnie chodzi na smyczy. CEZAR boi się i nie lubi wizyt u weterynarza ‼️ Lata temu, przez nieuwagę, został zaprowadzony do gabinetu bez kagańca. Podczas szczepienia ugryzł 😔 i pojechał na obserwacje. Od tego dnia miał przypiętą etykietę „psa trudnego” 😔 Prawda jest taka, że ten PSIEkochany rudzielec ma swoje lęki i strachy. Nie wiemy, co przeżył w wieku szczenięcym nim trafił do schroniska, ale wiemy, że potrzebuje świadomych, odpowiedzialnych i cierpliwych opiekunów, którzy dadzą mu czas na zbudowanie pozytywnej, trwałej relacji. Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	52d15b50-19a6-4d8b-82df-6ed283b26c62	t	CEZAR	BIG	t	DOG	f	t	4
-198	7	f	\N	KAJTEK 🐹 szuka domu 🏠 Dramat psa, który do schroniska trafił 27.03.2018 roku jako około 8 miesięczny maluszek i po dziś dzień nie zaznał domowego ciepła 😭 😭 Zamiast bawić się zabawkami, uczyć poprawnych zachowań, spać w mięciutkim legowisku i iść przez życie u boku swojego człowieka ZMARNOWAŁ psie dzieciństwo i kolejne lata w kojcu i budzie 🥺 KAJTEK ma swoje lęki i strach, które głównie wynikają z ograniczonej możliwości poznawania świata. Jest BARDZO DELIKATNY i wrażliwy. Podczas pierwszych zapoznań nieśmiały. Potrzebuje czasu by zaufać. Zdecydowanie swobodniej czuje się przy otwartym i kontaktowym czworonogu, którego zachowania może naśladować. KAJTEK od lat dzieli kojec z psem DYLKIEM, który jest jego mentorem, wsparciem oraz nauczycielem. Podczas spacerów znacznie pewniej czuje się u boku PSYjaciela, który jest zdecydowanie odważniejszy i bardziej skory do poznawania świata. KAJTEK 🐹 czeka na wyjątkowych ludzi, którzy spojrzą na niego sercem 💞 i dadzą mu szansę na NORMALNE ŻYCIE ❣️ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	8445bccc-af5a-4ec8-9799-fc30b00c7231	t	KAJTEK	MEDIUM	t	DOG	f	t	4
-202	9	f	\N	CUDAK 🐹 szuka domu 🏠 CUDAK do schroniska trafił 9.02.20216 roku z interwencji w Łodzi na ul. Suwalskiej. Został odebrany z tragicznych warunków wraz z 7 innymi psiaczkami. Miał około 7 miesięcy i kompletnie nie znał życia 😔 Nigdy nie wychodził na dwór, nie miał pozytywnego kontaktu z człowiekiem, nie znał dotyku, nie zaznał miłości ani troski. Każdego dnia dziczał i wycofywał się na świat 😢 Początki w schronisku były bardzo trudne ‼ Psy nie wychodziły na wybieg o spacerach nie wspominając. Bał się własnego cienia ale pozytywnie reagował na inne psy. W 2023 roku sprawiał wrażenie nieobecnego. Zaszył się w budzie i nie miał żadnych chęci do życia. Nie wykazywał agresji, ale nie nawiązywał absolutnie żadnej relacji z człowiekiem. PRZEZ LATA NIE BYŁ OGŁASZANY 🥺 nie dano mu szansy na NORMALNE życie 😭 Dział adopcji we współpracy z behawiorystką i wolontariuszami postanowili ZAWALCZYĆ O LEPSZY LOS dla CUDAKA 🐹 Przełom nastąpił w grudniu 2024 roku. Psiaczek został wyciągnięty z kojca i zamieszkał w zwierzętarni 😊 W godzinach pracy biura możecie spotkać #sŁODZIAKA w dziale adopcji 💞 Zgodnie z zaleceniami behawiorystki, stajemy na głowie, aby miał na miarę naszych możliwości systematyczny kontakt z różnymi ludźmi, wychodził kilka razy dziennie na spacery co jest realizowane dzięki WSPANIAŁYM WOLONTARIUSZOM 😍 CUDAK przy osobach które zna, zachowuje się swobodnie. Merda ogonkiem, cieszy się, rozdaje buziaki i łapkami wchodzi na kolanka. Jest WSPANIAŁY, niesamowicie delikatny ale też zagubiony. Powinien zamieszkać u boku spokojnej rodziny, która zrozumie, że psiaczek, który zmarnował 9 lat za kratami potrzebuje czasu na aklimatyzację i budowanie pozytywnej relacji z człowiekiem. Wierzymy, że RAZEM możemy odmienić los tego WSPANIAŁEGO psa. 🙏 UDOSTĘPNIAMY 🙏 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7cb0b44b-a941-4d23-93d2-b29ac6f95b7d	t	CUDAK	SMALL	t	DOG	f	t	4
-206	1	f	\N	Samiczka, została znaleziona. Jest oswojona, aczkolwiek trochę nieśmiała.	FEMALE	cc9615ee-6a57-4b39-8820-f6f38166f392	t	Mimi	SMALL	f	OTHER	f	f	4
-176	10	f	\N	DRAGON 🐹 PILNIE szuka domu 🏠 Nie ma smutniejszego widoku, niż umierające marzenia psa, który w schronisku przeszedł ogromną metamorfozę a mimo to, nadal obserwuje świat zza krat 😭 DRAGON trafił do schroniska 21.01.2021 roku po śmierci opiekuna 🥺 Początkowo był przerażony miejscem w którym się znalazł i wycofał się. Nie chciał wychodzić z budy 🥺 Przytłaczały go hałas i wszechobecny zgiełk. Nie dość że utracił opiekuna, to jeszcze dach nad głową, który był jego bezpieczną przystanią. Obecnie DRAGON ma 9 lat. Jest towarzyski, uwielbia kontakt z człowiekiem i spokojne, długie spacery. Na widok wolontariusza popiskuje i szczeka z emocji. Wie, że za chwilę zacznie spacer podczas którego, bardzo ładnie idzie na smyczy. Niestety kawaler nie toleruje innych psiaczków, dlatego w docelowym domu stałym raczej powinien być jedynakiem. Jest również zaborczy podczas jedzenia i jego podawania. Dodatkowych informacji na temat #sŁODZIAKA udzieli wolontariusz: ☎ 538 300 983 - Krzysztof Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	aab79073-f008-4924-a9fd-22673dc9a87c	t	DRAGON	BIG	t	DOG	f	t	4
-177	8	f	\N	poznaj historię ALKA 🐹 i pomóż mu znaleźć drogę do świadomego człowieka, który odmieni jego los NA ZAWSZE 💪 ‼️ ALEK tak naprawdę trafił do schroniska 1.03.2019 roku jako 2 letni psiaczek z nieznaną nam przeszłością. Ma za sobą dwie nieudane adopcje i niestety, nie pozostaje bez winy 😔 BARDZO PILNUJE zasobów i potrafi nie tylko pokazać zęby ale i ugryźć ‼️ Jest zafiksowany na punkcie rzeczy, które uznaje za własne i nie pozwala wyjąć sobie niczego z pyska ‼️ Obecnie ma 7 lat i jest uzależniony od aportowania. Niestrudzenie przynosi piłki i inne zabawki, ale dopiero, gdy położy je pod nogami opiekuna, można wziąć je w rękę by ponownie rzucić. Jest posłuszny, ładnie chodzi na smyczy i zna kaganiec. Na podstawie relacji z wcześniejszych domów wiemy, że zachowuje czystość i chętnie wyleguje się na kanapie. W docelowym domu stałym powinien być jedynakiem z oczywistych powodów 👉 ALEK NIE DZIELI SIĘ NICZYM tj. zabawkami, legowiskiem, miską z jedzeniem czy wodą ‼️ Już wiecie jaki jest ALEK i jakiego domu szuka więc PROSIMY 🙏 pomóżcie nam odmienić los psiaczka, który większość życia ogląda świat zza krat 🥺 Szukamy doświadczonej, nastawionej na pracę, odpowiedzialnej i świadomej rodziny bez dzieci i innych zwierząt. Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4c58d4a8-e5e4-4134-85e7-e1e999b85f8b	t	ALEK	MEDIUM	f	DOG	f	f	4
-179	6	f	\N	KIWI 🐹 szuka domu 🏠 Obecnie ma 5 lat i jest wesołym, rozbrykanym psiaczkiem. Gdy widzi opiekunkę, radośnie przeskakuje z łapki na łapkę, sygnalizując pełną gotowość do wyjścia na wybieg. Mimo, iż jest bardzo silny, grzecznie siada czekając na przypięcie smyczy. Podczas spacerów ciągnie, co jest wynikiem zdecydowanie za małej ilości ruchu dla jego potencjału i nadmiaru niespożytkowanej energii. Powinien zamieszkać u boku aktywnych osób, które zapewnią mu o odpowiednią dozę ruchu i zabawy. KIWI maślanymi oczami patrzy, jak bawią się psy na sąsiednim wybiegu, jednak wymaga pracy nad manierami. PSIEkochany i nieokrzesany psiaczek, który niestety, większość życia spędził w schroniskowej rzeczywistości 😔 Zdecydowanie większym zaufaniem darzy kobiety. Adorator domaga się głaskania, nie wzgardzi też smakołykami 😁 Psiaczek trafił do schroniska 20.11.2020 roku z ul. Gwarnej. Był młodym, około 1,5 rocznym, aktywnym kawalerem bojącym się mężczyzn. Traumy, jakie przeszedł we wcześniejszym życiu, częściowo poszły w zapomnienie, ale przyszli opiekunowie powinni poznać #sŁODZIAKA by podjąć mądrą i ODPOWIEDZIALNĄ decyzję o adopcji. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 601 710 654 - Agnieszka Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a14f5436-1ca1-48d2-b9c1-431aa93ef7dc	t	KIWI	BIG	t	DOG	f	t	4
-180	8	f	\N	FILEMON i FILA trafili do schroniska 10.10.2020 roku. Mieli wtedy około 10 miesięcy i byli kotami wolno żyjącymi. FILA odeszła za Tęczowy Most i kocurek stracił swe oparcie w siostrze. Nie podchodzi do człowieka. Stroni od dotyku i bliskości a zagoniony w kont reaguje agresją. Żyje w komitywie z innymi kotami w schroniskowej koloni. FILEMON szuka domu świadomego zarówno ilości pracy jakiej wymaga oswojenie tego gagatka jak i faktu, że może nigdy nie był typem przytulasa. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	499b90b5-3431-411d-9efc-f94baa20b023	t	FILEMON	MEDIUM	t	CAT	f	t	4
-181	8	f	\N	PLUMPI 🐾 swoje już odsiedział ⏳ nadszedł czas, aby wreszcie zaznał domowego ciepła ❤️ Gdy trafił do schroniska 27.09.2020 roku , miał około 4 lat . Niestety, większość dotychczasowego życia spędził za kratami … 😞 Świat zapomniał o tym niewątpliwie uroczym, dużym kawalerze o smutnych, brązowych oczach , w których przestaje tlić się nadzieja na własną rodzinę i prawdziwy dom. PLUMPI to bystry psiaczek , który na wybiegu dopomina się uwagi i bliskości człowieka. Chętnie zaprasza do wspólnej zabawy – uwielbia piłeczkę, szarpak i pięknie aportuje. Bryka niczym wyrośnięty szczeniak! 🐶 Ma bardzo pozytywne usposobienie i lubi aktywnie spędzać czas, bo energii mu nie brakuje . Świetnie radzi sobie podczas spacerów – nie ciągnie, dostosowuje tempo do człowieka. W razie potrzeby cierpliwie znosi noszenie kagańca , co może przydać się podczas standardowych wizyt u weterynarza. Niewątpliwie w zdobywaniu jego względów pomogą PSIEpyszne smaczki i wspólne spacery zapoznawcze. Jest karny, posłuszny, zrównoważony i zna podstawowe komendy. PLUMPI podczas spacerów nie interesuje się mijanymi psiaczkami , za to na wybiegu często zaczepia je do wspólnej zabawy. W przypadku ewentualnych nieporozumień dojrzale unika konfliktów . Jest ciekawski i odważny. Nie znamy jego przeszłości, ale wiemy, że gdy już zyska poczucie bezpieczeństwa i stabilizację, odwdzięczy się ogromną, bezgraniczną i bezinteresowną miłością . Będzie wspaniałym i wiernym towarzyszem oraz prawdziwym PSYjacielem ! 🐾❤️ Dodatkowe informacje na temat #sŁODZIAKA udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f7bfe47a-3625-419b-a196-b9bcbc0e9369	t	PLUMPI	BIG	t	DOG	f	f	4
-204	12	f	\N	Żuk jest w schronisku od 1.07.2015 roku. Kiedy trafił do schroniska miał około 3 lata. To dziki kot, nie jest oswojony. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi. Ucieka przed człowiekiem, a przyparty do muru reaguje agresją. Oczywiście adopcja kota jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b39bbce9-32ca-4305-aa2e-c9a44430616c	f	Żuk	MEDIUM	t	CAT	t	f	4
-182	7	f	\N	FLORKA 🐹 szuka domu 🏠 Sunia została znaleziona 1.11.2020 roku w Łodzi na ul. Bartoka. Ponad połowę dotychczasowego życia spędziła w schronisku 😢 Już 4 długie lata czeka, aż jakaś CUDOWNA rodzina, odmieni jej los i PSYgarnie NA ZAWSZE ‼ FLORKA to obecnie 7 letnia sunia, która podczas pierwszych zapoznań jest przestraszona, zdystansowana i zestresowana. Nie szuka kontaktu z człowiekiem. Zdecydowanie powinna zamieszkać u boku spokojnej rodziny, która rozumie, że pies po przejściach potrzebuje przestrzeni i sporo czasu, zarówno na naukę zasad życia domowego jak i budowanie pozytywnej relacji. Do znanych sobie osób, FLORKA podchodzi z ufnością i mimo, że nie jest wylewna w okazywaniu uczuć - łasi się i daje głaskać. Nie ma większych problemu w nawiązaniu relacji z innymi psiaczkami. Jest delikatna, wrażliwa, ciekawa świata oraz DZIELNA ‼ Dodatkowych informacji na temat suni udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	3844d448-f60b-4229-877b-7cb7c8e2f608	t	FLORKA	MEDIUM	f	DOG	f	t	4
-184	8	f	\N	ROMEK 🐹 szuka domu 🏠 Psiaczek został znaleziony 15.06.2020 roku na ul. Żabiej. Gdy trafił do schroniska był żywiołowym i energicznym, około 3 letnim samcem. Emocjonalnie kompletnie nie dawał sobie rady 😢 Przez kraty kojca odstraszał wszystkich. Na skutek stresu zaczął okaleczeć się gryząc własny ogon 😔 który musiał być amputowany. Ciężka praca przyniosła efekty dopiero po ponad roku. ROMEK zaufał wolontariuszom i pozwolił wyprowadzić się na spacer. Obecnie to ZUPEŁNIE INNY PSIACZEK 😍 Pozytywnie reaguje na znane mu osoby, a w stosunku do obcych początkowo zachowuje dystans. Jest pogodny, ładnie chodzi na smyczy i zna kaganiec. N a wybiegu radośni szaleje i interesuje się zabawkami. Nie wykazuje agresji i ma pozytywny stosunek do innych psów, jednak w naszej ocenie lepiej, aby w docelowym domu stałym był jedynakiem. ROMEK pilnuje zasobów, ale smaczki z ręki bierze delikatnie. ❣️ UDOSTĘPNIAMY ❣️ super rodziny dla ROMKA szukamy 💪 niech wreszcie ten cudny rudzielec zazna domowego ciepła. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6a0b8805-4476-467e-b867-fe24322f31c6	t	ROMEK	BIG	t	DOG	f	t	4
-185	9	f	\N	Schroniskowy weteran ROKO 🐹 PILNIE szuka domu 🏠 Do schronisk trafił 15.06.2017 roku 🥺 W tym czasie był raz adoptowany, ale niczym zbędna rzecz oddany 14.06.2020 roku po kilku dniach spędzonych w pieleszach domowych. Mimo upływu lat zachował pogodę ducha i optymizm. Ciągle jest pełen energii, lubi aktywnie spędzać czas a na jego pyszczku widnieje cudny uśmiech. Na wybiegu szaleje niczym młodzieniaszek. Potrzebuje czasu by zaufać opiekunowi i pokazać swój fantastyczny charakter. Gdy już zaufa, przychodzi na głaski, mizianie i zaczepia do wspólnej zabawy. Chętnie przybiega na smaczki. Ładnie chodzi na smyczy. PILNIE szukamy ODPOWIEDZIALNEJ rodziny dla około 8 letniego ROKO, który za kratami zmarnował większość życia 🥺 ‼️ 🙏 UDOSTĘPNIAMY 🙏 ‼️ Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7cb90cac-8e90-40f8-b7ba-9ad0cb97b965	f	ROKO	MEDIUM	t	DOG	f	t	4
-186	5	f	\N	MIKI 🐹 to 4,5 letni #sŁODZIAK 💗 💗 💗 Psiaczek jest energiczny, bardzo radosny i zaraża swym pozytywnym nastawieniem. Potrzebuje czasu by otworzyć się przed nowo poznanymi osobami i pokazać swój fantastyczny charakter. Ładnie chodzi na smyczy. Czas, który spędza z wolontariuszami na wybiegu, wykorzystuje w 100%. UWIELBIA ruch, zabawę i szaleństwa wszelakie. Ma pozytywny stosunek do innych psów. Kojec dzieli z samcem i żyją w pełnej komitywie 💪 MIKI przebywa w schronisku od 2.03.2020 roku. Odsiaduje wyrok za niewinność od 8 miesiąca życia 🥺 Straconych lat nikt mu nie wynagrodzi, ale przy ODPOWIEDZIALNYM opiekunie, może poznać świat od tej najlePSIEjszej strony ❣❣❣ ‼ UDOSTĘPNIAMY ‼ szukamy domku naj Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 605 744 010 - Kamila Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	da1ecac3-43ed-4967-baad-3cf4f5664186	t	MIKI	MEDIUM	t	DOG	t	t	4
-187	8	f	\N	Klara jest w schronisku od 26.01.2020 roku. Miała wtedy około 3 lata. Została znaleziona na klatce schrodowej w Łodzi na ul. Smoczej. To dzika kotka,  nie jest oswojona. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi.  Ucieka przed człowiekiem, a przyparta do muru reaguje agresją. Oczywiście adopcja kotki jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	88c3df5d-471f-425d-aa1f-bab4b7c2fdbe	f	Klara	SMALL	t	CAT	f	f	4
-189	12	f	\N	ATOS 🐹 szuka domu 🏠 Dramat tego psa trwał długie miesiące. Gdy 14.11.2019 roku trafił do schroniska zaszył się w budzie. Paraliżował go hałas, chaos i przytłaczała codzienność. Obce miejsce, obcy ludzie, nowa, trudna rzeczywistość. ATOS miał dom i rodzinę. Bardzo przeżył stratę bliskich i utratę stabilizacji. Na nic zdawały się trudy pracowników i wolontariuszy gdy na pyszczku psa wiecznie widniał smutek. Jest pięknym, dostojnym 11 letnim samcem o stonowanym charakterze. Uwielbia bieganie za zabawkami jednak niechętnie je oddaje. Zna podstawowe komendy jak siad i łapa, ale ich wykonanie wymaga zachęty w postaci smaczka. Na smyczy chodzi spokojnie, nie ciągnie. Niestety nie darzy sympatią innych czworonogów dlatego docelowo raczej powinien być jedynakiem. ATOS jest psem w typie owczarka i takie też ma zachowania: ➡️ potrafi sprawdzać granice i na ile mu się pozwoli ➡️ momentami jest wymagający i uparty ➡️ boi się gwałtownych ruchów ➡️ nowe osoby akceptuje, ale traktuje z dozą ostrożności i dystansem Potrzebuje konsekwentnego, wyrozumiałego, asertywnego opiekuna, który będzie dla niego przewodnikiem, przyjacielem i podporą. Powinien trafić do domu, w którym opiekunowie mają doświadczenie z psami nie do końca otwartymi. ATOS będzie wymagał czasu na zbudowanie zaufania do przyszłych opiekunów, na odzyskanie poczucia bezpieczeństwa i stabilizacji. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	145e6819-40a8-47eb-afb4-952868692934	f	ATOS	BIG	f	DOG	f	f	4
-190	14	f	\N	MARTINI i jego smutna historia 😭🥺 Pierwszy raz trafił do schroniska we wrześniu 2011 roku. Był młodziutkim, około rocznym, pełnym wigoru i chęci do zabawy psiaczkiem. Robił wszystko, by odnaleźć się w schroniskowej rzeczywistości. Skakał jak sprężynka, biegał wzdłuż krat, chciał spożytkować nadmiar energii. Niestety 😢 swym zachowaniem denerwował kompanów psiej niedoli więc często zmieniał boksy. W maju 2015 roku jego los się odmienił. Z prawie 500 psów przebywających wówczas w schronisku, to właśnie on skradł czyjeś serce i potuptał 🐾🐾 do swojego domu. Niestety, sielskie życie i szczęście trwało tylko kilka lat 😔 Właściciel wyjechał za granicę a MARTINI trafił pod opiekę dziadka, który zmarł. Tego dnia kolejny raz zawalił się jego świat. Psa nie przygarnął żaden członek rodziny i 26.09.2019 roku, po 4 latach życia w pieleszach domowych, poturbowane serduszko ponownie trafiło za kraty 💔 MARTINI 🐹 poznał już co to dom, mięciutkie legowisko, bliskość człowieka, regularne spacery i wszystko to stracił. Jest kochanym, średniej wielkości psiaczkiem ważącym, który obecnie ma 13 lat. P si senior o mądrym spojrzeniu i ogromnej chęci do życia. Spacery z nim to prawdziwa przyjemność. Pięknie chodzi na smyczy, nie ciągnie i dostosowuje tempo do opiekuna. Bez problemu poradzi sobie z nim osoba starsza, która chciałaby zyskać wiernego PSYjaciela. Delektuje się dosłownie wszystkim, co go otacza - zapachem trawy, promieniami słońca, każdym nowym miejscem, które może zobaczyć i obwąchać. Zamiast zabawek zdecydowanie bardziej ceni sobie bliskość człowieka. Uwielbia, gdy przychodzą do niego wolontariusze, a jednocześnie nie znosi, gdy znów musi zostać w boksie sam 😔 Podczas pożegnania jego oczy smutnieją i aby odwlec w czasie rozstanie, domaga się głaskania i uwagi. MARTINI to psi łasuch. Z uwagi na niewielką ilość ruchu, jaką ma w schronisku, jedzenie jest jego jedyną atrakcją, dlatego wskazana będzie dieta 😊 Schronisko to nie miejsce dla żadnego psa, zwłaszcza starszego, który na jesieni życia potrzebuje ciepła, spokoju, miłości i troski. Pomimo lat spędzonych za kratami, MARTINI zachował pogodę ducha i wiarę w człowieka. PILNIE szukamy domu (najlepiej bez innych zwierząt), gdzie w godnych warunkach domowych, ten psi seniorek spędzi resztę życia. Dodatkowych informacji na temat psiaczka udzielą wolontariusze: ☎ 538 300 983 - Krzysztof ☎ 605 744 010 - Kamila Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	268818d9-b0b5-41ad-95c3-3075fc5dec24	t	MARTINI	MEDIUM	t	DOG	f	t	4
-191	8	f	\N	CZAREK 🐹 szuka domu 🏠 Czarujący CZARUŚ to uroczy, pełen energii psiaczek, który od 5 lat czeka na swojego człowieka. Jak niemal każdy pies po przejściach, potrzebuje czasu by zaufać nowo poznanej osobie. Po niedługim czasie, staje się wiernym i najlePSIEjszym towarzyszem 💗 Nie przejawia agresji, ale zdecydowanie potrzebuje asertywnego i stanowczego opiekuna, który jasno będzie wyznaczał granice. Jest łagodny i ugodowy w stosunku do innych psów. Uwielbia ruch i zabawę, zwłaszcza bieganie za piłką. Nie wzgardzi też pieszczotami. Mimo, że jego metryka pokazuje 6 lat, ma w sobie sporo wigoru, a jednocześnie jest zrównoważonym emocjonalnie, dojrzałym samcem. CZAREK na swojego człowieka w Łódzkim Schronisku czeka od 4.04.2019 roku 🥺 W Waszych rękach, czy ten około 25kg #sŁODZIAK zazna domowego ciepła. 🙏 UDOSTĘPNIAMY 🙏 CZAREK był adoptowany 9.03.2024 roku. Wrócił z adopcji 20.04.2024 roku ze względu na akceptację tylko jednego z członków rodziny. Psiaczek ma ogromne serce, ale potrzebuje stanowczego opiekuna, który jasno wyznaczy granice. Nr ewidencyjny 356/19 Dodatkowych informacji na temat CZARKA udzieli wolontariuszka: ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	be869ecb-1163-40fd-8347-dfafdbe8e9b4	t	CZAREK	MEDIUM	t	DOG	f	t	4
-192	9	f	\N	GRAFIT 🐹 został znaleziony w Łodzi na ul. Strykowska/Okólna i od 7.03.2019 roku odsiaduje wyrok za niewinność 🥺 Straconych 5 długich lat NIKT MU NIE ZWRÓCI, ale możemy NA ZAWSZE odmienić jego przyszłość ‼ GRAFIT to bardzo pozytywny pies o wybitnej urodzie. W stosunku do obcych, początkowo jest nieufny, wręcz unika kontaktu. Gdy nabierze pewności, że nie grozi mu nic złego, odzyskuje poczucie bezpieczeństwa i stabilizację. Jest WSPANIAŁYM psem po przejściach, który przyszłym opiekunom odwdzięczy się ogromną, bezinteresowną miłością i zaprezentuje swój cudowny psi charakter. GRAFIT pięknie skupia się na opiekunie. Domaga się uwagi i bliskości. Człowiek jest dla niego bardzo ważny. Uwielbia przebywać w jego towarzystwie, być głaskany oraz spędzać czas na wspólnej zabawie z piłką. Pięknie aportuje zachęcając do dalszej zabawy. Zna podstawowe komendy. Ładnie chodzi na smyczy. Jest łasuchem zawsze skorym na smaczki, szczególnie po wykonaniu komendy. GRAFIT szuka domu ‼ N ie marzy o życiu w budzie, bo takie warunki ma w schronisku 😔 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 792 304 770 - Iwona Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b624507e-f3f3-4c42-beaa-1bf30f0345ff	t	GRAFIT	MEDIUM	f	DOG	f	t	4
-194	8	f	\N	DYLEK 🐹 szuka domu 🏠 Psiaczek trafił do schroniska 14.12.2018 roku gdy miał około 3 lat. Większość życia spędził za kratami schroniskowego kojca 🥺 Jak to możliwe, że tak miły, energiczny i bezkonfliktowy #sŁODZIAK odsiaduje 7 rok za niewinność. DYLEK jest znudzony codziennością. Spacery i kontakt z wolontariuszami to jego odskocznia od zgiełku i rutyny dnia codziennego. UWIELBIA kontakt z człowiekiem, wspólne zabawy, które nigdy mu się nie nudzą. Mimo prawie 9 wiosenek na karku lubi aktywnie spędzać czas na poznawaniu świata od najlePSIEjszej strony. Kojec dzieli z samcem i dogadują się rewelacyjnie. Niestety nie toleruje kotów. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	cac611f4-b61c-494e-91b4-c2f899b05165	t	DYLEK	MEDIUM	t	DOG	f	t	4
-195	7	f	\N	ROKI 🐹 szuka domu 🏠 Do schroniska trafił 20.09.2018 roku i utknął na prawie 6 długich lat ‼ Został znaleziony w Parku Helenów jako roczny, młody, aktywny pies gotowy do nauki i poznawania świata. Niestety, nie znalazł się człowiek, który spojrzał na ROKIEGO sercem i zaprosił do swego domu i życia 😢 Dziś ten 7 letni kawaler ze zrezygnowaniem patrzy przez kraty 😔 Jego ogonek merda jedynie na widok wolontariuszy, bo wie, że na pewien czas, jego życie odmieni się 👉 pójdzie na spacer lub wybieg, ktoś pogłaszcze go i da smaczka. Posłucha ludzkiego głosu i kto wie, może usłyszy magiczne słowo 👉 „siad” lub „łapa” by pokazać swą umiejętność wykonywania komend co zawsze jest nagradzane. ROKI przez lata miał przypiętą etykietę „psa agresywnego”, tymczasem prawda jest trochę inna. Nie zapałał miłością do jednej wolontariuszki, co nie powinno być wyznacznikiem w ocenie całokształtu relacji z ludźmi. Psiaczek bardzo ładnie chodzi na smyczy. Jest grzeczny i usłuchany. Podczas spacerów akceptuje inne psy, ale od zawsze w kojcu jest psim jedynakiem. Nie jest nachalny, lubi pieszczoty ale rzadko zdarza się, że sam o nie zabiega. Jest typem łasucha UWIELBIAJĄCEGO smaczki wszelakie, niestety ze względu na alergię pokarmową należy pilnować co się mu daje. ROKI szuka domu i osób, które pokażą mu, jak wygląda prawdziwe życie psa będącego pełnoprawnym człowiekiem rodziny. Ludzi świadomych, że pies, który spędził większość życia w schronisku, wymaga nauki zasad życia domowego. Osób asertywnych, stanowczych ale też cierpliwych w budowaniu pozytywnej relacji. Dodatkowych informacji na temat ROKIEGO udzieli wolontariuszka: ☎ 601 206 013 - Ewelina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	522eebc8-a601-4f2c-a470-7f218c48c434	t	ROKI	BIG	t	DOG	f	t	4
-196	11	f	\N	ASTRO 🐹 PILNIE szuka domu 🏠 Starsze psy wierzą w sny ‼️ Jednak na ich realizację mamy znacznie mniej czasu dlatego PILNIE szukamy domu dla seniora ASTRO, który od 6 lat ogląda świat zza krat schroniskowego kojca a chciałby starość przeżyć godnie u boku swojego człowieka. ASTRO trafił do schroniska 11.06.2018 roku. Miał wtedy około 8 lat. Jest zwyczajnym kundelkiem z nieznaną nam przeszłością. Po takie psiaczki nie ustawia się kolejka 🥺 a ich szanse na znalezienie domów są znacznie mniejsze. Z Waszą pomocą wierzymy, że odnajdziemy drogę do WSPANIAŁYCH ludzi, którzy otworzą swoje serca 💗 i dom 🏠 dla tego seniora. ASTRO jest dojrzałym, ale wciąż energicznym i chętnym do biegania oraz wszelkich zabaw psiaczkiem. Jego metryka pokazuje prawie 10 lat, mimo to nadal lubi zabawy z piłką. Obecnie waży 25kg. W stosunku do obcych osób może i nie jest nazbyt wylewny, ale z pewnością da szansę komuś, kto wreszcie do zauważy. Mieszkał w kojcu z suczką, z którą dogadywał się bez żadnych problemów. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	13b11386-dfa2-4d08-932e-88c5ff87795e	f	ASTRO	MEDIUM	f	DOG	t	t	4
-205	13	f	\N	Diego jest w schronisku od 24.06.2014 roku. Kiedy trafił do schronika miał około 2 lata. To dziki kot, nie jest oswojony. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi. Ucieka przed człowiekiem, a przyparty do muru reaguje agresją. Oczywiście adopcja kota jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e818c9f9-0313-4d3a-84cc-ad2cb9c483ca	f	DIEGO	MEDIUM	t	CAT	f	t	4
-197	10	f	\N	DONALD 🐹 to psiaczek, który zaznał bólu i cierpienia z ręki człowieka 😭 Wiemy, że w pierwszym domu był bity 😡 Kolejna rodzina, która znała jedynie jego opis z OLX, nie podołała opiece nad nim 😔 30.05.2018 roku jako młody, bo wówczas około 2 letni samiec trafił do łódzkiego schroniska. Początki nie były łatwe... DONALD to pies po przejściach i na jego zaufanie należy zapracować 💪 Na wytworzenie zdrowej relacji nie wystarczy 15 minut ‼️ W kojcu, ten dostojny kawaler, nie prezentuje się przyjaźnie 🙈 ale nasz były wolontariusz, który mamy cichą nadzieję, że wkrótce ponownie do nas dołączy - „odwalił kawał dobrej roboty” poświęcając temu poturbowanemu przez życie psu, tyle czasu, ile potrzebował by się otworzyć. Okazało się, że DONALDA da się lubić a nawet pokochać 💗 Obecnie ten około 8 letni psiaczek jest zgodny z innymi psami i suniami. W drodze na wybieg ciągnie na smyczy, ale po za terenem schroniska ładnie idzie przy nodze. Pięknie okazuje przywiązanie do tymczasowych opiekunów 👉 radośnie biega przeskakując z łapki na łapkę, przytula się i nadstawia do głaskania. DONALD to niewątpliwie pies z charakterem. Aby zaznał szczęścia u boku człowieka, musi znaleźć świadomych, ODPOWIEDZIALNYCH i nastawionych na początkową pracę ludzi, którzy po pewnym czasie zyskają wiernego PSYjaciela na lata. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	892471cd-11bf-4ade-87b6-a1511072dc76	t	DONALD	BIG	f	DOG	f	t	4
-199	9	f	\N	RAMBO 🐹 trafił do schroniska 18.02.2018 roku. Prawdopodobnie wcześniej mieszkał na terenie posesji, której miał pilnować. Niesamowity potencjał nie został wykorzystany, bo nikt nie podjął z nim pracy a kontakt z człowiekiem polegał jedynie na przepędzaniu. Minęło 6 lat a RAMBO nadal czeka na swojego człowieka. To radosny psiaczek, który każdego dnia z niecierpliwością siedzi przy kratach i wypatruje wolontariusza, który zabierze go na spacer. Na wybiegu uwielbia aportować piłkę, ale ceni też kontakt z człowiekiem i sam przychodzi na głaski. Niestety RAMBO nie toleruje innych psów za to jako jedynak odnajdzie się REWELACYJNIE 💪 RAMBO obecnie ma 8 lat i waży około 22kg. Jest po pełnej obsłudze weterynaryjnej 👉 GOTOWY rozpocząć NOWY rozdział życia u boku wspaniałej rodziny w SUPER DOMU 🏠 Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d3a325e5-2481-4871-8b3a-fb75a3200b89	f	RAMBO	MEDIUM	t	DOG	f	t	4
-200	10	f	\N	JANEK 🐹 szuka domu 🏠 Psiaczek do schroniska trafił 3.02.2018 roku 🥺 i za kratami tkwi po dziś dzień 😔 Został znaleziony w Łodzi na ul. Pogorzel. Miał wówczas około 3 lat i balast złych doświadczeń. Na szyi przy obroży znajdowała się lysetka z przychodni weterynaryjnej w Ksawerowie, ale nikt nie pofatygował się po swego wiernego przyjaciela 😢 JANEK to pies z charakterkiem, który gdy pokocha, oddaje opiekunowi całe swe serce 💗 Potrzebuje czasu by zaufać nowo poznanym osobom, dać się pogłaskać i czuć swobodnie. W relacjach z psami, po mądrym zapoznaniu, żyje w komitywie. Kojec od dawna dzieli z samcem SAMIM i dogadują się rewelacyjnie. Psiaczek mimo 9 wiosen na karku jest żywiołowy, energiczny, pełen wigoru i zawsze chętny na długi spacer. 🙏 UDOSTĘPNIAMY 🙏 szukamy PILNIE odpowiedzialnej rodziny, która pokaże temu #sŁODZIAKOWI, że życie może być PIĘKNE 🤩 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	35000ac7-6190-4400-8278-2f7319f56ca8	t	JANEK	MEDIUM	t	DOG	f	t	4
-201	10	f	\N	TREWOR 🐹 szuka domu 🏠 Psiaczek do schroniska trafił 21.04.2017 roku gdy miał około 2 lat. Został znaleziony na ul. Trawiastej. Większość życia spędził za kratami 😭 😭 CZAS ODMIENIĆ JEGO LOS NA ZAWSZE ‼ Niech nie zmyli nikogo wiek tego psiego kawalera 😁 #sŁODZIAK bardzo lubi aktywnie spędzać czas. Podczas spacerów głównie węszy delektując się zapachami a jednocześnie potrafi pięknie skupić uwagę bezpośrednio na opiekunie i jest skory do nauki. Wzorowo chodzi na smyczy ignorując mijane psy. Na wybiegu bez większych problemów dogaduje się z innymi psiaczkami i w kojcu zachęca towarzysza psiej niedoli do wspólnych zabaw 😊 Nie jest zaborcy i nie przejawia cienia agresji, ale potrzebuje konsekwentnego opiekuna, który będzie dla niego oparciem i da poczucie bezpieczeństwa oraz stabilizacji. TREWOR jest spragniony kontaktu z człowiekiem, poczucia bliskości i stabilizacji. UWIELBIA się przytulać, być miziany i głaskany. Mimo długiego pobytu w schronisku nie boi się świata poza jego murami. Uczestniczył w eventach promujących podopiecznych SdZ na terenie Łodzi stąd wiemy, że bez problemu jeździ komunikacją miejską i odnajduje się w miejscach publicznych, gdzie mimo wszystko znajduje się dużo bodźców. TREWOR w docelowym domu stałym raczej powinien być jedynakiem. Nie powinien też zamieszkać z małymi dziećmi. Bez wątpienia przyszłych opiekunów obdarzy bezwarunkową miłość i będzie wspaniałym towarzyszem rodziny 💖 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7f406fed-396c-4bfa-b326-b4c06fd7e195	t	TREWOR	BIG	t	DOG	f	f	4
-203	10	f	\N	BENY 🐹 szuka domu 🏠 Do schroniska trafił 3.01.2016 roku ‼ Był młodziutkim, około rocznym, bardzo zestresowanym i nieufnym psem znalezionym w Łodzi na ul. Wróblewskiego. Bał się smyczy i od pierwszych dni, kiepsko prezentował się w kojcu, który stał się jego azylem. BENY potrzebuje czasu by zaufać, pokochać i otworzyć się przed nowo poznawanymi osobami. Gdy pokona własny strach, potrafi okazać ogromne zaufanie i przywiązanie do człowieka. Psiaczek obecnie ma około 9 lat a od 8 żyje w schroniskowej rzeczywistości 💔 Prawdopodobnie zmarnował większość życia za kratami 🥺 Jest pogodzony ze swym losem bo trudno tęsknic za nieznanym czy też już dawno zapomnianym domem 😔 Nie pamięta życia innego niż schroniskowa buda i kojec 🥺 a my nie o taką GODNOŚĆ walczymy dla PSYjaciół ‼ BENY ładnie chodzi na smycz. Pozwala założyć sobie kaganiec. Niewątpliwie będzie wymagał nauki poprawnych zachowań w warunkach domowych, bo nawet jeśli kiedyś miał dom, to już zapomniał jak to jest być członkiem rodziny, spać w mięciutkim legowisku, wychodzić systematycznie - kilka razy dziennie na spacery czy też zachowywać czystość w domu. Docelowo powinien zamieszkać u boku spokojnych oraz empatycznych ludzi, którzy pomogą mu odbudować wiarę w człowieka. Osób, które wykażą się cierpliwością podczas nauki i nie poddadzą przy pierwszej nadarzającej się okazji. BENY powinien być psim jedynakiem. 🙏 UDOSTĘPNIAMY 🙏 apel o dom dla weterana Łódzkiego Schroniska Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	433ecb45-cf0f-4846-8b52-9d11fe391218	t	BENY	MEDIUM	f	DOG	f	t	4
+1	0	f	\N	BORÓWKA, JEŻYNKA, BARSZCZ i ŻUREK to prawdopodobnie rodzeństwo. Kociaki zostały znalezione w Łodzi na ul. Dąbrowskiego/Podgórna w pustostanie. Maluszki mają około 3-4 miesięcy i są bardzo spragnione bliskości człowieka. BORÓWKA waży 1,1kg. Malutka jest bardzo wychudzona i ma świerzb w uszach. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	8ac1a614-8fbc-42a9-ad08-a51f81873e3c	t	Borówka	SMALL	t	CAT	f	f	1
+2	0	f	\N	JEŻYNKA, BORÓWKA, BARSZCZ i ŻUREK to prawdopodobnie rodzeństwo. Kociaki zostały znalezione w Łodzi na ul. Dąbrowskiego/Podgórna w pustostanie. Maluszki mają około 3-4 miesięcy i są bardzo spragnione bliskości człowieka. JEŻYNKA waży 1,4kg. Malutka jest bardzo wychudzona i ma świerzb w uszach. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	82aace57-75a2-40d5-9881-5242e37988d2	t	Jeżynka	SMALL	t	CAT	f	t	1
+3	0	f	\N	BARSZCZ, ŻUREK, BORÓWKA i JEŻYNKA to prawdopodobnie rodzeństwo. Kociaki zostały znalezione w Łodzi na ul. Dąbrowskiego/Podgórna w pustostanie. Maluszki mają około 3-4 miesięcy i są bardzo spragnione bliskości człowieka. BARSZCZ waży 1,57kg. Maluszek jest wychudzony i ma świerzb w uszach. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f23d39be-edde-4858-87cf-d51008def0a2	f	Barszcz	SMALL	t	CAT	f	t	1
+4	0	f	\N	ŻUREK, BARSZCZ, JEŻYNKA i BARÓWKA i  to prawdopodobnie rodzeństwo. Kociaki zostały znalezione w Łodzi na ul. Dąbrowskiego/Podgórna w pustostanie. Maluszki mają około 3-4 miesięcy i są bardzo spragnione bliskości człowieka. ŻUREK waży 1,5kg. Maluszek jest wychudzony i ma świerzb w uszach. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c6a9b163-f83b-4d6c-9dd7-f4ea3214a9bb	t	Żurek	SMALL	f	CAT	f	f	1
+5	0	f	\N	LULUŚ został znaleziony na ul. Elsnera. W schronisku przebywa od 21.06.2025 roku. Maluszek ma około 3 miesięcy i waży 6,3kg. Czipa brak. Osoby zainteresowane adopcją maluszka prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	93f48681-b166-44a2-9484-5c25f9f576db	t	Luluś	SMALL	t	DOG	t	t	1
+6	0	f	\N	NELA została znaleziona na ul. Piotrkowskiej. W schronisku przebywa od 20.06.2025 roku. Sunia ma około 10 miesięcy i waży 17,8 kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	2e6b16e7-f520-4d9b-aee5-8cecfed30ae2	f	Nela	MEDIUM	t	DOG	t	t	1
+7	8	f	\N	BONIFACY został znaleziony na ul. Okopowej. W schronisku przebywa od 20.06.2025 roku. Kot ma około 8 lat i waży 4,4kg. Czipa brak. Kastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c90848e7-632f-47b3-a08c-9bab9064c9e2	t	Bonifacy	BIG	t	CAT	t	f	1
+8	1	f	\N	PINIEK został znaleziony na ul. Kopernika/Gdańska. W schronisku przebywa od 20.06.2025 roku. Psiaczek ma około roku i waży 7,2kg. Czipa brak. Niekastrowany. Ma wypadniętą gruczoł trzeciej powieki w oku prawym. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	487542b4-8dd2-43f4-80da-309efbd95831	t	Piniek	SMALL	f	DOG	f	f	1
+9	2	f	\N	IGA, AGA (nr. ewid. 163/25k) i OLGA (nr. ewid. 165/25k) trafiły do schroniska w wniku zgonu właścicielki w Łodzi na ul. Łanowej. W schronisku przebywają od 20.06.2025 roku. IGA ma około 2 lat i waży 3,1kg. Czipa brak. Kotki po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	7cf1ebe6-9434-4b09-a8a9-604de8cf7b68	t	Iga	MEDIUM	t	CAT	f	t	1
+10	3	f	\N	AGA, IGA (nr. ewid. 164/25k) i OLGA (nr. ewid. 165/25k) trafiły do schroniska w wniku zgonu właścicielki w Łodzi na ul. Łanowej. W schronisku przebywają od 20.06.2025 roku. AGA ma około 3 lat i waży 2,4kg. Czipa brak. Kotki po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	5dd71f8e-8903-49fd-9bed-c0327b35fe0f	f	Aga	MEDIUM	t	CAT	t	t	1
+11	2	f	\N	OLGA, IGA (nr. ewid. 164/25k) i AGA (nr. ewid. 163/25k) trafiły do schroniska w wniku zgonu właścicielki w Łodzi na ul. Łanowej. W schronisku przebywają od 20.06.2025 roku. OLGA ma około 2,5 roku i waży 3kg. Czipa brak. Kotki po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	e984b154-1248-4487-9053-8b59fbb87d18	f	Olga	MEDIUM	t	CAT	f	t	1
+12	1	f	\N	ELZA została znaleziona na ul. Zimnej Wody. W schronisku przebywa od 19.06.2025 roku. Sunia ma około 1 roku i waży 7kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	73d7e200-255c-41d1-979f-c9e4c2b63ab5	t	Elza	SMALL	t	DOG	f	t	1
+13	0	f	\N	IDUNIA została znaleziona na ul. Wiączyńskiej. W schronisku przebywa od 19.06.2025 roku. Kotka ma 4 tygodnie i waży 0,36 kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	1f22b4be-e11d-46da-ac85-8f68875dc3ca	t	Idunia	SMALL	t	CAT	f	t	1
+14	1	f	\N	SAM został znaleziony na ul. Lutomierskiej. W schronisku przebywa od 19.06.2025 roku. Kot ma około 1,5 roku i waży 3,95 kg. Czipa brak. Niekastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	889938ea-1f33-4747-a836-9187721cef14	f	Sam	MEDIUM	f	CAT	t	t	1
+15	2	f	\N	DYMKA została znaleziona na ul. Wyszyńskiego. W schronisku przebywa od 19.06.2025 roku. Kotka ma około 2 lat i waży 3,75kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	aa42c79f-458e-4428-967a-40adc61aec71	t	Dymka	MEDIUM	t	CAT	f	t	1
+16	5	f	\N	FIONA została znaleziona na ul. Jana. W schronisku przebywa od 19.06.2025 roku. Kotka ma około 5 lat i waży 3,4kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	0fe204bd-9bff-4fe4-bb17-1a51fad824f4	t	Fiona	MEDIUM	t	CAT	f	t	1
+17	15	f	\N	GARY został znaleziony na ul. Jana i Cecylii. W schronisku przebywa od 16.06.2025 roku. Psiaczek ma około 15 lat i waży 7kg. Czipa brak. Niekastrowany. Psiaczek prawdopodobnie jest po wypadku komunikacyjnym. Ma krwotok z ucha prawego - przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	61333573-0218-4864-943c-67f95297783d	t	Gary	SMALL	t	DOG	f	f	1
+18	0	f	\N	LEYLA KOLEJNY RAZ W SCHRONISKU !!! LEYLA została znaleziona na ul. Niciarniana/Piłsudskiego. W schronisku przebywa od 16.06.2025 roku. Sunia urodzona 11.2024 roku i waży 18,6kg. Posiada zarejestrowany czip, ale tel. właściciela jest wyłączony. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl _________________________________________ LEYLA (nr. ewid. 227/25) została znaleziona na ul. Abramowskiego. W schronisku przebywała od 8.05.2025 - 14.05.2025 roku - odbiór właścicielski	FEMALE	88256915-1c86-4b2a-a4e8-83e8d3a82695	t	Leyla	MEDIUM	t	DOG	f	t	1
+19	2	f	\N	RIKO został znaleziony na ul. Jugosławiańskiej. W schronisku przebywa od 15.06.2025 roku. Psiaczek ma 2 lata i waży 24,3 kg. Czipa brak. Niekastrowany. Pies miał na sobie parcianą obrożę z wyszytym imieniem RIKO oraz przywieszony do obroży srebrny łańcuszek. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	3f4d6c68-be72-4819-9092-22de64d20dba	f	Riko	BIG	t	DOG	f	t	1
+20	1	f	\N	EMI została znaleziona razem ze szczeniakiem AIDA (nr ewid. 283/25) w Łodzi na ul. Zgierskiej. W schronisku przebywa od 15.06.2025 roku. Sunia ma około 1,5 roku i waży 16,3 kg. Czipa brak. Niekastrowana. Suczka jeszcze karmi maluszka. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	a72ec38b-1885-4890-96b4-2830b4f9d27a	t	Emi	MEDIUM	t	DOG	f	t	1
+21	0	f	\N	AIDA została znaleziona razem ze swoją mamą EMI (nr. ewid. 284/25) w Łodzi na ul. Zgierskiej. W schronisku przebywa od 15.06.2025 roku. Sunia ma 7 tygodni i waży 2,6 kg. Czipa brak. Niunia jest jeszcze karmiona przez mamę. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	e42dc86b-fb96-48aa-a906-5c438d75b627	t	Aida	SMALL	t	DOG	t	t	1
+22	9	f	\N	BATMAN został znaleziony na ul. Nefrytowej. W schronisku przebywa od 14.06.2025 roku. Psiaczek ma 9 lat i waży 6,6kg. Posiada zarejestrowany czip. Niekastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	01dd0a3a-5e39-45d7-98fd-a99bf1731a89	t	Batman	SMALL	t	DOG	f	f	1
+23	3	f	\N	SHAGGY został znaleziony na ul. Kopernika. W schronisku przebywa od 14.06.2025 roku. Psiaczek ma około 3 lat i waży 26kg. Posiada niezarejestrowany czip. Niekastrowany. Ma czarno niebieskie szelki. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	90b23122-42a7-45a2-9bdb-0d13cd717d23	f	Shaggy	BIG	t	DOG	t	f	1
+24	4	f	\N	BLANKA została znaleziona na ul. Sienkiewicza. W schronisku przebywa od 13.06.2025 roku. Kotka ma około 4 lat i waży 2,6kg. Czipa brak. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	03358606-a3e2-4b45-8f5d-06e73f591311	f	Blanka	MEDIUM	f	CAT	t	f	1
+25	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „ W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia. ” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest FADO. W schronisku przebywa od 10.06.2025 roku. Psiaczek urodzony 05.2023 roku i waży 9,5kg. Niekastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d2619782-335a-4b45-8792-d27f07ed2f44	f	Fado	SMALL	t	DOG	f	t	1
+26	7	f	\N	KUBA KOLEJNY RAZ W SCHRONISKU !!! KUBA został znaleziony na ul. Lipowej w parku. W schronisku przebywa od 10.06.2025 roku. Psiaczek urodzony 11.2017 roku i waży 10kg. Posiada zarejestrowany czip, ale nr tel do właścicieli jest nieaktualny. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl _____________________________________ KUBA (nr ewid.393/19) został znaleziony na ul. Srebrzyńskiej. W schronisku przebywał od 9.04.2019 - 11.04.2019 roku - odbiór właścicielski	MALE	7f76a02e-4a51-4959-b520-dfc2119a4c2f	t	Kuba	SMALL	t	DOG	t	t	1
+55	0	f	\N	IGOR został znaleziony przy dworcu PKP Łódź Widzew, ul. Adamieckiego . W schronisku przebywa od 25.05.2025 roku. Psiaczek ma około 10 miesięcy i waży około 10kg. Czipa brak. Niekastrowany. Miał kolczatkę. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	0422e01f-da14-4d4e-a133-73a2db2b4391	t	Igor	MEDIUM	t	DOG	f	t	1
+56	4	f	\N	EMMA została znaleziona na ul. Promowa/Oksywie. W schronisku przebywa od 24.05.2025 roku. Sunia ma około 4 lat i waży 32kg. Czipa brak. Niekastrowana. EMMA trafił do schroniska z kliniki VetMed. Ma rozpadającego się guza przy lewej łopatce - przebywa pod opieką weterynarzy !! Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	70b58ff0-24f5-4356-8817-099d16e24a23	t	Emma	BIG	t	DOG	t	t	1
+27	10	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest AMICA. W schronisku przebywa od 10.06.2025 roku. Sunia urodzona 11.2014 roku i waży 7,5kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	ef6cced2-1cec-4d8a-a7f1-b043ecb77cb2	t	Amica	SMALL	t	DOG	t	t	1
+28	11	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest ROCKY. W schronisku przebywa od 10.06.2025 roku. Psiaczek urodzony 08.2013 roku i waży 17,5kg. Niekastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	15f3d5d9-f044-4f5c-8a78-9a4aeeb77dad	t	Rocky	MEDIUM	t	DOG	f	t	1
+29	12	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest malutka LULU. W schronisku przebywa od 10.06.2025 roku. Sunia urodzona 02.2013 roku i waży 5kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	c977303e-23e7-41d1-8538-d656944984b8	f	Lulu	SMALL	t	DOG	f	f	1
+30	12	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest ROSA. W schronisku przebywa od 10.06.2025 roku. Sunia urodzona 08.2012 roku i waży 13,7kg. Kastrowana. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	7ecd55ec-68f5-44ad-9b5c-84853e867276	t	Rosa	MEDIUM	t	DOG	f	t	1
+31	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych psów jest MAŃKA vel. FRUZIA. W schronisku przebywa od 10.06.2025 roku. Sunia urodzona 04.2023 roku. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	5f9691aa-c888-4eaf-ace6-9ad83b3d6093	t	Mańka	MEDIUM	t	DOG	t	t	1
+32	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest DRAK. W schronisku przebywa od 10.06.2025 roku. Kot urodzony 08.2022 roku i waży 3kg. Kastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	60bbc6e4-e396-4bf9-8439-37296aff1094	f	Drak	MEDIUM	t	CAT	f	t	1
+33	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest NIUNIA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 04.2022 roku i waży 2kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	f96a0bee-5ef9-45df-ba15-2eb736a7f055	t	Niunia	SMALL	t	CAT	f	t	1
+34	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest BALBINA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 05.2022 roku i waży 2,3kg. Prawdopodobnie po zabiegu kastracji - ma cięte ucho. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	64ab2d82-d7f2-4a03-873c-bb56d9fa335e	t	Balbina	SMALL	t	CAT	f	t	1
+35	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest NIBIA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 01.2022 roku i waży 3kg. Prawdopodobnie po zabiegu kastracji - ma cięte ucho. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	07191ba5-ea80-41ed-b323-cbcee7198fda	t	Nibia	MEDIUM	t	CAT	f	t	1
+36	14	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest KEN. W schronisku przebywa od 10.06.2025 roku. Kot urodzony 03.2011 roku i waży kg. Kastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a3a42810-bbfa-416e-8b2a-9de637f96d36	t	Ken	MEDIUM	t	CAT	t	t	1
+37	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest BASIA. W schronisku przebywa od 10.06.2025 roku. Kotka ma około 3 lat i waży 3,5kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	e896b856-5211-4723-b182-c6d54aeaeaaf	t	Basia	MEDIUM	t	CAT	f	t	1
+38	4	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest FREJA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 02.2021 roku i waży 2,7kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	57fd8545-2c23-4bbb-b55f-711cfdb41663	t	Freja	MEDIUM	f	CAT	t	t	1
+39	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest NOSEK. W schronisku przebywa od 10.06.2025 roku. Kot urodzony 10.2023 roku i waży 2,5kg. Kastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b7726b0d-8778-4a83-ba4c-7c4a57888de8	t	Nosek	MEDIUM	t	CAT	f	t	1
+40	0	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest LOLA. W schronisku przebywa od 10.06.2025 roku. Kotka ma około 8 miesięcy i waży 2kg. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	0ba3b493-4975-4134-b912-588551d394b8	f	Lola	SMALL	f	CAT	f	t	1
+41	3	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest DRAKA. W schronisku przebywa od 10.06.2025 roku. Kotka urodzona 09.2022 roku. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	121edf5c-1021-42f8-8c36-c204bdf7dda3	t	Draka	SMALL	t	CAT	t	t	1
+42	2	f	\N	Dnia 10.06.2025 roku Policja z I Komisariatu Policji KMP w Łodzi przez kilka godzin prowadziła czynności interwencyjne w Łodzi na ul. Sienkiewicza. Na terenie prywatnej posesji zostało zabezpieczonych 17 zwierząt (6 psów i 11 kotów). Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt Art. 7 ust. 3 „W przypadkach niecierpiących zwłoki, gdy dalsze pozostawanie zwierzęcia u dotychczasowego właściciela lub opiekuna zagraża jego życiu lub zdrowiu, policjant, strażnik gminny lub upoważniony przedstawiciel organizacji społecznej, której statutowym celem działania jest ochrona zwierząt, odbiera mu zwierzę, zawiadamiając o tym niezwłocznie wójta (burmistrza, prezydenta miasta), celem podjęcia decyzji w przedmiocie odebrania zwierzęcia.” Wszystkie zwierzęta trafiły do naszego Schroniska gdzie po zakończeniu kwarantanny i obsłudze weterynaryjnej będą szukały ODPOWIEDZIALNYCH domów tymczasowych do czasu gdy nie zostanie uregulowana ich sytuacja prawna. Jednym z odebranych kotów jest DYMISŁAW vel. DYMEK. W schronisku przebywa od 10.06.2025 roku. Kot urodzony 04.2023 roku i waży 2kg. Kastrowany. Osoby zainteresowane adopcją tymczasową prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e8085a81-91c7-49fa-96e5-d09a3eb5efe9	t	Dymek	SMALL	f	CAT	t	t	1
+43	15	f	\N	GIN został znaleziony na ul. Hiacyntowej. W schronisku przebywa od 8.06.2025 roku. Kot ma około 15 lat i waży 2,4kg. Czipa brak. Kastrowany. GIN trafił do schroniska skrajnie zaniedbany. Kot jest silnie odwodniony, wychudzony a jego drobne ciałko pokryte jest masą dredów i filcem - został wygolony. Przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ebd57e34-a1c8-49fb-9120-d0a9b097cca8	t	Gin	MEDIUM	f	CAT	t	t	1
+44	2	f	\N	CABAN został znaleziony na ul. Bartoka. W schronisku przebywa od 8.06.2025 roku. Kot ma około 2 lat i waży 5,2kg. Czipa brak. NIekastrowany. Kot ma rany na głowie, prawdopodobnie po pogryzieniu - przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4d5bccdb-52f5-4e0b-8fe8-03d8ca954213	t	Caban	MEDIUM	t	CAT	f	t	1
+45	1	f	\N	LUSI została znaleziona na ul. Senatorskiej. W schronisku przebywa od 8.06.2025 roku. Sunia ma około roku i waży 23,2kg. Czipa brak. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	3eb52ea9-f6a1-4e34-81bf-a1e7842530f8	t	Lusi	MEDIUM	t	DOG	f	f	1
+46	8	f	\N	BRUNO został znaleziony na ul. Okólnej. W schronisku przebywa od 8.06.2025 roku. Psiaczek ma około 8 lat i waży 17kg. Czipa brak. Niekastrowany. Psiaczek jest zapchlony, ma pełno kleszczy i kuleje na łapkę - przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	0e089e98-1e4d-4dcb-8c65-c81295d5d0c5	t	Bruno	MEDIUM	t	DOG	f	f	1
+47	3	f	\N	MIMI została znaleziona na ul. Wólczańskiej. W schronisku przebywa od 7.06.2025 roku. Kotka ma około 3 lat i waży 2,5kg. Czipa brak. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	73cd33be-babd-4e46-a911-abcd8b938535	t	Mimi	MEDIUM	f	CAT	t	t	1
+48	2	f	\N	!! POLICJA PROSI o POMOC W USTALENIU WŁAŚCICIELI ZWIERZĘCIA i SPRAWCÓW PRZESTĘPSTWA !! FARCIK został przerzucony 6.06.2025 roku przez 2 metrowe ogrodzenie na teren Schroniska dla Zwierząt w Łodzi. Po złapaniu, przerażony psiaczek został przewieziony do VetMed gdzie uzyskał pierwszą pomoc lekarsko weterynaryjną. W schronisku przebywa od 7.06.2025 roku. FARCIK obecnie ma niespełna 2 lata i waży 9,8kg. Czipa brak. Niekastrowany. Psiaczek po zakończeniu kwarantanny będzie szukał ODPOWIEDZIALNEGO domu tymczasowego z opcją domu stałego gdy już zostanie uregulowana jego sytuacja prawna. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Osoby, które rozpoznają psiaczka prosimy o bezpośredni kontakt: VI Komisariatem Policji w Łodzi przy ul. Wysoka 45 ☎ 47 841 13 00 Kontakt do SdZ w Łodzi: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7d33fc46-cd62-40d4-a15f-8b5a2909668a	t	Farcik	SMALL	t	DOG	f	t	1
+49	0	f	\N	SEZAM został znaleziony na ul. Smugowej. W schronisku przebywa od 6.06.2025 roku. Psiaczek ma około 8 miesięcy i waży 11 kg. Czipa brak. Niekastrowany. Jest bardzo wychudzony. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	56e0d626-5fe2-4420-92a1-53c75fe74482	t	Sezam	MEDIUM	t	DOG	t	f	1
+50	3	f	\N	LONIEK został znaleziony na ul. Babickiego. W schronisku przebywa od 1.06.2025 roku. Psiaczek ma około 3 lat i waży 18,2kg. Czipa brak. Niekastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b6f15888-456d-455e-a5d5-2033fbe3a999	t	Loniek	MEDIUM	t	DOG	f	t	1
+51	2	f	\N	TEKLA została znaleziona na ul. Telefonicznej. W schronisku przebywa od 30.05.2025 roku. Kotka ma około 2 lat. Czipa brak. Niekastrowana. TEKLA jest prawdopodobnie po wypadku komunikacyjnym - przebywa pod opieką weterynarzy. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	b3bf472b-4d60-4633-acb5-bfcfc8c62506	t	Tekla	MEDIUM	f	CAT	f	t	1
+52	2	f	\N	LIDAR został znaleziony na ul. Sienkiewicza. W schronisku przebywa od 29.05.2025r. Kot ma około 2 lat i waży 3,2 kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e0ae42b4-be5d-48d8-842b-5fb8cfe89e18	t	Lidar	MEDIUM	t	CAT	f	t	1
+53	9	f	\N	FOX został znaleziony na ul. Plantowej. W schronisku przebywa od 26.05.2025 roku. Psiaczek ma około 9 lat i waży 8,2kg. Czipa brak. Niekastrowany. Pies ma rozcięcie pod lewą pachą i wypadnięte prącie - przebywa pod opieką weterynarzy. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	cbd08f8a-19a5-44f2-b90e-876850099552	t	Fox	SMALL	f	DOG	f	f	1
+54	6	f	\N	ROY został znaleziony na ul. Retkińskiej. W schronisku przebywa od 26.05.2025 roku. Psiaczek ma około 6 lat i wazy +/-9kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	84f10491-1494-4357-b678-d1f773ec2c75	t	Roy	SMALL	t	DOG	f	t	1
+57	0	f	\N	KICIA i KITEK zostali znalezieni na ul. Polarnej. W schronisku przebywają od 22.05.2025 roku. Prawdopodobnie są rodzeństwem, które łączy cudowna więź. Obecnie mają około 7-8 miesięcy. KICIA waży 2,45kg. Czipa brak. Niekastrowana. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	bc5a2f21-3a91-4b1d-8e80-617649842971	t	Kicia	MEDIUM	f	CAT	f	f	1
+58	0	f	\N	KITEK i KICIA zostali znalezieni na ul. Polarnej. W schronisku przebywają od 22.05.2025 roku. Prawdopodobnie są rodzeństwem, które łączy cudowna więź. Obecnie mają około 7-8 miesięcy. KITEK waży 2,9kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7b069d20-99f9-4506-bd7b-71229780b7aa	f	Kitek	MEDIUM	f	CAT	f	t	1
+59	2	f	\N	BALU ponownie trafił do schroniska, tym razem z powodu zgonu właściciela z ul. Limanowskiego. W schronisku przebywa od 20 .05.2025 roku. Psiaczek ma około 2,5 roku i waży 18,4 kg. Czip zarejestrowany. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ____________________________________ BALU (nr ewid. 133/24) został znaleziony na ul. Paderewskiego. W schronisku przebywał od 23.02.2024 - 29.02.2024 roku - odbiór właścicielski	MALE	f59a7f61-3434-4041-9ac1-1edf1a2e1e70	t	Balu	MEDIUM	f	DOG	t	t	1
+60	4	f	\N	PALMA została znaleziona na ul. Rzgowskiej. W schronisku przebywa od 17.05.2025 roku. Kotka ma około 4 lat i waży 2,67 kg. Czipa brak. Kotka wolnożyjąca, rany kąsane. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	2508a7e7-90e1-46ba-adfb-abbe6acf46de	t	Palma	MEDIUM	t	CAT	t	t	1
+61	10	f	\N	MANIA została znaleziona na ul. Przewodniej, skąd trafiła do kliniki VetMed. W schronisku przebywa od 15.05.2025 roku. Kotka ma około 10 lat i waży 2 kg. Czipa brak. Niekastrowana. Ropomacicze. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	41f93352-73e4-44d8-9c53-6780b2cb0c1a	t	Mania	SMALL	t	CAT	t	t	1
+62	9	f	\N	PSOTKA została znaleziona na ul. Mielczarskiego. W schronisku przebywa od 15.05.2025 roku. Kotka ma około 9 roku i waży 3,3 kg. Posiada zarejestrowany czip, ale właściciel nie odbiera tel. Kastrowana Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	7b2e7ce9-adc6-4d80-b4a3-361056e45a0f	t	Psotka	MEDIUM	t	CAT	f	f	1
+63	8	f	\N	RITA została znaleziona na ul. Łanowej. W schronisku przebywa od 11.05.2025 roku. Kotka ma około 8 lat i waży 3kg. Czipa brak. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	f3275a3b-5445-464f-981b-df45b0e48648	t	Rita	MEDIUM	f	CAT	f	f	1
+64	3	f	\N	HENIA została zabezpieczona przez policję w wyniku porzucenia przez wcześniejszego właściciela. W schronisku przebywa od 8.05.2025 roku. Kotka ma około 3,5 roku i waży 3,45kg. Czipa brak. Kotka po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będzie szukała ODPOWIEDZIALNEJ rodziny i domu tymczasowego z opcją domu stałego gdy już zostanie uregulowana jej sytuacja prawna. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	78c2a8fd-5e32-424c-8012-077a428f1bd7	t	Henia	MEDIUM	t	CAT	t	t	1
+65	7	f	\N	DEXTER został znaleziony na ul. Sobótki. W schronisku przebywa od 2.05.2025 roku. Psiaczek ma około 7 lat i waży 16kg. Czipa brak. Niekastrowany. Ma czarne szelki z odblaskową taśmą. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9dd7ad1c-b6ee-4c83-82f0-3d3075b3c0e4	f	Dexter	MEDIUM	t	DOG	f	t	1
+66	3	f	\N	DREDZIK został znaleziony na ul. Olkuskiej. W schronisku przebywa od 1.05.2025 roku. Psiaczek ma około 3 lat i waży 18,6kg. Czipa brak. Niekastrowany. Ma bardzo zaniedbaną, skołtunioną sierść. Ma zapalenie spojówek. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jest.uml.lodz.pl	MALE	8898e473-95ea-4ac6-b2a3-5166d941c11b	t	Dredzik	MEDIUM	t	DOG	f	t	1
+67	1	f	\N	BULI został znalezion na ul. Zelwerowicza. W schronisku przebywa od 24.04.2025 roku. Kot ma około roku i waży 3,6 kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	da477ff4-e22b-431d-ad64-ec087c5e473f	f	Buli	BIG	f	CAT	t	t	1
+68	8	f	\N	LEON KOLEJNY RAZ W SCHRONISKU !!! LEON został znaleziony na ul. Folwarcznej. W schronisku przebywa od 21.04.2025 roku. Psiaczek urodzony 03.2017 roku i waży 33kg. Posiada zarejestrowany czip, ale właściciel nie odbiera. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl _________________________________ LEON (nr ewid. 251/20) został znaleziony na ul. Brzezińskiej. W schronisku przebywał 29.03.2020 – 31.03.2020 – odebrany przez właścicieli _________________________________ LEON (nr ewid. 224/23) został znaleziony w Parku Poniatowskiego. W schronisku przebywał 22.03.2023 – 24.04.2023 – odebrany przez właścicieli _________________________________ LEON (nr ewid. 391/23) został znaleziony w Parku Julianowskim. W schronisku przebywał 27.05.2023 – 29.05.2023 – odebrany przez właścicieli _________________________________ LEON (nr ewid. 447/23) został znaleziony w Parku Mickiewicza. W schronisku przebywał 20.06.2023 – 22.06.2023 – odebrany przez właścicieli _________________________________ LEON (nr ewid. 779/24) został znaleziony na ul. Konarowej. W schronisku przebywał od 28.12.2024 - 31.12.2024 - odbiór właścicielski	MALE	96d9e1b1-a3bb-4f7e-b57e-f2c27e221d32	t	Leon	BIG	t	DOG	f	t	1
+69	8	f	\N	NEMO został znaleziony na ul. Hodowlanej. W schronisku przebywa od 20.04.2025 roku. Psiaczek ma około 8 lat i waży 12,5kg. Czipa brak. Niekastrowany. NEMO jest tak zestresowany, że nawet nie staje na łapakach. Wciska się w kąt i chce być niewidzialny dla świata. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	97925a14-4b11-4f0b-8d7c-49347a174322	t	Nemo	SMALL	t	DOG	f	t	1
+70	10	f	\N	LILI została znaleziona na ul. Brzezińskiej. W schronisku przebywa od 19.04.2025 roku. Kotka ma około 10 lat i waży 1,6kg. Czipa brak. LILI ma liczne kleszcze, ropną wydzielinę z uszu i krwisty wypływ z dróg rodnych - przebywa pod opieką weterynarzy !! Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	bbbe1bec-6cd1-4e41-b8e1-46585cfb07d7	t	Lili	SMALL	f	CAT	f	t	1
+71	0	f	\N	STEFAN został prawdopodobnie podrzucony na teren schroniska - jesteśmy w trakcie zabezpieczania monitoringu. Kot jest bardzo przyjazny i towarzyski. W schronisku przebywa od 16.04.2025 roku. Kotek ma około 8 miesięcy i waży 3,5 kg. Czipa brak. Niekastrowany Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1161c66e-6139-4e2b-aa59-a43704a3b5dc	t	Stefan	BIG	f	CAT	f	t	2
+72	1	f	\N	DUSZEK został odebrany podczas interwencji policji w Łodzi na ul. Wschodniej. W schronisku przebywa od 16.04.2025 roku. Psiaczek ma około roku i waży 23,7kg. Czipa brak. Jest wnętrem jednostronnym. Psiaczek zakończył kwarantannę i po przejściu obsługi weterynaryjnej będzie szukał ODPOWIEDZIALNEJ rodziny i SUPER domu. Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	bb3b37ab-3a4c-4731-8eef-2ed69c80d66c	t	Duszek	MEDIUM	t	DOG	f	t	2
+73	6	f	\N	FIKUŚ KOLEJNY RAZ W SCHRONISKU !! FIKUŚ został znaleziony na ul. Łęczyckiej. W schronisku przebywa od 16.04.2025 roku. Psiaczek urodzony 07.2018 roku i waży 10,6kg. Posiada zarejestrowany czip, ale nr tel do właścicielki jest nieaktualny. Niekastrowany. Ma czerwoną skórzaną obroże. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ______________________________ FIKUŚ (nr. ewid. 74/22) został znaleziony na ul. Piłsudskiego. W schronisku przebywał od 23.01.2022 - 24.01.2022 - odbiór właścicielski FIKUŚ (nr. ewid. 544/20) został zabezpieczony podczas interwencji. W schronisku przebywał od 20.07.2020 - 31.07.2020 - odbiór właścicielski	MALE	eb760015-3b24-494d-9863-e0bdc9785aaf	f	Fikuś	SMALL	t	DOG	f	t	2
+74	1	f	\N	MIŁOSZ został znaleziony na ul. Wysokiej. W schronisku przebywa od 13.04.2025 roku. Psiaczek ma około roku i waży 31kg. Czipa brak. Niekastrowany. Ma szarą obroże i smycz. Kontakt w sprawie adopcji: 500 099 995; 501 437 232; 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	7854d2fd-8d5f-47a0-9757-a962841d57d0	t	Miłosz	BIG	t	DOG	t	t	2
+75	7	f	\N	WASYL 🐹 szuka domu 🏠 WASYL trafił do schroniska 27.12.2024 roku prawdopodobnie po wypadku komunikacyjnym. Został znaleziony w Łodzi na ul. Konstantynowskiej. Psiaczek słaniał się na łapkach 😔 ale dzięki determinacji weterynarzy i opiekunów, udało  się postawić na łapki tego około 7 letniego #sŁODZIAKA. Wszystko wskazywało, że jest gotowy rozpocząć nowy rozdział życia u boku ODPOWIEDZIALNEJ rodziny. Tak też się stało… WASYL 17.03.2025 roku znalazł dom 🏠 Niestety po kilku tygodniach wystąpiły u niego gromadne napady drgawkowe. Od tamtej pory przeszedł szeroką diagnostykę łącznie z konsultacją neurologiczną. Przyjmuje leki przeciwdrgawkowe. Napady się nie powtórzyły jednak rodzinę to przerosło. Nie mając możliwości zapewnienia WASYL prawidłowej opieki, psiaczek ponownie trafił do schroniska 🥺 WASYL to otwarty, kontaktowy i bezkonfliktowy samiec. Jest stateczny, zrównoważony i nie ma problemów w nawiązywaniu relacji z nowo poznanymi osobami. Chętnie chodzi na spacery podczas których pięknie skupia uwagę na opiekunie. Ceni bliskość człowieka i jest wdzięczny za każdą poświęconą chwilę. Jak na łasucha przystało uwielbia smaczki 😊 WASYL jest psem całkowicie samodzielnym, który niewątpliwie potrzebuje miłości i troski ze strony opiekuna Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl __________________________________ WASYL (nr ewid. 775/24) w schronisku przebywał od 27.12.2024 - 17.03.2025	MALE	4a34122b-b958-44ab-aaef-1310658665ae	t	WASYL	BIG	f	DOG	f	t	2
+76	4	f	\N	IKAR został znaleziony na ul. Maratońskiej. W schronisku przebywa od 11.04.2025 roku. Kot ma około 4 lat i waży 4kg. Czipa brak. Niekastrowany. Kontakt w sprawie odbioru zwierzęcia/adopcji: 500 099 995; 501 437 232; 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	535acd60-cca1-474f-9bca-3ac46755db0e	t	Ikar	MEDIUM	t	CAT	t	f	2
+77	10	f	\N	FRANIO został zabezpieczony przez Policje po zgonie właścicielki w Łodzi na ul. Kilińskiego. W schronisku przebywa od 11.04.2025 roku. Kot ma około 10 lat i waży 1,8kg. Po miesiącu bez opieki FRANIO jest skrajnie wycieńczony i przebywa pod opieką weterynarzy. Czipa brak. Kastrowany. FRANIO po zakończeniu kwarantanny i przejściu obsługi weterynaryjnej będzie szukał ODPOWIEDZIALNEJ rodziny i SUPER domu. Osoby zainteresowane adopcją prosimy o wypłenienie ankiety  przedadopcyjnej: https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	f522a781-5ab3-414b-b56b-e3a069c61cf7	t	Franio	SMALL	t	CAT	f	f	2
+78	5	f	\N	HENIO został znaleziony na ul. Paderewskiego. W schronisku przebywa od 6.04.2025 roku. psiaczek ma około 5 lat i waży 11,4kg. Czipa brak. Kastrowany. Ma czarną, skórzaną obroże. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b0ab7ab4-e0a3-4c7f-956e-0c009a30b615	t	Henio	SMALL	t	DOG	f	t	2
+79	1	f	\N	BALBINKA została znaleziona na ul. Pomorska/Juhasowa. W schronisku przebywa od 4.04.2025 roku. Sunia ma około roku i waży 12,3 kg Czipa brak. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	2c3e6c1f-0e1f-4008-9253-238860934b44	f	Balbinka	SMALL	t	DOG	f	t	2
+80	2	f	\N	KOSTA została znaleziona na ul. Przybyszewskiego. W schronisku przebywa od 3.04.2025 roku. Sunia ma około 2 lat i waży 26 kg Czipa brak. Niekastrowana. Ma czarną obroże. Brak paliczka w palcu u lewej kończyny piersiowej. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	ca716fe8-c244-447b-bd4b-44e72e11b1ea	t	Kosta	BIG	t	DOG	f	f	2
+81	2	f	\N	ZEFIR został znaleziony na ul. Spornej. W schronisku przebywa od 2.04.2025 roku. Psiaczek ma około 2 lat i waży 7,7 kg Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 schronisko.adopcje@jst.uml.lodz.pl	MALE	8f1e30fc-e91d-47a4-96be-23f55ba82b15	t	Zefir	SMALL	f	DOG	f	t	2
+82	10	f	\N	GARFIELD został znaleziony na ul. Fabrycznej. W schronisku przebywa od 30.03.2025 roku. Kot ma około 10 lat i waży 4kg. Czipa brak. Niekastrowany. Ma ogromną ilość kleszczy !! Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	3660c4cb-dc18-40c9-991d-2dedf579a7cb	t	Garfield	MEDIUM	t	CAT	f	t	2
+83	9	f	\N	GRUBSON trafił do schroniska w wyniku interwencji Policji. Został odebrany z opuszczonego mieszkania w Łodzi na ul. Solnej. W schronisku przebywa od 30.03.2025 roku. Przyjechał do nas z VetMed. Psiaczek ma około 9 lat i waży 16,8kg. Jest bardzo otyły !! Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d6933619-a199-46b8-bd65-239c339cc8a4	f	Grubson	SMALL	t	DOG	f	t	2
+84	2	f	\N	SZCZUREk został znaleziony na ul. Traktorowej. W schronisku przebywa od 29.03.2025 roku. Kot ma około 2 lat i waży 2,8kg. Czipa brak. Niekastrowany. SZCZUREK przyjechał do nas z VetMed. Prawdopodobnie jest po wypadku komunikacyjnym - przebywa pod opieką weterynarzy. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e3ba18bc-b143-4631-8c99-3c5e7f65c0ac	f	Szczurek	MEDIUM	t	CAT	f	t	2
+85	3	f	\N	PIXEL KOLEJNY RAZ W SCHRONISKU !! PIXEL został znaleziony na ul. Krzemienieckiej. W schronisku przebywa od 26.03.2025 roku. Psiaczek ma około 3 lat i waży 10,2 kg. Posiada zarejestrowany czip, ale nr tel. do właścicieli jest nieaktualny. Niekastrowany. Ma zaniedbaną sierść. Kontakt w sprawie odbioru zwierzęcia/ adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ________________________ PIXEL nr. ewid. 337/24 został znaleziony na ul. Armii Krajowej/ Napierskiego W schronisku przebywał od 21.05.2024 - 24.05.2024 roku - odbiór właścicielski.	MALE	e49668d8-a762-420f-9311-84b66e6ab846	t	Pixel	SMALL	t	DOG	f	f	2
+86	12	f	\N	JOGI KOLEJNY RAZ W SCHRONISKU !! JOGI i SABINKA zostali znalezieni przywiązani razem czarną smyczą na ul. Dąbrowskiego. W schronisku przebywają od 14.03.2025 roku. Psiaczek ma 12 lat i waży 9,5kg. Posiada zarejestrowany czip, ale właściciel nie odbiera tel. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ______________________________________ JOGI (nr. ewid. 974/19) został znaleziony na ul. Tamka. W schronisku przebywał od 2.09.2019 - 4.09.2019 roku - został odebrany przez właściciela.	MALE	a8622659-a5d3-4e6d-8af3-b58e3f52ab47	t	Jogi	SMALL	t	DOG	f	t	2
+87	16	f	\N	SABINA KOLEJNY RAZ W SCHRONISKU !!! SABINKA i JOGI zostali znalezieni przywiązani razem czarną smyczą na ul. Dąbrowskiego. W schronisku przebywają od 14.03.2025 roku. Sunia ma 16 lat i waży 18kg. Posiada zarejestrowany czip, ale połączenie z wybranym nr jest zablokowane. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl ____________________________________ SABINA (nr. ewid. 356/22) została znaleziona na ul. Limanowskiego. W schronisku przebywała od 2.05.2022 - 3.05.2022 - została odebrana przez właścicielkę.	FEMALE	b088b320-15cf-4687-a806-68b4b684a38c	t	Sabina	MEDIUM	t	DOG	f	t	2
+88	1	f	\N	FRANEK 🐹 szuka domu 🏠 Szukasz PSYjaciela NA ZAWSZE ⁉ Kogoś, kto po przekroczeniu progu drzwi, będzie na Twój widok merdał ogonkiem i witał Cię z uśmiechem na pyszczku ⁉. FRANEK będzie WSPANIAŁYM towarzyszem dla całej rodziny 🐾🐾. Psiaczek do schroniska trafił 13.03.2025 roku z ul. Przyszkole. Swój początkowy strach zamienił na wdzięczność za okazaną mu uwagę oraz poczucie bezpieczeństwa, co mówi więcej niż tysiąc słów o warunkach, w jakich przebywał nim trafił do SdZ w Łodzi. FRANEK to roczny #sŁODZIAK ważący 20kg. Bardzo ładnie chodzi na smyczy i jest ciekawy świata. Podczas spacerów dużo węszy jednocześnie systematycznie, zerkając w stronę opiekuna. Raczej jest ostrożny w relacjach z innymi psami, co może wynikać ze złych doświadczeń, ale nie przejawia agresji i po mądrym zapoznaniu może być fajnym kompanem dla psa rezydenta. Młodzieniaszek jest bardzo łasy na smaczki wszelakie 😁. FRANEK mimo młodego wieku jest spokojnym, statecznym i zrównoważonym psiaczkiem o niebanalnym umaszczeniu i UROCZYM uśmiechu pełnym wdzięczności. Psy garnij #sŁODZIAKA i daj mu prawdziwy dom 👉 pełen ciepła, LO❤E i troski. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42. 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	5bc835da-5ec8-46a6-adf5-5a9386167886	t	FRANEK	MEDIUM	t	DOG	f	t	2
+89	8	f	\N	SZOGUN został znaleziony na ul. Sienkiewicza. W schronisku przebywa od 13.03.2025 roku. Kot ma około 8 lat i waży 3kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6d91b72f-26c7-4a5a-8de8-99417586c780	f	Szogun	MEDIUM	t	CAT	f	t	2
+90	2	f	\N	TALAR 🐹 szuka domu 🏠 Psiaczek został znaleziony na ul. Chóralnej i od 5.03.2025 roku przebywa w SdZ w Łodzi. Obecnie ma około 2 lat i waży niespełna 30kg. Jest psem o niewątpliwie pięknym, czarnym umaszczeniu i bursztynowych oczach, ale jak wiadomo przy doborze nowego członka rodziny priorytetem jest charakter 💪 TALAR jest bardzo inteligentny i szybko się uczy. Pięknie komunikuje się z innymi psami nie wykazując przy tym żadnej agresji, ale też nie da się zdominować czy wejść sobie na głowę. Po mądrym zapoznaniu bez większych problemów dogada się z psim rezydentem. Psiaczek wymaga asertywnego i konsekwentnego opiekuna, który wyznaczy jasne granice jak również otoczy go troską i wykorzysta potencjał. Osoby aktywnej, która zapewni mu odpowiednią dozę ruchu, bodźców i nauczy zasad życia domowego. Jeśli szukasz PSYjaciela na długie lata a jednocześnie masz czas i chęć popracować z psem energicznym, inteligentnym i posiadającym niesamowity potencjał zachęcamy do zapoznania z tym #sŁODZIAKIM Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 721 024 609 - Aneta Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9e4f1e49-daf0-43e8-a781-ab1f4f854bf1	t	TALAR	BIG	f	DOG	t	t	2
+91	8	f	\N	POMPON został znaleziony na ul. Zgierskiej przy pętli tramwajowej. W schronisku przebywa od 2.03.2025 roku. Psiaczek ma około 8 lat. Czipa brak. Niekastrowany. Ma atopowe pchle zapalenie skóry. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	bf23e0a2-3e1e-4b2d-8f1d-3f2dacc565d4	t	Pompon	SMALL	t	DOG	f	t	2
+92	2	f	\N	BAMBO 🐹 szuka domu 🏠 BAMBO trafił do schroniska 28.02.2025 roku po zgonie właściciela w Łodzi na ul. Franciszkańskiej. Psiaczek obecnie ma około 2 lat i jest początkowo zdystansowanym, ale ciekawym świata #sŁODZIAKIEM. Gdy już zaufa i nabierze pewności siebie 👉 jest bardzo kontaktowym, spragnionym uwagi i nastawionym na zabawę kawalerem. UWIELBIA mizianie, lizać opiekunów po rękach i nadstawia doopkee do drapania 😁 Nie jest typem psa nachalnego, ale widać że jest spragniony zarówno uwagi jak i bliskości człowieka. W chwilach euforii poszczekuje a swym donośnym głosem wzbudza respekt i szacunek by po chwili zachowywać się jak szczeniak biegając jak szalony po wybiegu. BAMBO ma uroczy tik - unosi górną wargę. Podczas spacerów bardzo ładnie chodził na smyczy. Jest obyty i przyzwyczajony do życia w mieście - nie reaguje na samochody oraz mijanych ludzi a do psów podchodzi z zaciekawieniem. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 691 521 551 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	886e0bd1-517b-4ab3-994f-14fb44ac0fc2	f	BAMBO	BIG	t	DOG	t	t	2
+93	6	f	\N	AGAT został znaleziony na ul. Zbiorczej. Był przywiązany w kolczatce i kagańcu przy bloku. W schronisku przebywa od 25.02.2025 roku. Psiaczek ma około 6 lat. Czipa brak. Niekastrowany. Zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt: art. 6 ust. 1a - zabrania się znęcania nad zwierzętami, art. 6 ust. 2 pkt 11 - znęcaniem jest porzucenie zwierzęcia, a w szczególności psa lub kota, przez właściciela bądź przez inną osobę, pod której opieką zwierzę pozostaje, art. 35 - kto porzuca zwierzę, podlega karze pozbawienia wolności do 3 lat Jeśli ktoś rozpoznaje psa BARDZO PROSIMY o kontakt ze Straż Miejska w Łodzi: ☎ (42) 250 22 01 ☎ (42) 632 21 07 Psiaczek przebywa w Schronisko dla Zwierząt w Łodzi. Osoby zainteresowane adopcją prosimy o kontakt: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ebe8a2dc-49b3-4476-9a02-302e6ac1b8c7	t	Agat	BIG	f	DOG	f	t	2
+94	1	f	\N	KOKOSZKA została znaleziona 19.02.2025 roku w Łodzi na ul. Sacharowa. Przyjechała do nas z VetMed. Prawdopodobnie jest po wypadku komunikacyjnym - przebywa pod opieką weterynarzy. W schronisku przebywa od 21.02.2025 roku. Kotka ma około roku i waży 2,3kg. Czipa brak. Niekastrowana. Kontakt w sprawie odbioru zwierzęcia/adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	52a66415-1e57-44a4-9a42-e3c6f3b73857	t	Kokoszka	MEDIUM	t	CAT	f	t	2
+95	13	f	\N	GIENEK był łapany na torach kolejowych między stacją Łódź Dąbrowa a Chojny. Został zabezpieczony na ul. Dąbrowskiego. W schronisku przebywa od 11.02.2025 roku. Psiaczek ma około 13 lat i waży 8,7kg. Czipa brak. Niekastrowany. Ma guza jądra prawego. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6c76b663-667d-4ed4-97bc-60fd90247a46	t	Gienek	SMALL	t	DOG	f	t	2
+97	1	f	\N	DoDo został porzucony w Parku Moniuszki. Niespełna roczny psiaczek został przywiązany do drzewa. Obok stała torba z „dorobkiem życia” psa. Sprawą zajmuje się policja. Monitoringi zostały zabezpieczone a my przypominamy, że zgodnie z Ustawą z dnia 21 sierpnia 1997 roku o Ochronie Zwierząt: art. 6 ust. 1a - zabrania się znęcania nad zwierzętami, art. 6 ust. 2 pkt 11 - znęcaniem jest porzucenie zwierzęcia, a w szczególności psa lub kota, przez właściciela bądź przez inną osobę, pod której opieką zwierzę pozostaje, art. 35 - kto porzuca zwierzę, podlega karze pozbawienia wolności do 3 lat DoDo w schronisku przebywa od 5.02.2025 roku. Psiaczek ma niespełna rok i waży 26kg. Jest młodzieniaszkiem w typie dobermana. Czipa brak. Niekastrowany. W przypadku DoDo nie szukamy właścicielki bo jej poszukiwaniem zajmie się policja. Dla #sŁODZIAKA po kwarantannie będziemy szukali ODPOWIEDZIALNEJ rodziny i domu tymczasowego z opcją domu stałego gdy już sytuacja prawna psiaczka zostanie uregulowana. Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	2070091f-f169-4483-bb88-06f51dafa4b2	f	DoDo	MEDIUM	f	DOG	t	t	2
+98	8	f	\N	BURASEK, YUKA i KROPKA trafiły do schroniska w wyniku interwencji Policji. W schronisku przebywają od 31.01.2025 roku. Cała trójka była kiedyś kotami dzikimi, żyjącymi na wolności (mają cięte uszy). Ich właścicielka trafiła do szpitala, a koty zostały pozostawione same w mieszkaniu na kilka dni !! Dzięki kontaktowi ze strony sąsiadów mamy informacje: YUKA i KROPKA to siostry, które przyszły na świat w maju 2016 roku. Kotki pod koniec 2017 roku zostały otrute i w klinice weterynaryjnej wygrały walkę o życie. Po opuszczeniu szpitalika, Pani zabrała je do swojego mieszkania. Ich socjalizacja trwała kilka miesięcy i tak naprawdę nigdy nie były super miziastymi kotkami, ale żyły w otoczeniu człowieka w poszanowaniu ich przestrzeni. Od końca 2017 roku są też kotami NIEWYCHODZĄCYMI !! YUKA waży 4,3kg. Czipa brak. Kastrowana. Niestety już wiemy, że nawet jeśli właścicielka wyjdzie ze szpitala, to nie będzie osobą samodzielną. Pani nie będzie mogła opiekować się 3 kotami. Dla dobra kotów, które ostatnie lata spędziły w warunkach domowych, małymi kroczkami rozglądamy się za ODPOWIEDZIALNYMI rodzinami i domami stałymi. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	c2b67971-a9f1-4b9b-8b51-845aa9b1ae18	t	Yuka	MEDIUM	f	CAT	t	t	2
+99	8	f	\N	BURASEK, YUKA i KROPKA trafiły do schroniska w wyniku interwencji Policji. W schronisku przebywają od 31.01.2025 roku. Cała trójka była kiedyś kotami dzikimi, żyjącymi na wolności (mają cięte uszy). Ich właścicielka trafiła do szpitala, a koty zostały pozostawione same w mieszkaniu na kilka dni !! Dzięki kontaktowi ze strony sąsiadów mamy informacje: YUKA i KROPKA to siostry, które przyszły na świat w maju 2016 roku. Kotki pod koniec 2017 roku zostały otrute i w klinice weterynaryjnej wygrały walkę o życie. Po opuszczeniu szpitalika, Pani zabrała je do swojego mieszkania. Ich socjalizacja trwała kilka miesięcy i tak naprawdę nigdy nie były super miziastymi kotkami, ale żyły w otoczeniu człowieka w poszanowaniu ich przestrzeni. Od końca 2017 roku są też kotami NIEWYCHODZĄCYMI !! KROPKA waży 4,5kg. Czipa brak. Kastrowana. Niestety już wiemy, że nawet jeśli właścicielka wyjdzie ze szpitala, to nie będzie osobą samodzielną. Pani nie będzie mogła opiekować się 3 kotami. Dla dobra kotów, które ostatnie lata spędziły w warunkach domowych, małymi kroczkami rozglądamy się za ODPOWIEDZIALNYMI rodzinami i domami stałymi. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	eac9778d-8746-4033-a424-27ecbdc1961f	t	Kropka	MEDIUM	f	CAT	f	f	2
+100	13	f	\N	DEJZI została znaleziona na ul. Wysoka/Nawrot. W schronisku przebywa od 29.01.2025 roku. Sunia ma około 13 lat i waży 15 kg. Posiada zarejestrowany czip, ale nie mamy kontaktu z właścicielem. Ma czerwone szelki. Sunia na przedniej łapce ma bardzo dużego guza. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	d402331f-aef0-4dc0-87d1-74c3c4df0506	t	Dejzi	MEDIUM	t	DOG	f	t	2
+101	2	f	\N	LUNA została odebrana podczas czynności interwencyjnych w Łodzi na ul. Żeromskiego. Do schroniska trafiły 2 sunie i 5 kotów, które przebywały w tragicznych warunkach. W schronisku przebywają od 20.01.2025 roku. LUNA obecnie ma około 2 lat i waży 33kg. Czipa brak. Niekastrowana. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	2a6c31fd-c37a-449c-be53-f8bd00117b96	f	Luna	BIG	t	DOG	f	t	2
+102	5	f	\N	LEX został znaleziony na ul. Włókniarzy. W schronisku przebywa od 16.01.2025 roku. Psiaczek ma około 5 lat i waży 22kg. Czipa brak. Niekastrowany. Ma brązową skórzaną obroże. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	21a21832-3a18-45fd-b64d-db86229aef31	t	Lex	MEDIUM	t	DOG	f	t	2
+103	1	f	\N	MATI 🐹 szuka domu 🏠 Jedna z delikatniejszych istot jakiej trafiły pod naszą tymczasową opiekę 😔 MATI został znaleziony 6.01.2025 roku na ul. Matek Polskich. Miał wtedy 1,5 roku, ważył 21kg i chciał być niewidzialny dla całego świata. Po przybyciu do schroniska, schował się za budą i telepiąc ze strachu przed człowiekiem obserwował świat zza krat. Jest uroczym psiaczkiem, który każdego dnia toczy walkę z własnymi lękami. Uczy się zaufania i życia w społeczeństwie. Jego pyszczek kryje smutek i niepewność ale w oczkach tli się nadzieja na lepsze jutro. Po zachowaniu MATIEGO widać, że ma za sobą pokłady złych doświadczeń z ludźmi co sprawia, że w pierwszym kontakcie z nowo poznanymi osobami jest bardzo przestraszony, niepewny i zdystansowany, ale też w sumie swoich strachów nie przejawia cienia agresji. Systematyczną pracą osiągamy małe sukcesy i liczymy, że pewnego dnia ten skrzywdzony psiaczek nauczy się cieszyć z bliskości człowieka. MATI nieśmiało macha swym połamanym ogonkiem na widok znanych mu osób, podchodzi na smaczki i w chwilach zapomnienia bawi się na wybiegu. Podczas ostatniego spaceru z suczką, zauważyliśmy, że towarzystwo otwartego i zsocjalizowanego czworonoga bardzo pomaga mu w poznawaniu świata…spacer odbył się znacznie płynniej a na wybiegu mieliśmy przyjemność obserwować jego zaczepki do wspólnej zabawy 💖 Psiaczka czeka amputacja ogonka dla PILNIE szukamy dla #sŁODZIAKA super domu  🏠 oraz ODPOWIEDZIALNEJ i spokojnej rodziny, która zrozumie, że pies po przejściach potrzebuje czasu by się otworzyć, zaufać i pokazać swój fantastyczny i niesamowicie delikatny charakter 💕 Dodatkowych informacji na temat #sŁODZIAKA udzielą wolontariuszki: ☎ 721 024 609 - Aneta ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	8e816b04-5f49-4923-a169-9fea6f248bfa	t	MATI	MEDIUM	t	DOG	t	f	2
+96	0	f	\N	DYZIO 🐹 szuka domu 🏠 Jak to możliwe, że tak młody psiaczek kolejny raz „zaginął” swojej właścicielce i trafił za kraty 😡 👉 DYZIO (nr ewid. 636/24) jako 6 miesięczny maluszek, został znaleziony na ul. Radwańskiej. W schronisku przebywał 13.10.2024 roku i jeszcze tego samego dnia został odebrany przez właścicielkę. 👉 Kolejny raz, jako 10 miesięczny psiaczek, został znaleziony na ul. Sienkiewicza. Do schroniska trafił 9.02.2025 roku i tkwi za kratami po dzień dzisiejszym. Młodzieniaszek był wychowywany po przez zadawanie bólu. Miał na szyi zaciśniętą paskudną kolczatkę 😡 Po kilku tygodniach wreszcie udało nam się skontaktować z właścicielką, której dalszy los psa jest całkowicie obojętny. Postępowaniem zajmie się mecenas a my skupmy się na DOBRU ZWIERZĘCIA i znalezieniu dla tego #sŁODZIAKA ODPOWIEDZIALNEJ rodziny oraz SUPER domu w którym pod troskliwą opiekę spędzi resztę życia. DYZIO 🐹 obecnie ma około roku i waży 15kg. Tyle razy zawiódł go człowiek, że początkowo zachowuje dystans i podczas pierwszego zapoznania jest przestraszony i nieufny. Dzięki PSIEpysznym smaczkom można wdać się w jego łaski i dołączyć do grona PSYjaciół godnych zaufania 😊 Jest młodziutkim, rozbrykanym kawalerem, który lubi aktywnie spędzać czas. Na smyczy początkowo ciągnie a ilość zapachów sprawia, że trudno mu skupić uwagę na opiekunie. Jak wiadomo, nie miał fajnego startu na tym świecie, ale jeśli trafi pod opiekę świadomej rodziny, która poświęci mu odrobinę czasu na naukę to nie mamy wątpliwości, że będzie fantastycznym towarzyszem dla całej rodziny. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d5859c5e-4331-4c1a-a867-27ce2ca80b6c	t	DYZIO	MEDIUM	t	DOG	f	f	2
+125	7	f	\N	REMI 🐹 szuka domu 🏠 Sunia ma około 6 lat i do schroniska trafiła 14.05.2024 roku z ul. Czechosłowackiej. Jej właściciel zmarł a bidulka przez miesiąc siedziała w opuszczonym mieszkaniu. Czasem ktoś przypomniał sobie o jej istnieniu, ale nikt nie otoczył wiernej psinki opieką. REMI początkowo była przerażona otaczającą ją rzeczywistością. Prosto z kanapy trafiła za kraty 🥺 Podobno czas leczy rany i po kilku tygodniach pracy nad zdobyciem jej zaufania pojawiły się pierwsze efekty. Stres opadł i dzięki opiekunom i wolontariuszom w oczach tej istoty ponownie zaczęła tli się iskierka nadziei, że zazna jeszcze troski i domowego ciepła. REMI jest piękna, ułożona i zapewne szybko przypomni sobie, co to domowe pielesze oraz rodzina. Sunia jest bardzo mądra, miła i oddana ale potrzebuje czasu by poznać i zaufać człowiekowi. Wychowała się u boku starszego pana i każdego dnia tęskni za bliskością. Nie jest typem psa nachalnego, ale nie wzgardzi pieszczotami oraz smaczkami. Skora do nauki  👉 uroczo wykonuje komendę "poproś" siadając na doopcee jak surykatka. W początkowej fazie spaceru mocno ciągnie, ale po chwili sama opanowuje emocje i uspakaja się. Na wybiegu węszy nie tracąc czasu na zabawę. REMI wychowała się jako jedynaczka. W schronisku kojec zamieszkuje sama, ale podjęliśmy kilka prób połączenia REMI z innymi psami i niestety, ma charakter dominujący. Jest też zasobowa jeśli chodzi o relacje z opiekunem, którego chciałaby mieć tylko dla siebie. Podczas spacerów raczej lekceważy inne czworonogi. Dodatkowych informacji na temat suni udzieli wolontariuszka: ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	102222a3-76f3-48d8-bd72-2ff9930c3405	t	REMI	MEDIUM	t	DOG	t	f	2
+130	3	f	\N	GULIWER został znaleziony na ul. Łaskowice. W schronisku przebywa od 5.02.2024 roku. Psiaczek ma około 2 lat. GULIWER jest w trakcie socjalizacji !! Uczy się zaufania do człowieka, chodzenia na smyczy i budowania pozytywnej relacji. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c43ff6ad-71d9-4307-ae27-57dcad275637	t	Guliwer	BIG	t	DOG	f	t	2
+135	2	f	\N	RAFAELKA 🐹 szuka domu 🏠 To młodziutka, niespełna 2 letnia sunia, która trafiła do schroniska 12.10.2023 roku z ul. Trybunalskiej. Jest po pełnej obsłudze weterynaryjnej 👉 GOTOWA zamieszkać u boku ODPOWIEDZIALNEJ rodziny ❣❣ Jaka jest RAFAELKA 👇 👇 ➡ ma charakterek 😁 i własnym zdaniem na niemal każdy temat ➡ na wybiegu wulkan energii, jest bardzo aktywna, prawie cały czas biega i zaczepia inne psiaczki do zabawy ➡ wobec osób które zna jest otwarta, kontaktowa, chętnie przybiega na zawołanie, zaczepiając zdarza się że podgryza i nie ma czasu na nadmierną czułość ➡ w stosunku do nowo poznawanych osób zachowuje dystans, jest nieufna i szczekaniem zniechęca do nadmiernej bliskości 😔 jednak warto poświęcić trochę czasu by skraść jej serduszko i zbudować pozytywną relacje. RAFAELKA powinna trafić pod opiekę aktywnej rodziny, która spożytkuje jej energię i wychowa na mądrą psinkę. Jeśli miałaby zamieszkać z drugim psiaczkiem, to rezydent powinien być spolegliwy i znosić jej zaczepki. Dodatkowych informacji na temat suni udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	c89d1f9a-f01c-4ea9-a079-390333be6c68	t	RAFAELKA	MEDIUM	f	DOG	f	t	2
+140	2	f	\N	BEREK 🐹 szuka DOMU TYMCZASOWEGO z opcją DOMU STAŁEGO 🏠 gdy już zostanie uregulowana jego sytuacja prawna ‼ Ten niespełna 3 letni #sŁODZIAK trafił do schroniska 13.08.2023 roku w wyniku interwencji w Łodzi na ul. Rzgowskiej. Był jednym z 12 odebranych psów i 4 kotów. Jego sytuacja prawna po dziś dzień nie jest uregulowana, co nie oznacza, że ma tkwić za kratami schroniskowego kojca ‼ BEREK do 7 miesiąca życia nie był prawidłowo zaopiekowany 😔 Nikt nie poświęcił mu czasu na naukę manier, nie potrafił chodzić na smyczy, był wychudzony i zaniedbany a jedyną jego zaletą był fakt, że świetnie odnajdywał się w stadzie ogonków. DZIŚ, ten uroczy psiaczek nadal wymaga cierpliwości i nauki, jednak są to „mankamenty” które można bez większych problemów wypracować w warunkach domowych u boku świadomych i ODPOWIEDZIALNYCH opiekunów. 👉 Psiaczek ma ogromne pokłady energii oraz targają nim emocje wszelakie. Rozładowuje je skakaniem i podgryzaniem co należy systematycznie korygować wyznaczając mu „małe zadania” do wykonania. Dodatkowo pomaga mu to w skupieniu uwagę na człowieku. 👉 Podczas spacerów podgryza smycz co w jego mniemaniu jest zabawą, ale może poskutkować ucieczką. 👉 Bardzo uspakaja się w relacjach 1:1 z opiekunem, gdy uwagę skupia na człowieku a nie ekscytuje się i nakręca obecnością PSYjaciół. 👉 Nie ma problemów w nawiązywaniu relacji z innymi czworonogami oraz ludźmi, ale początkowo nie jest wylewny w okazywaniu uczyć. 👉 Podczach chodzenia na smyczy nie czuje się pewnie, ale też nie protestuje wpadając w rytm nadany przez człowieka. 👉 Nie przejawia agresji. 👉 Szybko się uczy, ale wymaga asertywnych i konsekwentnych opiekunów. Jak zachowa się w domu? Nie wiemy‼ BEREK 🐹 ma niespełna 2 lata i NIGDY NIE ZAZNAŁ DOMOWEGO CIEPŁA 🥺 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 691 521 551 - Kasia Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	67382909-d69e-4a8d-967f-0219e5ba2a75	t	BEREK	SMALL	t	DOG	f	t	3
+145	4	f	\N	KUDŁATY 🐹 już dawno powinien wylegiwać się na kanapie u boku fantastycznych opiekunów w swoim wymarzonym domu 🏠 ale rzeczywistość jest zupełnie inna 😔 od 2.04.2023 roku odsiaduje wyrok za niewinność ‼ Psiaczek został znaleziony w Łodzi na ul. 6-go Sierpnia/Wólczańska i NIKT się po zgubę nie zgłosił. Mimo, że w schronisku jest od ponad roku, nie stracił wiary w człowieka 💪 Ma pozytywny stosunek do ludzi i świata. W relacjach z innymi psami nie jest wyrywny, raczej neutralny/obojętny, chyba że jakiś psi koleżka go zainteresuje, wówczas nie omieszka radośnie unieść ogon. Brak systematycznych spacerów sprawił, że KUDŁATY na smyczy wyrywa do przodu szarpiąc opiekuna. Jest ciekawym świata, dość silnym psem z którym będzie trzeba trochę popracować, nauczyć manier i zapewnić mu odpowiednią dozę ruchu. Jak na młodzieniaszka przystało ma wesołe usposobienie. Jest kontaktowy i łagodny. Niczym surykatka staje na tylnych łapkach i obserwuje otoczenie - niestety nadal zza krat 😔 Lubi głaskanie i sam przybiega do wolontariuszki dając znać, że jest gotowy na przytulanie. KUDŁATY ma niespełna 3 lata. Jest po pełnej obsłudze weterynaryjnej. Do pełni szczęścia brakuje mu ODPOWIEDZIALNYCH opiekunów. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 601 710 654 - Agnieszka Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4685f989-e8db-40c9-b0a4-41cbd4f68787	t	KUDŁATY	MEDIUM	t	DOG	f	t	3
+104	1	f	\N	PUTEK 🐈‍ nieśmiała kulka do pokochania 🥰 Kocurek jest uroczy, około roczny, życie nie było dla niego łaskawe. Do schroniska trafił po wypadku komunikacyjnym, po którym zostały mu drobne problemy z równowagą, ale mimo to nieźle sobie radzi z codziennymi czynnościami, a nawet wspinaniem na drapaki. PUTEK jest nieufny i wycofany ale maślanymi oczami patrzy, jak wolontariusze bawią się z innymi kotami ❤️ Po czasie nieśmiało podchodzi bliżej i delikatnie próbuje włączyć się do zabawy. Podejrzewamy, że jak już pokocha swojego człowieka to calutkim sobą 😊 PUTEK został znaleziony na ul. Elbląskiej. Do schroniska trafił 30.12.2024 roku z kliniki lancet. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6386136a-39df-43f8-be24-7a432a619361	f	PUTEK	MEDIUM	t	CAT	f	t	2
+105	7	f	\N	SZADO został znaleziony na ul. Byszewskiej. W schronisku przebywa od 29.12.2024 roku. Psiaczek ma około 7 lat i waży 32kg. Czipa brak. Niekastrowany. Ma skórzaną brązową obroże. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ec966d96-e4ed-451a-988b-5a60d1910e86	t	Szado	BIG	t	DOG	f	t	2
+106	5	f	\N	TROI został znaleziony na ul. Pomorskiej. W schronisku przebywa od 15.12.2024 roku. Psiaczek ma około 5 lat i waży 9kg. Czipa brak. Niekastrowany. TROI ma stare złamanie wieloodłamowe w prawym stawie łokciowym - przebywa pod opieką weterynarzy ! Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	fc4fd9b7-3c78-43e2-a5f0-c3cf65deb6e8	t	Troi	SMALL	f	DOG	f	f	2
+107	16	f	\N	FAKIR został zabezpieczony z powodu śmierci właściciela z ul. Sienkiewicza. W schrpnisku przebywa od 2.12.2024 roku. Psiaczek ma 16 lat i waży 10,4 kg. Czipa zarejestrowany. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ffe0c3c3-0dd0-4db4-88ff-e5e523b8a57b	t	Fakir	MEDIUM	t	DOG	f	f	2
+108	8	f	\N	KOREK został znaleziony na ul. Łagiewnickiej. W schrpnisku przebywa od 1.12.2024 roku. Psiaczek ma około 8 lat i waży 13 kg. Czipa brak. Niekastrowany. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b5a20887-70a0-4563-afd5-7e4f4ef56f94	t	Korek	MEDIUM	f	DOG	f	t	2
+109	15	f	\N	PILNIE szukamy ODPOWIEDZIALNEJ rodziny 🤩 i SUPER domu 🏠 dla seniorka BARNABY 🐹 BARNABA przyjechał do schroniska 10.11.2024 roku z kliniki Lancet. Został z naleziony w Łodzi na ul. Inowrocławskiej. Staruszek ledwo poruszał się o własnych siłach i sporo czasu przebywał pod opieką weterynarzy. Po stanie psa w dniu przyjęcia do schroniska łatwo ocenić, że wcześniejsze życie go nie rozpieszczało 😔 DZISIAJ 👉 to dziarski #sŁODZIAK, którzy bardzo ceni kontakt z człowiekiem. Bez większych problemów dogaduje się z suczkami. Z samcami bywa równie, ale mądre zapoznanie niewątpliwie zwiększy szanse na nawiązanie PSYjacielskich relacji . Ładnie chodzi na smyczy w swym powolnym tempie. Dla BARNABY szukamy spokojnej, statecznej rodziny, która otoczy psiaczka po przejściach domowym ciepłem 💞 BARNABA obecnie ma około 15 lat i waży 20kg. Jest zaszczepiony, odrobaczony, zaczipowany oraz po zabiegu kastracji. Psiaczek ma niedoczynność tarczycy w związku z czym dożywotnio musi przyjmować leki. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	10ed3409-9cad-4657-b09a-c300f637764d	t	BARNABA	MEDIUM	t	DOG	t	t	2
+110	3	f	\N	GIENIA została znaleziona na ul. Rzgowskiej. W schronisku przebywa od 30.10.2024 roku. Kotka ma około 3 lat i waży 3,1 kg. Kotka ma przepuklinę przeponową, nieoperacyjną. Czipa brak. Niekastrowana. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	317df285-45a6-4684-ac64-2de577880d41	t	Gienia	MEDIUM	t	CAT	f	t	2
+111	5	f	\N	ZOSIA i KASIA zostały znalezione w Łodzi na ul. Piotrkowskiej. W schronisku przebywają od 23.10.2024 roku. Kotka ma około 5 lat i waży 3,5 kg. Posiada niezarejestrowany czip. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	4cfb736c-b102-4577-8642-a9a938a4f76e	f	Zosia	MEDIUM	t	CAT	t	t	2
+112	5	f	\N	FISZKA 🐹 PILNIE szuka ODPOWIEDZIALNEJ rodziny i SUPER domu 🏠 Sunia została znaleziona 22.10.2024 roku w Łodzi na ul. Sienkiewicza. Miała cieczkę i na szyi różową obroże z ćwiekami. Obecnie ma około 5 lat i waży 20kg. Dla FISZKI 🐹 PILNIE szukamy rodziny by w warunkach domowych mogła dochodzić do siebie po zalecanej przez okulistę i planowanej operacji usunięcia lewej gałki ocznej. FISZKA od pewnego czasu niepokojąco interesuje się swoim ogonem, który zaczęła podgryzać. Badania wykazały, że ma zmiany zwyrodnieniowe kręgów ogonowych. Przenieśliśmy sunie w „spokojniejsze” miejsce na terenie schroniska, ale nadal to buda i kojec a po zachowaniu oceniając, sunia wcześniejsze lata życia spędziła w domu u boku człowieka. FISZKA to przykład kumulacji psiego nieszczęścia 😢 Została prawdopodobnie świadomie porzucona przez cZŁOwieka i w warunkach schroniskowych przyszło jej toczyć walkę zarówno z emocjami jak i o sprawność fizyczną. Nie o takim losie marzymy dla naszych podopiecznych 😔 dlatego BARDZO PROSIMY 🙏 otwórzcie swoje serca na tą skrzywdzoną przez los istotę i razem znajdźmy jej CUDOWNY dom, pełen miłości, troski i ciepła. FISZKA to bardzo łagodna, zrównoważona psinka. Początkowo jest trochę nieśmiała, ale bez większych problemów przełamuje pierwsze lody i nawiązuje pozytywną relację z człowiekiem. Ceni bliskość 💗 przychodzi na głaski. UWIELBIA zabawki 👉 piłeczka jest SUPER, ale to szarpak zdecydowanie jest jej faworytem 😁 Bardzo ładnie wykonuje podstawowe komendy jak siad i łapa. Lubi aktywnie spędzać czas i nie tak łatwo ją zmęczyć. Bieganie i szaleństwa na wybiegu sprawiają jej ogrom radości. Na smyczy początkowo ciągnie co prawdopodobnie wynika z ekscytacji związanej ze spacerem. W stosunku do mijanych psów, jest obojętna – podchodzi na zapoznanie i ignoruje ich obecność. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	99b9677f-01ab-4b98-ab60-31b822b89817	f	FISZKA	MEDIUM	t	DOG	t	f	2
+113	4	f	\N	MINIA 😻 zmieniła zdanie co do ludzi, więc PILNIE szukamy dla niej człowieka, który udowodni że da się nas kochać ❤️ Do schroniska trafiła 9.10.2024 roku z ulicy Zygmunta, po wypadku komunikacyjnym. Miała złamana żuchwę i stary uraz lewej łapki, która musiała być amputowana. Ma 4 lata, waży 3,6kg, czipa nie posiada. MINIA była kotką kompletnie dziką i nic nie wskazywało na to, że kiedykolwiek otworzy się na ludzi. A JEDNAK 😉 Pewnego dnia ciekawość zwyciężyła i kicia zaczęła podchodzić do opiekunów coraz bliżej. Obecnie przesiaduje w niewielkiej odległości od człowieka, spokojnie go obserwuje 👀 i powoli mruga, co na nasze można tłumaczyć jako uśmiech 😹 Przy odpowiedzialnym opiekunie z pewnością rozkwitnie i pokocha całym kocim serduszkiem 💓💓 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	de7f32a1-55e0-4c2a-98e7-6f0a8b711477	t	MINIA	MEDIUM	t	CAT	f	f	2
+114	1	f	\N	FRED i BARNEY 🐹 PILNIE szukają domu 🏠 razem lub osobno 🐾🐾 Prawdopodobnie bracia, znalezieni 7.10.2024 roku w Łodzi na ul. 1 Korpusu Pancernego Wojska Polskiego. Obecnie mają niespełna 2 lata i ważą +/- 25kg. #sŁODZIAKI mają OGROM UROKU OSOBISTEGO a w duecie są prawdopodobnie najfajniejszymi cudaczkami w SdZ w Łodzi 🤩 FRED (ciemniejszy) jest zdecydowanie ostrożniejszy w pierwszym kontakcie. BARNEY (jaśniejszy) wychodzi z założenia, że świat powstał aby go kochać 💗 Oprócz faktu, że UWIELBIAJĄ swoje towarzystwo, to cenią 👉 długie spacery, możliwość wspólnych szaleństw na wybiegu, PSIEpyszne jedzonko i wszelkiego rodzaju smaczki 😁 Dogadują się REWELACYJNIE ➡️ prawdopodobnie od szczeniaka są razem, w schronisku od pierwszych dni dzielą kojec, żyją w pełnej komitywie a podczas spacerów zawsze oglądają się za sobą i czekają na siebie. Nie chcemy zablokować ich drogi do domów, dlatego podjęliśmy trudną decyzję o ewentualnym ich rozdzieleniu 💔 PSYgarnij #sŁODZIAKA 💞 ze Schroniska dla Zwierząt w Łodzi ❣️ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	3dadb0eb-9c43-4098-9445-4779dbe93274	t	FRED	MEDIUM	t	DOG	f	t	2
+115	1	f	\N	FRED i BARNEY 🐹 PILNIE szukają domu 🏠 razem lub osobno 🐾🐾 Prawdopodobnie bracia, znalezieni 7.10.2024 roku w Łodzi na ul. 1 Korpusu Pancernego Wojska Polskiego. Obecnie mają niespełna 2 lata i ważą +/- 25kg. #sŁODZIAKI mają OGROM UROKU OSOBISTEGO a w duecie są prawdopodobnie najfajniejszymi cudaczkami w SdZ w Łodzi 🤩 FRED (ciemniejszy) jest zdecydowanie ostrożniejszy w pierwszym kontakcie. BARNEY (jaśniejszy) wychodzi z założenia, że świat powstał aby go kochać 💗 Oprócz faktu, że UWIELBIAJĄ swoje towarzystwo, to cenią 👉 długie spacery, możliwość wspólnych szaleństw na wybiegu, PSIEpyszne jedzonko i wszelkiego rodzaju smaczki 😁 Dogadują się REWELACYJNIE ➡️ prawdopodobnie od szczeniaka są razem, w schronisku od pierwszych dni dzielą kojec, żyją w pełnej komitywie a podczas spacerów zawsze oglądają się za sobą i czekają na siebie. Nie chcemy zablokować ich drogi do domów, dlatego podjęliśmy trudną decyzję o ewentualnym ich rozdzieleniu 💔 PSYgarnij #sŁODZIAKA 💞 ze Schroniska dla Zwierząt w Łodzi ❣️ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	269161d1-38a3-4e0a-9e18-a893d88927ee	f	BARNEY	MEDIUM	t	DOG	f	t	2
+116	7	f	\N	PSIEkochany SIMON 🐹 szuka domu 🏠 Psiaczek został znaleziony na ul. Próchnika/Piotrkowska i od 29.09.2024 roku odsiaduje wyrok za niewinność. Obecnie ma około 7 lat i wazy 15kg. Jest po pełnej obsłudze weterynaryjnej GOTOWY wyruszyć w podróż życia i stać się pełnoprawnym członkiem ODPOWIEDZIALNEJ rodziny 💞 SIMON to bardzo emocjonalna istota, która przywiązuje się do opiekunów i oddaje im całe swe serduszko. Jest miły, grzeczny i spragniony bliskości człowieka na którym skupia swą uwagę w 100%. Nie przejawia cienia agresji i dogaduje się z innymi psiaczkami, ale zdecydowanie w docelowym domu stałym chciałby być jedynakiem, by ręce człowieka głaskały tylko jego i zawsze miał miejsce na położenie pyszczka na kolanach opiekuna w którego niewątpliwie bardzo chętnie będzie się wtulał. Dzięki systematycznym spacerom ładnie zachowuje czystość. Na smyczy z osobami które zna i darzy zaufaniem chodzi poprawnie. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4ca5f06f-4da0-446d-9727-6d57575b2000	t	SIMON	MEDIUM	t	DOG	f	t	2
+117	8	f	\N	FIDO 🐹 szuka domu 🏠 FIDO 🐹 trafił do schroniska 11.09.2024 roku w wyniku zgonu właścicielki. Całe życie spędził mieszkając w kamienicy na ul. Tymienieckiego. Niestety, jego życie nie było sielanką 😔 ale dalece odbiegało od codziennego zgiełku, kojca i budy do której trafił. Psiaczek ma około 8 lat i waży 20kg. Ma komplet sczepień, jest zaczipowany i po zabiegu kastracji. PILNIE szukamy dla smutnego i tracącego nadzieję na lepsze jutro 🥺 FIDO ODPOWIEDZIALNEJ rodziny, która otoczy psiaczka po przejściach troską i domowym ciepłem. Jaki jest FIDO 👇 👇 👇 ✅ w kojcu przestraszony i zdezorientowany, ale grzeczny ✅ na wybiegu lubi aktywnie spędzać czas ✅ nie jest nachalny w okazywaniu uczuć w tym wdzięczności, ale lubi głaskanie ✅ bardzo przyjazny ✅ ładnie chodzi na smyczy ✅ zna podstawowe komendy - siad, łapa i poproś ✅ ma neutralny stosunek do innych psów Osoby zainteresowane adopcją prosimy o wypełnienie ankiety przedadopcyjnej: ➡ https://schronisko.uml.lodz.pl/adoptuj-pupila/informacje-o-adopcji/ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1f3850ba-7e95-47d5-b1df-e015ac5af245	t	FIDO	MEDIUM	t	DOG	f	t	2
+118	8	f	\N	CZARLI został znaleziony w Parku 3-go Maja. W schronisku przebywa od 25.08.2024 roku. Pies ma około 8 lal i waży 29 kg Czipa brak. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b81b9c16-31cf-4c1f-a492-09693f592a11	f	Czarli	BIG	f	DOG	f	t	2
+119	1	f	\N	BARY 🐹 szuka domu 🏠 Samiec w typie belga znaleziony 6.08.2024 roku na ul . Składowej przy parku Helenów. Miał kolczatkę, kaganiec i był przywiązany do drzewa 😡 Trafił do nas jako młody, około roczny psiaczek ważący 27kg. Początkowo był bardzo zdystansowany, zwłaszcza w relacjach z mężczyznami, których nie wpuszczał do swojego kojca. BARY to pies z „urazem” do mężczyzn i nie to, że ich nie akceptuje - potrzebuje DUŻO CZASU by nabrać do mężczyzn zaufania. Trzeba uzbroić się w cierpliwość i tylko dzięki systematycznej pracy, licznym spacerom, i determinacji można zyskać jego zaufanie. W relacjach z kobietami jest prawdziwym dżentelmenem, który szybko otwiera się i pokazuje swój młodzieńczy charakter. Łaknie bliskości i ma w sobie ogromne pokłady miłości oraz niespożytkowanej energii. Za chwilę uwagi wdzięczy się niczym szczeniak. PSYjaciel o radosnym usposobieniu, który chętnie spędza czas na pieszczotach. Swą pozytywną energią zaraża każdego. UWIELBIA smaczki za które chętnie wykonuje komendy. Jest bystry i skory do nauki. Pięknie chodzi na smyczy a spacery z nim to prawdziwa przyjemność. BARY nie toleruje innych psów. Jest indywidualistą, który w docelowym domu stałym powinien być jedynakiem ‼ Dla BAREGO szukamy opiekunów świadomych potrzeb rasy i nastawionych na pracę z belgiem, którego potencjał należy wykorzystywać każdego dnia. Dodatkowych informacji na temat psiaczka udzielą wolontariusze: ☎ 882 117 880 - Jula ☎ 574 775 494 - Daniel Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	bb3310ab-e73b-4895-a84c-217c75a514c4	f	BARY	BIG	t	DOG	f	t	2
+120	5	f	\N	DŻEKI został odebrany interwencyjnie w Łodzi na ul. Wodnej. Do schroniska trafił 1.08.2024 roku razem z samcem LOLKIEM. Psiaczek ma około 5 lat i waży 28kg. Czipa brak. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ed526157-98ab-429c-a9bb-f2decccdc671	t	Dżeki	BIG	t	DOG	t	f	2
+121	10	f	\N	MIRANDA została znaleziona na ul. Szczecińskiej. W schronisku przebywa od 30.07.2024 roku. Kotka ma około 10 lat i waży 2,6kg. Ma braki w uzębieniu, ranę na prawym łuku skroniowym, prawdopodobnie jest po wypadku - przebywa pod opieką weterynarzy. Czipa brak. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	4b60ab45-04e0-4ef4-ba9c-be4322544469	t	Miranda	MEDIUM	t	CAT	f	t	2
+122	6	f	\N	BALTO został znaleziony na ul. Zimna Woda. W schronisku przebywa od 29.07.2024 roku Psiaczek ma około 6 lat i waży 40kg Posiada czip - wiadomość że pies jest w schronisku została przekazana. Czekamy na kontakt z właścicielem i odbiór psiaczka. Ma zapalenie prawego przewodu słuchowego Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c63c95ac-f0cd-422d-8c42-9121eda46994	t	Balto	BIG	t	DOG	f	f	2
+123	4	f	\N	GRYZAK 🐹 szuka domu 🏠 Psiaczek został znaleziony 24.07.2024 roku w Łodzi na ul. Aleksandrowskiej. Był wykastrowany i miał łańcuszkową obroże, ale właściciele nie zgłosili się po zgubę 😔 dlatego rozglądamy się za ODPOWIEDZIALNĄ rodziną dla „kabanosa” 🙈 GRYZAK po przybyciu do schroniska był bardzo zestresowany i warczeniem oraz pokazywaniem uzębienia pięknie wyznaczał granice. Minęły tygodnie i zaufał tymczasowym opiekunom na widok których nieśmiało merda ogonem. Lubi przebywać w otoczeniu ludzi, ale zdecydowanie stresuje go nadmierna aprobata oraz zainteresowanie. Ceni własną przestrzeń i w docelowym domu stałym raczej powinien być jedynakiem. Ładnie chodzi na smyczy i podczas spacerów jest aktywnym młodzieniaszkiem. GRYZAK obecnie ma około 4 lat. Jest zaszczepiony, zaczipowany, ma komplet szczepień i jest po zabiegi kastracji. Na swoją wymarzoną, świadomą i ODPOWIEDZIALNĄ rodzinę 💞 czeka za kratami schroniskowego kojca 😢 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7a3e813f-1c34-4174-8287-42662476721e	t	GRYZAK	MEDIUM	t	DOG	f	t	2
+124	3	f	\N	BANDZIOR został znaleziony na ul. Padewskiego przywiązany na tyłach kancelarii kościoła. W schronisku przebywa od 21.07.2024 roku. Psiaczek ma około 3 lat i waży 17kg. Czipa brak. Niekastrowany. Ma czarną, materiałową obrożę. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.p l	MALE	85b868ea-14b8-4299-9f1a-7530134ec53a	f	Bandzior	MEDIUM	f	DOG	t	t	2
+126	13	f	\N	CZIKO 🐹 szuka domu 🏠 CZIKO został odebrany interwencyjnie z mieszkania na ul. Przewodniej ➡️ był przywiązany w kagańcu do segmentu ‼ W schronisku przebywa od 10.05.2024 roku. Psiaczek obecnie ma około 12 lat i waży 19kg. CZIKO nie słyszy, ale nie przeszkadza mu to w codziennym funkcjonowaniu. Miał guza w okolicy odbytu, który został usunięty a jego stan zdrowia jest dobry. Psiaczek jest sympatycznym seniorem o wyjątkowych oczach. Początkowo jest ostrożny w kontakcie z ludźmi. Osoby których nie zna mogą początkowo mieć trudność w zapięciu go na smyczy, jednak jak na głodomorka przystało PSIEpysznym smaczkiem daje się przekonać. CZIKO zawiódł człowiek i na jego zaufanie trzeb zapracować. Gdy już kogoś polubi, obdarzy zaufaniem i zyska poczucie bezpieczeństwa oraz stabilizację, pokazuje swój PSYjacielski charakter i okazuje wdzięczność. Smutna prawda, ale dla niektórych psów, pobyt w schronisku jest szansą na „normalne życie”. To właśnie w schronisku, dzięki pracownikom i wolontariuszom, którzy poświęcają im czas odbudowują swą wiarę w człowieka. Zaczynają cieszyć się spacerami, wspólną zabawą. CZIKO to niewątpliwie fantastyczny pies. Jest żywiołowy, energiczny i obala stereotyp, że wiek decyduje o aktywności czworonoga. Na jego pyszczku pojawia się nieśmiały uśmiech, oczka świecą się ze szczęścia a nam serca pękają, bo po chwilach zapomnienia ponownie wraca do kojca i budy 😔 BARDZO PROSIMY 🙏 od dobry domek i ODPOWIEDZIALNĄ rodzinę dla psiaczka po przejściach 💔 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	860090fb-3bc5-45cb-953d-baac21a19195	t	CZIKO	MEDIUM	t	DOG	f	t	2
+127	5	f	\N	PORTO 🐹 szuka domu 🏠 Psiaczek trafił do schroniska 8.05.2024 roku z ul. Sokołowskiej. Obecnie ma około 4 lat i waży 31kg. Ładnie chodzi na smyczy. Na spacerach skupia się na węszeniu i poznawaniu świta od jak najlePSIEjszej strony. Przywołany skupia uwagę na opiekunie. W stosunku do innych psów nie przejawia agresji, ma stosunek raczej obojętny. W kojcu jest bardzo grzeczny, nie szczeka nie skacze na kraty. Zna podstawowe komendy i na pewno będzie skory do dalszej nauki. Nie ma większych problemów w nawiązaniu kontaktu z nowo poznanymi osobami. W chwilach stresowych wsparcia szuka w opiekunie. PORTO to bardzo miły, zrównoważony kawaler dla którego PILNIE szukamy ODPOWIEDZIALNEJ i dość spokojnej rodziny i super domu 🏠 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	da8ddd74-ab87-41ab-8f3f-45345dc71689	t	PORTO	BIG	t	DOG	f	t	2
+128	4	f	\N	LOTEK 🐱 szuka domu 🏠 89% dzikuska i 11% szansy na miłość! Kotek ma dopiero 3 lata i przy bardzo odpowiedzialnym i cierpliwym właścicielu może się otworzyć i zaufać. Obecnie większość czasu spędza w zamkniętych budkach, ukrywając się przed światem. Da się go ostrożnie pogłaskać, co daje nadzieję na oswojenie. Natomiast w warunkach schroniskowych zajmie to zdecydowanie więcej czasu, niż w domu. Jeśli pracować ostrożnie, na zasadach Lotka, można pomoc mu znaleźć rodzinę ❤️ Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	530f2581-d0be-42a9-9e40-d4cc5d6a9dc0	t	LOTEK	BIG	t	CAT	f	f	2
+129	11	f	\N	FELICJAN 🐹 szuka domu 🏠 Około 10 letni psiaczek, 18.02.2024 roku został znaleziony na ul. Artyleryjskiej. Jego wcześniejsze życie nie było sielanką 🥺 Z opowieści sąsiadów, którzy skontaktowali się z nami po przybyciu FELICJANA do schroniska, wynikało że był traktowany wyjątkowo podle i okrutnie przez właściciela. Był bity, kopany, przywiązywany do kaloryfera, gdzie całe dnie spędzał w swoich odchodach. Upodlony do granic możliwości 😭 Tutaj nie jest głodny, ma wodę, ma spacery, wolontariuszy, ale schronisko to nie dom mimo, że jego warunki bytowania znacznie poprawiły się. FELICJAN to psiaczek w oczach którego widać ból i cierpienie. Jest niezwykle kochany, łagodny ale też pogodzony ze swym losem ❣️ Na widok wolontariuszy cieszy się. Mimo dojrzałego wieku jest bardzo energiczny i skory do zabaw. Przez większość czasu na wybiegu zajmuje się sobą. Na smyczy chodzi bardzo ładnie a podczas spacerów obwąchuje każdy krzaczek. Niespecjalnie przepada za pieszczotami, potrzebuje czasu by zaufać człowiekowi i nabrać pewności siebie. Ma obojętny stosunek do innych psów – nie szuka zwady ani nie zachęca do wspólnej zabawy. FELICJAN szuka ODPOWIEDZIALNYCH i cierpliwych opiekunów. Osób które zrozumieją, że pies po przejściach potrzebuje czasu zarówno na zaaklimatyzowanie się domu jak i zbudowaniu pozytywnej relacji. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 799 056 050 - Iza Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	3e07dd0b-5d58-4cde-87aa-a14552545245	f	FELICJAN	MEDIUM	t	DOG	f	t	2
+131	5	f	\N	KSIĄŻE 🐹 szuka domu 🏠 Około 4 letni samiec, 28.01.2024 roku na ul. Rudzkiej w Łodzi, został przekazany Animal Patrol przez kobietę, która twierdziła, że go znalazła. Od przybycia KSIĘCIA do schroniska wiedzieliśmy, że było to kłamstwo ‼ W pierwszych dniach w schronisku KSIĄŻE przejawiał agresję. Nie pozwalał się dotknąć, zbliżyć się do siebie, wejść do kojca, zdjąć szelek. Pierwsze tygodnie to była żmudna praca opiekuna, który robił wszystko, by zyskać jego zaufanie i zbudować pozytywną relację. Wyjścia na wybieg to była szarpanina. Opiekun niczym wóz ciągnięty przez stado koni, był szarpany na wszystkie strony 🙈 Na wybiegu praca okazała się znacznie łatwiejsza 💪 KSIĄŻE nie zna zabawek ani zabaw więc swą uwagę skupia na człowieku i węszeniu. Jest bardzo grzeczny, posłuszny i stateczny. Zna podstawowe komendy. Do znanych osób podchodzi pewnie i domaga się minimalnej dawki pieszczot. P odejrzewamy, że wcześniejszy właściciel traktował KSIĘCIA jak cżłonka rodziny, dlatego psiaczek tak bardzo tęsknił za nim każdego dnia. Chcemy aby ten początkowo zdystansowany a jednocześnie zagubiony i przytłoczony #sŁODZIAK, zaznał prawdziwego, domowego ciepła u boku ODPOWIEDZIALNYCH ludzi, którzy poświęcą mu trochę czasu by zbudować relację, która zaowocuje na lata. ➡️ Nie znamy stosunku KSIĘCIA do innych psów, przechodząc przez schronisko czy podczas spacerów nie jest nimi zainteresowany, ale jak zareaguje dzieląc opiekuna z innym czworonogiem nie mamy pojęcia. ➡️ Raczej nie powinien zamieszkać w domu z dziećmi ‼ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c616c290-bfac-422e-8572-b0fa7942e285	t	KSIĄŻE	BIG	t	DOG	f	t	2
+132	4	f	\N	KAMEL 🐹 szuka domu 🏠 Psiaczek do schroniska trafił 20.01.2024 roku z ul. Kolumny. Obecnie ma około 3-4 lat i jest GOTOWY rozpocząć nowy rozdział życia u boku ODPOWIEDZIALNYCH opiekunów. KAMEL to bardzo miły #sŁODZIAK wdzięczny za okazaną mu uwagę i poświęcony czas. BARDZO CENI BLISKOŚĆ CZŁOWIEKA 💗 Nie ma problemów w nawiązywaniu pozytywnej relacji. Ładnie chodzi na smyczy. Jest grzeczny i skupiony na opiekunie. KAMEL jest ugodowy i bezkonfliktowy w stosunek do suń, ale nie akceptuje samców. Na wybiegu lubi aktywnie spędzać czas systematycznie skupiając na sobie uwagę człowieka. Psiaczek ma przyjazne i łagodne usposobieniu. Zmarnował już wystarczająco dużo czasu za kratami schroniskowego kojca 😢 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat KAMELA udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1b4f8558-1f63-4709-9552-6d6d295bc2a2	f	KAMEL	MEDIUM	t	DOG	f	t	2
+133	11	f	\N	LIZAK 🐹 szuka domu 🏠 Ten żywiołowy, około 10 letni #sŁODZIAK szuka ODPOWIEDZIALNEJ rodziny ‼ Jaki jest LIZAK 👇 👇 ✅ wspaniały, otwarty, kontaktowy, wesoły i bezproblemowy ✅ mimo 10 wiosenek na karku i lekko siwego pyszczka jest psem energicznym i UWIELBIAJĄCYM zabawy z piłeczką, którą pięknie aportuje ✅ łaknie bliskości człowieka i docenia każdą chwilę poświęconej mu uwagi ✅ lubi aktywnie spędzać czasu ✅ ładnie chodzi na smyczy LIZAK waży 21kg i głową sięga przed kolano. Do schroniska trafił 1.12.2023 roku z ul. Maratońskiej. Nikt nie szukał zguby a chłopak trochę się „zasiedział” w schronisku 🥺 Jest po pełnej obsłudze weterynaryjnej GOTOWY ruszyć w świat 🐾🐾 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e5b9f956-a753-496e-81a4-13cbc9fa940e	t	LIZAK	MEDIUM	t	DOG	f	f	2
+134	8	f	\N	FELEK 🐹 szuka domu 🏠 domu z ogrodem ‼ Do schroniska trafił 26.11.2023 roku. Został znaleziony na ul. Dożynkowej. Początkowo był bardzo wystraszony, ale szybko przejął rolę herszta bandy #sŁODZIAKÓW podczas szaleństw na wybiegu 😁 Maluszek waży 10kg i obecnie ma około 7-8 lat. Jest charakternym psiaczkiem ➡️ j akiś czort w jego głowie, blokuje go w chodzeniu na smyczy a samo jej przypięcie czy też założenie obroży, najczęściej kończy się pokazaniem pełnego uzębienia 🙈 Długo trzeba pracować na zaufanie tego kawalera ale uwierzcie 👉 WARTO 💪 FELEK jest bezkonfliktowy w relacjach z samcami, sunie raczej stara się zdominować. Do osób, które zna podchodzi ufnie, daje się pogłaskać i chętnie bierze smaczki, ale nie jest wylewny w okazywaniu uczuć. Gdyby nie fakt, że znacznie chętniej bryka po ogrodzonym terenie niż spaceruje na smyczy, z apewne już dawno, miałby FANTASTYCZNĄ rodzinę i SUPER dom. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	39693415-3559-4823-ab71-cb83bee6a79a	f	FELEK	SMALL	t	DOG	f	t	2
+136	6	f	\N	ARNI 🐹 szuka domu 🏠 Psiaczek został znaleziony w lesie Łagiewnickim i od 7.10.2023 roku przebywa w schronisku. Jest ni skopodłogowym kawalerem o zadziornym charakterze. Na smyczy chodzi bardzo ładnie ale samo jej przypięcie jest małym wyzwaniem ➡️ nie przepada za dotykiem w okolicy karku i w momencie zapinania smyczy, zastyga w bezruchu na kilka sekund. Nie jest wylewny w okazywaniu uczuć i raczej nie przepada za pieszczotami. Nie wiemy jaki los spotkał wcześniej ARNIEGO i co doprowadziło do takiego dyskomfortu a jednocześnie strachu 😔 Maluszek g dy opuszcza boks i idzie na spacer lub wybieg, szaleje niczym szczeniak 😁 Sam sobie podrzuca zabawki, biega jak szalony chcąc prześcignąć wiatr i tarza się szczęśliwie na trawie. ARNIEGO pod swe skrzydła wzięła wolontariuszka Ania, która regularnie pracuje ze #sŁODZIAKIEM czego widać już pierwsze efekty 💪 Około 5 letni kawaler zaczyna otwierać się na relacje z człowiekiem. ARNI czeka na swojego człowieka 💞 Osobę, która pokocha go takim, jakim jest i stworzy mu stabilny i ODPOWIEDZIALNY dom 🏠 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7ece8ac6-e397-4035-ab0f-6114ee6e8d31	t	ARNI	SMALL	t	DOG	t	t	3
+137	4	f	\N	FELIKS 🐹 szuka domu 🏠 Swoją odsiadkę rozpoczął 11.09.2023 roku jako młodziutki, około 3 letni psiaczek. Został znaleziony w Lesie Łagiewnickim przy ul. Herbowej. Jak to możliwe, że przez ponad rok, nie skradł niczyjego serca 😔 FELIKS to młody i aktywny kawaler w typie teriera. Bezkonfliktowy w relacjach z samcami i trochę dominujący jeśli chodzi o suczki. Lubi zabawę i długie spacery, zwłaszcza w doborowym towarzystwie człowieka 🤩 Gdy już pozna, zaufa i pokocha zabiega o uwagę, której od tak dawna mu brakuje. Bardzo ładnie chodzi na smyczy i niechętnie oddala się na odległość dalszą, niż wyciągnięcie ręki. Ma w sobie bardzo dużo uroku i chwilami zachowuje się jak szczeniak. Jest radosnym i kontaktowym #sŁODZIAKIEM, ale boi się gwałtownych ruchów. Pomóżmy FELIKSOWI zaznać domowego ciepła u boku ODPOWIEDZIALNEJ rodziny 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 508 214 099 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	e21f7bdd-9b8c-450d-a820-6bb474d224be	t	FELIKS	MEDIUM	t	DOG	t	t	3
+138	2	f	\N	LIRA 🐹 szuka DOMU TYMCZASOWEGO z opcją DOMU STAŁEGO 🏠 gdy już zostanie uregulowana jej sytuacja prawna ‼ Ta niespełna 3 letnia sunia trafiła do schroniska 13.08.2023 roku w wyniku interwencji w Łodzi na ul. Rzgowskiej. Była jednym z 12 odebranych psów i 4 kotów. Jej sytuacja prawna po dziś dzień nie jest uregulowana, co nie oznacza, że ma tkwić za kratami schroniskowego kojca ‼ LIRA do 7 miesiąca życia nie była prawidłowo zaopiekowana 😡 Nikt nie poświęcał jej czasu na naukę manier, nie potrafiła chodzić na smyczy, była wychudzona i zaniedbana a jedyną jej zaletą był fakt, że świetnie odnajdywała się w stadzie ogonków. W schronisku przeszła pewną metamorfozę, ale szuka świadomych opiekunów, którzy popadną w swoistą rutynę i pomogą psince po przejściach zapanować nad emocjami. LIRA bardzo szybko ekscytuje się wszystkim 👉 przypięciem smyczy i perspektywą spaceru, listkiem powiewającym na wietrze, otaczającą ją przestrzenią. Każdy bodziec jest motywacją do podgryzania smyczy, która musi być BARDZO SOLIDNA stając się tym samym przeszkodą do ucieczki. W relacjach innymi psami jest zgodna ale dla statecznego psa może być zbyt aprobująca. Wymaga cierpliwości i spokojnych opiekunów. Nie koniecznie powinna zamieszkać w domu z dziećmi, które dodatkowo będą ją nakręcać prowokując niechciane zachowania. LIRA to młodziutka sunia, która wychowywała się w patologicznych warunkach na posesji ludzi, którzy nie nauczyli ją niczego 😔 Wiemy, że u boku świadomych, ODPOWIEDZIALNYCH i nastawionych na pracę opiekunów czeka ją WSPANIAŁE życie. Musimy jedynie pomóc jej odnaleźć drogę do domu 🙏 UDOSTĘPNIAMY 🙏 Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	fa60f066-ec12-4276-b255-2d8f95203953	t	LIRA	SMALL	t	DOG	t	t	3
+139	2	f	\N	LORA 🐹 szuka DOMU TYMCZASOWEGO z opcją DOMU STAŁEGO 🏠 gdy już zostanie uregulowana jej sytuacja prawna ‼ Sunia trafił do schroniska 13.08.2023 roku w wyniku interwencji w Łodzi na ul. Rzgowskiej. Wraz z 12 innymi psami i 4 kotami zaczęła odsiadywać wyrok przez bezmyślność ludzką 😔 Miała wtedy około 7 miesięcy i kompletnie nie znała życia 😔 Bała się własnego cienia, nie wychodziła zza legowiska i telepała ze strachu na widok człowieka. LORA to bardzo żywiołowa, energiczna i skoczna sunia. Już podczas pierwszego zapoznania nawiązuje pozytywną relację z człowiekiem, rozdaje buziaki i pcha się na kolana. Na smyczy, wychodząc p za teren schroniska początkowo bardzo ciągnie. Zafascynowana i ciekawa otoczenia chce wyznaczać trasę. Jest skoczna, zabawowa i rozbrykana. LORA to młodziutka, niespełna 2 letnia sunia, która szuka ODPOWIEDZIALNEJ rodziny. Osób, które wykorzystają jej potencjał, spożytkują energię 💪 i po święcą czas na naukę prawidłowych zachowań. Jak zachowa się w domu? Nie wiemy ‼ LORA 🐹 ma niespełna 2 lata i NIGDY NIE ZAZNAŁA DOMOWEGO CIEPŁA 🥺 Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	b64a5ec0-2ec3-4207-bb3d-19ea07aab1f4	t	LORA	MEDIUM	t	DOG	f	f	3
+141	4	f	\N	Pajączek (553/23) jest w schronisku od 5 sierpnia 2023 roku. Miał wtedy około 3 lata. Został znaleziony na ulicy Sobolowej. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ed8555a1-eb97-4c1e-8429-be604cac1df7	f	Pajączek	MEDIUM	t	DOG	f	t	3
+142	2	f	\N	MAKS 🐹 szuka domu 🏠 Jest samcem w typie owczarka belgijskiego, więc pobyt w schronisku to dla niego codzienna trauma ze względu na zbyt małą dozę ruchu 😔 dlatego PILNIE szuka ODPOWIEDZIALNYCH, świadomych i bardzo aktywnych opiekunów ❣️❣️❣️ Do schroniska trafił 29.07.2023 roku 🥺 jako młodziutki, około roczny psiaczek ‼ MAKS ceni kontakt z człowiekiem i jest go bardzo spragniony, ale początkowy kontakt odbywa się na wyznaczonych przez niego zasadach. Zanim pokocha, musi zaufać a na to należy zapracować. Często PSYtula się do swojej ulubionej wolontariuszki, domaga się głasków oraz zabwy, ale też skacze i podgryza. Bardzo nie lubi samotności i przy odprowadzaniu ze spacerów, coraz gorzej radzi sobie z rozstaniem 🥺 Widać, że mezalians nagromadzonej i nie spożytkowanej energii oraz uczuć, wpływa na jego codzienne funkcjonowanie i frustrację. MAKS jest 2 letnim samcem ważącym 26kg po pełnej obsłudze weterynaryjnej. Potrzebuje bardzo dużej dawki ruchu 💪 która zarówno spożytkuje jego energię jak i wysili umysł, dlatego szukamy doświadczonych, nastawionych na pracę i aktywnych opiekunów. DOMU BEZ INNYCH ZWIERZĄT i BEZ DZIECI ‼ Należy pamiętać, że jest psem bardzo inteligentnym więc liczymy, że przyszli opiekunowie wykorzystają jego potencjał na 👉 naukę komend, sztuczek, poprawnych zachowań w domu i poznawaniu świata. Połączenie przyjemności z pożytecznym poskutkuje więzią na długie lata. Chodzenie na smyczy wymaga lekkiego dopracowania. 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	2c44406b-1687-4923-bcd2-5dc616d4c05f	t	MAKS	BIG	t	DOG	f	t	3
+143	7	f	\N	EDEK 🐹 PILNIE szuka domu 🏠 Do schroniska trafił 23.06.2023 roku z ul. Dyspozytorskiej. Kilka dni później dołączyła do niego KAJA z którą dzielił kojec i świetnie się dogadywali. Sunia pojechała do domu a EDEK został sam 😔 Doskwiera mi samotność. Siedzi smutny przy kratach i wypatruje towarzystwa swojego człowieka. #sŁODZIAK obecnie ma skończone 6 lat. Ma bardzo pozytywne usposobienie. Łatwo nawiązuje relacje z człowiekiem. UWIELBIA aktywnie spędzać czas np. biegając, bawiąc się piłką czy też na długich spacerach u boku opiekuna. Zdecydowanie w warunkach schroniskowych brakuje mu bliskości człowieka oraz ruchu. Ładnie chodzi na smyczy, ale czasem ciągnie więc wymaga to lekkiego „doszlifowania”. Psiaczek jest bardzo pojętny, skory do współpracy i chętny do nauki. Niewątpliwie będzie WIERNYM TOWARZYSZEM dla aktywnej rodziny. UDOSTĘPNIAMY ❣️ SUPER rodzinki dla EDKA szukamy ‼ Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 795 588 422 - Agata ☎ 792 304 770 - Iwona Kontakt w sprawie adopcji tymczasowej: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9701d207-42b5-4262-8d61-ebc6560c62aa	f	EDEK	BIG	t	DOG	f	t	3
+144	5	f	\N	„ETYKIETY” przypinane zwierzętom na podstawie zdjęć z dnia przyjęcia do schroniska często prześladują je latami ‼ Ludzie zapominają, że zwierzęta przekraczając bramę schroniska przeżywają stres a często już sama tułaczka, która nie wiemy ile trwa, nie ułatwia otworzenia się na nowych, zupełnie obcych ludzi w nieznanym miejscu. BASTER 🐹 trafił do schroniska 18.06.2023 roku z ul. Serwituty. Psiaczek posiadał zarejestrowany czip ale właściciel postanowił zlekceważyć upomnienia, że jego czworonóg trafił za kraty 😡 BASTER w chwili przyjęcia do schroniska był całkowicie zdezorientowany, przestraszony i jak nie jeden pies bronił się przed nieznanym. Obsługę weterynaryjną odbył w kagańcu. BASTER to bardzo fajny, kontaktowy, około 3 letni samiec ważący 30kg. Ma niesamowity potencjał i u boku ODPOWIEDZIALNYCH i asertywnych opiekunów stanie się REWELACYJNYM kompanem rodziny. Jak na młodego psa przystało jest skory do zabawy a o smaczki prosi siedząc niczym surykatka. W opiekuna jest wpatrzony jak w obrazek i nie przejawia cienia agresji, ale wymaga stanowczości. Psiaczek jest po pełnej obsłudze weterynaryjnej 👉 GOTOWY rozpocząć nowy rozdział życia ‼ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ca41daca-a186-44fc-844d-74db751d32a8	t	BASTER	BIG	t	DOG	t	t	3
+146	6	f	\N	GASTON 🐹 szuka domu 🏠 Psiaczek został znaleziony 17.03.2023 roku w okolicy Partu Łódź. Obecnie ma około 5 lat, waży 36kg i jest bardzo pozytywnym #sŁODZIAKIEM. W stosunku do innych psów jest obojętny. Na smyczy idzie bardzo ładnie, nie ciągnie, skupia uwagę na opiekunie a przechodząc przez schronisko nie jest zainteresowany psami w mijanych kojcach. GASTON to bardzo miły, mądry i zrównoważony psiaczek. Nie przejawia agresji. Lubi pieszczoty, ale nie jest nachalny w zabieganiu o bliskość człowieka. Dla tego UROCZEGO kawalera szukamy ODPOWIEDZIALNEJ rodziny 💞 🙏 UDOSTĘPNIAMY 🙏 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c664e4f0-5be4-4a74-aad4-91274a26b4b3	t	GASTON	BIG	t	DOG	f	t	3
+147	3	f	\N	BĄBEL 🐹 PILNIE szuka domu 🏠 Do schroniska trafił 25.02.2023 roku jako młodziutki, około roczny psiaczek znaleziony na ul. Retkińskiej. Jeszcze dobrze życia nie poznał a już wylądował za kratami 🥺 Obecnie ma niespełna 3 lata i jest jednym z tych czworonogów, dla których PILNIE szukamy ODPOWIEDZIALNEJ i świadomej rodziny. BĄBEL żyje w dwóch światach: ▪️ SCHRONISKOWYM 👉 gdzie panuje hałas, ogromna ilość bodźców i codzienność, na każdym kroku przytłacza oraz ▪️ ŚWIECIE ZEWNĄTRZNYM 👉 pełnym równowagi i błogiego spokoju, gdzie stabilizacja daje możliwość nauki i rozwoju oraz skupienia się na opiekunie Jest niesamowicie mądry i potrzebuje równie mądrego, świadomego opiekuna, który stanie się jego kompanem, ostoją i wsparciem NA ZAWSZE ❣️ BĄBEL to piękny pies o bystrym umyśle ➡️ zna komendy „siad” i „łapa”. Jest skory do nauki i ma ogromny potencjał. Na smyczy chodzi ładnie, ale jego niepewność sprawia, że potrzebuje doświadczonego opiekuna, który będzie gotowy na współpracę być może pod okiem behawiorysty lub psiego trenera. Niewątpliwie pomoże to zapanować nad emocjami a człowiekowi, lepiej zrozumieć jego potrzeby. Jak w każdej pracy, od przyszłych opiekunów będzie wymagany czas i cierpliwość co zaowocuje relacją i więzią na długie lata 💪 #sŁODZIAK, gdy już zaufa i pozna człowieka, jest wpatrzony w niego jak w obrazek. Chętnie okazuje wdzięczność, wierność i miłość. Ma obojętny stosunek do innych psiaczków i prawdopodobnie, przy mądrym zapoznaniu dogada się z psim rezydentem. Mimo swej ostrożności, BĄBEL w odpowiednim otoczeniu otwiera się na ludzi. Potrzebuje domu, który stanie się jego azylem wypełnionym poczuciem bezpieczeństwa i stabilizacją. Idealnie odnajdzie się w spokojnej rodzinie bez małych dzieci. Jeśli szukasz PSYjaciela jednocześnie nie idąc na łatwiznę, umów się na spacer zapoznawczy z BĄBLEM 🐹 Dodatkowych informacji udzieli wolontariuszka: ☎ 721 024 609 - Aneta Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f533c84b-b6cc-4c8f-ab29-8b3d8afff729	t	BĄBEL	MEDIUM	t	DOG	t	t	3
+148	10	f	\N	BOBO 🐹 szuka domu 🏠 Kiedyś miał dom i rodzinę a mimo to od 11.01.2023 roku odsiaduje wyrok za ich bezmyślność 😡 Został znaleziony na ul. Więckowskiego. Posiadał czip, ale nikt nie pofatygował się odebrać wiernego PSYjaciela. Rodzina pozbyła się psa ➡️ żywej, czującej istoty, jak zbędnej rzeczy 😡 BOBO początkowo nie potrafił odnaleźć się w schroniskowej rzeczywistości do której trafił w wieku około 8 lat 😔 System obronny nakazywał mu odstraszać od siebie ludzi pokazując przez kraty zęby. Przecież jeśli nikt się nim nie zaopiekuje, to też nikt go nie pokocha, nie przygarnie a co za tym idzie, NIE ZAWIEDZIE JEGO ZAUFANIA KOLEJNY RAZ ‼ Skakał, szczekał, pokazywał zęby, ale na Marmurowej mamy UPARTYCH 😊 wolontariuszy, którym nie straszne wrzaski psa zza krat. Systematyczna praca i smaczki zrobiły swoje 💪 Jaki obecnie jest BOBO 👇 👇 👇 ✅ inteligentny, zna podstawowe komendy ✅ ładnie chodzi na smyczy ✅ bez problemu daje założyć sobie kaganiec ✅ chętnie aportuje ✅ mimo wieku jest psem energicznym lubiącym aktywnie spędzać czas, ale po ponad roku schroniskowego życia, trzeba nastawić się na pracę nad kondycją kawalera ❌ w docelowym domu stałym raczej powinien być jedynakiem, niestety nie przepada za psim towarzystwem. BOBO potrzebuje opiekuna cierpliwego. Nastawionego na kilka spacerów zapoznawczych by jeszcze przed adopcją zbudować pozytywną relacje z człowiekiem. Preferujemy dom bez małych dzieci. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	60b86c3d-9a58-48bb-8426-03227efd0892	f	BOBO	BIG	t	DOG	f	t	3
+149	5	f	\N	LILA 🐹 szuka domu 🏠 Sunia trafiła do schroniska 26.12.2022 roku. Została znaleziona na ul. Kopernika przywiązana przed lecznicą dla zwierząt. Obecnie ma około 5,5 roku i połowę życia spędziła w warunkach schroniskowych 😔 Jaka jest LILA 👇 👇 👇 ✅ energiczna i aktywna ✅ ł adnie chodzi na smyczy, chętnie poznaje nowe tereny, węszy ✅ l ubi biegać za piłką i latem kąpać się w basenie na psim wybiegu 😁 ❌ nie dogaduje się z innymi psami, bywa wobec nich napastliwa i w docelowym domu stałym powinna być jedynaczką LILA nie jest wylewna w okazywaniu uczuć. Nie narzuca się swoją obecnością. Nie zabiega o uwagę, zainteresowanie, bliskość i kontakt z człowiekiem. Dotyk nie wzbudza w niej entuzjazmu dlatego raczej unika głaskania i innych pieszczot. Być może w zaciszu domowym przy cierpliwych opiekunach, odrobinie systematycznej pracy, poczuciu stabilizacji i bezpieczeństwa, jej indywidualny charakter ulegnie zmianie. Sunia nie przejawia żadnej agresji wobec człowieka. Przyszli opiekunowie powinni być osobami cierpliwymi i świadomymi, że nawiązanie więzi z LILĄ zajmie trochę czasu lub uszanować jej indywidualny charakter. Niewątpliwie ta 18kg psinka będzie dobrym kompanem podczas długich spacerów oraz zabaw. Dodatkowych informacji na temat ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	5eee86bc-0719-4279-a749-2b5f1dad4787	f	LILA	MEDIUM	t	DOG	t	t	3
+151	8	f	\N	ATOM 🐹 szuka domu 🏠 Do schroniska trafił 18.11.2022 roku. Został znaleziony na ul. Felińskiego z bliznami i ranami po pogryzieniach 😔 Posiada zarejestrowany czip, ale dane właściciela są nieaktualne. Psiaczek obecnie ma około 8 lat i jego jedynym szczęściem są spacery i czas spędzony z wolontariuszami. Przy pierwszym kontakcie jest nieufny i szczekaniem oraz pokazywaniem uzębienia chce zniechęcić ludzi do nawiązywania z nim jakichkolwiek relacji. P rzy odrobinie cierpliwości i konsekwencji, bardzo ładnie się otwiera i zaczyna pokazywać swój fantastyczny charakter. Nie jest agresywny tylko lękowy, a jego azylem stała się buda z której wystawiając pyszczek, może obserwować otoczenie. Nie wiemy przez co przeszedł we wcześniejszym życiu, ale gdy już zaufa opiekunowi, chętnie zaczepia do zabaw, podchodzi na głaski i smaczki. Bardzo ładnie chodzi na smyczy. Inne psy ignoruje i nie szuka zwady pod warunkiem, że nie jest przez nie zaczepiany. Zdecydowanie woli towarzystwo człowieka, którego gdy już pokocha, to całym swym poturbowanym serduszkiem 💔 ATOM to korpulentny 🙈 koleżka, ale wiemy, że podczas spacerów u boku ODPOWIEDZIALNYCH opiekunów szybko zgubi zbędne kilogramy 😁 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat #sŁODZIAK udzieli wolontariuszka: ☎ 691 521 551 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b96c1c24-d8db-4afa-93eb-d19304fd2ca5	t	ATOM	SMALL	t	DOG	t	t	3
+150	7	f	\N	BEMOL 🐹 szuka domu 🏠 Około 6 letni, spokojny, przyjazny i kontaktowy psiaczek PILNIE szuka ODPOWIEDZIALNEJ rodziny. BEMOL ceni sobie bliskość człowieka, ale też szanuje jego przestrzeń. Nie jest nachalny, cierpliwie czeka aż wolontariuszka pogłaszcze go, poklepie czy też tylko położy na nim rękę. Lubi zabawy z piłeczką za którą chętnie biega. Przy przeprowadzaniu przez schronisko na wybieg, BEMOL często doskakuje do innych boksów, przy czym dość silnie ciągnie na smyczy. Po za terenem schroniska wędruje poprawnie, spokojnie z pełną gracją. Podejrzewamy że zmiana zachowania wynika z frustracji oraz zaczepek współtowarzyszy psiej niedoli znajdujących się w schronisku. BEMOL to duży, dostojny samiec, który trafił do schroniska 27.11.2022 roku. Został znaleziony na ul. 6-go Sierpnia z guzem przy pachwinie. Guz został usunięty jak również ogarnięte pozostałe kwestie weterynaryjne więc co ten kawaler nadal robi e schronisku? Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji #sŁODZIAKA ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9e9efec7-efe7-4c47-8cd0-a914d713584a	t	BEMOL	BIG	t	DOG	f	t	3
+155	8	f	\N	PILOT 🐹 szuka domu 🏠 Psiaczek został znaleziony 29.06.2022 roku na ul. Ostowej i zaczął odsiadywać wyrok za niewinność w wieku około 6 lat. Jak wyglądało wcześniej jego życie ➡️ nie wiemy, ale po zachowaniu łatwo stwierdzić, że nie była to sielanka 🥺 PILOT to samiec o dwóch „pyszczkach”. 👉 Dla osób które zna, szanuje i wie, że może coś zyskać - jest uroczy, delikatny i miły. 👉 W relacjach z obcymi - potrafi złośliwie pokazać ząbki, ale nie jest już tak energicznym i dziarskim psiaczkiem, by zrobić krzywdę. NA ZAUFANIE TRZEBA ZAPRACOWAĆ 💪 ‼ Początkowo zachowuje dystans. Potrzebuje czasu, cierpliwości i odrobiny uwagi by nawiązać kontakt z człowiekiem i zbudować pozytywną relacje. Bardzo ładnie chodzi na smyczy, ale samo jej podpięcie początkowo może być wyzwanie. UWIELBIA spokojne spacery, na których z zaciekawieniem węszy. Nie gardzi smaczki za które chętnie wykonuje komendy. Jest spokojnym, statecznym kawalerem, który w docelowym domu stałym raczej powinien być jedynakiem. Potrzebuje bezpiecznej przestrzeni i wyrozumiałości ponieważ każdego dnia walczy z własnymi lękami ➡️ boi się hałasów, zgiełku i tłumów. Nie przepada za nadmiernym dotykiem i nie jest wylewny w okazywaniu uczuć. PILOT popadł w rutynę schroniskowego życia 😔 Jego jedynym celem jest oczekiwanie na przybycie wolontariuszy, którzy zabiorą go na spacer. Marzymy, aby zaznał domowego ciepła u boku ODPOWIEDZIALNYCH opiekunów, którzy zapewnią mu spokój, stabilizację i poczucie bezpieczeństwa, bo tak naprawdę, do szczęścia nie potrzebuje wiele więcej. Psiaczek ma niedoczynność tarczycy i na stałe przyjmuje leki. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 660 053 757 - Maja Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c5f2ed9d-86d0-431e-89d3-0fd642a4597f	t	PILOT	BIG	t	DOG	f	f	3
+160	5	f	\N	NIKO 🐹 szuka domu 🏠 Do schroniska trafił 27.11.2021 roku z ul. Pstrągowa/Telimeny. Był wówczas 2 letnim #sŁODZIAKIEM. Już prawie 3 lata tkwi za kratami schroniskowego kojca a w jego oczach przestaje tlić się nadzieja na lepsze jutro 😔 Psiaczek w docelowym domu stałym powinien być jedynakiem. W nawiązywaniu pozytywnej relacji z ludźmi, nie ma większych problemów jednak opiekunowie, w początkowej fazie aklimatyzacji psiaczka muszą być osobami stanowczymi i asertywnymi by wyznaczyć jasne granice. W sytuacjach stresowych potrafi pokazać ząbki jednak są to sporadyczne zachowania przed którymi zawsze ostrzega. Jest skory do zabawy i chętny do nauki ➡️ oczywiście za smaczki. Ładnie chodzi na smyczy, nie ciągnie i skupia się na opiekunie. NIKO jest kundelkiem jakich tysiące w schroniskach 🥺 Ginie w tłumie innych psów, które podobnie jak on potrzebują domu, rodziny i własnego człowieka. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 601 206 013 - Ewelina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	8bfe47ad-3bbb-4a5d-b96d-ce6febcb08f8	t	NIKO	BIG	t	DOG	f	t	3
+164	7	f	\N	PACO 🐹 i jego smutna historia 🥺 Miał dom i rodzinę, ale taką, która tylko wymagała a o nauce zapomniała. Gdy pojawiło się kolejne dziecko, aby nie tracić czasu na ułożenie psa, odwieziono go do schroniska kłamiąc, że jest agresywny‼️ Już pierwszy kontakt pokazał, że to kompletna bzdura i pretekst do zatajenia własnej ułomności i braku chęci. PACO od 21.09.2021 roku przebywa w schronisku. W tym czasie nigdy nie wykazał zachowań agresywnych‼️ Wolontariusze naprawili to, co inny cZŁOwiek zniszczył 💔 i ten cudny około 6 letni psiaczek rozgląda się za ODPOWIEDZIALNĄ rodziną i domem. Pies to NIE ZABAWKA 😡 Jaki jest PACO 👇 👇 👇 ✅ pięknie chodzi na smyczy ✅ zna podstawowe komendy ✅ aportuje zabawki, które bez problemu oddaje opiekunowi ✅ daje brzuch do głaskania domagając się bliskości, czułości i uwagi ze strony człowieka ✅ prosi o smaczki Niestety, kawaler nie zdaje sobie sprawy ze swej siły i gabarytów, dlatego docelowo nie powinien zamieszkać w domu z małymi dziećmi. Rozpędzony w chwili euforii potrafi staranować wszystko, co stoi na jego drodze 🙈 Dodatkowych informacji na temat psiaczka udzielą wolontariusze: ☎ 503 652 679 - Kasia ☎ 661 512 200 - Patryk Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	9eb13719-7da8-4c3e-ac1e-51fad54831b6	t	PACO	BIG	t	DOG	t	t	3
+165	7	f	\N	NATAN 🐹 PILNIE szuka ODPOWIEDZIALNEJ rodziny i SUPER domu 🏠 ➡️ Pierwszy raz trafił do schroniska 10.05.2017 roku. Był wówczas kilku miesięcznym, żywiołowym, energicznym i rozbrykanym psiaczkiem. Miesiące za kratami zamieniały się w lata a on dorastał w schroniskowej rzeczywistości 🥺 Złudne szczęście, uśmiechnęło się do NATANA 30.03.2019 roku - został adoptowany ‼ ➡️ 7.09.2021 roku ponownie wrócił za kraty, ale jako trójłapek 🥺 Co wydarzyło się w „domu” wiedzą tylko byli już właściciele 😡 NATAN 🐹 to obecnie około 7-8 letni psiaczek o BARDZO POZYTYWNYM usposobieniu. P rzyjmuje życie takim, jakie jest. Żyje chwilą i nie opuszcza go radość i optymizm. Jest bardzo grzeczny i posłuszny. Na wybiegu pięknie skupia uwagę na opiekunie przychodząc na każde zawołanie. UWIELBIA smaczki 😁 za które wykonuje komendę - „siad”. Ładnie chodzi na smyczy i m imo braku jednej łapki, jest silnym, aktywnym i energicznym psem. NATAN kiedyś dzielił kojec z innymi psiaczkami, których zachowania chętnie naśladował. Uczył się od nich i zaczepiał do wspólnych zabaw. Niestety od powrotu do schroniska, przechodząc między kojcami, zdarza się, że doskakuje do innych psów jednak podczas spacerów, jeśli nikt go nie zaczepi, nie interesuje się. Być może, po mądrym zapoznaniu u boku doświadczonych opiekunów przypomni sobie jak fajne może być życie w stadzie. Niestety, na przykładzie NATANA widzimy jak w rękach NIEodpowiedzialnych 😡 ludzi zmienia się nie tylko ciało ale i psychika psa 🥺 Czas biegnie nieubłaganie. Psiaczek obecnie ma około 7-8 lat, które ZMARNOWAŁ. Tego czasu nie zwróci mu nikt, ale możemy NA ZAWSZE odmienić jego los pomagając w znalezieniu ODPOWIEDZIALNEJ rodziny 💞 NATAN potrzebuje opiekunów, którzy zapewnią mu stabilizację, której brakuje mu przez niemal całe dotychczasowe życie. Ludzi, którzy otoczą tego cudownego psiaczka troską, miłością ale też lubiących aktywnie spędzać czas. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ea8a3de3-f452-4488-ba33-c410267da3de	t	NATAN	MEDIUM	t	DOG	t	t	3
+168	6	f	\N	LULU 🐹 szuka domu 🏠 Sunia trafiła do schroniska 10.05.2021 roku z ul. Wojska Polskiego. Kilka tygodni zajęła praca, by opanowała emocje i przestała podgryzać w chwilach ekscytacji. Dzisiaj, ta piękna niespełna 5 letnia panienka to ZUPEŁNIE INNY PIES 👇 👇 Jest otwarta, kontaktowa i ciekawa świata a marnuje kolejny rok w schronisku 😢 Idąc na wybieg zatrzymuję się przy każdej rzeczy, którą uzna za atrakcyjną. Dopiero po szczegółowym rozpoznaniu i obwąchaniu 😁 jest gotowa ruszyć w dalszą drogę. Na wybiegu porusza się swobodnie, rozładowuje nadmiar energii biegając, ale też skupia się na opiekunie i z radością wraca na zawołanie. Jest bardzo skoczna. Nie przejawia agresji, nie jest też nachalna w relacjach z człowiekiem. LULU w docelowym domu stałym powinna być jedynaczką - nie akceptuje innych zwierząt. 🙏 UDOSTĘPNIAMY 🙏 szukamy ODPOWIEDZIALNEJ rodzinki dla super psinki 💪 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	c54d1747-74e1-471e-93cb-1a04270ccc55	t	LULU	MEDIUM	t	DOG	f	t	3
+152	3	f	\N	TOM 🐹 szuka domu 🏠 Został znaleziony w parku Szarych Szeregów i od 23.10.2022 roku przebywa w schronisku 😢 Trafił do nas jako młodziutki, niespełna 1,5 roczny psiaczek i większość życia spędził za kratami 🥺 TOM to średniej wielkości kawaler ważący 16kg. Początkowo nie jest wylewny w okazywaniu uczyć, wręcz lekko ostrożny. Trzeba zaskarbić sobie jego zaufanie 😊 co zaowocuje wzajemnym szczęściem wynikającym z możliwości wspólnego przebywania. Ładnie chodzi na smyczy dokładnie sprawdzając oraz obwąchując wszystkie górki i dołki, listki, patyczki i źdźbła trawy 😁 Nie jest typem psa wymagającego dużej aktywności. Nie zaczepia do wspólnych zabaw i nie interesuje się zabawkami. TOM będzie wymagał pomocy przyszłych opiekunów by wzmocnić swą pewność siebie 💪 Najlepiej odnajdzie się w dość spokojnej okolicy, gdzie nie będzie musiał być wystawiony na mnogość bodźców od pierwszych dni. TOM to około 3 letni #sŁODZIAK, który marnuje czas w schronisku 🥺 Jeśli jakaś rodzina da mu szansę, otoczy miłością, wykaże się cierpliwością i zaprosi do swojego domu, zyska wspaniałego PSYjaciela na długie lata ❣️ Dodatkowych informacji na temat #sŁODZIAKA udzieli wolontariuszka: ☎ 604-532-022 - Magda, ☎ 660 777 499 - Asia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c7260933-02a0-4d67-a958-05836c8fefe4	t	TOM	MEDIUM	t	DOG	f	t	3
+153	6	f	\N	wesoły i pogodny ROCKY 🐹 szuka domu 🏠 Psiaczek jest pełen energii 😊 Na wybiegu szaleje. Z ciekawością poznaje świat obwąchując wszystkie kąty. UWIELBIA bieganie za piłeczką. Ma pozytywny stosunek do innych psów. Kojec dzielił z samcem i żyli w komitywie, a na wybiegu, nieśmiało zachęcał do wspólnych zabaw. Ładnie chodzi na smyczy. ROCKY nie jest typem pieszczocha ani psa zabiegającego o uwagę człowieka. Zafascynowany możliwością biegania, nie ma czasu na słuchanie przywołań opiekunów. Gdy po dłuższym nawoływaniu, wreszcie podejdzie, bez większego entuzjazmu daje się pogłaskać. Zdecydowanie w warunkach schroniskowych, bardziej brakuje mu ruchu niż bliskości człowieka. ROCKY rewelacyjnie odnajdzie się u boku aktywnej rodziny, u boku której będzie zwiedzał świat i miał możliwość wyszaleć się podczas wspólnych zabaw i spacerów. Psiaczek trafił do schroniska 26.09.2022 roku. Został znaleziony na ul. 1-go Maja. Miał na sobie czerwone szelki, ale nikt nie szukał zguby 🥺 Obecnie ma około 7 lat i waży 17kg. Jest po pełnej obsłudze weterynaryjnej gotowy wyruszyć w podróż życia do swojego domku najjj…. 🐾🐾 ‼ UDOSTĘPNIAMY ‼ Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	670d1503-9045-4b19-b88c-bb4a4b3af64f	t	ROCKY	MEDIUM	t	DOG	f	t	3
+154	9	f	\N	SAMI 🐹 szuka domu 🏠 ‼ Psiaczek odsiaduje wyrok za niewinność od 3.08.2022 roku 😢 Obecnie ten uroczy sŁODZIAK ma około 7 lat i waży 18kg. Jest pełnym energii PSIEsympatycznym kawalerem, który łatwo nawiązuje kontakt z ludźmi. Chętnie przychodzi na zawołanie i merdając ogonkiem daje znać, że jest gotów na głaskanie. Zawsze skory do zabawy. Bardzo lubi aportować. Ładnie chodzi na smyczy i jest niestrudzonym towarzyszem podczas długich spacerów, które dają mu ogrom szczęścia. Kiedyś dzielił kojec z sunią i dogadywali się bez żadnych problemów. Towarzyszka potuptała do swojego wymarzonego domu, a SAMI został sam 😢 Przechodząc po schronisku, zaczął doskakiwać do innych kojcy, co nie koniecznie jest oznaką nietolerancji innych psów, a frustracją wynikającą z miejsca, w którym utknął na ponad 2 długie lata 😔 SAMI to bardzo pozytywny psiaczek, który już dawno powinien maszerować przez życie u boku swoich ODPOWIEDZIALNYCH opiekunów. Ludzi, którzy dając mu poczucie stabilizacji i bezpieczeństwa, skradną jego serduszko 💗 NA ZAWSZE ‼ Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	bea2275f-3f31-44fe-af6e-4cdf3f6d2aad	t	SAMI	MEDIUM	t	DOG	t	t	3
+156	4	f	\N	KIRA 🐹 szuka ODPOWIEDZIALNYCH i świadomych opiekunów ‼‼ Takich na chwilę już miała 😡😔 Sunia 11.04.2022 roku, po kilku dniach od adopcji ponownie wróciła do schroniska 🥺 Obecnie ma skończone 2 lata i jest bardzo przyjazna w stosunku do ludzi, energiczna i żywiołowa. Lubi aktywnie spędzać czas zwłaszcza na bieganiu. Zna podstawowe komendy. Ładnie chodzi na smyczy. Podczas spacerów jest mocno zainteresowana ludźmi i psami ale ze względu, że ma skłonność do kłapania zębami na widok czworonogów, powinna chodzić w kagańcu 😔 jak również w docelowym domu stałym raczej być jedynaczką. KIRA jest wpatrzona w opiekuna jak w obrazek i NIESTETY MA LĘK SEPARACYJNY. Szukamy dla psinki świadomego i nastawionego na pracę opiekuna. Schroniskowa rzeczywistość, w której ma ograniczony kontakt z człowiekiem, to codzienny dramat dla jej psychiki 😢 Lęk separacyjny trzeba przepracować bo NIE zniknie sam‼ Taka praca jest możliwa jedynie w warunkach domowych, u boku ODPOWIEDZIANYCH i systematycznych opiekunów, którzy potrafią cierpliwie czekać na efekty, ewentualnie stworzenie psince warunków, w których nie będzie zostawała sama np. w domu wielopokoleniowym. KIRA jest psem w OGROMNEJ POTRZEBIE i znalezienie dla niej świadomej rodziny jest naszym priorytetem, dlatego BARDZO PROSIMY O POMOC 🙏 ‼ UDOSTĘPNIAMY ‼ Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	99d5052c-6608-4c14-b51c-4feacbe455af	t	KIRA	MEDIUM	t	DOG	f	t	3
+157	4	f	\N	IMBIR 🐹 szuka domu 🏠 Psiaczek został znaleziony na ul. Andrzejewskiej w Łodzi. W schronisku przebywa od 3.02.2022 roku. Obecnie ma około 4 lat i jest małym psiaczkiem stroniącym od bliskości człowieka. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	093393f0-d13c-4305-8bdc-cf58e9039d9a	t	Imbir	SMALL	t	DOG	f	t	3
+176	10	f	\N	DRAGON 🐹 PILNIE szuka domu 🏠 Nie ma smutniejszego widoku, niż umierające marzenia psa, który w schronisku przeszedł ogromną metamorfozę a mimo to, nadal obserwuje świat zza krat 😭 DRAGON trafił do schroniska 21.01.2021 roku po śmierci opiekuna 🥺 Początkowo był przerażony miejscem w którym się znalazł i wycofał się. Nie chciał wychodzić z budy 🥺 Przytłaczały go hałas i wszechobecny zgiełk. Nie dość że utracił opiekuna, to jeszcze dach nad głową, który był jego bezpieczną przystanią. Obecnie DRAGON ma 9 lat. Jest towarzyski, uwielbia kontakt z człowiekiem i spokojne, długie spacery. Na widok wolontariusza popiskuje i szczeka z emocji. Wie, że za chwilę zacznie spacer podczas którego, bardzo ładnie idzie na smyczy. Niestety kawaler nie toleruje innych psiaczków, dlatego w docelowym domu stałym raczej powinien być jedynakiem. Jest również zaborczy podczas jedzenia i jego podawania. Dodatkowych informacji na temat #sŁODZIAKA udzieli wolontariusz: ☎ 538 300 983 - Krzysztof Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1d594171-37e4-4721-9630-32413cff6984	t	DRAGON	BIG	t	DOG	f	t	4
+158	4	f	\N	DIEGO 🐹 szuka domu 🏠 Psiaczek został znaleziony 27.01.2022 roku w Łodzi na ul. Admiralskiej. Był wówczas młodym, aktywnym psem pełnym nadziei, że szybko znajdzie ODPOWIEDZIALNĄ rodzinę i SUPER dom 🏠 Tymczasem, od ponad 3 długich lat odsiaduje wyrok za niewinność 😔 DIEGO bez problemu nawiązuje pozytywną relację z nowo poznanymi osobami oraz innymi psiaczkami. Jest towarzyski i bezkonfliktowy. UWIELBIA aktywnie spędzać czas np. podczas długich spacerów czy też zabaw szarpakiem. Nigdy nie przejawia agresji, nawet w stresujących dla niego sytuacjach. Bardzo ładnie i spokojnie chodzi na smyczy. Na wybiegu, gdy już się wyszaleje, zachowuje spokój i zabiega o uwagę człowieka 💞 Jest ciekawy świata i podczas spacerów dużo węszy. Bezbłędnie reaguje na przywołanie. Czasem jest lękliwy zwłaszcza w sytuacjach które są mu kompletnie obce np. wejścia do autobusu, ale odpowiednie podejście oraz doza cierpliwości ze strony opiekuna pomogą mu w przełamywaniu lęków i pokonywaniu własnych strachów. DIEGO będzie wspaniałym przyjacielem zarówno dorosłego, jak i dziecka. DIEGO jest po pełnej obsłudze weterynaryjnej ➡ GOTOWY wyruszyć w podróż życia do ODPOWIEDZIALNEJ rodziny i SUPER domu 🏠 Dodatkowych informacji na temat #sŁODZIAKA udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	bc8ee68e-2f7d-4197-9741-c0dcc9d2d2b8	t	DIEGO	BIG	t	DOG	f	t	3
+159	5	f	\N	SKUBI 🐹 to duży, silny, około 4 letni samiec. Nie ma w sobie cienia agresji. Bardzo lubi przebywać wśród ludzi 💞 Akceptuje znane mu osoby, lubi też nawiązywać NOWE psio-ludzkie relacje. Domaga się pieszczot wszelakich i UWIELBIA smaczki. Zna podstawowe komendy i chętnie je wykonuje ale nie za free 😁 Wymaga doszlifowania w kwestii nauki chodzenia na smyczy bo zdarza mu się ciągnąć. Toleruje inne psiaczki ale lubi szefować 💪 ale po mądrym zapoznaniu, dogada się ze spokojną, towarzyską sunią. ‼ UDOSTĘPNIAMY ‼ SKUBI trafił do schroniska 30.11.2021 roku. Połowę swego życia spędził za kratami 🥺 #sŁODZIAK jest po pełnej obsłudze weterynaryjnej 👉 GOTOWY rozpocząć nowy rozdział życia u boku ODPOWIEDZIALNEJ rodziny 🐾🐾 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 605 744 010 - Kamila Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1c8d1a14-c164-4430-9a3d-8d3ffd3f7c4f	t	SKUBI	MEDIUM	t	DOG	t	t	3
+161	7	f	\N	ASAN 🐹 szuka domu 🏠 To bardzo energiczny i pragnący bliskości człowieka psiaczek. Uwielbia zabawę i bez wątpienia potrzebuje sporej dawki ruchu. Ładnie chodzi na smyczy. Raczej ma pozytywny stosunek do innych psów. Jest chętny do nauki. ASAN trafił do schroniska 19.11.2021 roku z ul. Brylantowej jako młodziutki, około roczny samiec. Był wulkanem energii zafascynowanym poznawaniem świata - nie w głowie była mu nuda i marnowanie czasu. Wówczas zdarzało się, że wyszedł z kojca i przechadzał się schroniskowymi ścieżkami 😁 Obecnie jest zrównoważonym 6 letnim samcem ważącym 25 kg GOTOWYM WYRUSZYĆ W PODRÓŻ ŻYCIA do swojego domku naj pod opiekę ODPOWIEDZIALNEJ rodziny 💪 ❣ Psiaczek szybko nawiązać bardzo pozytywną relacją z człowiekiem 👉 ZAPRASZMY na zapoznanie z ASANEM 🐾🐾 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	8a7584fb-8401-4404-ba98-c9b76203c618	t	ASAN	BIG	f	DOG	f	f	3
+162	10	f	\N	MIRO 🐹 szuka domu 🏠 Został znaleziony 22.10.2021 roku na ul. Wilczej. Miał wtedy około 7 lat i posiadał czip, ale właściciel nie zamierzał odebrać swojego czworonoga. MIRO od początku pobytu w schronisku bardzo źle znosi otaczającą go i przytłaczającą rzeczywistość. Hałasie i samotność żyje od prawie 3 długich lat. Jak drzewo do życia potrzebuje wody tak MIRO potrzebuje ludzkiego przewodnika. Osoby, która poświęci temu obecnie około 10 letniemu seniorowi odrobine czasu, otoczy troską i pomoże przywrócić wiarę w człowieczeństwo. Lata w kojcu sprawiły, że miro kręci się dookoła często ganiając swój ogon. Jest to stereotypowe zachowanie występujące u zwierząt, mające na celu próbę poradzenia sobie z lękiem i stresem. Psiaczek ma łagodne i przyjazne usposobienie. Chętnie nawiązuje kontakt z nowo poznanymi osobami ale nie jest wylewny w okazywaniu uczuć. ‼ PILNIE ‼ szukamy dla MIRO 🐹 ODPOWIEDZIALNEJ rodziny i spokojnego, stabilnego domu. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	749211c6-e20e-4ede-94e4-de77a5d013dd	t	MIRO	BIG	t	DOG	f	t	3
+163	11	f	\N	Tymon jest w schronisku od 15.10.2021 roku. Miał wtedy około 8 lat. Trafił do schroniska razem z Furią i Arionem. To dziki kot, nie jest oswojony. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi. Ucieka przed człowiekiem, a przyparty do muru reaguje agresją. Oczywiście adopcja kota jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c25ebe5e-cddd-45ea-a420-85b4bf9c3110	f	TYMON	SMALL	t	CAT	f	t	3
+166	3	f	\N	ODI 🐹 szuka domu 🏠 Do schroniska trafił 13.07.2021 roku jako 8 miesięczny maluszek. Został znaleziony w Łodzi na ul. Odyńca. Prawdopodobnie był jedną z setek corocznych „ofiar wakacji” 😡 ODI zmarnował już ponad 3 lata życia ‼ Czasu nie cofniemy, ale możemy NA ZAWSZE odmienić jego los 💪 ❣️🙏 UDOSTĘPNIAMY 🙏❣️ ODI przez lata nauczył się cieszyć z małych rzeczy. Bliskość człowieka, chwili wspólnej zabawy, pieszczot, szaleństwa na wybiegu, spacer czy też smaczka. Wszystko to ekscytuje go i sprawia, że na chwilę staje się pobudzony. Skacze na człowieka, podgryza i maślanymi oczami prosi, by dana chwila trwała wiecznie. Jest posłuszny, zna podstawowe komendy, ładnie skupia uwagę na opiekunie. Ma pozytywny stosunek do innych psów, zwłaszcza skorych do wspólnych zabaw. IDEAŁ a mimo to, po dziś dzień niczyje serce nie zabiło mocniej właśnie do niego 😔 ODI to fantastyczny, wesoły, pogodny i aktywny #sŁODZIAK, który w docelowym domu stałym powinien mieć zapewnioną odpowiednią dozę ruchu. Nie mamy wątpliwości, że gdy już zazna domowego ciepła, opiekunom odda całe swe serduszko 💗 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ce3af752-ab35-4743-a039-88e51f46805d	t	ODI	MEDIUM	t	DOG	t	t	3
+167	5	f	\N	MALINKA 🐹 szuka domu 🏠 Sunia trafiła do schroniska 7.06.2021 roku gdy miała około roku. Początkowo była bardzo przestraszona i zestresowana. Stroniła od bliskości człowieka. Minęły prawie 3 lata i psinka pogodzona ze swym losem i otaczającą ją rzeczywistością, otworzyła się i niestety wpadła w rytm życia schroniskowego 😔 Z utęsknieniem patrzy przez kraty czekając na swoją kolej by wyjść na spacer. MALINKA to bardzo energiczna, żywiołowa i rozbrykana psinka. Lubi aktywnie spędzać czas. Podczas letnich wyjść na wybieg UWIELBIA wbiegać do basenu 😁 Nie aportuje, ale chętnie rusza w pogoń za rzuconą jej zabawką. W kojcu mieszka z samcem GACUSIEM i świetnie się dogadują mimo, że mają zupełnie inny potencjał. Sunia gdy już zaufa, jest skora do pieszczot i bardzo usłuchana. Sunia szuka aktywnych opiekunów, którzy spożytkują jej energię. Poświęcą trochę czasu by nauczyć ją życia domowego. Wywołają uśmiech na pyszczku psinki po przejściach i sprawią, że już zawsze będzie szczęśliwa a w zamian zyskają wiernego PSYjaciela na długie lata ❣️ 🙏 UDOSTĘPNIAMY 🙏 szukamy domku naj ‼ Dodatkowych informacji na temat #sŁODZIAKA udzieli wolontariuszka: ☎ 792 304 770 - Iwona Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	662d481b-a02e-48bd-a208-035c0a710012	t	MALINKA	MEDIUM	t	DOG	f	t	3
+169	9	f	\N	Ares (375/21) jest w schronisku od 7 maja 2021 roku. Miał wtedy około 5 lat. Został znaleziony na ulicy Gdańskiej. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	34fc35ab-14c5-463d-83ab-17af7163ae20	t	Ares	BIG	t	DOG	f	t	3
+170	6	f	\N	ERWIN 🐱 szuka domu 🏠 Kocur trafił do schroniska 6.05.2021 roku z ul. Syrenki. Obecnie ma około 5 lat i większość życia spędził za kratami. Trafił do nas jako dziki kot wymagający socjalizacji. Żyje z innymi kotami w komitywie, ale unika kontaktu z ludźmi 👉 ucieka a przyparty do muru reaguje agresją. Dla kociaka szukamy ODPOWIEDZIALNEJ rodziny świadomej, że oswajanie kota może zająć miesiące/lata, albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6db2228b-5cad-49e5-9e35-1f421ec7b0c9	t	ERWIN	MEDIUM	f	CAT	t	t	3
+171	10	f	\N	FADO 🐹 szuka domu 🏠 Do schroniska trafił 18.03.2021 roku jako około 6 letni samiec. Podobno został porzucony przez osobę, która nie podołała ułożeniu psa ‼ Początkowo kobieta poświęcała mu ogrom czasu i rozpuściła od szczeniaka do granic możliwości. Nie uczyła psa zasad prawidłowego wychowania a na koniec zamiast zasięgnąć porad czy pomocy, od tak pozbyła się „problemu”. FADO od ponad 3 lat szuka ODPOWIEDZIALNEJ, świadomej rodziny i domu 🏠 Niestety, telefon w sprawie jego adopcji milczy jak zaczarowany 😔 Dzięki pracy wolontariuszy psiaczek zna podstawowe komendy, które chętnie wykonuje. Jest bardzo pojętnym uczniem, który mimo 9 wiosenek na karku lubi aktywnie spędzać czas. Pięknie aportuje i przynosząc pod nogi piłkę, czeka na kontynuacje zabawy. W taki sposób spożytkowuje nagromadzony podczas pobytu w kojcu nadmiar energii. Ładnie chodzi na smyczy, pilnuje opiekuna, nie ciągnie i nie narzuca tempa. Podczas spacerów nie wyrywa się do innych psów chyba że zostanie sprowokowany jakimś agresywnym zachowaniem. FADO to duży pies o cechach indywidualisty. Musi mieć świadomych opiekunów, którzy stanowczo wyznaczą granicę. W docelowym domu stałym, ze względu na zachowania terytorialne, powinien być psim jedynakiem. Podobno w domu sam się wyciszał, był grzeczny i nie niszczył, ale jak zachowa się po ponad 3 latach w schronisku to loteria ‼ Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	490bcfd2-4857-4bf5-b6da-127febf29f87	t	FADO	BIG	f	DOG	f	t	3
+172	12	f	\N	MAX 🐹 szuka domu 🏠 ➡️ Pierwszy raz trafił do schroniska 10.07.2016 roku gdy miał około 3 lat. Po ponad 4 długich latach, jego los się odmienił ➡️ 8.12.2020 roku został adoptowany. ➡️ Szczęście jednak nie trwało długo 💔 1 5.03.2021 roku wrócił za kraty i w schroniskowym kojcu tkwi po dziś dzień 😢 MAX obecnie ma około 11 lat z czego większość życia spędził w schronisku 🥺 Jest psem z charakterkiem, który szanuje własną przestrzeń. Nie lubi nadmiernych pieszczot i reaguje nerwowo, gdy dotyka się go w okolicach karmu. Mimo dominującego charakteru, kojec od zawsze dzieli z psami i suniami z którymi żył w komitywie i które niejednokrotnie żegnał, bo znajdowali swych opiekunów. Ładnie chodzi na smyczy, nie ciągnie i nie narzuca tempa. MAX to bardzo fajny, ale też zrezygnowany pies. W jego oczach przestaje tlić się nadzieja że zazna jeszcze domowego ciepła. Odskoczną od zgiełku, hałasu i rutyny są dla niego spacery z wolontariuszami, którzy nigdy nie szczędzą mu smaczków za które odwdzięcza się uroczym uśmiechem. Ten psi senior BARDZO PROSI 🙏 zabierzcie go na spacer po Internecie udostępniając wieści o jego istnieniu. Może wspólnie odmienimy jego los i dotrzemy do ODPOWIEDZIALNYCH, asertywnych i cierpliwych ludzi, którzy PSYgarną psiaczka po przejściach i otoczą go miłością, troską oraz opieką. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a521684a-eb6b-47ce-8b87-2854328a08f5	t	MAX	MEDIUM	t	DOG	t	t	3
+173	5	f	\N	EMPIK 🐹 szuka domu 🏠 Psiaczek został znaleziony 14.03.2021 roku przywiązany smyczą do przystanku MPK przy ul. Marmurowej 😡 Ktoś od tak postanowił pozbyć się, wówczas około rocznego maluszka. EMPIK posiada WYBITNY charakter ‼ Malutki psiaczek o wielkim sercu i równie ogromnym przywiązaniu do opiekuna. Jak pokocha to NA ZAWSZE i będzie bronił swego człowieka przez każdym i wszystkim – nawet źdźbłem trawy powiewającym na wietrze. EMPIK ładnie chodzi na smyczy. Kojec dzielił z sunią MAMITĄ i dogadywali się bez żadnych problemów. MAMITA znalazła dom i własną rodzinę a psiaczek został sam 😔 siedzi bidulek przy kratach i maślanymi oczkami domaga się głaskania. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	feac7c9d-d351-4af6-ad68-24d0b0aee2b7	t	EMPIK	SMALL	t	DOG	t	t	3
+174	7	f	\N	Maniuś jest w schronisku od 8.03.2021 roku. Miał wtedy około 3 lat. Został znaleziony na ulicy Marysińskiej 100. To dziki kot, nie jest oswojony. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi. Ucieka przed człowiekiem, a przyparty do muru reaguje agresją. Oczywiście adopcja kota jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	587beca4-e86a-410f-96ce-8b2bb8523ca0	f	MANIUŚ	SMALL	t	CAT	t	t	3
+175	13	f	\N	MAKS 🐹 szuka domu 🏠 Pamiętacie co robiliście w walentynki 2021 roku? MAKS pamięta ‼ Tego właśnie dnia zawalił się cały jego świat 💔 Kolejny raz został znaleziony podczas tułaczki na ul. Jaracza i trafił za kraty schroniskowego kojca 🥺 gdzie tym razem utknął na ponad 3 długie lata 😭 MAKS miał kiedyś dom i właścicielkę 👉 skrajnie nieodpowiedzialną kobietę, która wielokrotnie nie upilnowała swego PSYjaciela przez co systematycznie trafiał do schroniska ➡️ 23.03.2020 ➡️ 9.07.2020 ➡️ 25.09.202 ➡️ 16.11.2020 ➡️ 29.12.2020 ➡️ 13.01.2021 Obecnie MAKS ma około 12 lat i jest łagodnym oraz przyjaznym psiaczkiem. Bez problemu wpuszcza ludzi do swego kojca nie broniąc przy tym zasobów. Nie jest też terytorialny. Bardzo ładnie chodzi na smyczy lekceważąc mijające go auta, ludzi i inne psy z którymi w warunkach schroniskowych nie ma bezpośredniego kontaktu. MAKS nie jest zbyt wylewny w okazywaniu uczuć. Nie zabiega o głaskanie, mizianie i nie jest typem przytulasa. Nawiązuje kontakt z człowiekiem, ale na dotyk nie reaguje entuzjastycznie. Lubi biegać za piłeczką i innymi zabawkami, które niechętnie oddaje wracając do kojca. W sytuacjach dla niego niekomfortowych np. u weterynarza, zachowuje się nerwowo. MAKS to psi senior, którzy szuka ODPOWIEDZIALNYCH opiekunów, którzy uszanują jego przestrzeń oraz zrozumieją, że nie każdy pies po przejściach na starcie w nowe żucie musi okazywać wdzięczność za mięciutkie legowisko, systematyczne spacery czy PSIEpyszne jedzenie. Gdy pies ma 12 lat to wiemy, że GONI NAS CZAS by znaleźć mu dom i rodzinę, która spojrzy na seniora sercem i otoczy miłością oraz troską, po kres jego dni ❣️ 🙏 UDOSTĘPNIAMY 🙏 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	489b31be-3dff-49bd-acdb-59b48bc4a7f3	f	MAKS	BIG	t	DOG	f	t	3
+177	8	f	\N	poznaj historię ALKA 🐹 i pomóż mu znaleźć drogę do świadomego człowieka, który odmieni jego los NA ZAWSZE 💪 ‼️ ALEK tak naprawdę trafił do schroniska 1.03.2019 roku jako 2 letni psiaczek z nieznaną nam przeszłością. Ma za sobą dwie nieudane adopcje i niestety, nie pozostaje bez winy 😔 BARDZO PILNUJE zasobów i potrafi nie tylko pokazać zęby ale i ugryźć ‼️ Jest zafiksowany na punkcie rzeczy, które uznaje za własne i nie pozwala wyjąć sobie niczego z pyska ‼️ Obecnie ma 7 lat i jest uzależniony od aportowania. Niestrudzenie przynosi piłki i inne zabawki, ale dopiero, gdy położy je pod nogami opiekuna, można wziąć je w rękę by ponownie rzucić. Jest posłuszny, ładnie chodzi na smyczy i zna kaganiec. Na podstawie relacji z wcześniejszych domów wiemy, że zachowuje czystość i chętnie wyleguje się na kanapie. W docelowym domu stałym powinien być jedynakiem z oczywistych powodów 👉 ALEK NIE DZIELI SIĘ NICZYM tj. zabawkami, legowiskiem, miską z jedzeniem czy wodą ‼️ Już wiecie jaki jest ALEK i jakiego domu szuka więc PROSIMY 🙏 pomóżcie nam odmienić los psiaczka, który większość życia ogląda świat zza krat 🥺 Szukamy doświadczonej, nastawionej na pracę, odpowiedzialnej i świadomej rodziny bez dzieci i innych zwierząt. Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	c0591d8d-38ed-4d82-b002-1bcbea7ee703	t	ALEK	MEDIUM	f	DOG	f	f	4
+181	8	f	\N	PLUMPI 🐾 swoje już odsiedział ⏳ nadszedł czas, aby wreszcie zaznał domowego ciepła ❤️ Gdy trafił do schroniska 27.09.2020 roku , miał około 4 lat . Niestety, większość dotychczasowego życia spędził za kratami … 😞 Świat zapomniał o tym niewątpliwie uroczym, dużym kawalerze o smutnych, brązowych oczach , w których przestaje tlić się nadzieja na własną rodzinę i prawdziwy dom. PLUMPI to bystry psiaczek , który na wybiegu dopomina się uwagi i bliskości człowieka. Chętnie zaprasza do wspólnej zabawy – uwielbia piłeczkę, szarpak i pięknie aportuje. Bryka niczym wyrośnięty szczeniak! 🐶 Ma bardzo pozytywne usposobienie i lubi aktywnie spędzać czas, bo energii mu nie brakuje . Świetnie radzi sobie podczas spacerów – nie ciągnie, dostosowuje tempo do człowieka. W razie potrzeby cierpliwie znosi noszenie kagańca , co może przydać się podczas standardowych wizyt u weterynarza. Niewątpliwie w zdobywaniu jego względów pomogą PSIEpyszne smaczki i wspólne spacery zapoznawcze. Jest karny, posłuszny, zrównoważony i zna podstawowe komendy. PLUMPI podczas spacerów nie interesuje się mijanymi psiaczkami , za to na wybiegu często zaczepia je do wspólnej zabawy. W przypadku ewentualnych nieporozumień dojrzale unika konfliktów . Jest ciekawski i odważny. Nie znamy jego przeszłości, ale wiemy, że gdy już zyska poczucie bezpieczeństwa i stabilizację, odwdzięczy się ogromną, bezgraniczną i bezinteresowną miłością . Będzie wspaniałym i wiernym towarzyszem oraz prawdziwym PSYjacielem ! 🐾❤️ Dodatkowe informacje na temat #sŁODZIAKA udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d211e580-52be-4eb4-a095-55ccea516c69	t	PLUMPI	BIG	t	DOG	f	f	4
+182	7	f	\N	FLORKA 🐹 szuka domu 🏠 Sunia została znaleziona 1.11.2020 roku w Łodzi na ul. Bartoka. Ponad połowę dotychczasowego życia spędziła w schronisku 😢 Już 4 długie lata czeka, aż jakaś CUDOWNA rodzina, odmieni jej los i PSYgarnie NA ZAWSZE ‼ FLORKA to obecnie 7 letnia sunia, która podczas pierwszych zapoznań jest przestraszona, zdystansowana i zestresowana. Nie szuka kontaktu z człowiekiem. Zdecydowanie powinna zamieszkać u boku spokojnej rodziny, która rozumie, że pies po przejściach potrzebuje przestrzeni i sporo czasu, zarówno na naukę zasad życia domowego jak i budowanie pozytywnej relacji. Do znanych sobie osób, FLORKA podchodzi z ufnością i mimo, że nie jest wylewna w okazywaniu uczuć - łasi się i daje głaskać. Nie ma większych problemu w nawiązaniu relacji z innymi psiaczkami. Jest delikatna, wrażliwa, ciekawa świata oraz DZIELNA ‼ Dodatkowych informacji na temat suni udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	65df1a5b-4dda-4e31-a020-cda0766dd7a9	t	FLORKA	MEDIUM	f	DOG	f	t	4
+186	5	f	\N	MIKI 🐹 to 4,5 letni #sŁODZIAK 💗 💗 💗 Psiaczek jest energiczny, bardzo radosny i zaraża swym pozytywnym nastawieniem. Potrzebuje czasu by otworzyć się przed nowo poznanymi osobami i pokazać swój fantastyczny charakter. Ładnie chodzi na smyczy. Czas, który spędza z wolontariuszami na wybiegu, wykorzystuje w 100%. UWIELBIA ruch, zabawę i szaleństwa wszelakie. Ma pozytywny stosunek do innych psów. Kojec dzieli z samcem i żyją w pełnej komitywie 💪 MIKI przebywa w schronisku od 2.03.2020 roku. Odsiaduje wyrok za niewinność od 8 miesiąca życia 🥺 Straconych lat nikt mu nie wynagrodzi, ale przy ODPOWIEDZIALNYM opiekunie, może poznać świat od tej najlePSIEjszej strony ❣❣❣ ‼ UDOSTĘPNIAMY ‼ szukamy domku naj Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 605 744 010 - Kamila Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	20546d38-6035-40c8-be38-036b15c8cf67	t	MIKI	MEDIUM	t	DOG	t	t	4
+187	8	f	\N	Klara jest w schronisku od 26.01.2020 roku. Miała wtedy około 3 lata. Została znaleziona na klatce schrodowej w Łodzi na ul. Smoczej. To dzika kotka,  nie jest oswojona. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi.  Ucieka przed człowiekiem, a przyparta do muru reaguje agresją. Oczywiście adopcja kotki jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	6116957d-dab9-467f-97b9-7eecce00fb05	f	Klara	SMALL	t	CAT	f	f	4
+199	9	f	\N	RAMBO 🐹 trafił do schroniska 18.02.2018 roku. Prawdopodobnie wcześniej mieszkał na terenie posesji, której miał pilnować. Niesamowity potencjał nie został wykorzystany, bo nikt nie podjął z nim pracy a kontakt z człowiekiem polegał jedynie na przepędzaniu. Minęło 6 lat a RAMBO nadal czeka na swojego człowieka. To radosny psiaczek, który każdego dnia z niecierpliwością siedzi przy kratach i wypatruje wolontariusza, który zabierze go na spacer. Na wybiegu uwielbia aportować piłkę, ale ceni też kontakt z człowiekiem i sam przychodzi na głaski. Niestety RAMBO nie toleruje innych psów za to jako jedynak odnajdzie się REWELACYJNIE 💪 RAMBO obecnie ma 8 lat i waży około 22kg. Jest po pełnej obsłudze weterynaryjnej 👉 GOTOWY rozpocząć NOWY rozdział życia u boku wspaniałej rodziny w SUPER DOMU 🏠 Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d8ced66d-c2c8-44ac-a200-216cebe506e9	f	RAMBO	MEDIUM	t	DOG	f	t	4
+178	7	f	\N	MAX 🐹 to obecnie około 6 letni psiaczek, który odsiaduje wyrok za niewinność od 20.11.2020 roku. Jego początki w schronisku były trudne ➡ bał się własnego cienia, był zestresowany i przerażony. W przełamywaniu własnych lęków bardzo pomogły mu wolontariuszki i koleżka z kojca, BERCIK. MAX z czasem zapragnął bliskości człowieka, zaczął podchodzić na smaczki, nadstawiać się do głaskania. Otworzył swe wrażliwe serduszko 💞 Aktualnie wypatruje opiekunów i wita ich rozmerdanym ogonem oraz uśmiechem na pyszczku. Ładnie chodzi na smyczy. UWIELBIA zabawę, mizianie i przytulanie. Jest delikatnym, wrażliwym samcem. Człowiek go zawiódł więc potrzebuje czasu by zaufać. Zmarnował część życia w schronisku i czas by potuptał 🐾🐾 pod opiekę odpowiedzialnych, świadomych, cierpliwych i troskliwych ludzi, którzy pokażą mu że życie może być piękne. Dodatkowych informacji na temat #sŁODZIAKA udzielą wolontariuszki: ☎ 501 243 206 - Ania ☎ 792 304 770 - Iwona Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ffebeab0-cb85-47cb-8f3b-3ce17eef4b52	t	MAX	MEDIUM	t	DOG	f	t	4
+179	6	f	\N	KIWI 🐹 szuka domu 🏠 Obecnie ma 5 lat i jest wesołym, rozbrykanym psiaczkiem. Gdy widzi opiekunkę, radośnie przeskakuje z łapki na łapkę, sygnalizując pełną gotowość do wyjścia na wybieg. Mimo, iż jest bardzo silny, grzecznie siada czekając na przypięcie smyczy. Podczas spacerów ciągnie, co jest wynikiem zdecydowanie za małej ilości ruchu dla jego potencjału i nadmiaru niespożytkowanej energii. Powinien zamieszkać u boku aktywnych osób, które zapewnią mu o odpowiednią dozę ruchu i zabawy. KIWI maślanymi oczami patrzy, jak bawią się psy na sąsiednim wybiegu, jednak wymaga pracy nad manierami. PSIEkochany i nieokrzesany psiaczek, który niestety, większość życia spędził w schroniskowej rzeczywistości 😔 Zdecydowanie większym zaufaniem darzy kobiety. Adorator domaga się głaskania, nie wzgardzi też smakołykami 😁 Psiaczek trafił do schroniska 20.11.2020 roku z ul. Gwarnej. Był młodym, około 1,5 rocznym, aktywnym kawalerem bojącym się mężczyzn. Traumy, jakie przeszedł we wcześniejszym życiu, częściowo poszły w zapomnienie, ale przyszli opiekunowie powinni poznać #sŁODZIAKA by podjąć mądrą i ODPOWIEDZIALNĄ decyzję o adopcji. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 601 710 654 - Agnieszka Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	2108c604-d012-42be-82cb-fa27c10fcd86	t	KIWI	BIG	t	DOG	f	t	4
+180	8	f	\N	FILEMON i FILA trafili do schroniska 10.10.2020 roku. Mieli wtedy około 10 miesięcy i byli kotami wolno żyjącymi. FILA odeszła za Tęczowy Most i kocurek stracił swe oparcie w siostrze. Nie podchodzi do człowieka. Stroni od dotyku i bliskości a zagoniony w kont reaguje agresją. Żyje w komitywie z innymi kotami w schroniskowej koloni. FILEMON szuka domu świadomego zarówno ilości pracy jakiej wymaga oswojenie tego gagatka jak i faktu, że może nigdy nie był typem przytulasa. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	34f8e5d9-bb71-48ff-9e0d-d85a90225485	t	FILEMON	MEDIUM	t	CAT	f	t	4
+183	7	f	\N	BUNIA 🐹 szuka domu 🏠 Sunia trafił do schroniska 30.06.2020 roku. Była młodą, około 3-4 letnią psinką, przerażoną otaczającą ją rzeczywistością. Po dziś dzień potrzebuje czasu by zaufać nowo poznanej osobie, otworzyć się i pokazać swój fantastyczny charakter. Jest typem psiej indywidualistki. Nie zna podstawowych komend, ale jest skora do nauki za smaczki 😁 Po 4 latach za kratami ma dość kiepską kondycję i szybko się męczy, jednak UWIELBIA aktywnie spędzać czas. Chętnie aportuje i zaczepia do wspólnej zabawy. Ładnie chodzi na smyczy. W docelowym domu stałym BUNIA raczej powinna być jedynaczką. Gdy już pokocha to całym sercem i niechętnie będzie dzieliła się opiekunem. Dodatkowo broni zasobów. BUNIA to PSIEkochana psinka, która ceni bliskość człowieka, ale jak każdy pies po przejściach, wymaga odrobiny cierpliwości, wyrozumiałości i czasu na zbudowanie pozytywnej relacji, która zaowocuje na lata. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	FEMALE	cb9262d6-eb83-49d5-8aef-8532c8031880	t	BUNIA	MEDIUM	t	DOG	f	t	4
+184	8	f	\N	ROMEK 🐹 szuka domu 🏠 Psiaczek został znaleziony 15.06.2020 roku na ul. Żabiej. Gdy trafił do schroniska był żywiołowym i energicznym, około 3 letnim samcem. Emocjonalnie kompletnie nie dawał sobie rady 😢 Przez kraty kojca odstraszał wszystkich. Na skutek stresu zaczął okaleczeć się gryząc własny ogon 😔 który musiał być amputowany. Ciężka praca przyniosła efekty dopiero po ponad roku. ROMEK zaufał wolontariuszom i pozwolił wyprowadzić się na spacer. Obecnie to ZUPEŁNIE INNY PSIACZEK 😍 Pozytywnie reaguje na znane mu osoby, a w stosunku do obcych początkowo zachowuje dystans. Jest pogodny, ładnie chodzi na smyczy i zna kaganiec. N a wybiegu radośni szaleje i interesuje się zabawkami. Nie wykazuje agresji i ma pozytywny stosunek do innych psów, jednak w naszej ocenie lepiej, aby w docelowym domu stałym był jedynakiem. ROMEK pilnuje zasobów, ale smaczki z ręki bierze delikatnie. ❣️ UDOSTĘPNIAMY ❣️ super rodziny dla ROMKA szukamy 💪 niech wreszcie ten cudny rudzielec zazna domowego ciepła. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	2452f3ec-5907-4eab-9e61-add11a02b20d	t	ROMEK	BIG	t	DOG	f	t	4
+185	9	f	\N	Schroniskowy weteran ROKO 🐹 PILNIE szuka domu 🏠 Do schronisk trafił 15.06.2017 roku 🥺 W tym czasie był raz adoptowany, ale niczym zbędna rzecz oddany 14.06.2020 roku po kilku dniach spędzonych w pieleszach domowych. Mimo upływu lat zachował pogodę ducha i optymizm. Ciągle jest pełen energii, lubi aktywnie spędzać czas a na jego pyszczku widnieje cudny uśmiech. Na wybiegu szaleje niczym młodzieniaszek. Potrzebuje czasu by zaufać opiekunowi i pokazać swój fantastyczny charakter. Gdy już zaufa, przychodzi na głaski, mizianie i zaczepia do wspólnej zabawy. Chętnie przybiega na smaczki. Ładnie chodzi na smyczy. PILNIE szukamy ODPOWIEDZIALNEJ rodziny dla około 8 letniego ROKO, który za kratami zmarnował większość życia 🥺 ‼️ 🙏 UDOSTĘPNIAMY 🙏 ‼️ Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4cb58a50-5510-4030-a20d-c2f7c4716dc6	f	ROKO	MEDIUM	t	DOG	f	t	4
+207	1	f	\N	Charlie niezwykła papużka Aleksandretta obrożna, która do schroniska trafiła jako znaleziona. Obecnie przebywa na kwarantannie, po zakończeniu której będzie szukała nowego domu, osoby doświadczonej w opiece nad papużkami.	MALE	2cfbab66-a741-4a86-b2fc-5e93b0541598	f	Charlie	SMALL	f	OTHER	f	f	4
+188	8	f	\N	ERNEST 🐹 szuka domu 🏠 Do schroniska trafił 30.11.2019 roku 🙈 Został znaleziony na ul. Kasprowicza. Był wówczas około 3 letnim, otwartym, kontaktowym i kochającym cały świat młodzieniaszkiem. Dni… miesiące… lata minęły bezpowrotnie a w jego oczach przestała tlić się nadzieja. Niestety, pewnego dnia na wybiegu rzucił się na niego inny pies, co wpłynęło na jego psychikę 😢 zamknął się w sobie, stracił chęci do zabawy i nadzieję na HAPPY END. Przestał też tolerować inne zwierzęta 😔 Ten około 7 letni psiaczek ważący 30kg większość życia spędził za kratami 😭 ERNEST jest bardzo skoczny. Bez większych problemów pokonuje każdy płot. Niestety z kojca też zdążało mu się nawiać. Dla jego bezpieczeństwa najlepiej, aby zamieszkał w bloku lub kamienicy. Ładnie chodzi na smyczy i akceptuje kaganiec. Do obcych osób podchodzi z dystansem ale nie przejawia cienia agresji. Gdy już zaufa jest bardzo miły, radosny, kontaktowy 💗 lubi głaskanie oraz przytulanie. Nie przepada za rowerzystami i blisko przejeżdżającymi samochodami. ‼ PILNIE ‼ szukamy ODPOWIEDZIALNEJ rodziny dla tego spryciarza 🐹 Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4fcea5a0-30ad-4453-b31b-71f927ec61de	f	ERNEST	BIG	t	DOG	f	t	4
+189	12	f	\N	ATOS 🐹 szuka domu 🏠 Dramat tego psa trwał długie miesiące. Gdy 14.11.2019 roku trafił do schroniska zaszył się w budzie. Paraliżował go hałas, chaos i przytłaczała codzienność. Obce miejsce, obcy ludzie, nowa, trudna rzeczywistość. ATOS miał dom i rodzinę. Bardzo przeżył stratę bliskich i utratę stabilizacji. Na nic zdawały się trudy pracowników i wolontariuszy gdy na pyszczku psa wiecznie widniał smutek. Jest pięknym, dostojnym 11 letnim samcem o stonowanym charakterze. Uwielbia bieganie za zabawkami jednak niechętnie je oddaje. Zna podstawowe komendy jak siad i łapa, ale ich wykonanie wymaga zachęty w postaci smaczka. Na smyczy chodzi spokojnie, nie ciągnie. Niestety nie darzy sympatią innych czworonogów dlatego docelowo raczej powinien być jedynakiem. ATOS jest psem w typie owczarka i takie też ma zachowania: ➡️ potrafi sprawdzać granice i na ile mu się pozwoli ➡️ momentami jest wymagający i uparty ➡️ boi się gwałtownych ruchów ➡️ nowe osoby akceptuje, ale traktuje z dozą ostrożności i dystansem Potrzebuje konsekwentnego, wyrozumiałego, asertywnego opiekuna, który będzie dla niego przewodnikiem, przyjacielem i podporą. Powinien trafić do domu, w którym opiekunowie mają doświadczenie z psami nie do końca otwartymi. ATOS będzie wymagał czasu na zbudowanie zaufania do przyszłych opiekunów, na odzyskanie poczucia bezpieczeństwa i stabilizacji. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	d2b77fef-95bf-4dc1-96b8-0269a278b78a	f	ATOS	BIG	f	DOG	f	f	4
+190	14	f	\N	MARTINI i jego smutna historia 😭🥺 Pierwszy raz trafił do schroniska we wrześniu 2011 roku. Był młodziutkim, około rocznym, pełnym wigoru i chęci do zabawy psiaczkiem. Robił wszystko, by odnaleźć się w schroniskowej rzeczywistości. Skakał jak sprężynka, biegał wzdłuż krat, chciał spożytkować nadmiar energii. Niestety 😢 swym zachowaniem denerwował kompanów psiej niedoli więc często zmieniał boksy. W maju 2015 roku jego los się odmienił. Z prawie 500 psów przebywających wówczas w schronisku, to właśnie on skradł czyjeś serce i potuptał 🐾🐾 do swojego domu. Niestety, sielskie życie i szczęście trwało tylko kilka lat 😔 Właściciel wyjechał za granicę a MARTINI trafił pod opiekę dziadka, który zmarł. Tego dnia kolejny raz zawalił się jego świat. Psa nie przygarnął żaden członek rodziny i 26.09.2019 roku, po 4 latach życia w pieleszach domowych, poturbowane serduszko ponownie trafiło za kraty 💔 MARTINI 🐹 poznał już co to dom, mięciutkie legowisko, bliskość człowieka, regularne spacery i wszystko to stracił. Jest kochanym, średniej wielkości psiaczkiem ważącym, który obecnie ma 13 lat. P si senior o mądrym spojrzeniu i ogromnej chęci do życia. Spacery z nim to prawdziwa przyjemność. Pięknie chodzi na smyczy, nie ciągnie i dostosowuje tempo do opiekuna. Bez problemu poradzi sobie z nim osoba starsza, która chciałaby zyskać wiernego PSYjaciela. Delektuje się dosłownie wszystkim, co go otacza - zapachem trawy, promieniami słońca, każdym nowym miejscem, które może zobaczyć i obwąchać. Zamiast zabawek zdecydowanie bardziej ceni sobie bliskość człowieka. Uwielbia, gdy przychodzą do niego wolontariusze, a jednocześnie nie znosi, gdy znów musi zostać w boksie sam 😔 Podczas pożegnania jego oczy smutnieją i aby odwlec w czasie rozstanie, domaga się głaskania i uwagi. MARTINI to psi łasuch. Z uwagi na niewielką ilość ruchu, jaką ma w schronisku, jedzenie jest jego jedyną atrakcją, dlatego wskazana będzie dieta 😊 Schronisko to nie miejsce dla żadnego psa, zwłaszcza starszego, który na jesieni życia potrzebuje ciepła, spokoju, miłości i troski. Pomimo lat spędzonych za kratami, MARTINI zachował pogodę ducha i wiarę w człowieka. PILNIE szukamy domu (najlepiej bez innych zwierząt), gdzie w godnych warunkach domowych, ten psi seniorek spędzi resztę życia. Dodatkowych informacji na temat psiaczka udzielą wolontariusze: ☎ 538 300 983 - Krzysztof ☎ 605 744 010 - Kamila Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	ddd3818a-ef51-4de2-b894-8aaa491ad0de	t	MARTINI	MEDIUM	t	DOG	f	t	4
+193	8	f	\N	CEZAR 🐹 w grudnia „świętował” 5 rocznicę odsiadki. Psiaczek wpatrzony w opiekunów jak w obrazem, trafił do schroniska 20.12.2018 roku jako około 1-2 letni młodzieniaszek. Większość życia spędza ogląda świat zza krat 😢 NIE O TAKIM ŻYCIU MARZYMY DLA SCHRONISKOWYCH PODOPIECZNYCH ‼ 🙏 UDOSTĘPNIAMY 🙏 ODPOWIEDZIALNEJ rodziny szukamy 🤩 Początki w schronisku to nigdy nie jest bajka. CEZAR jak większość psów, po przyjęciu był przerażony i zaszył się w budzie. Dużo czasu minęło nim zaczął współpracować i robić pierwsze postępy. Dzisiaj ten radosny kawaler z utęsknieniem czeka na wolontariuszy, ale zachowuje dystans w stosunku do osób obcych i nie dąży do kontaktu jak również stroni od ich dotyku. Potrzebuje czasu by zaufać i pokazać swój fantastyczny charakter. Nie wykazuje agresji. Opiekunom wskakuje na kolana, rozdaje buziaki i domaga się pieszczot. Zna podstawowe komendy ➡️ siad, łapa. Kojec zamieszkuje ze spokojną suczką DORĄ i nie ma między nimi żadnych konfliktów, ale jest sceptycznie nastawiony do samców z którymi sąsiaduje. Poza terenem schroniska ładnie chodzi na smyczy. CEZAR boi się i nie lubi wizyt u weterynarza ‼️ Lata temu, przez nieuwagę, został zaprowadzony do gabinetu bez kagańca. Podczas szczepienia ugryzł 😔 i pojechał na obserwacje. Od tego dnia miał przypiętą etykietę „psa trudnego” 😔 Prawda jest taka, że ten PSIEkochany rudzielec ma swoje lęki i strachy. Nie wiemy, co przeżył w wieku szczenięcym nim trafił do schroniska, ale wiemy, że potrzebuje świadomych, odpowiedzialnych i cierpliwych opiekunów, którzy dadzą mu czas na zbudowanie pozytywnej, trwałej relacji. Dodatkowych informacji na temat psiaczka udzielą wolontariuszki: ☎ 503 652 679 - Kasia ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	6567db18-ec7f-4b62-88db-cad96542cb93	t	CEZAR	BIG	t	DOG	f	t	4
+194	8	f	\N	DYLEK 🐹 szuka domu 🏠 Psiaczek trafił do schroniska 14.12.2018 roku gdy miał około 3 lat. Większość życia spędził za kratami schroniskowego kojca 🥺 Jak to możliwe, że tak miły, energiczny i bezkonfliktowy #sŁODZIAK odsiaduje 7 rok za niewinność. DYLEK jest znudzony codziennością. Spacery i kontakt z wolontariuszami to jego odskocznia od zgiełku i rutyny dnia codziennego. UWIELBIA kontakt z człowiekiem, wspólne zabawy, które nigdy mu się nie nudzą. Mimo prawie 9 wiosenek na karku lubi aktywnie spędzać czas na poznawaniu świata od najlePSIEjszej strony. Kojec dzieli z samcem i dogadują się rewelacyjnie. Niestety nie toleruje kotów. Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a0798cea-0f40-4ec9-a724-24fc4c2bd592	t	DYLEK	MEDIUM	t	DOG	f	t	4
+195	7	f	\N	ROKI 🐹 szuka domu 🏠 Do schroniska trafił 20.09.2018 roku i utknął na prawie 6 długich lat ‼ Został znaleziony w Parku Helenów jako roczny, młody, aktywny pies gotowy do nauki i poznawania świata. Niestety, nie znalazł się człowiek, który spojrzał na ROKIEGO sercem i zaprosił do swego domu i życia 😢 Dziś ten 7 letni kawaler ze zrezygnowaniem patrzy przez kraty 😔 Jego ogonek merda jedynie na widok wolontariuszy, bo wie, że na pewien czas, jego życie odmieni się 👉 pójdzie na spacer lub wybieg, ktoś pogłaszcze go i da smaczka. Posłucha ludzkiego głosu i kto wie, może usłyszy magiczne słowo 👉 „siad” lub „łapa” by pokazać swą umiejętność wykonywania komend co zawsze jest nagradzane. ROKI przez lata miał przypiętą etykietę „psa agresywnego”, tymczasem prawda jest trochę inna. Nie zapałał miłością do jednej wolontariuszki, co nie powinno być wyznacznikiem w ocenie całokształtu relacji z ludźmi. Psiaczek bardzo ładnie chodzi na smyczy. Jest grzeczny i usłuchany. Podczas spacerów akceptuje inne psy, ale od zawsze w kojcu jest psim jedynakiem. Nie jest nachalny, lubi pieszczoty ale rzadko zdarza się, że sam o nie zabiega. Jest typem łasucha UWIELBIAJĄCEGO smaczki wszelakie, niestety ze względu na alergię pokarmową należy pilnować co się mu daje. ROKI szuka domu i osób, które pokażą mu, jak wygląda prawdziwe życie psa będącego pełnoprawnym człowiekiem rodziny. Ludzi świadomych, że pies, który spędził większość życia w schronisku, wymaga nauki zasad życia domowego. Osób asertywnych, stanowczych ale też cierpliwych w budowaniu pozytywnej relacji. Dodatkowych informacji na temat ROKIEGO udzieli wolontariuszka: ☎ 601 206 013 - Ewelina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1b9e1648-442f-47ab-be22-7071f9817c3a	t	ROKI	BIG	t	DOG	f	t	4
+198	7	f	\N	KAJTEK 🐹 szuka domu 🏠 Dramat psa, który do schroniska trafił 27.03.2018 roku jako około 8 miesięczny maluszek i po dziś dzień nie zaznał domowego ciepła 😭 😭 Zamiast bawić się zabawkami, uczyć poprawnych zachowań, spać w mięciutkim legowisku i iść przez życie u boku swojego człowieka ZMARNOWAŁ psie dzieciństwo i kolejne lata w kojcu i budzie 🥺 KAJTEK ma swoje lęki i strach, które głównie wynikają z ograniczonej możliwości poznawania świata. Jest BARDZO DELIKATNY i wrażliwy. Podczas pierwszych zapoznań nieśmiały. Potrzebuje czasu by zaufać. Zdecydowanie swobodniej czuje się przy otwartym i kontaktowym czworonogu, którego zachowania może naśladować. KAJTEK od lat dzieli kojec z psem DYLKIEM, który jest jego mentorem, wsparciem oraz nauczycielem. Podczas spacerów znacznie pewniej czuje się u boku PSYjaciela, który jest zdecydowanie odważniejszy i bardziej skory do poznawania świata. KAJTEK 🐹 czeka na wyjątkowych ludzi, którzy spojrzą na niego sercem 💞 i dadzą mu szansę na NORMALNE ŻYCIE ❣️ Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	b13d71bc-6ab5-4dec-a67b-b990adaf7229	t	KAJTEK	MEDIUM	t	DOG	f	t	4
+191	8	f	\N	CZAREK 🐹 szuka domu 🏠 Czarujący CZARUŚ to uroczy, pełen energii psiaczek, który od 5 lat czeka na swojego człowieka. Jak niemal każdy pies po przejściach, potrzebuje czasu by zaufać nowo poznanej osobie. Po niedługim czasie, staje się wiernym i najlePSIEjszym towarzyszem 💗 Nie przejawia agresji, ale zdecydowanie potrzebuje asertywnego i stanowczego opiekuna, który jasno będzie wyznaczał granice. Jest łagodny i ugodowy w stosunku do innych psów. Uwielbia ruch i zabawę, zwłaszcza bieganie za piłką. Nie wzgardzi też pieszczotami. Mimo, że jego metryka pokazuje 6 lat, ma w sobie sporo wigoru, a jednocześnie jest zrównoważonym emocjonalnie, dojrzałym samcem. CZAREK na swojego człowieka w Łódzkim Schronisku czeka od 4.04.2019 roku 🥺 W Waszych rękach, czy ten około 25kg #sŁODZIAK zazna domowego ciepła. 🙏 UDOSTĘPNIAMY 🙏 CZAREK był adoptowany 9.03.2024 roku. Wrócił z adopcji 20.04.2024 roku ze względu na akceptację tylko jednego z członków rodziny. Psiaczek ma ogromne serce, ale potrzebuje stanowczego opiekuna, który jasno wyznaczy granice. Nr ewidencyjny 356/19 Dodatkowych informacji na temat CZARKA udzieli wolontariuszka: ☎ 662 029 405 - Karolina Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	846e577a-388b-453b-8013-18982ec40e43	t	CZAREK	MEDIUM	t	DOG	f	t	4
+192	9	f	\N	GRAFIT 🐹 został znaleziony w Łodzi na ul. Strykowska/Okólna i od 7.03.2019 roku odsiaduje wyrok za niewinność 🥺 Straconych 5 długich lat NIKT MU NIE ZWRÓCI, ale możemy NA ZAWSZE odmienić jego przyszłość ‼ GRAFIT to bardzo pozytywny pies o wybitnej urodzie. W stosunku do obcych, początkowo jest nieufny, wręcz unika kontaktu. Gdy nabierze pewności, że nie grozi mu nic złego, odzyskuje poczucie bezpieczeństwa i stabilizację. Jest WSPANIAŁYM psem po przejściach, który przyszłym opiekunom odwdzięczy się ogromną, bezinteresowną miłością i zaprezentuje swój cudowny psi charakter. GRAFIT pięknie skupia się na opiekunie. Domaga się uwagi i bliskości. Człowiek jest dla niego bardzo ważny. Uwielbia przebywać w jego towarzystwie, być głaskany oraz spędzać czas na wspólnej zabawie z piłką. Pięknie aportuje zachęcając do dalszej zabawy. Zna podstawowe komendy. Ładnie chodzi na smyczy. Jest łasuchem zawsze skorym na smaczki, szczególnie po wykonaniu komendy. GRAFIT szuka domu ‼ N ie marzy o życiu w budzie, bo takie warunki ma w schronisku 😔 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 792 304 770 - Iwona Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	1b6d9611-c701-44ab-91b4-3f36585e00cd	t	GRAFIT	MEDIUM	f	DOG	f	t	4
+196	11	f	\N	ASTRO 🐹 PILNIE szuka domu 🏠 Starsze psy wierzą w sny ‼️ Jednak na ich realizację mamy znacznie mniej czasu dlatego PILNIE szukamy domu dla seniora ASTRO, który od 6 lat ogląda świat zza krat schroniskowego kojca a chciałby starość przeżyć godnie u boku swojego człowieka. ASTRO trafił do schroniska 11.06.2018 roku. Miał wtedy około 8 lat. Jest zwyczajnym kundelkiem z nieznaną nam przeszłością. Po takie psiaczki nie ustawia się kolejka 🥺 a ich szanse na znalezienie domów są znacznie mniejsze. Z Waszą pomocą wierzymy, że odnajdziemy drogę do WSPANIAŁYCH ludzi, którzy otworzą swoje serca 💗 i dom 🏠 dla tego seniora. ASTRO jest dojrzałym, ale wciąż energicznym i chętnym do biegania oraz wszelkich zabaw psiaczkiem. Jego metryka pokazuje prawie 10 lat, mimo to nadal lubi zabawy z piłką. Obecnie waży 25kg. W stosunku do obcych osób może i nie jest nazbyt wylewny, ale z pewnością da szansę komuś, kto wreszcie do zauważy. Mieszkał w kojcu z suczką, z którą dogadywał się bez żadnych problemów. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	01968a65-db88-4f26-aa68-f84d00bd7c2d	f	ASTRO	MEDIUM	f	DOG	t	t	4
+197	10	f	\N	DONALD 🐹 to psiaczek, który zaznał bólu i cierpienia z ręki człowieka 😭 Wiemy, że w pierwszym domu był bity 😡 Kolejna rodzina, która znała jedynie jego opis z OLX, nie podołała opiece nad nim 😔 30.05.2018 roku jako młody, bo wówczas około 2 letni samiec trafił do łódzkiego schroniska. Początki nie były łatwe... DONALD to pies po przejściach i na jego zaufanie należy zapracować 💪 Na wytworzenie zdrowej relacji nie wystarczy 15 minut ‼️ W kojcu, ten dostojny kawaler, nie prezentuje się przyjaźnie 🙈 ale nasz były wolontariusz, który mamy cichą nadzieję, że wkrótce ponownie do nas dołączy - „odwalił kawał dobrej roboty” poświęcając temu poturbowanemu przez życie psu, tyle czasu, ile potrzebował by się otworzyć. Okazało się, że DONALDA da się lubić a nawet pokochać 💗 Obecnie ten około 8 letni psiaczek jest zgodny z innymi psami i suniami. W drodze na wybieg ciągnie na smyczy, ale po za terenem schroniska ładnie idzie przy nodze. Pięknie okazuje przywiązanie do tymczasowych opiekunów 👉 radośnie biega przeskakując z łapki na łapkę, przytula się i nadstawia do głaskania. DONALD to niewątpliwie pies z charakterem. Aby zaznał szczęścia u boku człowieka, musi znaleźć świadomych, ODPOWIEDZIALNYCH i nastawionych na początkową pracę ludzi, którzy po pewnym czasie zyskają wiernego PSYjaciela na lata. Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	a606dee1-71e4-4ecd-a9e9-5f68fe1d768a	t	DONALD	BIG	f	DOG	f	t	4
+201	10	f	\N	TREWOR 🐹 szuka domu 🏠 Psiaczek do schroniska trafił 21.04.2017 roku gdy miał około 2 lat. Został znaleziony na ul. Trawiastej. Większość życia spędził za kratami 😭 😭 CZAS ODMIENIĆ JEGO LOS NA ZAWSZE ‼ Niech nie zmyli nikogo wiek tego psiego kawalera 😁 #sŁODZIAK bardzo lubi aktywnie spędzać czas. Podczas spacerów głównie węszy delektując się zapachami a jednocześnie potrafi pięknie skupić uwagę bezpośrednio na opiekunie i jest skory do nauki. Wzorowo chodzi na smyczy ignorując mijane psy. Na wybiegu bez większych problemów dogaduje się z innymi psiaczkami i w kojcu zachęca towarzysza psiej niedoli do wspólnych zabaw 😊 Nie jest zaborcy i nie przejawia cienia agresji, ale potrzebuje konsekwentnego opiekuna, który będzie dla niego oparciem i da poczucie bezpieczeństwa oraz stabilizacji. TREWOR jest spragniony kontaktu z człowiekiem, poczucia bliskości i stabilizacji. UWIELBIA się przytulać, być miziany i głaskany. Mimo długiego pobytu w schronisku nie boi się świata poza jego murami. Uczestniczył w eventach promujących podopiecznych SdZ na terenie Łodzi stąd wiemy, że bez problemu jeździ komunikacją miejską i odnajduje się w miejscach publicznych, gdzie mimo wszystko znajduje się dużo bodźców. TREWOR w docelowym domu stałym raczej powinien być jedynakiem. Nie powinien też zamieszkać z małymi dziećmi. Bez wątpienia przyszłych opiekunów obdarzy bezwarunkową miłość i będzie wspaniałym towarzyszem rodziny 💖 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 696 946 625 - Agata Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	43a0c64a-5b52-4c84-86b1-1dea4477ecbd	t	TREWOR	BIG	t	DOG	f	f	4
+206	1	f	\N	Samiczka, została znaleziona. Jest oswojona, aczkolwiek trochę nieśmiała.	FEMALE	ecadb2c0-014e-4db6-b04a-e7d8ac2058fd	t	Mimi	SMALL	f	OTHER	f	f	4
+200	10	f	\N	JANEK 🐹 szuka domu 🏠 Psiaczek do schroniska trafił 3.02.2018 roku 🥺 i za kratami tkwi po dziś dzień 😔 Został znaleziony w Łodzi na ul. Pogorzel. Miał wówczas około 3 lat i balast złych doświadczeń. Na szyi przy obroży znajdowała się lysetka z przychodni weterynaryjnej w Ksawerowie, ale nikt nie pofatygował się po swego wiernego przyjaciela 😢 JANEK to pies z charakterkiem, który gdy pokocha, oddaje opiekunowi całe swe serce 💗 Potrzebuje czasu by zaufać nowo poznanym osobom, dać się pogłaskać i czuć swobodnie. W relacjach z psami, po mądrym zapoznaniu, żyje w komitywie. Kojec od dawna dzieli z samcem SAMIM i dogadują się rewelacyjnie. Psiaczek mimo 9 wiosen na karku jest żywiołowy, energiczny, pełen wigoru i zawsze chętny na długi spacer. 🙏 UDOSTĘPNIAMY 🙏 szukamy PILNIE odpowiedzialnej rodziny, która pokaże temu #sŁODZIAKOWI, że życie może być PIĘKNE 🤩 Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 604 532 022 - Magda Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	2b9042d4-47b9-478d-a1d2-ab702baa9130	t	JANEK	MEDIUM	t	DOG	f	t	4
+202	9	f	\N	CUDAK 🐹 szuka domu 🏠 CUDAK do schroniska trafił 9.02.20216 roku z interwencji w Łodzi na ul. Suwalskiej. Został odebrany z tragicznych warunków wraz z 7 innymi psiaczkami. Miał około 7 miesięcy i kompletnie nie znał życia 😔 Nigdy nie wychodził na dwór, nie miał pozytywnego kontaktu z człowiekiem, nie znał dotyku, nie zaznał miłości ani troski. Każdego dnia dziczał i wycofywał się na świat 😢 Początki w schronisku były bardzo trudne ‼ Psy nie wychodziły na wybieg o spacerach nie wspominając. Bał się własnego cienia ale pozytywnie reagował na inne psy. W 2023 roku sprawiał wrażenie nieobecnego. Zaszył się w budzie i nie miał żadnych chęci do życia. Nie wykazywał agresji, ale nie nawiązywał absolutnie żadnej relacji z człowiekiem. PRZEZ LATA NIE BYŁ OGŁASZANY 🥺 nie dano mu szansy na NORMALNE życie 😭 Dział adopcji we współpracy z behawiorystką i wolontariuszami postanowili ZAWALCZYĆ O LEPSZY LOS dla CUDAKA 🐹 Przełom nastąpił w grudniu 2024 roku. Psiaczek został wyciągnięty z kojca i zamieszkał w zwierzętarni 😊 W godzinach pracy biura możecie spotkać #sŁODZIAKA w dziale adopcji 💞 Zgodnie z zaleceniami behawiorystki, stajemy na głowie, aby miał na miarę naszych możliwości systematyczny kontakt z różnymi ludźmi, wychodził kilka razy dziennie na spacery co jest realizowane dzięki WSPANIAŁYM WOLONTARIUSZOM 😍 CUDAK przy osobach które zna, zachowuje się swobodnie. Merda ogonkiem, cieszy się, rozdaje buziaki i łapkami wchodzi na kolanka. Jest WSPANIAŁY, niesamowicie delikatny ale też zagubiony. Powinien zamieszkać u boku spokojnej rodziny, która zrozumie, że psiaczek, który zmarnował 9 lat za kratami potrzebuje czasu na aklimatyzację i budowanie pozytywnej relacji z człowiekiem. Wierzymy, że RAZEM możemy odmienić los tego WSPANIAŁEGO psa. 🙏 UDOSTĘPNIAMY 🙏 Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	7d31371d-2350-4cfc-be91-002fd3f7298b	t	CUDAK	SMALL	t	DOG	f	t	4
+203	10	f	\N	BENY 🐹 szuka domu 🏠 Do schroniska trafił 3.01.2016 roku ‼ Był młodziutkim, około rocznym, bardzo zestresowanym i nieufnym psem znalezionym w Łodzi na ul. Wróblewskiego. Bał się smyczy i od pierwszych dni, kiepsko prezentował się w kojcu, który stał się jego azylem. BENY potrzebuje czasu by zaufać, pokochać i otworzyć się przed nowo poznawanymi osobami. Gdy pokona własny strach, potrafi okazać ogromne zaufanie i przywiązanie do człowieka. Psiaczek obecnie ma około 9 lat a od 8 żyje w schroniskowej rzeczywistości 💔 Prawdopodobnie zmarnował większość życia za kratami 🥺 Jest pogodzony ze swym losem bo trudno tęsknic za nieznanym czy też już dawno zapomnianym domem 😔 Nie pamięta życia innego niż schroniskowa buda i kojec 🥺 a my nie o taką GODNOŚĆ walczymy dla PSYjaciół ‼ BENY ładnie chodzi na smycz. Pozwala założyć sobie kaganiec. Niewątpliwie będzie wymagał nauki poprawnych zachowań w warunkach domowych, bo nawet jeśli kiedyś miał dom, to już zapomniał jak to jest być członkiem rodziny, spać w mięciutkim legowisku, wychodzić systematycznie - kilka razy dziennie na spacery czy też zachowywać czystość w domu. Docelowo powinien zamieszkać u boku spokojnych oraz empatycznych ludzi, którzy pomogą mu odbudować wiarę w człowieka. Osób, które wykażą się cierpliwością podczas nauki i nie poddadzą przy pierwszej nadarzającej się okazji. BENY powinien być psim jedynakiem. 🙏 UDOSTĘPNIAMY 🙏 apel o dom dla weterana Łódzkiego Schroniska Dodatkowych informacji na temat psiaczka udzieli wolontariuszka: ☎ 503 652 679 - Kasia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	f721cf21-d1e1-4ace-85ec-563d139eedad	t	BENY	MEDIUM	f	DOG	f	t	4
+204	12	f	\N	Żuk jest w schronisku od 1.07.2015 roku. Kiedy trafił do schroniska miał około 3 lata. To dziki kot, nie jest oswojony. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi. Ucieka przed człowiekiem, a przyparty do muru reaguje agresją. Oczywiście adopcja kota jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	bd63c672-d1e3-4fa3-85ad-03185711b05a	f	Żuk	MEDIUM	t	CAT	t	f	4
+205	13	f	\N	Diego jest w schronisku od 24.06.2014 roku. Kiedy trafił do schronika miał około 2 lata. To dziki kot, nie jest oswojony. Żyje z innymi kotami w schroniskowej koloni i unika ludzi jak tylko potrafi. Ucieka przed człowiekiem, a przyparty do muru reaguje agresją. Oczywiście adopcja kota jest możliwa, jednak przyszły opiekun musi być świadomy, że oswajanie tego kota może zająć miesiące albo nawet nigdy w pełni nie uda się. Dodatkowych informacji na temat 🐱 udzieli wolontariuszka: ☎ 664 082 739 - Zuzia Kontakt w sprawie adopcji: ☎ 500 099 995 ☎ 501 437 232 ☎ 42 656 78 42 📧 schronisko.adopcje@jst.uml.lodz.pl	MALE	4c9cf3f6-5ed8-4b54-8013-fc45e2f2b8cb	f	DIEGO	MEDIUM	t	CAT	f	t	4
+208	1	f	\N	Samiczka, została znaleziona. Jest oswojona, aczkolwiek trochę nieśmiała.	FEMALE	574408a8-641a-4aa4-8887-decd9dc3354d	t	Luiza	SMALL	f	OTHER	f	f	4
 \.
 
 
@@ -1851,10 +1851,10 @@ COPY public.pets (id, age, is_archived, breed, description, gender, image_name, 
 COPY public.post_image_ids (post_id, image_id) FROM stdin;
 5	5
 5	6
-5	7
-5	8
-7	10
-7	11
+6	7
+6	8
+6	9
+6	10
 \.
 
 
@@ -1875,726 +1875,694 @@ COPY public.posts (id) FROM stdin;
 --
 
 COPY public.reservation_slots (id, end_time, pet_id, reserved_by, start_time, status) FROM stdin;
-1	2025-06-22 10:30:00	5	\N	2025-06-22 10:00:00	AVAILABLE
-2	2025-06-22 14:30:00	5	KlaudiaCzerwinska@petify.org	2025-06-22 14:00:00	RESERVED
-3	2025-06-23 10:30:00	5	\N	2025-06-23 10:00:00	AVAILABLE
-4	2025-06-23 14:30:00	5	\N	2025-06-23 14:00:00	AVAILABLE
-5	2025-06-24 10:30:00	5	\N	2025-06-24 10:00:00	AVAILABLE
-6	2025-06-24 14:30:00	5	MartynBorkowski@petify.org	2025-06-24 14:00:00	RESERVED
-7	2025-06-25 10:30:00	5	\N	2025-06-25 10:00:00	AVAILABLE
-8	2025-06-25 14:30:00	5	\N	2025-06-25 14:00:00	AVAILABLE
-9	2025-06-26 10:30:00	5	GrzegorzPiotrowski@petify.org	2025-06-26 10:00:00	RESERVED
-10	2025-06-26 14:30:00	5	LeokadiaKozlowska@petify.org	2025-06-26 14:00:00	RESERVED
-11	2025-06-27 10:30:00	5	\N	2025-06-27 10:00:00	AVAILABLE
-12	2025-06-27 14:30:00	5	\N	2025-06-27 14:00:00	AVAILABLE
-13	2025-06-28 10:30:00	5	\N	2025-06-28 10:00:00	AVAILABLE
-14	2025-06-28 14:30:00	5	\N	2025-06-28 14:00:00	AVAILABLE
-15	2025-06-29 10:30:00	5	\N	2025-06-29 10:00:00	AVAILABLE
-16	2025-06-29 14:30:00	5	JarekOstrowski@petify.org	2025-06-29 14:00:00	RESERVED
-17	2025-06-30 10:30:00	5	\N	2025-06-30 10:00:00	AVAILABLE
-18	2025-06-30 14:30:00	5	\N	2025-06-30 14:00:00	AVAILABLE
-19	2025-06-22 10:30:00	6	JulitaSymanska@petify.org	2025-06-22 10:00:00	RESERVED
-20	2025-06-22 14:30:00	6	StanislawKaczmarek@petify.org	2025-06-22 14:00:00	RESERVED
-21	2025-06-22 18:30:00	6	\N	2025-06-22 18:00:00	AVAILABLE
-22	2025-06-23 10:30:00	6	\N	2025-06-23 10:00:00	AVAILABLE
-23	2025-06-23 14:30:00	6	IzoldaKaminska@petify.org	2025-06-23 14:00:00	RESERVED
-24	2025-06-23 18:30:00	6	\N	2025-06-23 18:00:00	AVAILABLE
-25	2025-06-24 10:30:00	6	\N	2025-06-24 10:00:00	AVAILABLE
-26	2025-06-24 14:30:00	6	\N	2025-06-24 14:00:00	AVAILABLE
-27	2025-06-24 18:30:00	6	\N	2025-06-24 18:00:00	AVAILABLE
-28	2025-06-25 10:30:00	6	\N	2025-06-25 10:00:00	AVAILABLE
-29	2025-06-25 14:30:00	6	\N	2025-06-25 14:00:00	AVAILABLE
-30	2025-06-25 18:30:00	6	\N	2025-06-25 18:00:00	AVAILABLE
-31	2025-06-26 10:30:00	6	\N	2025-06-26 10:00:00	AVAILABLE
-32	2025-06-26 14:30:00	6	LeokadiaKozlowska@petify.org	2025-06-26 14:00:00	RESERVED
-33	2025-06-26 18:30:00	6	\N	2025-06-26 18:00:00	AVAILABLE
-34	2025-06-27 10:30:00	6	\N	2025-06-27 10:00:00	AVAILABLE
-35	2025-06-27 14:30:00	6	\N	2025-06-27 14:00:00	AVAILABLE
-36	2025-06-27 18:30:00	6	\N	2025-06-27 18:00:00	AVAILABLE
-37	2025-06-28 10:30:00	6	\N	2025-06-28 10:00:00	AVAILABLE
-38	2025-06-28 14:30:00	6	\N	2025-06-28 14:00:00	AVAILABLE
-39	2025-06-28 18:30:00	6	\N	2025-06-28 18:00:00	AVAILABLE
-40	2025-06-29 10:30:00	6	\N	2025-06-29 10:00:00	AVAILABLE
-41	2025-06-29 14:30:00	6	StanislawKaczmarek@petify.org	2025-06-29 14:00:00	RESERVED
-42	2025-06-29 18:30:00	6	GrzegorzPiotrowski@petify.org	2025-06-29 18:00:00	RESERVED
-43	2025-06-30 10:30:00	6	\N	2025-06-30 10:00:00	AVAILABLE
-44	2025-06-30 14:30:00	6	HalinaDabrowski@petify.org	2025-06-30 14:00:00	RESERVED
-45	2025-06-30 18:30:00	6	\N	2025-06-30 18:00:00	AVAILABLE
-46	2025-06-22 10:30:00	8	\N	2025-06-22 10:00:00	AVAILABLE
-47	2025-06-22 14:30:00	8	\N	2025-06-22 14:00:00	AVAILABLE
-48	2025-06-22 18:30:00	8	\N	2025-06-22 18:00:00	AVAILABLE
-49	2025-06-23 10:30:00	8	\N	2025-06-23 10:00:00	AVAILABLE
-50	2025-06-23 14:30:00	8	\N	2025-06-23 14:00:00	AVAILABLE
-51	2025-06-23 18:30:00	8	JaromirKrol@petify.org	2025-06-23 18:00:00	RESERVED
-52	2025-06-24 10:30:00	8	\N	2025-06-24 10:00:00	AVAILABLE
-53	2025-06-24 14:30:00	8	\N	2025-06-24 14:00:00	AVAILABLE
-54	2025-06-24 18:30:00	8	MartynBorkowski@petify.org	2025-06-24 18:00:00	RESERVED
-55	2025-06-25 10:30:00	8	\N	2025-06-25 10:00:00	AVAILABLE
-56	2025-06-25 14:30:00	8	RaclawJasinski@petify.org	2025-06-25 14:00:00	RESERVED
-57	2025-06-25 18:30:00	8	\N	2025-06-25 18:00:00	AVAILABLE
-58	2025-06-26 10:30:00	8	\N	2025-06-26 10:00:00	AVAILABLE
-59	2025-06-26 14:30:00	8	\N	2025-06-26 14:00:00	AVAILABLE
-60	2025-06-26 18:30:00	8	\N	2025-06-26 18:00:00	AVAILABLE
-61	2025-06-27 10:30:00	8	\N	2025-06-27 10:00:00	AVAILABLE
-62	2025-06-27 14:30:00	8	EwaWozniak@petify.org	2025-06-27 14:00:00	RESERVED
-63	2025-06-27 18:30:00	8	\N	2025-06-27 18:00:00	AVAILABLE
-64	2025-06-28 10:30:00	8	\N	2025-06-28 10:00:00	AVAILABLE
-65	2025-06-28 14:30:00	8	\N	2025-06-28 14:00:00	AVAILABLE
-66	2025-06-28 18:30:00	8	WielislawAdamczyk@petify.org	2025-06-28 18:00:00	RESERVED
-67	2025-06-29 10:30:00	8	\N	2025-06-29 10:00:00	AVAILABLE
-68	2025-06-29 14:30:00	8	\N	2025-06-29 14:00:00	AVAILABLE
-69	2025-06-29 18:30:00	8	\N	2025-06-29 18:00:00	AVAILABLE
-70	2025-06-30 10:30:00	8	\N	2025-06-30 10:00:00	AVAILABLE
-71	2025-06-30 14:30:00	8	\N	2025-06-30 14:00:00	AVAILABLE
-72	2025-06-30 18:30:00	8	\N	2025-06-30 18:00:00	AVAILABLE
-73	2025-06-22 10:30:00	12	\N	2025-06-22 10:00:00	AVAILABLE
-74	2025-06-22 14:30:00	12	\N	2025-06-22 14:00:00	AVAILABLE
-75	2025-06-22 18:30:00	12	\N	2025-06-22 18:00:00	AVAILABLE
-76	2025-06-23 10:30:00	12	\N	2025-06-23 10:00:00	AVAILABLE
-77	2025-06-23 14:30:00	12	\N	2025-06-23 14:00:00	AVAILABLE
-78	2025-06-23 18:30:00	12	\N	2025-06-23 18:00:00	AVAILABLE
-79	2025-06-24 10:30:00	12	\N	2025-06-24 10:00:00	AVAILABLE
-80	2025-06-24 14:30:00	12	StanislawKaczmarek@petify.org	2025-06-24 14:00:00	RESERVED
-81	2025-06-24 18:30:00	12	\N	2025-06-24 18:00:00	AVAILABLE
-82	2025-06-25 10:30:00	12	\N	2025-06-25 10:00:00	AVAILABLE
-83	2025-06-25 14:30:00	12	\N	2025-06-25 14:00:00	AVAILABLE
-84	2025-06-25 18:30:00	12	AdamAdamczyk@petify.org	2025-06-25 18:00:00	RESERVED
-85	2025-06-26 10:30:00	12	\N	2025-06-26 10:00:00	AVAILABLE
-86	2025-06-26 14:30:00	12	HalinaDabrowski@petify.org	2025-06-26 14:00:00	RESERVED
-87	2025-06-26 18:30:00	12	\N	2025-06-26 18:00:00	AVAILABLE
-88	2025-06-27 10:30:00	12	\N	2025-06-27 10:00:00	AVAILABLE
-89	2025-06-27 14:30:00	12	\N	2025-06-27 14:00:00	AVAILABLE
-90	2025-06-27 18:30:00	12	WiolettaKozlowska@petify.org	2025-06-27 18:00:00	RESERVED
-91	2025-06-28 10:30:00	12	\N	2025-06-28 10:00:00	AVAILABLE
-92	2025-06-28 14:30:00	12	WielislawAdamczyk@petify.org	2025-06-28 14:00:00	RESERVED
-93	2025-06-28 18:30:00	12	KrysiaMichalska@petify.org	2025-06-28 18:00:00	RESERVED
-94	2025-06-29 10:30:00	12	\N	2025-06-29 10:00:00	AVAILABLE
-95	2025-06-29 14:30:00	12	WalerianOstrowski@petify.org	2025-06-29 14:00:00	RESERVED
-96	2025-06-29 18:30:00	12	\N	2025-06-29 18:00:00	AVAILABLE
-104	2025-06-24 10:30:00	17	\N	2025-06-24 10:00:00	AVAILABLE
-112	2025-06-28 10:30:00	17	\N	2025-06-28 10:00:00	AVAILABLE
-128	2025-06-25 14:30:00	18	\N	2025-06-25 14:00:00	AVAILABLE
-137	2025-06-28 14:30:00	18	\N	2025-06-28 14:00:00	AVAILABLE
-147	2025-06-23 10:30:00	19	\N	2025-06-23 10:00:00	AVAILABLE
-155	2025-06-27 10:30:00	19	\N	2025-06-27 10:00:00	AVAILABLE
-164	2025-06-22 14:30:00	20	\N	2025-06-22 14:00:00	AVAILABLE
-174	2025-06-25 18:30:00	20	\N	2025-06-25 18:00:00	AVAILABLE
-183	2025-06-28 18:30:00	20	GawelWozniak@petify.org	2025-06-28 18:00:00	RESERVED
-191	2025-06-22 14:30:00	21	\N	2025-06-22 14:00:00	AVAILABLE
-199	2025-06-26 14:30:00	21	\N	2025-06-26 14:00:00	AVAILABLE
-208	2025-06-22 10:30:00	22	JulitaSymanska@petify.org	2025-06-22 10:00:00	RESERVED
-225	2025-06-27 18:30:00	22	\N	2025-06-27 18:00:00	AVAILABLE
-233	2025-06-30 14:30:00	22	\N	2025-06-30 14:00:00	AVAILABLE
-241	2025-06-25 10:30:00	23	\N	2025-06-25 10:00:00	AVAILABLE
-249	2025-06-29 10:30:00	23	MartynBorkowski@petify.org	2025-06-29 10:00:00	RESERVED
-257	2025-06-24 10:30:00	25	\N	2025-06-24 10:00:00	AVAILABLE
-273	2025-06-22 18:30:00	26	\N	2025-06-22 18:00:00	AVAILABLE
-282	2025-06-25 18:30:00	26	\N	2025-06-25 18:00:00	AVAILABLE
-290	2025-06-28 14:30:00	26	\N	2025-06-28 14:00:00	AVAILABLE
-307	2025-06-26 14:30:00	55	EwaWozniak@petify.org	2025-06-26 14:00:00	RESERVED
-314	2025-06-30 10:30:00	55	\N	2025-06-30 10:00:00	AVAILABLE
-324	2025-06-24 18:30:00	56	\N	2025-06-24 18:00:00	AVAILABLE
-333	2025-06-27 18:30:00	56	\N	2025-06-27 18:00:00	AVAILABLE
-340	2025-06-30 10:30:00	56	\N	2025-06-30 10:00:00	AVAILABLE
-348	2025-06-24 14:30:00	27	\N	2025-06-24 14:00:00	AVAILABLE
-355	2025-06-28 10:30:00	27	\N	2025-06-28 10:00:00	AVAILABLE
-364	2025-06-23 10:30:00	28	\N	2025-06-23 10:00:00	AVAILABLE
-372	2025-06-25 18:30:00	28	\N	2025-06-25 18:00:00	AVAILABLE
-382	2025-06-29 10:30:00	28	\N	2025-06-29 10:00:00	AVAILABLE
-389	2025-06-22 14:30:00	29	\N	2025-06-22 14:00:00	AVAILABLE
-396	2025-06-26 10:30:00	29	\N	2025-06-26 10:00:00	AVAILABLE
-405	2025-06-30 14:30:00	29	\N	2025-06-30 14:00:00	AVAILABLE
-413	2025-06-24 14:30:00	30	\N	2025-06-24 14:00:00	AVAILABLE
-421	2025-06-27 10:30:00	30	\N	2025-06-27 10:00:00	AVAILABLE
-430	2025-06-30 10:30:00	30	ZdzislawaJasinska@petify.org	2025-06-30 10:00:00	RESERVED
-437	2025-06-24 10:30:00	31	HalinaDabrowski@petify.org	2025-06-24 10:00:00	RESERVED
-446	2025-06-28 14:30:00	31	WiolettaKozlowska@petify.org	2025-06-28 14:00:00	RESERVED
-462	2025-06-27 14:30:00	45	\N	2025-06-27 14:00:00	AVAILABLE
-472	2025-06-23 10:30:00	46	AdamAdamczyk@petify.org	2025-06-23 10:00:00	RESERVED
-480	2025-06-25 18:30:00	46	\N	2025-06-25 18:00:00	AVAILABLE
-488	2025-06-28 14:30:00	46	ZdzislawaJasinska@petify.org	2025-06-28 14:00:00	RESERVED
-495	2025-06-30 18:30:00	46	\N	2025-06-30 18:00:00	AVAILABLE
-97	2025-06-30 10:30:00	12	JaromirKrol@petify.org	2025-06-30 10:00:00	RESERVED
-98	2025-06-30 14:30:00	12	\N	2025-06-30 14:00:00	AVAILABLE
-99	2025-06-30 18:30:00	12	\N	2025-06-30 18:00:00	AVAILABLE
-100	2025-06-22 10:30:00	17	\N	2025-06-22 10:00:00	AVAILABLE
-101	2025-06-22 14:30:00	17	WielislawAdamczyk@petify.org	2025-06-22 14:00:00	RESERVED
-102	2025-06-23 10:30:00	17	\N	2025-06-23 10:00:00	AVAILABLE
-103	2025-06-23 14:30:00	17	\N	2025-06-23 14:00:00	AVAILABLE
-105	2025-06-24 14:30:00	17	\N	2025-06-24 14:00:00	AVAILABLE
-106	2025-06-25 10:30:00	17	KrysiaMichalska@petify.org	2025-06-25 10:00:00	RESERVED
-107	2025-06-25 14:30:00	17	\N	2025-06-25 14:00:00	AVAILABLE
-108	2025-06-26 10:30:00	17	\N	2025-06-26 10:00:00	AVAILABLE
-109	2025-06-26 14:30:00	17	HalinaDabrowski@petify.org	2025-06-26 14:00:00	RESERVED
-110	2025-06-27 10:30:00	17	\N	2025-06-27 10:00:00	AVAILABLE
-111	2025-06-27 14:30:00	17	\N	2025-06-27 14:00:00	AVAILABLE
-113	2025-06-28 14:30:00	17	AdamAdamczyk@petify.org	2025-06-28 14:00:00	RESERVED
-114	2025-06-29 10:30:00	17	\N	2025-06-29 10:00:00	AVAILABLE
-115	2025-06-29 14:30:00	17	\N	2025-06-29 14:00:00	AVAILABLE
-116	2025-06-30 10:30:00	17	JaromirKrol@petify.org	2025-06-30 10:00:00	RESERVED
-117	2025-06-30 14:30:00	17	\N	2025-06-30 14:00:00	AVAILABLE
-118	2025-06-22 10:30:00	18	\N	2025-06-22 10:00:00	AVAILABLE
-119	2025-06-22 14:30:00	18	HalinaDabrowski@petify.org	2025-06-22 14:00:00	RESERVED
-120	2025-06-22 18:30:00	18	\N	2025-06-22 18:00:00	AVAILABLE
-121	2025-06-23 10:30:00	18	\N	2025-06-23 10:00:00	AVAILABLE
-122	2025-06-23 14:30:00	18	\N	2025-06-23 14:00:00	AVAILABLE
-123	2025-06-23 18:30:00	18	HieronimZielinski@petify.org	2025-06-23 18:00:00	RESERVED
-124	2025-06-24 10:30:00	18	\N	2025-06-24 10:00:00	AVAILABLE
-125	2025-06-24 14:30:00	18	\N	2025-06-24 14:00:00	AVAILABLE
-126	2025-06-24 18:30:00	18	\N	2025-06-24 18:00:00	AVAILABLE
-127	2025-06-25 10:30:00	18	\N	2025-06-25 10:00:00	AVAILABLE
-129	2025-06-25 18:30:00	18	\N	2025-06-25 18:00:00	AVAILABLE
-130	2025-06-26 10:30:00	18	\N	2025-06-26 10:00:00	AVAILABLE
-131	2025-06-26 14:30:00	18	\N	2025-06-26 14:00:00	AVAILABLE
-132	2025-06-26 18:30:00	18	\N	2025-06-26 18:00:00	AVAILABLE
-133	2025-06-27 10:30:00	18	\N	2025-06-27 10:00:00	AVAILABLE
-134	2025-06-27 14:30:00	18	\N	2025-06-27 14:00:00	AVAILABLE
-135	2025-06-27 18:30:00	18	KlaudiaCzerwinska@petify.org	2025-06-27 18:00:00	RESERVED
-136	2025-06-28 10:30:00	18	\N	2025-06-28 10:00:00	AVAILABLE
-138	2025-06-28 18:30:00	18	\N	2025-06-28 18:00:00	AVAILABLE
-139	2025-06-29 10:30:00	18	\N	2025-06-29 10:00:00	AVAILABLE
-140	2025-06-29 14:30:00	18	\N	2025-06-29 14:00:00	AVAILABLE
-141	2025-06-29 18:30:00	18	\N	2025-06-29 18:00:00	AVAILABLE
-142	2025-06-30 10:30:00	18	\N	2025-06-30 10:00:00	AVAILABLE
-143	2025-06-30 14:30:00	18	\N	2025-06-30 14:00:00	AVAILABLE
-144	2025-06-30 18:30:00	18	\N	2025-06-30 18:00:00	AVAILABLE
-145	2025-06-22 10:30:00	19	\N	2025-06-22 10:00:00	AVAILABLE
-146	2025-06-22 14:30:00	19	\N	2025-06-22 14:00:00	AVAILABLE
-148	2025-06-23 14:30:00	19	\N	2025-06-23 14:00:00	AVAILABLE
-149	2025-06-24 10:30:00	19	\N	2025-06-24 10:00:00	AVAILABLE
-150	2025-06-24 14:30:00	19	\N	2025-06-24 14:00:00	AVAILABLE
-151	2025-06-25 10:30:00	19	\N	2025-06-25 10:00:00	AVAILABLE
-152	2025-06-25 14:30:00	19	\N	2025-06-25 14:00:00	AVAILABLE
-153	2025-06-26 10:30:00	19	StanislawKaczmarek@petify.org	2025-06-26 10:00:00	RESERVED
-154	2025-06-26 14:30:00	19	JulitaSymanska@petify.org	2025-06-26 14:00:00	RESERVED
-156	2025-06-27 14:30:00	19	\N	2025-06-27 14:00:00	AVAILABLE
-157	2025-06-28 10:30:00	19	\N	2025-06-28 10:00:00	AVAILABLE
-158	2025-06-28 14:30:00	19	\N	2025-06-28 14:00:00	AVAILABLE
-159	2025-06-29 10:30:00	19	\N	2025-06-29 10:00:00	AVAILABLE
-160	2025-06-29 14:30:00	19	GrzegorzPiotrowski@petify.org	2025-06-29 14:00:00	RESERVED
-161	2025-06-30 10:30:00	19	\N	2025-06-30 10:00:00	AVAILABLE
-162	2025-06-30 14:30:00	19	\N	2025-06-30 14:00:00	AVAILABLE
-163	2025-06-22 10:30:00	20	\N	2025-06-22 10:00:00	AVAILABLE
-165	2025-06-22 18:30:00	20	\N	2025-06-22 18:00:00	AVAILABLE
-166	2025-06-23 10:30:00	20	\N	2025-06-23 10:00:00	AVAILABLE
-167	2025-06-23 14:30:00	20	\N	2025-06-23 14:00:00	AVAILABLE
-168	2025-06-23 18:30:00	20	\N	2025-06-23 18:00:00	AVAILABLE
-169	2025-06-24 10:30:00	20	\N	2025-06-24 10:00:00	AVAILABLE
-170	2025-06-24 14:30:00	20	\N	2025-06-24 14:00:00	AVAILABLE
-171	2025-06-24 18:30:00	20	\N	2025-06-24 18:00:00	AVAILABLE
-172	2025-06-25 10:30:00	20	\N	2025-06-25 10:00:00	AVAILABLE
-173	2025-06-25 14:30:00	20	\N	2025-06-25 14:00:00	AVAILABLE
-175	2025-06-26 10:30:00	20	\N	2025-06-26 10:00:00	AVAILABLE
-176	2025-06-26 14:30:00	20	\N	2025-06-26 14:00:00	AVAILABLE
-177	2025-06-26 18:30:00	20	JulitaSymanska@petify.org	2025-06-26 18:00:00	RESERVED
-178	2025-06-27 10:30:00	20	\N	2025-06-27 10:00:00	AVAILABLE
-179	2025-06-27 14:30:00	20	\N	2025-06-27 14:00:00	AVAILABLE
-180	2025-06-27 18:30:00	20	\N	2025-06-27 18:00:00	AVAILABLE
-181	2025-06-28 10:30:00	20	\N	2025-06-28 10:00:00	AVAILABLE
-182	2025-06-28 14:30:00	20	\N	2025-06-28 14:00:00	AVAILABLE
-184	2025-06-29 10:30:00	20	\N	2025-06-29 10:00:00	AVAILABLE
-185	2025-06-29 14:30:00	20	\N	2025-06-29 14:00:00	AVAILABLE
-186	2025-06-29 18:30:00	20	WalerianOstrowski@petify.org	2025-06-29 18:00:00	RESERVED
-187	2025-06-30 10:30:00	20	\N	2025-06-30 10:00:00	AVAILABLE
-188	2025-06-30 14:30:00	20	\N	2025-06-30 14:00:00	AVAILABLE
-189	2025-06-30 18:30:00	20	\N	2025-06-30 18:00:00	AVAILABLE
-190	2025-06-22 10:30:00	21	\N	2025-06-22 10:00:00	AVAILABLE
-192	2025-06-23 10:30:00	21	KrysiaMichalska@petify.org	2025-06-23 10:00:00	RESERVED
-193	2025-06-23 14:30:00	21	\N	2025-06-23 14:00:00	AVAILABLE
-194	2025-06-24 10:30:00	21	\N	2025-06-24 10:00:00	AVAILABLE
-195	2025-06-24 14:30:00	21	GawelWozniak@petify.org	2025-06-24 14:00:00	RESERVED
-196	2025-06-25 10:30:00	21	\N	2025-06-25 10:00:00	AVAILABLE
-197	2025-06-25 14:30:00	21	\N	2025-06-25 14:00:00	AVAILABLE
-198	2025-06-26 10:30:00	21	\N	2025-06-26 10:00:00	AVAILABLE
-200	2025-06-27 10:30:00	21	\N	2025-06-27 10:00:00	AVAILABLE
-201	2025-06-27 14:30:00	21	\N	2025-06-27 14:00:00	AVAILABLE
-202	2025-06-28 10:30:00	21	\N	2025-06-28 10:00:00	AVAILABLE
-203	2025-06-28 14:30:00	21	\N	2025-06-28 14:00:00	AVAILABLE
-204	2025-06-29 10:30:00	21	\N	2025-06-29 10:00:00	AVAILABLE
-205	2025-06-29 14:30:00	21	JulitaSymanska@petify.org	2025-06-29 14:00:00	RESERVED
-206	2025-06-30 10:30:00	21	\N	2025-06-30 10:00:00	AVAILABLE
-207	2025-06-30 14:30:00	21	\N	2025-06-30 14:00:00	AVAILABLE
-209	2025-06-22 14:30:00	22	\N	2025-06-22 14:00:00	AVAILABLE
-210	2025-06-22 18:30:00	22	\N	2025-06-22 18:00:00	AVAILABLE
-211	2025-06-23 10:30:00	22	\N	2025-06-23 10:00:00	AVAILABLE
-212	2025-06-23 14:30:00	22	\N	2025-06-23 14:00:00	AVAILABLE
-213	2025-06-23 18:30:00	22	\N	2025-06-23 18:00:00	AVAILABLE
-214	2025-06-24 10:30:00	22	\N	2025-06-24 10:00:00	AVAILABLE
-215	2025-06-24 14:30:00	22	\N	2025-06-24 14:00:00	AVAILABLE
-216	2025-06-24 18:30:00	22	GrzegorzPiotrowski@petify.org	2025-06-24 18:00:00	RESERVED
-217	2025-06-25 10:30:00	22	\N	2025-06-25 10:00:00	AVAILABLE
-218	2025-06-25 14:30:00	22	\N	2025-06-25 14:00:00	AVAILABLE
-219	2025-06-25 18:30:00	22	\N	2025-06-25 18:00:00	AVAILABLE
-220	2025-06-26 10:30:00	22	\N	2025-06-26 10:00:00	AVAILABLE
-221	2025-06-26 14:30:00	22	HieronimZielinski@petify.org	2025-06-26 14:00:00	RESERVED
-222	2025-06-26 18:30:00	22	\N	2025-06-26 18:00:00	AVAILABLE
-223	2025-06-27 10:30:00	22	\N	2025-06-27 10:00:00	AVAILABLE
-224	2025-06-27 14:30:00	22	\N	2025-06-27 14:00:00	AVAILABLE
-226	2025-06-28 10:30:00	22	\N	2025-06-28 10:00:00	AVAILABLE
-227	2025-06-28 14:30:00	22	\N	2025-06-28 14:00:00	AVAILABLE
-228	2025-06-28 18:30:00	22	\N	2025-06-28 18:00:00	AVAILABLE
-229	2025-06-29 10:30:00	22	\N	2025-06-29 10:00:00	AVAILABLE
-230	2025-06-29 14:30:00	22	\N	2025-06-29 14:00:00	AVAILABLE
-231	2025-06-29 18:30:00	22	JulitaSymanska@petify.org	2025-06-29 18:00:00	RESERVED
-232	2025-06-30 10:30:00	22	GrzegorzPiotrowski@petify.org	2025-06-30 10:00:00	RESERVED
-234	2025-06-30 18:30:00	22	\N	2025-06-30 18:00:00	AVAILABLE
-235	2025-06-22 10:30:00	23	\N	2025-06-22 10:00:00	AVAILABLE
-236	2025-06-22 14:30:00	23	\N	2025-06-22 14:00:00	AVAILABLE
-237	2025-06-23 10:30:00	23	LeokadiaKozlowska@petify.org	2025-06-23 10:00:00	RESERVED
-238	2025-06-23 14:30:00	23	\N	2025-06-23 14:00:00	AVAILABLE
-239	2025-06-24 10:30:00	23	\N	2025-06-24 10:00:00	AVAILABLE
-240	2025-06-24 14:30:00	23	GawelWozniak@petify.org	2025-06-24 14:00:00	RESERVED
-242	2025-06-25 14:30:00	23	\N	2025-06-25 14:00:00	AVAILABLE
-243	2025-06-26 10:30:00	23	IzoldaKaminska@petify.org	2025-06-26 10:00:00	RESERVED
-244	2025-06-26 14:30:00	23	\N	2025-06-26 14:00:00	AVAILABLE
-245	2025-06-27 10:30:00	23	JulitaSymanska@petify.org	2025-06-27 10:00:00	RESERVED
-246	2025-06-27 14:30:00	23	\N	2025-06-27 14:00:00	AVAILABLE
-247	2025-06-28 10:30:00	23	\N	2025-06-28 10:00:00	AVAILABLE
-248	2025-06-28 14:30:00	23	\N	2025-06-28 14:00:00	AVAILABLE
-250	2025-06-29 14:30:00	23	\N	2025-06-29 14:00:00	AVAILABLE
-251	2025-06-30 10:30:00	23	\N	2025-06-30 10:00:00	AVAILABLE
-252	2025-06-30 14:30:00	23	\N	2025-06-30 14:00:00	AVAILABLE
-253	2025-06-22 10:30:00	25	\N	2025-06-22 10:00:00	AVAILABLE
-254	2025-06-22 14:30:00	25	HalinaDabrowski@petify.org	2025-06-22 14:00:00	RESERVED
-255	2025-06-23 10:30:00	25	\N	2025-06-23 10:00:00	AVAILABLE
-256	2025-06-23 14:30:00	25	\N	2025-06-23 14:00:00	AVAILABLE
-258	2025-06-24 14:30:00	25	GrzegorzPiotrowski@petify.org	2025-06-24 14:00:00	RESERVED
-259	2025-06-25 10:30:00	25	\N	2025-06-25 10:00:00	AVAILABLE
-260	2025-06-25 14:30:00	25	\N	2025-06-25 14:00:00	AVAILABLE
-261	2025-06-26 10:30:00	25	WielislawAdamczyk@petify.org	2025-06-26 10:00:00	RESERVED
-262	2025-06-26 14:30:00	25	\N	2025-06-26 14:00:00	AVAILABLE
-263	2025-06-27 10:30:00	25	\N	2025-06-27 10:00:00	AVAILABLE
-264	2025-06-27 14:30:00	25	JulitaSymanska@petify.org	2025-06-27 14:00:00	RESERVED
-265	2025-06-28 10:30:00	25	\N	2025-06-28 10:00:00	AVAILABLE
-266	2025-06-28 14:30:00	25	\N	2025-06-28 14:00:00	AVAILABLE
-267	2025-06-29 10:30:00	25	\N	2025-06-29 10:00:00	AVAILABLE
-268	2025-06-29 14:30:00	25	\N	2025-06-29 14:00:00	AVAILABLE
-269	2025-06-30 10:30:00	25	ZdzislawaJasinska@petify.org	2025-06-30 10:00:00	RESERVED
-270	2025-06-30 14:30:00	25	\N	2025-06-30 14:00:00	AVAILABLE
-271	2025-06-22 10:30:00	26	\N	2025-06-22 10:00:00	AVAILABLE
-272	2025-06-22 14:30:00	26	\N	2025-06-22 14:00:00	AVAILABLE
-274	2025-06-23 10:30:00	26	\N	2025-06-23 10:00:00	AVAILABLE
-275	2025-06-23 14:30:00	26	JulitaSymanska@petify.org	2025-06-23 14:00:00	RESERVED
-276	2025-06-23 18:30:00	26	\N	2025-06-23 18:00:00	AVAILABLE
-277	2025-06-24 10:30:00	26	\N	2025-06-24 10:00:00	AVAILABLE
-278	2025-06-24 14:30:00	26	\N	2025-06-24 14:00:00	AVAILABLE
-279	2025-06-24 18:30:00	26	\N	2025-06-24 18:00:00	AVAILABLE
-280	2025-06-25 10:30:00	26	\N	2025-06-25 10:00:00	AVAILABLE
-281	2025-06-25 14:30:00	26	\N	2025-06-25 14:00:00	AVAILABLE
-283	2025-06-26 10:30:00	26	\N	2025-06-26 10:00:00	AVAILABLE
-284	2025-06-26 14:30:00	26	KrysiaMichalska@petify.org	2025-06-26 14:00:00	RESERVED
-285	2025-06-26 18:30:00	26	\N	2025-06-26 18:00:00	AVAILABLE
-286	2025-06-27 10:30:00	26	\N	2025-06-27 10:00:00	AVAILABLE
-287	2025-06-27 14:30:00	26	StanislawKaczmarek@petify.org	2025-06-27 14:00:00	RESERVED
-288	2025-06-27 18:30:00	26	\N	2025-06-27 18:00:00	AVAILABLE
-289	2025-06-28 10:30:00	26	\N	2025-06-28 10:00:00	AVAILABLE
-291	2025-06-28 18:30:00	26	\N	2025-06-28 18:00:00	AVAILABLE
-292	2025-06-29 10:30:00	26	\N	2025-06-29 10:00:00	AVAILABLE
-293	2025-06-29 14:30:00	26	\N	2025-06-29 14:00:00	AVAILABLE
-294	2025-06-29 18:30:00	26	\N	2025-06-29 18:00:00	AVAILABLE
-295	2025-06-30 10:30:00	26	\N	2025-06-30 10:00:00	AVAILABLE
-296	2025-06-30 14:30:00	26	MartynBorkowski@petify.org	2025-06-30 14:00:00	RESERVED
-297	2025-06-30 18:30:00	26	\N	2025-06-30 18:00:00	AVAILABLE
-298	2025-06-22 10:30:00	55	MartynBorkowski@petify.org	2025-06-22 10:00:00	RESERVED
-299	2025-06-22 14:30:00	55	\N	2025-06-22 14:00:00	AVAILABLE
-300	2025-06-23 10:30:00	55	\N	2025-06-23 10:00:00	AVAILABLE
-301	2025-06-23 14:30:00	55	\N	2025-06-23 14:00:00	AVAILABLE
-302	2025-06-24 10:30:00	55	\N	2025-06-24 10:00:00	AVAILABLE
-303	2025-06-24 14:30:00	55	\N	2025-06-24 14:00:00	AVAILABLE
-304	2025-06-25 10:30:00	55	\N	2025-06-25 10:00:00	AVAILABLE
-305	2025-06-25 14:30:00	55	GrzegorzPiotrowski@petify.org	2025-06-25 14:00:00	RESERVED
-306	2025-06-26 10:30:00	55	\N	2025-06-26 10:00:00	AVAILABLE
-308	2025-06-27 10:30:00	55	\N	2025-06-27 10:00:00	AVAILABLE
-309	2025-06-27 14:30:00	55	\N	2025-06-27 14:00:00	AVAILABLE
-310	2025-06-28 10:30:00	55	GrzegorzPiotrowski@petify.org	2025-06-28 10:00:00	RESERVED
-311	2025-06-28 14:30:00	55	\N	2025-06-28 14:00:00	AVAILABLE
-312	2025-06-29 10:30:00	55	\N	2025-06-29 10:00:00	AVAILABLE
-313	2025-06-29 14:30:00	55	LeokadiaKozlowska@petify.org	2025-06-29 14:00:00	RESERVED
-315	2025-06-30 14:30:00	55	\N	2025-06-30 14:00:00	AVAILABLE
-316	2025-06-22 10:30:00	56	\N	2025-06-22 10:00:00	AVAILABLE
-317	2025-06-22 14:30:00	56	\N	2025-06-22 14:00:00	AVAILABLE
-318	2025-06-22 18:30:00	56	\N	2025-06-22 18:00:00	AVAILABLE
-319	2025-06-23 10:30:00	56	\N	2025-06-23 10:00:00	AVAILABLE
-320	2025-06-23 14:30:00	56	\N	2025-06-23 14:00:00	AVAILABLE
-321	2025-06-23 18:30:00	56	\N	2025-06-23 18:00:00	AVAILABLE
-322	2025-06-24 10:30:00	56	\N	2025-06-24 10:00:00	AVAILABLE
-323	2025-06-24 14:30:00	56	\N	2025-06-24 14:00:00	AVAILABLE
-325	2025-06-25 10:30:00	56	\N	2025-06-25 10:00:00	AVAILABLE
-326	2025-06-25 14:30:00	56	\N	2025-06-25 14:00:00	AVAILABLE
-327	2025-06-25 18:30:00	56	HieronimZielinski@petify.org	2025-06-25 18:00:00	RESERVED
-328	2025-06-26 10:30:00	56	\N	2025-06-26 10:00:00	AVAILABLE
-329	2025-06-26 14:30:00	56	\N	2025-06-26 14:00:00	AVAILABLE
-330	2025-06-26 18:30:00	56	\N	2025-06-26 18:00:00	AVAILABLE
-331	2025-06-27 10:30:00	56	\N	2025-06-27 10:00:00	AVAILABLE
-332	2025-06-27 14:30:00	56	\N	2025-06-27 14:00:00	AVAILABLE
-334	2025-06-28 10:30:00	56	KrysiaMichalska@petify.org	2025-06-28 10:00:00	RESERVED
-335	2025-06-28 14:30:00	56	\N	2025-06-28 14:00:00	AVAILABLE
-336	2025-06-28 18:30:00	56	\N	2025-06-28 18:00:00	AVAILABLE
-337	2025-06-29 10:30:00	56	ZdzislawaJasinska@petify.org	2025-06-29 10:00:00	RESERVED
-338	2025-06-29 14:30:00	56	HieronimZielinski@petify.org	2025-06-29 14:00:00	RESERVED
-339	2025-06-29 18:30:00	56	\N	2025-06-29 18:00:00	AVAILABLE
-341	2025-06-30 14:30:00	56	\N	2025-06-30 14:00:00	AVAILABLE
-342	2025-06-30 18:30:00	56	\N	2025-06-30 18:00:00	AVAILABLE
-343	2025-06-22 10:30:00	27	StanislawKaczmarek@petify.org	2025-06-22 10:00:00	RESERVED
-344	2025-06-22 14:30:00	27	JulitaSymanska@petify.org	2025-06-22 14:00:00	RESERVED
-345	2025-06-23 10:30:00	27	\N	2025-06-23 10:00:00	AVAILABLE
-346	2025-06-23 14:30:00	27	\N	2025-06-23 14:00:00	AVAILABLE
-347	2025-06-24 10:30:00	27	\N	2025-06-24 10:00:00	AVAILABLE
-349	2025-06-25 10:30:00	27	GawelWozniak@petify.org	2025-06-25 10:00:00	RESERVED
-350	2025-06-25 14:30:00	27	\N	2025-06-25 14:00:00	AVAILABLE
-351	2025-06-26 10:30:00	27	\N	2025-06-26 10:00:00	AVAILABLE
-352	2025-06-26 14:30:00	27	\N	2025-06-26 14:00:00	AVAILABLE
-353	2025-06-27 10:30:00	27	JarekOstrowski@petify.org	2025-06-27 10:00:00	RESERVED
-354	2025-06-27 14:30:00	27	JarekOstrowski@petify.org	2025-06-27 14:00:00	RESERVED
-356	2025-06-28 14:30:00	27	\N	2025-06-28 14:00:00	AVAILABLE
-357	2025-06-29 10:30:00	27	\N	2025-06-29 10:00:00	AVAILABLE
-358	2025-06-29 14:30:00	27	StanislawKaczmarek@petify.org	2025-06-29 14:00:00	RESERVED
-359	2025-06-30 10:30:00	27	\N	2025-06-30 10:00:00	AVAILABLE
-360	2025-06-30 14:30:00	27	\N	2025-06-30 14:00:00	AVAILABLE
-361	2025-06-22 10:30:00	28	\N	2025-06-22 10:00:00	AVAILABLE
-362	2025-06-22 14:30:00	28	\N	2025-06-22 14:00:00	AVAILABLE
-363	2025-06-22 18:30:00	28	\N	2025-06-22 18:00:00	AVAILABLE
-365	2025-06-23 14:30:00	28	\N	2025-06-23 14:00:00	AVAILABLE
-366	2025-06-23 18:30:00	28	\N	2025-06-23 18:00:00	AVAILABLE
-367	2025-06-24 10:30:00	28	HalinaDabrowski@petify.org	2025-06-24 10:00:00	RESERVED
-368	2025-06-24 14:30:00	28	\N	2025-06-24 14:00:00	AVAILABLE
-369	2025-06-24 18:30:00	28	\N	2025-06-24 18:00:00	AVAILABLE
-370	2025-06-25 10:30:00	28	\N	2025-06-25 10:00:00	AVAILABLE
-371	2025-06-25 14:30:00	28	KlaudiaCzerwinska@petify.org	2025-06-25 14:00:00	RESERVED
-373	2025-06-26 10:30:00	28	\N	2025-06-26 10:00:00	AVAILABLE
-374	2025-06-26 14:30:00	28	\N	2025-06-26 14:00:00	AVAILABLE
-375	2025-06-26 18:30:00	28	\N	2025-06-26 18:00:00	AVAILABLE
-376	2025-06-27 10:30:00	28	\N	2025-06-27 10:00:00	AVAILABLE
-377	2025-06-27 14:30:00	28	\N	2025-06-27 14:00:00	AVAILABLE
-378	2025-06-27 18:30:00	28	\N	2025-06-27 18:00:00	AVAILABLE
-379	2025-06-28 10:30:00	28	\N	2025-06-28 10:00:00	AVAILABLE
-380	2025-06-28 14:30:00	28	\N	2025-06-28 14:00:00	AVAILABLE
-381	2025-06-28 18:30:00	28	\N	2025-06-28 18:00:00	AVAILABLE
-383	2025-06-29 14:30:00	28	KrysiaMichalska@petify.org	2025-06-29 14:00:00	RESERVED
-384	2025-06-29 18:30:00	28	\N	2025-06-29 18:00:00	AVAILABLE
-385	2025-06-30 10:30:00	28	\N	2025-06-30 10:00:00	AVAILABLE
-386	2025-06-30 14:30:00	28	ZdzislawaJasinska@petify.org	2025-06-30 14:00:00	RESERVED
-387	2025-06-30 18:30:00	28	\N	2025-06-30 18:00:00	AVAILABLE
-388	2025-06-22 10:30:00	29	KrysiaMichalska@petify.org	2025-06-22 10:00:00	RESERVED
-390	2025-06-23 10:30:00	29	KlaudiaCzerwinska@petify.org	2025-06-23 10:00:00	RESERVED
-391	2025-06-23 14:30:00	29	\N	2025-06-23 14:00:00	AVAILABLE
-392	2025-06-24 10:30:00	29	\N	2025-06-24 10:00:00	AVAILABLE
-393	2025-06-24 14:30:00	29	\N	2025-06-24 14:00:00	AVAILABLE
-394	2025-06-25 10:30:00	29	WiolettaKozlowska@petify.org	2025-06-25 10:00:00	RESERVED
-395	2025-06-25 14:30:00	29	AdamAdamczyk@petify.org	2025-06-25 14:00:00	RESERVED
-397	2025-06-26 14:30:00	29	\N	2025-06-26 14:00:00	AVAILABLE
-398	2025-06-27 10:30:00	29	\N	2025-06-27 10:00:00	AVAILABLE
-399	2025-06-27 14:30:00	29	\N	2025-06-27 14:00:00	AVAILABLE
-400	2025-06-28 10:30:00	29	\N	2025-06-28 10:00:00	AVAILABLE
-401	2025-06-28 14:30:00	29	\N	2025-06-28 14:00:00	AVAILABLE
-402	2025-06-29 10:30:00	29	LeokadiaKozlowska@petify.org	2025-06-29 10:00:00	RESERVED
-403	2025-06-29 14:30:00	29	\N	2025-06-29 14:00:00	AVAILABLE
-404	2025-06-30 10:30:00	29	\N	2025-06-30 10:00:00	AVAILABLE
-406	2025-06-22 10:30:00	30	\N	2025-06-22 10:00:00	AVAILABLE
-407	2025-06-22 14:30:00	30	JulitaSymanska@petify.org	2025-06-22 14:00:00	RESERVED
-408	2025-06-22 18:30:00	30	\N	2025-06-22 18:00:00	AVAILABLE
-409	2025-06-23 10:30:00	30	\N	2025-06-23 10:00:00	AVAILABLE
-410	2025-06-23 14:30:00	30	\N	2025-06-23 14:00:00	AVAILABLE
-411	2025-06-23 18:30:00	30	KlaudiaCzerwinska@petify.org	2025-06-23 18:00:00	RESERVED
-412	2025-06-24 10:30:00	30	\N	2025-06-24 10:00:00	AVAILABLE
-414	2025-06-24 18:30:00	30	\N	2025-06-24 18:00:00	AVAILABLE
-415	2025-06-25 10:30:00	30	\N	2025-06-25 10:00:00	AVAILABLE
-416	2025-06-25 14:30:00	30	WielislawAdamczyk@petify.org	2025-06-25 14:00:00	RESERVED
-417	2025-06-25 18:30:00	30	\N	2025-06-25 18:00:00	AVAILABLE
-418	2025-06-26 10:30:00	30	\N	2025-06-26 10:00:00	AVAILABLE
-419	2025-06-26 14:30:00	30	\N	2025-06-26 14:00:00	AVAILABLE
-420	2025-06-26 18:30:00	30	GawelWozniak@petify.org	2025-06-26 18:00:00	RESERVED
-422	2025-06-27 14:30:00	30	\N	2025-06-27 14:00:00	AVAILABLE
-423	2025-06-27 18:30:00	30	\N	2025-06-27 18:00:00	AVAILABLE
-424	2025-06-28 10:30:00	30	\N	2025-06-28 10:00:00	AVAILABLE
-425	2025-06-28 14:30:00	30	\N	2025-06-28 14:00:00	AVAILABLE
-426	2025-06-28 18:30:00	30	LeokadiaKozlowska@petify.org	2025-06-28 18:00:00	RESERVED
-427	2025-06-29 10:30:00	30	\N	2025-06-29 10:00:00	AVAILABLE
-428	2025-06-29 14:30:00	30	\N	2025-06-29 14:00:00	AVAILABLE
-429	2025-06-29 18:30:00	30	\N	2025-06-29 18:00:00	AVAILABLE
-431	2025-06-30 14:30:00	30	EwaWozniak@petify.org	2025-06-30 14:00:00	RESERVED
-432	2025-06-30 18:30:00	30	\N	2025-06-30 18:00:00	AVAILABLE
-433	2025-06-22 10:30:00	31	\N	2025-06-22 10:00:00	AVAILABLE
-434	2025-06-22 14:30:00	31	\N	2025-06-22 14:00:00	AVAILABLE
-435	2025-06-23 10:30:00	31	AdamAdamczyk@petify.org	2025-06-23 10:00:00	RESERVED
-436	2025-06-23 14:30:00	31	\N	2025-06-23 14:00:00	AVAILABLE
-438	2025-06-24 14:30:00	31	\N	2025-06-24 14:00:00	AVAILABLE
-439	2025-06-25 10:30:00	31	\N	2025-06-25 10:00:00	AVAILABLE
-440	2025-06-25 14:30:00	31	\N	2025-06-25 14:00:00	AVAILABLE
-441	2025-06-26 10:30:00	31	\N	2025-06-26 10:00:00	AVAILABLE
-442	2025-06-26 14:30:00	31	\N	2025-06-26 14:00:00	AVAILABLE
-443	2025-06-27 10:30:00	31	\N	2025-06-27 10:00:00	AVAILABLE
-444	2025-06-27 14:30:00	31	\N	2025-06-27 14:00:00	AVAILABLE
-445	2025-06-28 10:30:00	31	\N	2025-06-28 10:00:00	AVAILABLE
-447	2025-06-29 10:30:00	31	\N	2025-06-29 10:00:00	AVAILABLE
-448	2025-06-29 14:30:00	31	\N	2025-06-29 14:00:00	AVAILABLE
-449	2025-06-30 10:30:00	31	\N	2025-06-30 10:00:00	AVAILABLE
-450	2025-06-30 14:30:00	31	\N	2025-06-30 14:00:00	AVAILABLE
-451	2025-06-22 10:30:00	45	\N	2025-06-22 10:00:00	AVAILABLE
-452	2025-06-22 14:30:00	45	\N	2025-06-22 14:00:00	AVAILABLE
-453	2025-06-23 10:30:00	45	\N	2025-06-23 10:00:00	AVAILABLE
-454	2025-06-23 14:30:00	45	EwaWozniak@petify.org	2025-06-23 14:00:00	RESERVED
-455	2025-06-24 10:30:00	45	\N	2025-06-24 10:00:00	AVAILABLE
-456	2025-06-24 14:30:00	45	ZdzislawaJasinska@petify.org	2025-06-24 14:00:00	RESERVED
-457	2025-06-25 10:30:00	45	StanislawKaczmarek@petify.org	2025-06-25 10:00:00	RESERVED
-458	2025-06-25 14:30:00	45	\N	2025-06-25 14:00:00	AVAILABLE
-459	2025-06-26 10:30:00	45	\N	2025-06-26 10:00:00	AVAILABLE
-460	2025-06-26 14:30:00	45	\N	2025-06-26 14:00:00	AVAILABLE
-461	2025-06-27 10:30:00	45	\N	2025-06-27 10:00:00	AVAILABLE
-463	2025-06-28 10:30:00	45	\N	2025-06-28 10:00:00	AVAILABLE
-464	2025-06-28 14:30:00	45	\N	2025-06-28 14:00:00	AVAILABLE
-465	2025-06-29 10:30:00	45	\N	2025-06-29 10:00:00	AVAILABLE
-466	2025-06-29 14:30:00	45	\N	2025-06-29 14:00:00	AVAILABLE
-467	2025-06-30 10:30:00	45	\N	2025-06-30 10:00:00	AVAILABLE
-468	2025-06-30 14:30:00	45	\N	2025-06-30 14:00:00	AVAILABLE
-469	2025-06-22 10:30:00	46	\N	2025-06-22 10:00:00	AVAILABLE
-470	2025-06-22 14:30:00	46	\N	2025-06-22 14:00:00	AVAILABLE
-471	2025-06-22 18:30:00	46	\N	2025-06-22 18:00:00	AVAILABLE
-473	2025-06-23 14:30:00	46	\N	2025-06-23 14:00:00	AVAILABLE
-474	2025-06-23 18:30:00	46	\N	2025-06-23 18:00:00	AVAILABLE
-475	2025-06-24 10:30:00	46	\N	2025-06-24 10:00:00	AVAILABLE
-476	2025-06-24 14:30:00	46	\N	2025-06-24 14:00:00	AVAILABLE
-477	2025-06-24 18:30:00	46	\N	2025-06-24 18:00:00	AVAILABLE
-478	2025-06-25 10:30:00	46	\N	2025-06-25 10:00:00	AVAILABLE
-479	2025-06-25 14:30:00	46	WalerianOstrowski@petify.org	2025-06-25 14:00:00	RESERVED
-481	2025-06-26 10:30:00	46	\N	2025-06-26 10:00:00	AVAILABLE
-482	2025-06-26 14:30:00	46	\N	2025-06-26 14:00:00	AVAILABLE
-483	2025-06-26 18:30:00	46	RaclawJasinski@petify.org	2025-06-26 18:00:00	RESERVED
-484	2025-06-27 10:30:00	46	\N	2025-06-27 10:00:00	AVAILABLE
-485	2025-06-27 14:30:00	46	\N	2025-06-27 14:00:00	AVAILABLE
-486	2025-06-27 18:30:00	46	\N	2025-06-27 18:00:00	AVAILABLE
-487	2025-06-28 10:30:00	46	LeokadiaKozlowska@petify.org	2025-06-28 10:00:00	RESERVED
-489	2025-06-28 18:30:00	46	\N	2025-06-28 18:00:00	AVAILABLE
-490	2025-06-29 10:30:00	46	\N	2025-06-29 10:00:00	AVAILABLE
-491	2025-06-29 14:30:00	46	KlaudiaCzerwinska@petify.org	2025-06-29 14:00:00	RESERVED
-492	2025-06-29 18:30:00	46	GrzegorzPiotrowski@petify.org	2025-06-29 18:00:00	RESERVED
-493	2025-06-30 10:30:00	46	\N	2025-06-30 10:00:00	AVAILABLE
-494	2025-06-30 14:30:00	46	\N	2025-06-30 14:00:00	AVAILABLE
-496	2025-06-22 10:30:00	48	\N	2025-06-22 10:00:00	AVAILABLE
-497	2025-06-22 14:30:00	48	HieronimZielinski@petify.org	2025-06-22 14:00:00	RESERVED
-498	2025-06-22 18:30:00	48	\N	2025-06-22 18:00:00	AVAILABLE
-499	2025-06-23 10:30:00	48	\N	2025-06-23 10:00:00	AVAILABLE
-500	2025-06-23 14:30:00	48	\N	2025-06-23 14:00:00	AVAILABLE
-501	2025-06-23 18:30:00	48	\N	2025-06-23 18:00:00	AVAILABLE
-502	2025-06-24 10:30:00	48	\N	2025-06-24 10:00:00	AVAILABLE
-503	2025-06-24 14:30:00	48	IzoldaKaminska@petify.org	2025-06-24 14:00:00	RESERVED
-504	2025-06-24 18:30:00	48	\N	2025-06-24 18:00:00	AVAILABLE
-505	2025-06-25 10:30:00	48	\N	2025-06-25 10:00:00	AVAILABLE
-506	2025-06-25 14:30:00	48	\N	2025-06-25 14:00:00	AVAILABLE
-507	2025-06-25 18:30:00	48	LeokadiaKozlowska@petify.org	2025-06-25 18:00:00	RESERVED
-508	2025-06-26 10:30:00	48	\N	2025-06-26 10:00:00	AVAILABLE
-509	2025-06-26 14:30:00	48	LeokadiaKozlowska@petify.org	2025-06-26 14:00:00	RESERVED
-510	2025-06-26 18:30:00	48	\N	2025-06-26 18:00:00	AVAILABLE
-511	2025-06-27 10:30:00	48	\N	2025-06-27 10:00:00	AVAILABLE
-512	2025-06-27 14:30:00	48	\N	2025-06-27 14:00:00	AVAILABLE
-513	2025-06-27 18:30:00	48	\N	2025-06-27 18:00:00	AVAILABLE
-514	2025-06-28 10:30:00	48	LeokadiaKozlowska@petify.org	2025-06-28 10:00:00	RESERVED
-515	2025-06-28 14:30:00	48	\N	2025-06-28 14:00:00	AVAILABLE
-516	2025-06-28 18:30:00	48	HieronimZielinski@petify.org	2025-06-28 18:00:00	RESERVED
-517	2025-06-29 10:30:00	48	\N	2025-06-29 10:00:00	AVAILABLE
-518	2025-06-29 14:30:00	48	\N	2025-06-29 14:00:00	AVAILABLE
-519	2025-06-29 18:30:00	48	\N	2025-06-29 18:00:00	AVAILABLE
-520	2025-06-30 10:30:00	48	\N	2025-06-30 10:00:00	AVAILABLE
-521	2025-06-30 14:30:00	48	\N	2025-06-30 14:00:00	AVAILABLE
-522	2025-06-30 18:30:00	48	\N	2025-06-30 18:00:00	AVAILABLE
-523	2025-06-22 10:30:00	49	\N	2025-06-22 10:00:00	AVAILABLE
-524	2025-06-22 14:30:00	49	\N	2025-06-22 14:00:00	AVAILABLE
-525	2025-06-23 10:30:00	49	\N	2025-06-23 10:00:00	AVAILABLE
-526	2025-06-23 14:30:00	49	WielislawAdamczyk@petify.org	2025-06-23 14:00:00	RESERVED
-527	2025-06-24 10:30:00	49	MartynBorkowski@petify.org	2025-06-24 10:00:00	RESERVED
-528	2025-06-24 14:30:00	49	MartynBorkowski@petify.org	2025-06-24 14:00:00	RESERVED
-529	2025-06-25 10:30:00	49	\N	2025-06-25 10:00:00	AVAILABLE
-530	2025-06-25 14:30:00	49	\N	2025-06-25 14:00:00	AVAILABLE
-531	2025-06-26 10:30:00	49	EwaWozniak@petify.org	2025-06-26 10:00:00	RESERVED
-532	2025-06-26 14:30:00	49	\N	2025-06-26 14:00:00	AVAILABLE
-534	2025-06-27 14:30:00	49	\N	2025-06-27 14:00:00	AVAILABLE
-535	2025-06-28 10:30:00	49	\N	2025-06-28 10:00:00	AVAILABLE
-536	2025-06-28 14:30:00	49	\N	2025-06-28 14:00:00	AVAILABLE
-537	2025-06-29 10:30:00	49	HieronimZielinski@petify.org	2025-06-29 10:00:00	RESERVED
-538	2025-06-29 14:30:00	49	\N	2025-06-29 14:00:00	AVAILABLE
-539	2025-06-30 10:30:00	49	\N	2025-06-30 10:00:00	AVAILABLE
-540	2025-06-30 14:30:00	49	\N	2025-06-30 14:00:00	AVAILABLE
-542	2025-06-22 14:30:00	50	\N	2025-06-22 14:00:00	AVAILABLE
-543	2025-06-22 18:30:00	50	\N	2025-06-22 18:00:00	AVAILABLE
-544	2025-06-23 10:30:00	50	\N	2025-06-23 10:00:00	AVAILABLE
-545	2025-06-23 14:30:00	50	\N	2025-06-23 14:00:00	AVAILABLE
-546	2025-06-23 18:30:00	50	\N	2025-06-23 18:00:00	AVAILABLE
-547	2025-06-24 10:30:00	50	JulitaSymanska@petify.org	2025-06-24 10:00:00	RESERVED
-548	2025-06-24 14:30:00	50	\N	2025-06-24 14:00:00	AVAILABLE
-550	2025-06-25 10:30:00	50	\N	2025-06-25 10:00:00	AVAILABLE
-551	2025-06-25 14:30:00	50	IzoldaKaminska@petify.org	2025-06-25 14:00:00	RESERVED
-552	2025-06-25 18:30:00	50	\N	2025-06-25 18:00:00	AVAILABLE
-553	2025-06-26 10:30:00	50	\N	2025-06-26 10:00:00	AVAILABLE
-554	2025-06-26 14:30:00	50	\N	2025-06-26 14:00:00	AVAILABLE
-555	2025-06-26 18:30:00	50	\N	2025-06-26 18:00:00	AVAILABLE
-556	2025-06-27 10:30:00	50	StanislawKaczmarek@petify.org	2025-06-27 10:00:00	RESERVED
-558	2025-06-27 18:30:00	50	\N	2025-06-27 18:00:00	AVAILABLE
-559	2025-06-28 10:30:00	50	\N	2025-06-28 10:00:00	AVAILABLE
-560	2025-06-28 14:30:00	50	\N	2025-06-28 14:00:00	AVAILABLE
-561	2025-06-28 18:30:00	50	\N	2025-06-28 18:00:00	AVAILABLE
-562	2025-06-29 10:30:00	50	\N	2025-06-29 10:00:00	AVAILABLE
-563	2025-06-29 14:30:00	50	LeokadiaKozlowska@petify.org	2025-06-29 14:00:00	RESERVED
-564	2025-06-29 18:30:00	50	\N	2025-06-29 18:00:00	AVAILABLE
-565	2025-06-30 10:30:00	50	JaromirKrol@petify.org	2025-06-30 10:00:00	RESERVED
-566	2025-06-30 14:30:00	50	StanislawKaczmarek@petify.org	2025-06-30 14:00:00	RESERVED
-567	2025-06-30 18:30:00	50	\N	2025-06-30 18:00:00	AVAILABLE
-568	2025-06-22 10:30:00	53	\N	2025-06-22 10:00:00	AVAILABLE
-569	2025-06-22 14:30:00	53	\N	2025-06-22 14:00:00	AVAILABLE
-570	2025-06-23 10:30:00	53	\N	2025-06-23 10:00:00	AVAILABLE
-571	2025-06-23 14:30:00	53	\N	2025-06-23 14:00:00	AVAILABLE
-572	2025-06-24 10:30:00	53	\N	2025-06-24 10:00:00	AVAILABLE
-573	2025-06-24 14:30:00	53	\N	2025-06-24 14:00:00	AVAILABLE
-575	2025-06-25 14:30:00	53	\N	2025-06-25 14:00:00	AVAILABLE
-576	2025-06-26 10:30:00	53	\N	2025-06-26 10:00:00	AVAILABLE
-577	2025-06-26 14:30:00	53	\N	2025-06-26 14:00:00	AVAILABLE
-578	2025-06-27 10:30:00	53	\N	2025-06-27 10:00:00	AVAILABLE
-579	2025-06-27 14:30:00	53	\N	2025-06-27 14:00:00	AVAILABLE
-580	2025-06-28 10:30:00	53	GawelWozniak@petify.org	2025-06-28 10:00:00	RESERVED
-581	2025-06-28 14:30:00	53	\N	2025-06-28 14:00:00	AVAILABLE
-582	2025-06-29 10:30:00	53	\N	2025-06-29 10:00:00	AVAILABLE
-584	2025-06-30 10:30:00	53	\N	2025-06-30 10:00:00	AVAILABLE
-585	2025-06-30 14:30:00	53	GrzegorzPiotrowski@petify.org	2025-06-30 14:00:00	RESERVED
-586	2025-06-22 10:30:00	54	KrysiaMichalska@petify.org	2025-06-22 10:00:00	RESERVED
-587	2025-06-22 14:30:00	54	\N	2025-06-22 14:00:00	AVAILABLE
-588	2025-06-22 18:30:00	54	WalerianOstrowski@petify.org	2025-06-22 18:00:00	RESERVED
-589	2025-06-23 10:30:00	54	\N	2025-06-23 10:00:00	AVAILABLE
-591	2025-06-23 18:30:00	54	\N	2025-06-23 18:00:00	AVAILABLE
-592	2025-06-24 10:30:00	54	\N	2025-06-24 10:00:00	AVAILABLE
-593	2025-06-24 14:30:00	54	\N	2025-06-24 14:00:00	AVAILABLE
-594	2025-06-24 18:30:00	54	ZdzislawaJasinska@petify.org	2025-06-24 18:00:00	RESERVED
-595	2025-06-25 10:30:00	54	\N	2025-06-25 10:00:00	AVAILABLE
-596	2025-06-25 14:30:00	54	\N	2025-06-25 14:00:00	AVAILABLE
-597	2025-06-25 18:30:00	54	\N	2025-06-25 18:00:00	AVAILABLE
-598	2025-06-26 10:30:00	54	IzoldaKaminska@petify.org	2025-06-26 10:00:00	RESERVED
-599	2025-06-26 14:30:00	54	\N	2025-06-26 14:00:00	AVAILABLE
-600	2025-06-26 18:30:00	54	KrysiaMichalska@petify.org	2025-06-26 18:00:00	RESERVED
-601	2025-06-27 10:30:00	54	\N	2025-06-27 10:00:00	AVAILABLE
-602	2025-06-27 14:30:00	54	\N	2025-06-27 14:00:00	AVAILABLE
-603	2025-06-27 18:30:00	54	\N	2025-06-27 18:00:00	AVAILABLE
-604	2025-06-28 10:30:00	54	\N	2025-06-28 10:00:00	AVAILABLE
-605	2025-06-28 14:30:00	54	\N	2025-06-28 14:00:00	AVAILABLE
-606	2025-06-28 18:30:00	54	\N	2025-06-28 18:00:00	AVAILABLE
-608	2025-06-29 14:30:00	54	KrysiaMichalska@petify.org	2025-06-29 14:00:00	RESERVED
-609	2025-06-29 18:30:00	54	\N	2025-06-29 18:00:00	AVAILABLE
-610	2025-06-30 10:30:00	54	\N	2025-06-30 10:00:00	AVAILABLE
-611	2025-06-30 14:30:00	54	\N	2025-06-30 14:00:00	AVAILABLE
-612	2025-06-30 18:30:00	54	KrysiaMichalska@petify.org	2025-06-30 18:00:00	RESERVED
-613	2025-06-22 10:30:00	59	\N	2025-06-22 10:00:00	AVAILABLE
-614	2025-06-22 14:30:00	59	\N	2025-06-22 14:00:00	AVAILABLE
-616	2025-06-23 14:30:00	59	ZdzislawaJasinska@petify.org	2025-06-23 14:00:00	RESERVED
-617	2025-06-24 10:30:00	59	\N	2025-06-24 10:00:00	AVAILABLE
-618	2025-06-24 14:30:00	59	\N	2025-06-24 14:00:00	AVAILABLE
-619	2025-06-25 10:30:00	59	\N	2025-06-25 10:00:00	AVAILABLE
-620	2025-06-25 14:30:00	59	\N	2025-06-25 14:00:00	AVAILABLE
-621	2025-06-26 10:30:00	59	\N	2025-06-26 10:00:00	AVAILABLE
-622	2025-06-26 14:30:00	59	\N	2025-06-26 14:00:00	AVAILABLE
-624	2025-06-27 14:30:00	59	KrysiaMichalska@petify.org	2025-06-27 14:00:00	RESERVED
-625	2025-06-28 10:30:00	59	WiolettaKozlowska@petify.org	2025-06-28 10:00:00	RESERVED
-626	2025-06-28 14:30:00	59	IzoldaKaminska@petify.org	2025-06-28 14:00:00	RESERVED
-627	2025-06-29 10:30:00	59	\N	2025-06-29 10:00:00	AVAILABLE
-628	2025-06-29 14:30:00	59	\N	2025-06-29 14:00:00	AVAILABLE
-629	2025-06-30 10:30:00	59	\N	2025-06-30 10:00:00	AVAILABLE
-631	2025-06-22 10:30:00	65	WalerianOstrowski@petify.org	2025-06-22 10:00:00	RESERVED
-533	2025-06-27 10:30:00	49	HalinaDabrowski@petify.org	2025-06-27 10:00:00	RESERVED
-541	2025-06-22 10:30:00	50	JaromirKrol@petify.org	2025-06-22 10:00:00	RESERVED
-549	2025-06-24 18:30:00	50	\N	2025-06-24 18:00:00	AVAILABLE
-557	2025-06-27 14:30:00	50	\N	2025-06-27 14:00:00	AVAILABLE
-574	2025-06-25 10:30:00	53	\N	2025-06-25 10:00:00	AVAILABLE
-583	2025-06-29 14:30:00	53	\N	2025-06-29 14:00:00	AVAILABLE
-590	2025-06-23 14:30:00	54	\N	2025-06-23 14:00:00	AVAILABLE
-607	2025-06-29 10:30:00	54	\N	2025-06-29 10:00:00	AVAILABLE
-615	2025-06-23 10:30:00	59	EwaWozniak@petify.org	2025-06-23 10:00:00	RESERVED
-623	2025-06-27 10:30:00	59	\N	2025-06-27 10:00:00	AVAILABLE
-630	2025-06-30 14:30:00	59	\N	2025-06-30 14:00:00	AVAILABLE
-639	2025-06-26 10:30:00	65	\N	2025-06-26 10:00:00	AVAILABLE
-649	2025-06-22 10:30:00	66	LeokadiaKozlowska@petify.org	2025-06-22 10:00:00	RESERVED
-657	2025-06-24 18:30:00	66	\N	2025-06-24 18:00:00	AVAILABLE
-673	2025-06-30 10:30:00	66	\N	2025-06-30 10:00:00	AVAILABLE
-682	2025-06-24 10:30:00	68	\N	2025-06-24 10:00:00	AVAILABLE
-691	2025-06-27 10:30:00	68	\N	2025-06-27 10:00:00	AVAILABLE
-700	2025-06-30 10:30:00	68	\N	2025-06-30 10:00:00	AVAILABLE
-709	2025-06-25 10:30:00	69	\N	2025-06-25 10:00:00	AVAILABLE
-717	2025-06-29 10:30:00	69	\N	2025-06-29 10:00:00	AVAILABLE
-632	2025-06-22 14:30:00	65	\N	2025-06-22 14:00:00	AVAILABLE
-633	2025-06-23 10:30:00	65	\N	2025-06-23 10:00:00	AVAILABLE
-634	2025-06-23 14:30:00	65	\N	2025-06-23 14:00:00	AVAILABLE
-635	2025-06-24 10:30:00	65	\N	2025-06-24 10:00:00	AVAILABLE
-636	2025-06-24 14:30:00	65	\N	2025-06-24 14:00:00	AVAILABLE
-637	2025-06-25 10:30:00	65	\N	2025-06-25 10:00:00	AVAILABLE
-638	2025-06-25 14:30:00	65	\N	2025-06-25 14:00:00	AVAILABLE
-640	2025-06-26 14:30:00	65	\N	2025-06-26 14:00:00	AVAILABLE
-641	2025-06-27 10:30:00	65	\N	2025-06-27 10:00:00	AVAILABLE
-642	2025-06-27 14:30:00	65	\N	2025-06-27 14:00:00	AVAILABLE
-643	2025-06-28 10:30:00	65	\N	2025-06-28 10:00:00	AVAILABLE
-644	2025-06-28 14:30:00	65	\N	2025-06-28 14:00:00	AVAILABLE
-645	2025-06-29 10:30:00	65	\N	2025-06-29 10:00:00	AVAILABLE
-646	2025-06-29 14:30:00	65	\N	2025-06-29 14:00:00	AVAILABLE
-647	2025-06-30 10:30:00	65	\N	2025-06-30 10:00:00	AVAILABLE
-648	2025-06-30 14:30:00	65	\N	2025-06-30 14:00:00	AVAILABLE
-650	2025-06-22 14:30:00	66	\N	2025-06-22 14:00:00	AVAILABLE
-651	2025-06-22 18:30:00	66	\N	2025-06-22 18:00:00	AVAILABLE
-652	2025-06-23 10:30:00	66	\N	2025-06-23 10:00:00	AVAILABLE
-653	2025-06-23 14:30:00	66	MartynBorkowski@petify.org	2025-06-23 14:00:00	RESERVED
-654	2025-06-23 18:30:00	66	\N	2025-06-23 18:00:00	AVAILABLE
-655	2025-06-24 10:30:00	66	\N	2025-06-24 10:00:00	AVAILABLE
-656	2025-06-24 14:30:00	66	\N	2025-06-24 14:00:00	AVAILABLE
-658	2025-06-25 10:30:00	66	\N	2025-06-25 10:00:00	AVAILABLE
-659	2025-06-25 14:30:00	66	\N	2025-06-25 14:00:00	AVAILABLE
-660	2025-06-25 18:30:00	66	JaromirKrol@petify.org	2025-06-25 18:00:00	RESERVED
-661	2025-06-26 10:30:00	66	\N	2025-06-26 10:00:00	AVAILABLE
-662	2025-06-26 14:30:00	66	\N	2025-06-26 14:00:00	AVAILABLE
-663	2025-06-26 18:30:00	66	LeokadiaKozlowska@petify.org	2025-06-26 18:00:00	RESERVED
-664	2025-06-27 10:30:00	66	MartynBorkowski@petify.org	2025-06-27 10:00:00	RESERVED
-665	2025-06-27 14:30:00	66	\N	2025-06-27 14:00:00	AVAILABLE
-666	2025-06-27 18:30:00	66	\N	2025-06-27 18:00:00	AVAILABLE
-667	2025-06-28 10:30:00	66	\N	2025-06-28 10:00:00	AVAILABLE
-668	2025-06-28 14:30:00	66	\N	2025-06-28 14:00:00	AVAILABLE
-669	2025-06-28 18:30:00	66	\N	2025-06-28 18:00:00	AVAILABLE
-670	2025-06-29 10:30:00	66	\N	2025-06-29 10:00:00	AVAILABLE
-671	2025-06-29 14:30:00	66	GrzegorzPiotrowski@petify.org	2025-06-29 14:00:00	RESERVED
-672	2025-06-29 18:30:00	66	\N	2025-06-29 18:00:00	AVAILABLE
-674	2025-06-30 14:30:00	66	\N	2025-06-30 14:00:00	AVAILABLE
-675	2025-06-30 18:30:00	66	\N	2025-06-30 18:00:00	AVAILABLE
-676	2025-06-22 10:30:00	68	\N	2025-06-22 10:00:00	AVAILABLE
-677	2025-06-22 14:30:00	68	\N	2025-06-22 14:00:00	AVAILABLE
-678	2025-06-22 18:30:00	68	\N	2025-06-22 18:00:00	AVAILABLE
-679	2025-06-23 10:30:00	68	StanislawKaczmarek@petify.org	2025-06-23 10:00:00	RESERVED
-680	2025-06-23 14:30:00	68	\N	2025-06-23 14:00:00	AVAILABLE
-681	2025-06-23 18:30:00	68	\N	2025-06-23 18:00:00	AVAILABLE
-683	2025-06-24 14:30:00	68	\N	2025-06-24 14:00:00	AVAILABLE
-684	2025-06-24 18:30:00	68	\N	2025-06-24 18:00:00	AVAILABLE
-685	2025-06-25 10:30:00	68	\N	2025-06-25 10:00:00	AVAILABLE
-686	2025-06-25 14:30:00	68	\N	2025-06-25 14:00:00	AVAILABLE
-687	2025-06-25 18:30:00	68	LeokadiaKozlowska@petify.org	2025-06-25 18:00:00	RESERVED
-688	2025-06-26 10:30:00	68	\N	2025-06-26 10:00:00	AVAILABLE
-689	2025-06-26 14:30:00	68	\N	2025-06-26 14:00:00	AVAILABLE
-690	2025-06-26 18:30:00	68	\N	2025-06-26 18:00:00	AVAILABLE
-692	2025-06-27 14:30:00	68	\N	2025-06-27 14:00:00	AVAILABLE
-693	2025-06-27 18:30:00	68	MartynBorkowski@petify.org	2025-06-27 18:00:00	RESERVED
-694	2025-06-28 10:30:00	68	\N	2025-06-28 10:00:00	AVAILABLE
-695	2025-06-28 14:30:00	68	\N	2025-06-28 14:00:00	AVAILABLE
-696	2025-06-28 18:30:00	68	\N	2025-06-28 18:00:00	AVAILABLE
-697	2025-06-29 10:30:00	68	\N	2025-06-29 10:00:00	AVAILABLE
-698	2025-06-29 14:30:00	68	\N	2025-06-29 14:00:00	AVAILABLE
-699	2025-06-29 18:30:00	68	\N	2025-06-29 18:00:00	AVAILABLE
-701	2025-06-30 14:30:00	68	\N	2025-06-30 14:00:00	AVAILABLE
-702	2025-06-30 18:30:00	68	\N	2025-06-30 18:00:00	AVAILABLE
-703	2025-06-22 10:30:00	69	\N	2025-06-22 10:00:00	AVAILABLE
-704	2025-06-22 14:30:00	69	\N	2025-06-22 14:00:00	AVAILABLE
-705	2025-06-23 10:30:00	69	KlaudiaCzerwinska@petify.org	2025-06-23 10:00:00	RESERVED
-706	2025-06-23 14:30:00	69	\N	2025-06-23 14:00:00	AVAILABLE
-707	2025-06-24 10:30:00	69	\N	2025-06-24 10:00:00	AVAILABLE
-708	2025-06-24 14:30:00	69	\N	2025-06-24 14:00:00	AVAILABLE
-710	2025-06-25 14:30:00	69	\N	2025-06-25 14:00:00	AVAILABLE
-711	2025-06-26 10:30:00	69	\N	2025-06-26 10:00:00	AVAILABLE
-712	2025-06-26 14:30:00	69	\N	2025-06-26 14:00:00	AVAILABLE
-713	2025-06-27 10:30:00	69	KlaudiaCzerwinska@petify.org	2025-06-27 10:00:00	RESERVED
-714	2025-06-27 14:30:00	69	JarekOstrowski@petify.org	2025-06-27 14:00:00	RESERVED
-715	2025-06-28 10:30:00	69	\N	2025-06-28 10:00:00	AVAILABLE
-716	2025-06-28 14:30:00	69	\N	2025-06-28 14:00:00	AVAILABLE
-718	2025-06-29 14:30:00	69	AdamAdamczyk@petify.org	2025-06-29 14:00:00	RESERVED
-719	2025-06-30 10:30:00	69	\N	2025-06-30 10:00:00	AVAILABLE
-720	2025-06-30 14:30:00	69	WalerianOstrowski@petify.org	2025-06-30 14:00:00	RESERVED
+1	2025-06-22 14:30:00	5	\N	2025-06-22 14:00:00	AVAILABLE
+2	2025-06-23 10:30:00	5	EwaWozniak@petify.org	2025-06-23 10:00:00	RESERVED
+3	2025-06-23 14:30:00	5	KrysiaMichalska@petify.org	2025-06-23 14:00:00	RESERVED
+4	2025-06-24 10:30:00	5	\N	2025-06-24 10:00:00	AVAILABLE
+5	2025-06-24 14:30:00	5	\N	2025-06-24 14:00:00	AVAILABLE
+6	2025-06-25 10:30:00	5	\N	2025-06-25 10:00:00	AVAILABLE
+7	2025-06-25 14:30:00	5	\N	2025-06-25 14:00:00	AVAILABLE
+8	2025-06-26 10:30:00	5	JarekOstrowski@petify.org	2025-06-26 10:00:00	RESERVED
+9	2025-06-26 14:30:00	5	JarekOstrowski@petify.org	2025-06-26 14:00:00	RESERVED
+10	2025-06-27 10:30:00	5	\N	2025-06-27 10:00:00	AVAILABLE
+11	2025-06-27 14:30:00	5	\N	2025-06-27 14:00:00	AVAILABLE
+12	2025-06-28 10:30:00	5	\N	2025-06-28 10:00:00	AVAILABLE
+13	2025-06-28 14:30:00	5	\N	2025-06-28 14:00:00	AVAILABLE
+14	2025-06-29 10:30:00	5	\N	2025-06-29 10:00:00	AVAILABLE
+15	2025-06-29 14:30:00	5	\N	2025-06-29 14:00:00	AVAILABLE
+16	2025-06-30 10:30:00	5	\N	2025-06-30 10:00:00	AVAILABLE
+17	2025-06-30 14:30:00	5	\N	2025-06-30 14:00:00	AVAILABLE
+18	2025-06-22 14:30:00	6	\N	2025-06-22 14:00:00	AVAILABLE
+19	2025-06-22 18:30:00	6	\N	2025-06-22 18:00:00	AVAILABLE
+20	2025-06-23 10:30:00	6	WalerianOstrowski@petify.org	2025-06-23 10:00:00	RESERVED
+21	2025-06-23 14:30:00	6	AdamAdamczyk@petify.org	2025-06-23 14:00:00	RESERVED
+22	2025-06-23 18:30:00	6	\N	2025-06-23 18:00:00	AVAILABLE
+23	2025-06-24 10:30:00	6	\N	2025-06-24 10:00:00	AVAILABLE
+24	2025-06-24 14:30:00	6	\N	2025-06-24 14:00:00	AVAILABLE
+25	2025-06-24 18:30:00	6	HalinaDabrowski@petify.org	2025-06-24 18:00:00	RESERVED
+26	2025-06-25 10:30:00	6	\N	2025-06-25 10:00:00	AVAILABLE
+27	2025-06-25 14:30:00	6	\N	2025-06-25 14:00:00	AVAILABLE
+28	2025-06-25 18:30:00	6	\N	2025-06-25 18:00:00	AVAILABLE
+29	2025-06-26 10:30:00	6	\N	2025-06-26 10:00:00	AVAILABLE
+30	2025-06-26 14:30:00	6	\N	2025-06-26 14:00:00	AVAILABLE
+31	2025-06-26 18:30:00	6	\N	2025-06-26 18:00:00	AVAILABLE
+32	2025-06-27 10:30:00	6	\N	2025-06-27 10:00:00	AVAILABLE
+33	2025-06-27 14:30:00	6	\N	2025-06-27 14:00:00	AVAILABLE
+34	2025-06-27 18:30:00	6	\N	2025-06-27 18:00:00	AVAILABLE
+35	2025-06-28 10:30:00	6	\N	2025-06-28 10:00:00	AVAILABLE
+36	2025-06-28 14:30:00	6	\N	2025-06-28 14:00:00	AVAILABLE
+37	2025-06-28 18:30:00	6	HieronimZielinski@petify.org	2025-06-28 18:00:00	RESERVED
+38	2025-06-29 10:30:00	6	\N	2025-06-29 10:00:00	AVAILABLE
+39	2025-06-29 14:30:00	6	EwaWozniak@petify.org	2025-06-29 14:00:00	RESERVED
+40	2025-06-29 18:30:00	6	\N	2025-06-29 18:00:00	AVAILABLE
+41	2025-06-30 10:30:00	6	\N	2025-06-30 10:00:00	AVAILABLE
+42	2025-06-30 14:30:00	6	\N	2025-06-30 14:00:00	AVAILABLE
+43	2025-06-30 18:30:00	6	\N	2025-06-30 18:00:00	AVAILABLE
+44	2025-06-22 14:30:00	8	\N	2025-06-22 14:00:00	AVAILABLE
+45	2025-06-22 18:30:00	8	\N	2025-06-22 18:00:00	AVAILABLE
+46	2025-06-23 10:30:00	8	GrzegorzPiotrowski@petify.org	2025-06-23 10:00:00	RESERVED
+47	2025-06-23 14:30:00	8	\N	2025-06-23 14:00:00	AVAILABLE
+48	2025-06-23 18:30:00	8	\N	2025-06-23 18:00:00	AVAILABLE
+49	2025-06-24 10:30:00	8	\N	2025-06-24 10:00:00	AVAILABLE
+50	2025-06-24 14:30:00	8	\N	2025-06-24 14:00:00	AVAILABLE
+51	2025-06-24 18:30:00	8	\N	2025-06-24 18:00:00	AVAILABLE
+52	2025-06-25 10:30:00	8	EwaWozniak@petify.org	2025-06-25 10:00:00	RESERVED
+53	2025-06-25 14:30:00	8	\N	2025-06-25 14:00:00	AVAILABLE
+54	2025-06-25 18:30:00	8	HalinaDabrowski@petify.org	2025-06-25 18:00:00	RESERVED
+55	2025-06-26 10:30:00	8	\N	2025-06-26 10:00:00	AVAILABLE
+56	2025-06-26 14:30:00	8	\N	2025-06-26 14:00:00	AVAILABLE
+57	2025-06-26 18:30:00	8	\N	2025-06-26 18:00:00	AVAILABLE
+58	2025-06-27 10:30:00	8	WiolettaKozlowska@petify.org	2025-06-27 10:00:00	RESERVED
+59	2025-06-27 14:30:00	8	StanislawKaczmarek@petify.org	2025-06-27 14:00:00	RESERVED
+60	2025-06-27 18:30:00	8	StanislawKaczmarek@petify.org	2025-06-27 18:00:00	RESERVED
+61	2025-06-28 10:30:00	8	KlaudiaCzerwinska@petify.org	2025-06-28 10:00:00	RESERVED
+62	2025-06-28 14:30:00	8	HieronimZielinski@petify.org	2025-06-28 14:00:00	RESERVED
+63	2025-06-28 18:30:00	8	KrysiaMichalska@petify.org	2025-06-28 18:00:00	RESERVED
+64	2025-06-29 10:30:00	8	\N	2025-06-29 10:00:00	AVAILABLE
+65	2025-06-29 14:30:00	8	\N	2025-06-29 14:00:00	AVAILABLE
+66	2025-06-29 18:30:00	8	IzoldaKaminska@petify.org	2025-06-29 18:00:00	RESERVED
+67	2025-06-30 10:30:00	8	GrzegorzPiotrowski@petify.org	2025-06-30 10:00:00	RESERVED
+68	2025-06-30 14:30:00	8	\N	2025-06-30 14:00:00	AVAILABLE
+69	2025-06-30 18:30:00	8	\N	2025-06-30 18:00:00	AVAILABLE
+70	2025-06-22 14:30:00	12	\N	2025-06-22 14:00:00	AVAILABLE
+71	2025-06-22 18:30:00	12	\N	2025-06-22 18:00:00	AVAILABLE
+72	2025-06-23 10:30:00	12	\N	2025-06-23 10:00:00	AVAILABLE
+73	2025-06-23 14:30:00	12	\N	2025-06-23 14:00:00	AVAILABLE
+74	2025-06-23 18:30:00	12	\N	2025-06-23 18:00:00	AVAILABLE
+75	2025-06-24 10:30:00	12	\N	2025-06-24 10:00:00	AVAILABLE
+76	2025-06-24 14:30:00	12	\N	2025-06-24 14:00:00	AVAILABLE
+77	2025-06-24 18:30:00	12	\N	2025-06-24 18:00:00	AVAILABLE
+78	2025-06-25 10:30:00	12	\N	2025-06-25 10:00:00	AVAILABLE
+79	2025-06-25 14:30:00	12	KrysiaMichalska@petify.org	2025-06-25 14:00:00	RESERVED
+80	2025-06-25 18:30:00	12	\N	2025-06-25 18:00:00	AVAILABLE
+81	2025-06-26 10:30:00	12	\N	2025-06-26 10:00:00	AVAILABLE
+82	2025-06-26 14:30:00	12	\N	2025-06-26 14:00:00	AVAILABLE
+83	2025-06-26 18:30:00	12	\N	2025-06-26 18:00:00	AVAILABLE
+84	2025-06-27 10:30:00	12	\N	2025-06-27 10:00:00	AVAILABLE
+85	2025-06-27 14:30:00	12	\N	2025-06-27 14:00:00	AVAILABLE
+86	2025-06-27 18:30:00	12	\N	2025-06-27 18:00:00	AVAILABLE
+87	2025-06-28 10:30:00	12	\N	2025-06-28 10:00:00	AVAILABLE
+88	2025-06-28 14:30:00	12	\N	2025-06-28 14:00:00	AVAILABLE
+89	2025-06-28 18:30:00	12	GawelWozniak@petify.org	2025-06-28 18:00:00	RESERVED
+90	2025-06-29 10:30:00	12	\N	2025-06-29 10:00:00	AVAILABLE
+91	2025-06-29 14:30:00	12	\N	2025-06-29 14:00:00	AVAILABLE
+92	2025-06-29 18:30:00	12	\N	2025-06-29 18:00:00	AVAILABLE
+93	2025-06-30 10:30:00	12	KlaudiaCzerwinska@petify.org	2025-06-30 10:00:00	RESERVED
+94	2025-06-30 14:30:00	12	\N	2025-06-30 14:00:00	AVAILABLE
+95	2025-06-30 18:30:00	12	\N	2025-06-30 18:00:00	AVAILABLE
+96	2025-06-22 14:30:00	17	\N	2025-06-22 14:00:00	AVAILABLE
+97	2025-06-23 10:30:00	17	\N	2025-06-23 10:00:00	AVAILABLE
+98	2025-06-23 14:30:00	17	\N	2025-06-23 14:00:00	AVAILABLE
+99	2025-06-24 10:30:00	17	\N	2025-06-24 10:00:00	AVAILABLE
+100	2025-06-24 14:30:00	17	\N	2025-06-24 14:00:00	AVAILABLE
+101	2025-06-25 10:30:00	17	\N	2025-06-25 10:00:00	AVAILABLE
+102	2025-06-25 14:30:00	17	\N	2025-06-25 14:00:00	AVAILABLE
+103	2025-06-26 10:30:00	17	\N	2025-06-26 10:00:00	AVAILABLE
+104	2025-06-26 14:30:00	17	\N	2025-06-26 14:00:00	AVAILABLE
+105	2025-06-27 10:30:00	17	\N	2025-06-27 10:00:00	AVAILABLE
+106	2025-06-27 14:30:00	17	\N	2025-06-27 14:00:00	AVAILABLE
+107	2025-06-28 10:30:00	17	\N	2025-06-28 10:00:00	AVAILABLE
+108	2025-06-28 14:30:00	17	\N	2025-06-28 14:00:00	AVAILABLE
+109	2025-06-29 10:30:00	17	\N	2025-06-29 10:00:00	AVAILABLE
+110	2025-06-29 14:30:00	17	KlaudiaCzerwinska@petify.org	2025-06-29 14:00:00	RESERVED
+111	2025-06-30 10:30:00	17	\N	2025-06-30 10:00:00	AVAILABLE
+112	2025-06-30 14:30:00	17	\N	2025-06-30 14:00:00	AVAILABLE
+113	2025-06-22 14:30:00	18	\N	2025-06-22 14:00:00	AVAILABLE
+114	2025-06-22 18:30:00	18	\N	2025-06-22 18:00:00	AVAILABLE
+115	2025-06-23 10:30:00	18	\N	2025-06-23 10:00:00	AVAILABLE
+116	2025-06-23 14:30:00	18	LeokadiaKozlowska@petify.org	2025-06-23 14:00:00	RESERVED
+117	2025-06-23 18:30:00	18	\N	2025-06-23 18:00:00	AVAILABLE
+118	2025-06-24 10:30:00	18	\N	2025-06-24 10:00:00	AVAILABLE
+119	2025-06-24 14:30:00	18	\N	2025-06-24 14:00:00	AVAILABLE
+120	2025-06-24 18:30:00	18	\N	2025-06-24 18:00:00	AVAILABLE
+121	2025-06-25 10:30:00	18	\N	2025-06-25 10:00:00	AVAILABLE
+122	2025-06-25 14:30:00	18	HalinaDabrowski@petify.org	2025-06-25 14:00:00	RESERVED
+123	2025-06-25 18:30:00	18	\N	2025-06-25 18:00:00	AVAILABLE
+124	2025-06-26 10:30:00	18	\N	2025-06-26 10:00:00	AVAILABLE
+125	2025-06-26 14:30:00	18	\N	2025-06-26 14:00:00	AVAILABLE
+126	2025-06-26 18:30:00	18	\N	2025-06-26 18:00:00	AVAILABLE
+127	2025-06-27 10:30:00	18	\N	2025-06-27 10:00:00	AVAILABLE
+128	2025-06-27 14:30:00	18	HieronimZielinski@petify.org	2025-06-27 14:00:00	RESERVED
+129	2025-06-27 18:30:00	18	\N	2025-06-27 18:00:00	AVAILABLE
+130	2025-06-28 10:30:00	18	\N	2025-06-28 10:00:00	AVAILABLE
+131	2025-06-28 14:30:00	18	KlaudiaCzerwinska@petify.org	2025-06-28 14:00:00	RESERVED
+132	2025-06-28 18:30:00	18	\N	2025-06-28 18:00:00	AVAILABLE
+133	2025-06-29 10:30:00	18	\N	2025-06-29 10:00:00	AVAILABLE
+134	2025-06-29 14:30:00	18	\N	2025-06-29 14:00:00	AVAILABLE
+135	2025-06-29 18:30:00	18	\N	2025-06-29 18:00:00	AVAILABLE
+136	2025-06-30 10:30:00	18	GrzegorzPiotrowski@petify.org	2025-06-30 10:00:00	RESERVED
+137	2025-06-30 14:30:00	18	\N	2025-06-30 14:00:00	AVAILABLE
+138	2025-06-30 18:30:00	18	\N	2025-06-30 18:00:00	AVAILABLE
+139	2025-06-22 14:30:00	19	\N	2025-06-22 14:00:00	AVAILABLE
+140	2025-06-23 10:30:00	19	\N	2025-06-23 10:00:00	AVAILABLE
+141	2025-06-23 14:30:00	19	\N	2025-06-23 14:00:00	AVAILABLE
+142	2025-06-24 10:30:00	19	\N	2025-06-24 10:00:00	AVAILABLE
+143	2025-06-24 14:30:00	19	AdamAdamczyk@petify.org	2025-06-24 14:00:00	RESERVED
+144	2025-06-25 10:30:00	19	\N	2025-06-25 10:00:00	AVAILABLE
+145	2025-06-25 14:30:00	19	\N	2025-06-25 14:00:00	AVAILABLE
+146	2025-06-26 10:30:00	19	\N	2025-06-26 10:00:00	AVAILABLE
+147	2025-06-26 14:30:00	19	\N	2025-06-26 14:00:00	AVAILABLE
+148	2025-06-27 10:30:00	19	\N	2025-06-27 10:00:00	AVAILABLE
+149	2025-06-27 14:30:00	19	\N	2025-06-27 14:00:00	AVAILABLE
+150	2025-06-28 10:30:00	19	\N	2025-06-28 10:00:00	AVAILABLE
+151	2025-06-28 14:30:00	19	\N	2025-06-28 14:00:00	AVAILABLE
+152	2025-06-29 10:30:00	19	\N	2025-06-29 10:00:00	AVAILABLE
+153	2025-06-29 14:30:00	19	\N	2025-06-29 14:00:00	AVAILABLE
+154	2025-06-30 10:30:00	19	LeokadiaKozlowska@petify.org	2025-06-30 10:00:00	RESERVED
+155	2025-06-30 14:30:00	19	\N	2025-06-30 14:00:00	AVAILABLE
+156	2025-06-22 14:30:00	20	WiolettaKozlowska@petify.org	2025-06-22 14:00:00	RESERVED
+157	2025-06-22 18:30:00	20	\N	2025-06-22 18:00:00	AVAILABLE
+158	2025-06-23 10:30:00	20	EwaWozniak@petify.org	2025-06-23 10:00:00	RESERVED
+159	2025-06-23 14:30:00	20	\N	2025-06-23 14:00:00	AVAILABLE
+160	2025-06-23 18:30:00	20	GawelWozniak@petify.org	2025-06-23 18:00:00	RESERVED
+161	2025-06-24 10:30:00	20	IzoldaKaminska@petify.org	2025-06-24 10:00:00	RESERVED
+162	2025-06-24 14:30:00	20	\N	2025-06-24 14:00:00	AVAILABLE
+163	2025-06-24 18:30:00	20	\N	2025-06-24 18:00:00	AVAILABLE
+164	2025-06-25 10:30:00	20	ZdzislawaJasinska@petify.org	2025-06-25 10:00:00	RESERVED
+165	2025-06-25 14:30:00	20	\N	2025-06-25 14:00:00	AVAILABLE
+166	2025-06-25 18:30:00	20	\N	2025-06-25 18:00:00	AVAILABLE
+167	2025-06-26 10:30:00	20	WielislawAdamczyk@petify.org	2025-06-26 10:00:00	RESERVED
+168	2025-06-26 14:30:00	20	EwaWozniak@petify.org	2025-06-26 14:00:00	RESERVED
+169	2025-06-26 18:30:00	20	\N	2025-06-26 18:00:00	AVAILABLE
+170	2025-06-27 10:30:00	20	\N	2025-06-27 10:00:00	AVAILABLE
+171	2025-06-27 14:30:00	20	\N	2025-06-27 14:00:00	AVAILABLE
+172	2025-06-27 18:30:00	20	\N	2025-06-27 18:00:00	AVAILABLE
+173	2025-06-28 10:30:00	20	\N	2025-06-28 10:00:00	AVAILABLE
+174	2025-06-28 14:30:00	20	\N	2025-06-28 14:00:00	AVAILABLE
+175	2025-06-28 18:30:00	20	\N	2025-06-28 18:00:00	AVAILABLE
+176	2025-06-29 10:30:00	20	JarekOstrowski@petify.org	2025-06-29 10:00:00	RESERVED
+177	2025-06-29 14:30:00	20	\N	2025-06-29 14:00:00	AVAILABLE
+178	2025-06-29 18:30:00	20	WielislawAdamczyk@petify.org	2025-06-29 18:00:00	RESERVED
+179	2025-06-30 10:30:00	20	\N	2025-06-30 10:00:00	AVAILABLE
+180	2025-06-30 14:30:00	20	\N	2025-06-30 14:00:00	AVAILABLE
+181	2025-06-30 18:30:00	20	\N	2025-06-30 18:00:00	AVAILABLE
+182	2025-06-22 14:30:00	21	\N	2025-06-22 14:00:00	AVAILABLE
+183	2025-06-23 10:30:00	21	\N	2025-06-23 10:00:00	AVAILABLE
+184	2025-06-23 14:30:00	21	\N	2025-06-23 14:00:00	AVAILABLE
+185	2025-06-24 10:30:00	21	ZdzislawaJasinska@petify.org	2025-06-24 10:00:00	RESERVED
+186	2025-06-24 14:30:00	21	\N	2025-06-24 14:00:00	AVAILABLE
+187	2025-06-25 10:30:00	21	\N	2025-06-25 10:00:00	AVAILABLE
+188	2025-06-25 14:30:00	21	\N	2025-06-25 14:00:00	AVAILABLE
+189	2025-06-26 10:30:00	21	\N	2025-06-26 10:00:00	AVAILABLE
+190	2025-06-26 14:30:00	21	\N	2025-06-26 14:00:00	AVAILABLE
+191	2025-06-27 10:30:00	21	\N	2025-06-27 10:00:00	AVAILABLE
+192	2025-06-27 14:30:00	21	WiolettaKozlowska@petify.org	2025-06-27 14:00:00	RESERVED
+193	2025-06-28 10:30:00	21	\N	2025-06-28 10:00:00	AVAILABLE
+194	2025-06-28 14:30:00	21	\N	2025-06-28 14:00:00	AVAILABLE
+195	2025-06-29 10:30:00	21	EwaWozniak@petify.org	2025-06-29 10:00:00	RESERVED
+196	2025-06-29 14:30:00	21	\N	2025-06-29 14:00:00	AVAILABLE
+197	2025-06-30 10:30:00	21	\N	2025-06-30 10:00:00	AVAILABLE
+198	2025-06-30 14:30:00	21	\N	2025-06-30 14:00:00	AVAILABLE
+199	2025-06-22 14:30:00	22	\N	2025-06-22 14:00:00	AVAILABLE
+200	2025-06-22 18:30:00	22	\N	2025-06-22 18:00:00	AVAILABLE
+201	2025-06-23 10:30:00	22	\N	2025-06-23 10:00:00	AVAILABLE
+202	2025-06-23 14:30:00	22	\N	2025-06-23 14:00:00	AVAILABLE
+203	2025-06-23 18:30:00	22	\N	2025-06-23 18:00:00	AVAILABLE
+204	2025-06-24 10:30:00	22	\N	2025-06-24 10:00:00	AVAILABLE
+205	2025-06-24 14:30:00	22	\N	2025-06-24 14:00:00	AVAILABLE
+206	2025-06-24 18:30:00	22	HieronimZielinski@petify.org	2025-06-24 18:00:00	RESERVED
+207	2025-06-25 10:30:00	22	\N	2025-06-25 10:00:00	AVAILABLE
+208	2025-06-25 14:30:00	22	\N	2025-06-25 14:00:00	AVAILABLE
+209	2025-06-25 18:30:00	22	\N	2025-06-25 18:00:00	AVAILABLE
+210	2025-06-26 10:30:00	22	\N	2025-06-26 10:00:00	AVAILABLE
+211	2025-06-26 14:30:00	22	\N	2025-06-26 14:00:00	AVAILABLE
+212	2025-06-26 18:30:00	22	\N	2025-06-26 18:00:00	AVAILABLE
+213	2025-06-27 10:30:00	22	\N	2025-06-27 10:00:00	AVAILABLE
+214	2025-06-27 14:30:00	22	\N	2025-06-27 14:00:00	AVAILABLE
+215	2025-06-27 18:30:00	22	\N	2025-06-27 18:00:00	AVAILABLE
+216	2025-06-28 10:30:00	22	\N	2025-06-28 10:00:00	AVAILABLE
+217	2025-06-28 14:30:00	22	\N	2025-06-28 14:00:00	AVAILABLE
+218	2025-06-28 18:30:00	22	\N	2025-06-28 18:00:00	AVAILABLE
+219	2025-06-29 10:30:00	22	\N	2025-06-29 10:00:00	AVAILABLE
+220	2025-06-29 14:30:00	22	AdamAdamczyk@petify.org	2025-06-29 14:00:00	RESERVED
+221	2025-06-29 18:30:00	22	\N	2025-06-29 18:00:00	AVAILABLE
+222	2025-06-30 10:30:00	22	\N	2025-06-30 10:00:00	AVAILABLE
+223	2025-06-30 14:30:00	22	\N	2025-06-30 14:00:00	AVAILABLE
+224	2025-06-30 18:30:00	22	HieronimZielinski@petify.org	2025-06-30 18:00:00	RESERVED
+225	2025-06-22 14:30:00	23	WalerianOstrowski@petify.org	2025-06-22 14:00:00	RESERVED
+226	2025-06-23 10:30:00	23	\N	2025-06-23 10:00:00	AVAILABLE
+227	2025-06-23 14:30:00	23	\N	2025-06-23 14:00:00	AVAILABLE
+228	2025-06-24 10:30:00	23	\N	2025-06-24 10:00:00	AVAILABLE
+229	2025-06-24 14:30:00	23	\N	2025-06-24 14:00:00	AVAILABLE
+230	2025-06-25 10:30:00	23	RaclawJasinski@petify.org	2025-06-25 10:00:00	RESERVED
+231	2025-06-25 14:30:00	23	\N	2025-06-25 14:00:00	AVAILABLE
+232	2025-06-26 10:30:00	23	\N	2025-06-26 10:00:00	AVAILABLE
+233	2025-06-26 14:30:00	23	\N	2025-06-26 14:00:00	AVAILABLE
+234	2025-06-27 10:30:00	23	IzoldaKaminska@petify.org	2025-06-27 10:00:00	RESERVED
+235	2025-06-27 14:30:00	23	\N	2025-06-27 14:00:00	AVAILABLE
+236	2025-06-28 10:30:00	23	\N	2025-06-28 10:00:00	AVAILABLE
+237	2025-06-28 14:30:00	23	\N	2025-06-28 14:00:00	AVAILABLE
+238	2025-06-29 10:30:00	23	\N	2025-06-29 10:00:00	AVAILABLE
+239	2025-06-29 14:30:00	23	\N	2025-06-29 14:00:00	AVAILABLE
+240	2025-06-30 10:30:00	23	\N	2025-06-30 10:00:00	AVAILABLE
+241	2025-06-30 14:30:00	23	GawelWozniak@petify.org	2025-06-30 14:00:00	RESERVED
+242	2025-06-22 14:30:00	25	\N	2025-06-22 14:00:00	AVAILABLE
+243	2025-06-23 10:30:00	25	\N	2025-06-23 10:00:00	AVAILABLE
+244	2025-06-23 14:30:00	25	\N	2025-06-23 14:00:00	AVAILABLE
+245	2025-06-24 10:30:00	25	AdamAdamczyk@petify.org	2025-06-24 10:00:00	RESERVED
+246	2025-06-24 14:30:00	25	\N	2025-06-24 14:00:00	AVAILABLE
+247	2025-06-25 10:30:00	25	JaromirKrol@petify.org	2025-06-25 10:00:00	RESERVED
+248	2025-06-25 14:30:00	25	\N	2025-06-25 14:00:00	AVAILABLE
+249	2025-06-26 10:30:00	25	\N	2025-06-26 10:00:00	AVAILABLE
+250	2025-06-26 14:30:00	25	\N	2025-06-26 14:00:00	AVAILABLE
+251	2025-06-27 10:30:00	25	\N	2025-06-27 10:00:00	AVAILABLE
+252	2025-06-27 14:30:00	25	\N	2025-06-27 14:00:00	AVAILABLE
+253	2025-06-28 10:30:00	25	\N	2025-06-28 10:00:00	AVAILABLE
+254	2025-06-28 14:30:00	25	\N	2025-06-28 14:00:00	AVAILABLE
+255	2025-06-29 10:30:00	25	KlaudiaCzerwinska@petify.org	2025-06-29 10:00:00	RESERVED
+256	2025-06-29 14:30:00	25	\N	2025-06-29 14:00:00	AVAILABLE
+257	2025-06-30 10:30:00	25	\N	2025-06-30 10:00:00	AVAILABLE
+258	2025-06-30 14:30:00	25	\N	2025-06-30 14:00:00	AVAILABLE
+259	2025-06-22 14:30:00	26	\N	2025-06-22 14:00:00	AVAILABLE
+260	2025-06-22 18:30:00	26	MartynBorkowski@petify.org	2025-06-22 18:00:00	RESERVED
+261	2025-06-23 10:30:00	26	JaromirKrol@petify.org	2025-06-23 10:00:00	RESERVED
+262	2025-06-23 14:30:00	26	\N	2025-06-23 14:00:00	AVAILABLE
+263	2025-06-23 18:30:00	26	\N	2025-06-23 18:00:00	AVAILABLE
+264	2025-06-24 10:30:00	26	\N	2025-06-24 10:00:00	AVAILABLE
+265	2025-06-24 14:30:00	26	\N	2025-06-24 14:00:00	AVAILABLE
+266	2025-06-24 18:30:00	26	WiolettaKozlowska@petify.org	2025-06-24 18:00:00	RESERVED
+267	2025-06-25 10:30:00	26	\N	2025-06-25 10:00:00	AVAILABLE
+268	2025-06-25 14:30:00	26	\N	2025-06-25 14:00:00	AVAILABLE
+269	2025-06-25 18:30:00	26	\N	2025-06-25 18:00:00	AVAILABLE
+270	2025-06-26 10:30:00	26	\N	2025-06-26 10:00:00	AVAILABLE
+271	2025-06-26 14:30:00	26	\N	2025-06-26 14:00:00	AVAILABLE
+272	2025-06-26 18:30:00	26	\N	2025-06-26 18:00:00	AVAILABLE
+273	2025-06-27 10:30:00	26	JaromirKrol@petify.org	2025-06-27 10:00:00	RESERVED
+274	2025-06-27 14:30:00	26	\N	2025-06-27 14:00:00	AVAILABLE
+275	2025-06-27 18:30:00	26	\N	2025-06-27 18:00:00	AVAILABLE
+276	2025-06-28 10:30:00	26	\N	2025-06-28 10:00:00	AVAILABLE
+277	2025-06-28 14:30:00	26	\N	2025-06-28 14:00:00	AVAILABLE
+278	2025-06-28 18:30:00	26	EwaWozniak@petify.org	2025-06-28 18:00:00	RESERVED
+279	2025-06-29 10:30:00	26	\N	2025-06-29 10:00:00	AVAILABLE
+280	2025-06-29 14:30:00	26	\N	2025-06-29 14:00:00	AVAILABLE
+281	2025-06-29 18:30:00	26	HieronimZielinski@petify.org	2025-06-29 18:00:00	RESERVED
+282	2025-06-30 10:30:00	26	\N	2025-06-30 10:00:00	AVAILABLE
+283	2025-06-30 14:30:00	26	\N	2025-06-30 14:00:00	AVAILABLE
+284	2025-06-30 18:30:00	26	\N	2025-06-30 18:00:00	AVAILABLE
+285	2025-06-22 14:30:00	55	JaromirKrol@petify.org	2025-06-22 14:00:00	RESERVED
+286	2025-06-23 10:30:00	55	\N	2025-06-23 10:00:00	AVAILABLE
+287	2025-06-23 14:30:00	55	\N	2025-06-23 14:00:00	AVAILABLE
+288	2025-06-24 10:30:00	55	\N	2025-06-24 10:00:00	AVAILABLE
+289	2025-06-24 14:30:00	55	ZdzislawaJasinska@petify.org	2025-06-24 14:00:00	RESERVED
+290	2025-06-25 10:30:00	55	\N	2025-06-25 10:00:00	AVAILABLE
+291	2025-06-25 14:30:00	55	\N	2025-06-25 14:00:00	AVAILABLE
+292	2025-06-26 10:30:00	55	IzoldaKaminska@petify.org	2025-06-26 10:00:00	RESERVED
+293	2025-06-26 14:30:00	55	\N	2025-06-26 14:00:00	AVAILABLE
+294	2025-06-27 10:30:00	55	\N	2025-06-27 10:00:00	AVAILABLE
+295	2025-06-27 14:30:00	55	KrysiaMichalska@petify.org	2025-06-27 14:00:00	RESERVED
+296	2025-06-28 10:30:00	55	RaclawJasinski@petify.org	2025-06-28 10:00:00	RESERVED
+297	2025-06-28 14:30:00	55	\N	2025-06-28 14:00:00	AVAILABLE
+298	2025-06-29 10:30:00	55	\N	2025-06-29 10:00:00	AVAILABLE
+299	2025-06-29 14:30:00	55	\N	2025-06-29 14:00:00	AVAILABLE
+300	2025-06-30 10:30:00	55	\N	2025-06-30 10:00:00	AVAILABLE
+301	2025-06-30 14:30:00	55	\N	2025-06-30 14:00:00	AVAILABLE
+302	2025-06-22 14:30:00	56	HieronimZielinski@petify.org	2025-06-22 14:00:00	RESERVED
+303	2025-06-22 18:30:00	56	\N	2025-06-22 18:00:00	AVAILABLE
+304	2025-06-23 10:30:00	56	\N	2025-06-23 10:00:00	AVAILABLE
+305	2025-06-23 14:30:00	56	IzoldaKaminska@petify.org	2025-06-23 14:00:00	RESERVED
+306	2025-06-23 18:30:00	56	\N	2025-06-23 18:00:00	AVAILABLE
+307	2025-06-24 10:30:00	56	\N	2025-06-24 10:00:00	AVAILABLE
+308	2025-06-24 14:30:00	56	\N	2025-06-24 14:00:00	AVAILABLE
+309	2025-06-24 18:30:00	56	\N	2025-06-24 18:00:00	AVAILABLE
+310	2025-06-25 10:30:00	56	JaromirKrol@petify.org	2025-06-25 10:00:00	RESERVED
+311	2025-06-25 14:30:00	56	\N	2025-06-25 14:00:00	AVAILABLE
+312	2025-06-25 18:30:00	56	\N	2025-06-25 18:00:00	AVAILABLE
+313	2025-06-26 10:30:00	56	\N	2025-06-26 10:00:00	AVAILABLE
+314	2025-06-26 14:30:00	56	\N	2025-06-26 14:00:00	AVAILABLE
+315	2025-06-26 18:30:00	56	\N	2025-06-26 18:00:00	AVAILABLE
+316	2025-06-27 10:30:00	56	\N	2025-06-27 10:00:00	AVAILABLE
+317	2025-06-27 14:30:00	56	\N	2025-06-27 14:00:00	AVAILABLE
+318	2025-06-27 18:30:00	56	HalinaDabrowski@petify.org	2025-06-27 18:00:00	RESERVED
+319	2025-06-28 10:30:00	56	\N	2025-06-28 10:00:00	AVAILABLE
+320	2025-06-28 14:30:00	56	\N	2025-06-28 14:00:00	AVAILABLE
+321	2025-06-28 18:30:00	56	\N	2025-06-28 18:00:00	AVAILABLE
+322	2025-06-29 10:30:00	56	JulitaSymanska@petify.org	2025-06-29 10:00:00	RESERVED
+323	2025-06-29 14:30:00	56	LeokadiaKozlowska@petify.org	2025-06-29 14:00:00	RESERVED
+324	2025-06-29 18:30:00	56	\N	2025-06-29 18:00:00	AVAILABLE
+325	2025-06-30 10:30:00	56	GrzegorzPiotrowski@petify.org	2025-06-30 10:00:00	RESERVED
+326	2025-06-30 14:30:00	56	\N	2025-06-30 14:00:00	AVAILABLE
+327	2025-06-30 18:30:00	56	\N	2025-06-30 18:00:00	AVAILABLE
+328	2025-06-22 14:30:00	27	HieronimZielinski@petify.org	2025-06-22 14:00:00	RESERVED
+329	2025-06-23 10:30:00	27	\N	2025-06-23 10:00:00	AVAILABLE
+330	2025-06-23 14:30:00	27	\N	2025-06-23 14:00:00	AVAILABLE
+331	2025-06-24 10:30:00	27	ZdzislawaJasinska@petify.org	2025-06-24 10:00:00	RESERVED
+332	2025-06-24 14:30:00	27	\N	2025-06-24 14:00:00	AVAILABLE
+333	2025-06-25 10:30:00	27	\N	2025-06-25 10:00:00	AVAILABLE
+334	2025-06-25 14:30:00	27	\N	2025-06-25 14:00:00	AVAILABLE
+335	2025-06-26 10:30:00	27	\N	2025-06-26 10:00:00	AVAILABLE
+336	2025-06-26 14:30:00	27	\N	2025-06-26 14:00:00	AVAILABLE
+337	2025-06-27 10:30:00	27	\N	2025-06-27 10:00:00	AVAILABLE
+338	2025-06-27 14:30:00	27	\N	2025-06-27 14:00:00	AVAILABLE
+339	2025-06-28 10:30:00	27	\N	2025-06-28 10:00:00	AVAILABLE
+340	2025-06-28 14:30:00	27	\N	2025-06-28 14:00:00	AVAILABLE
+341	2025-06-29 10:30:00	27	\N	2025-06-29 10:00:00	AVAILABLE
+342	2025-06-29 14:30:00	27	\N	2025-06-29 14:00:00	AVAILABLE
+343	2025-06-30 10:30:00	27	\N	2025-06-30 10:00:00	AVAILABLE
+344	2025-06-30 14:30:00	27	\N	2025-06-30 14:00:00	AVAILABLE
+345	2025-06-22 14:30:00	28	\N	2025-06-22 14:00:00	AVAILABLE
+346	2025-06-22 18:30:00	28	\N	2025-06-22 18:00:00	AVAILABLE
+347	2025-06-23 10:30:00	28	\N	2025-06-23 10:00:00	AVAILABLE
+348	2025-06-23 14:30:00	28	WalerianOstrowski@petify.org	2025-06-23 14:00:00	RESERVED
+349	2025-06-23 18:30:00	28	JaromirKrol@petify.org	2025-06-23 18:00:00	RESERVED
+350	2025-06-24 10:30:00	28	\N	2025-06-24 10:00:00	AVAILABLE
+351	2025-06-24 14:30:00	28	\N	2025-06-24 14:00:00	AVAILABLE
+352	2025-06-24 18:30:00	28	\N	2025-06-24 18:00:00	AVAILABLE
+353	2025-06-25 10:30:00	28	\N	2025-06-25 10:00:00	AVAILABLE
+354	2025-06-25 14:30:00	28	\N	2025-06-25 14:00:00	AVAILABLE
+355	2025-06-25 18:30:00	28	GawelWozniak@petify.org	2025-06-25 18:00:00	RESERVED
+356	2025-06-26 10:30:00	28	\N	2025-06-26 10:00:00	AVAILABLE
+357	2025-06-26 14:30:00	28	\N	2025-06-26 14:00:00	AVAILABLE
+358	2025-06-26 18:30:00	28	\N	2025-06-26 18:00:00	AVAILABLE
+359	2025-06-27 10:30:00	28	\N	2025-06-27 10:00:00	AVAILABLE
+360	2025-06-27 14:30:00	28	EwaWozniak@petify.org	2025-06-27 14:00:00	RESERVED
+361	2025-06-27 18:30:00	28	\N	2025-06-27 18:00:00	AVAILABLE
+362	2025-06-28 10:30:00	28	\N	2025-06-28 10:00:00	AVAILABLE
+363	2025-06-28 14:30:00	28	\N	2025-06-28 14:00:00	AVAILABLE
+364	2025-06-28 18:30:00	28	\N	2025-06-28 18:00:00	AVAILABLE
+365	2025-06-29 10:30:00	28	\N	2025-06-29 10:00:00	AVAILABLE
+366	2025-06-29 14:30:00	28	\N	2025-06-29 14:00:00	AVAILABLE
+367	2025-06-29 18:30:00	28	\N	2025-06-29 18:00:00	AVAILABLE
+368	2025-06-30 10:30:00	28	\N	2025-06-30 10:00:00	AVAILABLE
+369	2025-06-30 14:30:00	28	\N	2025-06-30 14:00:00	AVAILABLE
+370	2025-06-30 18:30:00	28	\N	2025-06-30 18:00:00	AVAILABLE
+371	2025-06-22 14:30:00	29	\N	2025-06-22 14:00:00	AVAILABLE
+372	2025-06-23 10:30:00	29	\N	2025-06-23 10:00:00	AVAILABLE
+373	2025-06-23 14:30:00	29	\N	2025-06-23 14:00:00	AVAILABLE
+374	2025-06-24 10:30:00	29	\N	2025-06-24 10:00:00	AVAILABLE
+375	2025-06-24 14:30:00	29	\N	2025-06-24 14:00:00	AVAILABLE
+376	2025-06-25 10:30:00	29	\N	2025-06-25 10:00:00	AVAILABLE
+377	2025-06-25 14:30:00	29	HalinaDabrowski@petify.org	2025-06-25 14:00:00	RESERVED
+378	2025-06-26 10:30:00	29	\N	2025-06-26 10:00:00	AVAILABLE
+379	2025-06-26 14:30:00	29	\N	2025-06-26 14:00:00	AVAILABLE
+380	2025-06-27 10:30:00	29	\N	2025-06-27 10:00:00	AVAILABLE
+381	2025-06-27 14:30:00	29	\N	2025-06-27 14:00:00	AVAILABLE
+382	2025-06-28 10:30:00	29	\N	2025-06-28 10:00:00	AVAILABLE
+383	2025-06-28 14:30:00	29	\N	2025-06-28 14:00:00	AVAILABLE
+384	2025-06-29 10:30:00	29	\N	2025-06-29 10:00:00	AVAILABLE
+385	2025-06-29 14:30:00	29	\N	2025-06-29 14:00:00	AVAILABLE
+386	2025-06-30 10:30:00	29	\N	2025-06-30 10:00:00	AVAILABLE
+387	2025-06-30 14:30:00	29	\N	2025-06-30 14:00:00	AVAILABLE
+388	2025-06-22 14:30:00	30	JarekOstrowski@petify.org	2025-06-22 14:00:00	RESERVED
+389	2025-06-22 18:30:00	30	\N	2025-06-22 18:00:00	AVAILABLE
+390	2025-06-23 10:30:00	30	\N	2025-06-23 10:00:00	AVAILABLE
+391	2025-06-23 14:30:00	30	\N	2025-06-23 14:00:00	AVAILABLE
+392	2025-06-23 18:30:00	30	\N	2025-06-23 18:00:00	AVAILABLE
+393	2025-06-24 10:30:00	30	\N	2025-06-24 10:00:00	AVAILABLE
+394	2025-06-24 14:30:00	30	\N	2025-06-24 14:00:00	AVAILABLE
+395	2025-06-24 18:30:00	30	\N	2025-06-24 18:00:00	AVAILABLE
+396	2025-06-25 10:30:00	30	\N	2025-06-25 10:00:00	AVAILABLE
+397	2025-06-25 14:30:00	30	\N	2025-06-25 14:00:00	AVAILABLE
+398	2025-06-25 18:30:00	30	\N	2025-06-25 18:00:00	AVAILABLE
+399	2025-06-26 10:30:00	30	\N	2025-06-26 10:00:00	AVAILABLE
+400	2025-06-26 14:30:00	30	\N	2025-06-26 14:00:00	AVAILABLE
+401	2025-06-26 18:30:00	30	\N	2025-06-26 18:00:00	AVAILABLE
+402	2025-06-27 10:30:00	30	\N	2025-06-27 10:00:00	AVAILABLE
+403	2025-06-27 14:30:00	30	\N	2025-06-27 14:00:00	AVAILABLE
+404	2025-06-27 18:30:00	30	RaclawJasinski@petify.org	2025-06-27 18:00:00	RESERVED
+405	2025-06-28 10:30:00	30	\N	2025-06-28 10:00:00	AVAILABLE
+406	2025-06-28 14:30:00	30	\N	2025-06-28 14:00:00	AVAILABLE
+407	2025-06-28 18:30:00	30	\N	2025-06-28 18:00:00	AVAILABLE
+408	2025-06-29 10:30:00	30	\N	2025-06-29 10:00:00	AVAILABLE
+409	2025-06-29 14:30:00	30	\N	2025-06-29 14:00:00	AVAILABLE
+410	2025-06-29 18:30:00	30	ZdzislawaJasinska@petify.org	2025-06-29 18:00:00	RESERVED
+411	2025-06-30 10:30:00	30	\N	2025-06-30 10:00:00	AVAILABLE
+412	2025-06-30 14:30:00	30	\N	2025-06-30 14:00:00	AVAILABLE
+413	2025-06-30 18:30:00	30	\N	2025-06-30 18:00:00	AVAILABLE
+414	2025-06-22 14:30:00	31	\N	2025-06-22 14:00:00	AVAILABLE
+415	2025-06-23 10:30:00	31	\N	2025-06-23 10:00:00	AVAILABLE
+416	2025-06-23 14:30:00	31	\N	2025-06-23 14:00:00	AVAILABLE
+417	2025-06-24 10:30:00	31	\N	2025-06-24 10:00:00	AVAILABLE
+418	2025-06-24 14:30:00	31	\N	2025-06-24 14:00:00	AVAILABLE
+419	2025-06-25 10:30:00	31	\N	2025-06-25 10:00:00	AVAILABLE
+420	2025-06-25 14:30:00	31	\N	2025-06-25 14:00:00	AVAILABLE
+421	2025-06-26 10:30:00	31	\N	2025-06-26 10:00:00	AVAILABLE
+422	2025-06-26 14:30:00	31	\N	2025-06-26 14:00:00	AVAILABLE
+423	2025-06-27 10:30:00	31	\N	2025-06-27 10:00:00	AVAILABLE
+424	2025-06-27 14:30:00	31	\N	2025-06-27 14:00:00	AVAILABLE
+425	2025-06-28 10:30:00	31	\N	2025-06-28 10:00:00	AVAILABLE
+426	2025-06-28 14:30:00	31	\N	2025-06-28 14:00:00	AVAILABLE
+427	2025-06-29 10:30:00	31	\N	2025-06-29 10:00:00	AVAILABLE
+428	2025-06-29 14:30:00	31	WielislawAdamczyk@petify.org	2025-06-29 14:00:00	RESERVED
+429	2025-06-30 10:30:00	31	\N	2025-06-30 10:00:00	AVAILABLE
+430	2025-06-30 14:30:00	31	\N	2025-06-30 14:00:00	AVAILABLE
+431	2025-06-22 14:30:00	45	JarekOstrowski@petify.org	2025-06-22 14:00:00	RESERVED
+432	2025-06-23 10:30:00	45	\N	2025-06-23 10:00:00	AVAILABLE
+433	2025-06-23 14:30:00	45	\N	2025-06-23 14:00:00	AVAILABLE
+434	2025-06-24 10:30:00	45	\N	2025-06-24 10:00:00	AVAILABLE
+435	2025-06-24 14:30:00	45	\N	2025-06-24 14:00:00	AVAILABLE
+436	2025-06-25 10:30:00	45	KlaudiaCzerwinska@petify.org	2025-06-25 10:00:00	RESERVED
+437	2025-06-25 14:30:00	45	IzoldaKaminska@petify.org	2025-06-25 14:00:00	RESERVED
+438	2025-06-26 10:30:00	45	\N	2025-06-26 10:00:00	AVAILABLE
+439	2025-06-26 14:30:00	45	HalinaDabrowski@petify.org	2025-06-26 14:00:00	RESERVED
+440	2025-06-27 10:30:00	45	\N	2025-06-27 10:00:00	AVAILABLE
+441	2025-06-27 14:30:00	45	JaromirKrol@petify.org	2025-06-27 14:00:00	RESERVED
+442	2025-06-28 10:30:00	45	\N	2025-06-28 10:00:00	AVAILABLE
+443	2025-06-28 14:30:00	45	\N	2025-06-28 14:00:00	AVAILABLE
+444	2025-06-29 10:30:00	45	\N	2025-06-29 10:00:00	AVAILABLE
+445	2025-06-29 14:30:00	45	\N	2025-06-29 14:00:00	AVAILABLE
+446	2025-06-30 10:30:00	45	KrysiaMichalska@petify.org	2025-06-30 10:00:00	RESERVED
+447	2025-06-30 14:30:00	45	\N	2025-06-30 14:00:00	AVAILABLE
+448	2025-06-22 14:30:00	46	\N	2025-06-22 14:00:00	AVAILABLE
+449	2025-06-22 18:30:00	46	\N	2025-06-22 18:00:00	AVAILABLE
+450	2025-06-23 10:30:00	46	\N	2025-06-23 10:00:00	AVAILABLE
+451	2025-06-23 14:30:00	46	\N	2025-06-23 14:00:00	AVAILABLE
+452	2025-06-23 18:30:00	46	\N	2025-06-23 18:00:00	AVAILABLE
+453	2025-06-24 10:30:00	46	\N	2025-06-24 10:00:00	AVAILABLE
+454	2025-06-24 14:30:00	46	\N	2025-06-24 14:00:00	AVAILABLE
+455	2025-06-24 18:30:00	46	\N	2025-06-24 18:00:00	AVAILABLE
+456	2025-06-25 10:30:00	46	\N	2025-06-25 10:00:00	AVAILABLE
+457	2025-06-25 14:30:00	46	\N	2025-06-25 14:00:00	AVAILABLE
+458	2025-06-25 18:30:00	46	\N	2025-06-25 18:00:00	AVAILABLE
+459	2025-06-26 10:30:00	46	AdamAdamczyk@petify.org	2025-06-26 10:00:00	RESERVED
+460	2025-06-26 14:30:00	46	\N	2025-06-26 14:00:00	AVAILABLE
+461	2025-06-26 18:30:00	46	IzoldaKaminska@petify.org	2025-06-26 18:00:00	RESERVED
+462	2025-06-27 10:30:00	46	\N	2025-06-27 10:00:00	AVAILABLE
+463	2025-06-27 14:30:00	46	RaclawJasinski@petify.org	2025-06-27 14:00:00	RESERVED
+464	2025-06-27 18:30:00	46	\N	2025-06-27 18:00:00	AVAILABLE
+465	2025-06-28 10:30:00	46	\N	2025-06-28 10:00:00	AVAILABLE
+466	2025-06-28 14:30:00	46	IzoldaKaminska@petify.org	2025-06-28 14:00:00	RESERVED
+467	2025-06-28 18:30:00	46	\N	2025-06-28 18:00:00	AVAILABLE
+468	2025-06-29 10:30:00	46	\N	2025-06-29 10:00:00	AVAILABLE
+469	2025-06-29 14:30:00	46	\N	2025-06-29 14:00:00	AVAILABLE
+470	2025-06-29 18:30:00	46	\N	2025-06-29 18:00:00	AVAILABLE
+471	2025-06-30 10:30:00	46	\N	2025-06-30 10:00:00	AVAILABLE
+472	2025-06-30 14:30:00	46	\N	2025-06-30 14:00:00	AVAILABLE
+473	2025-06-30 18:30:00	46	\N	2025-06-30 18:00:00	AVAILABLE
+474	2025-06-22 14:30:00	48	WiolettaKozlowska@petify.org	2025-06-22 14:00:00	RESERVED
+475	2025-06-22 18:30:00	48	\N	2025-06-22 18:00:00	AVAILABLE
+476	2025-06-23 10:30:00	48	\N	2025-06-23 10:00:00	AVAILABLE
+477	2025-06-23 14:30:00	48	ZdzislawaJasinska@petify.org	2025-06-23 14:00:00	RESERVED
+478	2025-06-23 18:30:00	48	\N	2025-06-23 18:00:00	AVAILABLE
+479	2025-06-24 10:30:00	48	\N	2025-06-24 10:00:00	AVAILABLE
+480	2025-06-24 14:30:00	48	\N	2025-06-24 14:00:00	AVAILABLE
+481	2025-06-24 18:30:00	48	\N	2025-06-24 18:00:00	AVAILABLE
+482	2025-06-25 10:30:00	48	\N	2025-06-25 10:00:00	AVAILABLE
+483	2025-06-25 14:30:00	48	\N	2025-06-25 14:00:00	AVAILABLE
+484	2025-06-25 18:30:00	48	\N	2025-06-25 18:00:00	AVAILABLE
+485	2025-06-26 10:30:00	48	\N	2025-06-26 10:00:00	AVAILABLE
+486	2025-06-26 14:30:00	48	\N	2025-06-26 14:00:00	AVAILABLE
+487	2025-06-26 18:30:00	48	\N	2025-06-26 18:00:00	AVAILABLE
+488	2025-06-27 10:30:00	48	IzoldaKaminska@petify.org	2025-06-27 10:00:00	RESERVED
+489	2025-06-27 14:30:00	48	JulitaSymanska@petify.org	2025-06-27 14:00:00	RESERVED
+490	2025-06-27 18:30:00	48	\N	2025-06-27 18:00:00	AVAILABLE
+491	2025-06-28 10:30:00	48	WielislawAdamczyk@petify.org	2025-06-28 10:00:00	RESERVED
+492	2025-06-28 14:30:00	48	\N	2025-06-28 14:00:00	AVAILABLE
+493	2025-06-28 18:30:00	48	\N	2025-06-28 18:00:00	AVAILABLE
+494	2025-06-29 10:30:00	48	\N	2025-06-29 10:00:00	AVAILABLE
+495	2025-06-29 14:30:00	48	\N	2025-06-29 14:00:00	AVAILABLE
+496	2025-06-29 18:30:00	48	\N	2025-06-29 18:00:00	AVAILABLE
+497	2025-06-30 10:30:00	48	GrzegorzPiotrowski@petify.org	2025-06-30 10:00:00	RESERVED
+498	2025-06-30 14:30:00	48	KlaudiaCzerwinska@petify.org	2025-06-30 14:00:00	RESERVED
+499	2025-06-30 18:30:00	48	\N	2025-06-30 18:00:00	AVAILABLE
+500	2025-06-22 14:30:00	49	\N	2025-06-22 14:00:00	AVAILABLE
+501	2025-06-23 10:30:00	49	\N	2025-06-23 10:00:00	AVAILABLE
+502	2025-06-23 14:30:00	49	\N	2025-06-23 14:00:00	AVAILABLE
+503	2025-06-24 10:30:00	49	\N	2025-06-24 10:00:00	AVAILABLE
+504	2025-06-24 14:30:00	49	\N	2025-06-24 14:00:00	AVAILABLE
+505	2025-06-25 10:30:00	49	JaromirKrol@petify.org	2025-06-25 10:00:00	RESERVED
+506	2025-06-25 14:30:00	49	LeokadiaKozlowska@petify.org	2025-06-25 14:00:00	RESERVED
+507	2025-06-26 10:30:00	49	\N	2025-06-26 10:00:00	AVAILABLE
+508	2025-06-26 14:30:00	49	\N	2025-06-26 14:00:00	AVAILABLE
+509	2025-06-27 10:30:00	49	LeokadiaKozlowska@petify.org	2025-06-27 10:00:00	RESERVED
+510	2025-06-27 14:30:00	49	\N	2025-06-27 14:00:00	AVAILABLE
+511	2025-06-28 10:30:00	49	RaclawJasinski@petify.org	2025-06-28 10:00:00	RESERVED
+512	2025-06-28 14:30:00	49	\N	2025-06-28 14:00:00	AVAILABLE
+513	2025-06-29 10:30:00	49	\N	2025-06-29 10:00:00	AVAILABLE
+514	2025-06-29 14:30:00	49	\N	2025-06-29 14:00:00	AVAILABLE
+515	2025-06-30 10:30:00	49	IzoldaKaminska@petify.org	2025-06-30 10:00:00	RESERVED
+516	2025-06-30 14:30:00	49	\N	2025-06-30 14:00:00	AVAILABLE
+517	2025-06-22 14:30:00	50	\N	2025-06-22 14:00:00	AVAILABLE
+518	2025-06-22 18:30:00	50	\N	2025-06-22 18:00:00	AVAILABLE
+519	2025-06-23 10:30:00	50	KrysiaMichalska@petify.org	2025-06-23 10:00:00	RESERVED
+520	2025-06-23 14:30:00	50	RaclawJasinski@petify.org	2025-06-23 14:00:00	RESERVED
+521	2025-06-23 18:30:00	50	\N	2025-06-23 18:00:00	AVAILABLE
+522	2025-06-24 10:30:00	50	\N	2025-06-24 10:00:00	AVAILABLE
+523	2025-06-24 14:30:00	50	\N	2025-06-24 14:00:00	AVAILABLE
+524	2025-06-24 18:30:00	50	WielislawAdamczyk@petify.org	2025-06-24 18:00:00	RESERVED
+525	2025-06-25 10:30:00	50	JaromirKrol@petify.org	2025-06-25 10:00:00	RESERVED
+526	2025-06-25 14:30:00	50	\N	2025-06-25 14:00:00	AVAILABLE
+527	2025-06-25 18:30:00	50	\N	2025-06-25 18:00:00	AVAILABLE
+528	2025-06-26 10:30:00	50	KlaudiaCzerwinska@petify.org	2025-06-26 10:00:00	RESERVED
+529	2025-06-26 14:30:00	50	\N	2025-06-26 14:00:00	AVAILABLE
+530	2025-06-26 18:30:00	50	\N	2025-06-26 18:00:00	AVAILABLE
+531	2025-06-27 10:30:00	50	\N	2025-06-27 10:00:00	AVAILABLE
+532	2025-06-27 14:30:00	50	\N	2025-06-27 14:00:00	AVAILABLE
+533	2025-06-27 18:30:00	50	\N	2025-06-27 18:00:00	AVAILABLE
+534	2025-06-28 10:30:00	50	\N	2025-06-28 10:00:00	AVAILABLE
+535	2025-06-28 14:30:00	50	\N	2025-06-28 14:00:00	AVAILABLE
+536	2025-06-28 18:30:00	50	\N	2025-06-28 18:00:00	AVAILABLE
+537	2025-06-29 10:30:00	50	\N	2025-06-29 10:00:00	AVAILABLE
+538	2025-06-29 14:30:00	50	\N	2025-06-29 14:00:00	AVAILABLE
+539	2025-06-29 18:30:00	50	\N	2025-06-29 18:00:00	AVAILABLE
+540	2025-06-30 10:30:00	50	\N	2025-06-30 10:00:00	AVAILABLE
+541	2025-06-30 14:30:00	50	\N	2025-06-30 14:00:00	AVAILABLE
+542	2025-06-30 18:30:00	50	\N	2025-06-30 18:00:00	AVAILABLE
+543	2025-06-22 14:30:00	53	\N	2025-06-22 14:00:00	AVAILABLE
+544	2025-06-23 10:30:00	53	GrzegorzPiotrowski@petify.org	2025-06-23 10:00:00	RESERVED
+545	2025-06-23 14:30:00	53	\N	2025-06-23 14:00:00	AVAILABLE
+546	2025-06-24 10:30:00	53	\N	2025-06-24 10:00:00	AVAILABLE
+547	2025-06-24 14:30:00	53	AdamAdamczyk@petify.org	2025-06-24 14:00:00	RESERVED
+548	2025-06-25 10:30:00	53	\N	2025-06-25 10:00:00	AVAILABLE
+549	2025-06-25 14:30:00	53	KlaudiaCzerwinska@petify.org	2025-06-25 14:00:00	RESERVED
+550	2025-06-26 10:30:00	53	\N	2025-06-26 10:00:00	AVAILABLE
+551	2025-06-26 14:30:00	53	\N	2025-06-26 14:00:00	AVAILABLE
+552	2025-06-27 10:30:00	53	\N	2025-06-27 10:00:00	AVAILABLE
+553	2025-06-27 14:30:00	53	WalerianOstrowski@petify.org	2025-06-27 14:00:00	RESERVED
+554	2025-06-28 10:30:00	53	\N	2025-06-28 10:00:00	AVAILABLE
+555	2025-06-28 14:30:00	53	ZdzislawaJasinska@petify.org	2025-06-28 14:00:00	RESERVED
+556	2025-06-29 10:30:00	53	\N	2025-06-29 10:00:00	AVAILABLE
+557	2025-06-29 14:30:00	53	HieronimZielinski@petify.org	2025-06-29 14:00:00	RESERVED
+558	2025-06-30 10:30:00	53	\N	2025-06-30 10:00:00	AVAILABLE
+559	2025-06-30 14:30:00	53	\N	2025-06-30 14:00:00	AVAILABLE
+560	2025-06-22 14:30:00	54	\N	2025-06-22 14:00:00	AVAILABLE
+561	2025-06-22 18:30:00	54	JaromirKrol@petify.org	2025-06-22 18:00:00	RESERVED
+562	2025-06-23 10:30:00	54	HalinaDabrowski@petify.org	2025-06-23 10:00:00	RESERVED
+563	2025-06-23 14:30:00	54	\N	2025-06-23 14:00:00	AVAILABLE
+564	2025-06-23 18:30:00	54	HieronimZielinski@petify.org	2025-06-23 18:00:00	RESERVED
+565	2025-06-24 10:30:00	54	\N	2025-06-24 10:00:00	AVAILABLE
+566	2025-06-24 14:30:00	54	\N	2025-06-24 14:00:00	AVAILABLE
+567	2025-06-24 18:30:00	54	\N	2025-06-24 18:00:00	AVAILABLE
+568	2025-06-25 10:30:00	54	WiolettaKozlowska@petify.org	2025-06-25 10:00:00	RESERVED
+569	2025-06-25 14:30:00	54	\N	2025-06-25 14:00:00	AVAILABLE
+570	2025-06-25 18:30:00	54	WalerianOstrowski@petify.org	2025-06-25 18:00:00	RESERVED
+571	2025-06-26 10:30:00	54	\N	2025-06-26 10:00:00	AVAILABLE
+572	2025-06-26 14:30:00	54	\N	2025-06-26 14:00:00	AVAILABLE
+573	2025-06-26 18:30:00	54	\N	2025-06-26 18:00:00	AVAILABLE
+574	2025-06-27 10:30:00	54	\N	2025-06-27 10:00:00	AVAILABLE
+575	2025-06-27 14:30:00	54	\N	2025-06-27 14:00:00	AVAILABLE
+576	2025-06-27 18:30:00	54	\N	2025-06-27 18:00:00	AVAILABLE
+577	2025-06-28 10:30:00	54	\N	2025-06-28 10:00:00	AVAILABLE
+578	2025-06-28 14:30:00	54	\N	2025-06-28 14:00:00	AVAILABLE
+579	2025-06-28 18:30:00	54	\N	2025-06-28 18:00:00	AVAILABLE
+580	2025-06-29 10:30:00	54	\N	2025-06-29 10:00:00	AVAILABLE
+581	2025-06-29 14:30:00	54	\N	2025-06-29 14:00:00	AVAILABLE
+582	2025-06-29 18:30:00	54	EwaWozniak@petify.org	2025-06-29 18:00:00	RESERVED
+583	2025-06-30 10:30:00	54	\N	2025-06-30 10:00:00	AVAILABLE
+584	2025-06-30 14:30:00	54	\N	2025-06-30 14:00:00	AVAILABLE
+585	2025-06-30 18:30:00	54	JaromirKrol@petify.org	2025-06-30 18:00:00	RESERVED
+586	2025-06-22 14:30:00	59	JulitaSymanska@petify.org	2025-06-22 14:00:00	RESERVED
+587	2025-06-23 10:30:00	59	\N	2025-06-23 10:00:00	AVAILABLE
+588	2025-06-23 14:30:00	59	\N	2025-06-23 14:00:00	AVAILABLE
+589	2025-06-24 10:30:00	59	\N	2025-06-24 10:00:00	AVAILABLE
+590	2025-06-24 14:30:00	59	StanislawKaczmarek@petify.org	2025-06-24 14:00:00	RESERVED
+591	2025-06-25 10:30:00	59	\N	2025-06-25 10:00:00	AVAILABLE
+592	2025-06-25 14:30:00	59	\N	2025-06-25 14:00:00	AVAILABLE
+593	2025-06-26 10:30:00	59	GrzegorzPiotrowski@petify.org	2025-06-26 10:00:00	RESERVED
+594	2025-06-26 14:30:00	59	\N	2025-06-26 14:00:00	AVAILABLE
+595	2025-06-27 10:30:00	59	\N	2025-06-27 10:00:00	AVAILABLE
+596	2025-06-27 14:30:00	59	\N	2025-06-27 14:00:00	AVAILABLE
+597	2025-06-28 10:30:00	59	StanislawKaczmarek@petify.org	2025-06-28 10:00:00	RESERVED
+598	2025-06-28 14:30:00	59	KlaudiaCzerwinska@petify.org	2025-06-28 14:00:00	RESERVED
+599	2025-06-29 10:30:00	59	GawelWozniak@petify.org	2025-06-29 10:00:00	RESERVED
+600	2025-06-29 14:30:00	59	HieronimZielinski@petify.org	2025-06-29 14:00:00	RESERVED
+601	2025-06-30 10:30:00	59	\N	2025-06-30 10:00:00	AVAILABLE
+602	2025-06-30 14:30:00	59	\N	2025-06-30 14:00:00	AVAILABLE
+603	2025-06-22 14:30:00	65	EwaWozniak@petify.org	2025-06-22 14:00:00	RESERVED
+604	2025-06-23 10:30:00	65	\N	2025-06-23 10:00:00	AVAILABLE
+605	2025-06-23 14:30:00	65	\N	2025-06-23 14:00:00	AVAILABLE
+606	2025-06-24 10:30:00	65	\N	2025-06-24 10:00:00	AVAILABLE
+607	2025-06-24 14:30:00	65	\N	2025-06-24 14:00:00	AVAILABLE
+608	2025-06-25 10:30:00	65	\N	2025-06-25 10:00:00	AVAILABLE
+609	2025-06-25 14:30:00	65	\N	2025-06-25 14:00:00	AVAILABLE
+610	2025-06-26 10:30:00	65	\N	2025-06-26 10:00:00	AVAILABLE
+611	2025-06-26 14:30:00	65	\N	2025-06-26 14:00:00	AVAILABLE
+612	2025-06-27 10:30:00	65	\N	2025-06-27 10:00:00	AVAILABLE
+613	2025-06-27 14:30:00	65	\N	2025-06-27 14:00:00	AVAILABLE
+614	2025-06-28 10:30:00	65	\N	2025-06-28 10:00:00	AVAILABLE
+615	2025-06-28 14:30:00	65	\N	2025-06-28 14:00:00	AVAILABLE
+616	2025-06-29 10:30:00	65	\N	2025-06-29 10:00:00	AVAILABLE
+617	2025-06-29 14:30:00	65	\N	2025-06-29 14:00:00	AVAILABLE
+618	2025-06-30 10:30:00	65	\N	2025-06-30 10:00:00	AVAILABLE
+619	2025-06-30 14:30:00	65	\N	2025-06-30 14:00:00	AVAILABLE
+620	2025-06-22 14:30:00	66	\N	2025-06-22 14:00:00	AVAILABLE
+621	2025-06-22 18:30:00	66	\N	2025-06-22 18:00:00	AVAILABLE
+622	2025-06-23 10:30:00	66	\N	2025-06-23 10:00:00	AVAILABLE
+623	2025-06-23 14:30:00	66	\N	2025-06-23 14:00:00	AVAILABLE
+624	2025-06-23 18:30:00	66	\N	2025-06-23 18:00:00	AVAILABLE
+625	2025-06-24 10:30:00	66	\N	2025-06-24 10:00:00	AVAILABLE
+626	2025-06-24 14:30:00	66	\N	2025-06-24 14:00:00	AVAILABLE
+627	2025-06-24 18:30:00	66	\N	2025-06-24 18:00:00	AVAILABLE
+628	2025-06-25 10:30:00	66	\N	2025-06-25 10:00:00	AVAILABLE
+629	2025-06-25 14:30:00	66	\N	2025-06-25 14:00:00	AVAILABLE
+630	2025-06-25 18:30:00	66	WielislawAdamczyk@petify.org	2025-06-25 18:00:00	RESERVED
+631	2025-06-26 10:30:00	66	HieronimZielinski@petify.org	2025-06-26 10:00:00	RESERVED
+632	2025-06-26 14:30:00	66	\N	2025-06-26 14:00:00	AVAILABLE
+633	2025-06-26 18:30:00	66	\N	2025-06-26 18:00:00	AVAILABLE
+634	2025-06-27 10:30:00	66	\N	2025-06-27 10:00:00	AVAILABLE
+635	2025-06-27 14:30:00	66	GawelWozniak@petify.org	2025-06-27 14:00:00	RESERVED
+636	2025-06-27 18:30:00	66	\N	2025-06-27 18:00:00	AVAILABLE
+637	2025-06-28 10:30:00	66	\N	2025-06-28 10:00:00	AVAILABLE
+638	2025-06-28 14:30:00	66	\N	2025-06-28 14:00:00	AVAILABLE
+639	2025-06-28 18:30:00	66	\N	2025-06-28 18:00:00	AVAILABLE
+640	2025-06-29 10:30:00	66	\N	2025-06-29 10:00:00	AVAILABLE
+641	2025-06-29 14:30:00	66	\N	2025-06-29 14:00:00	AVAILABLE
+642	2025-06-29 18:30:00	66	\N	2025-06-29 18:00:00	AVAILABLE
+643	2025-06-30 10:30:00	66	\N	2025-06-30 10:00:00	AVAILABLE
+644	2025-06-30 14:30:00	66	\N	2025-06-30 14:00:00	AVAILABLE
+645	2025-06-30 18:30:00	66	\N	2025-06-30 18:00:00	AVAILABLE
+646	2025-06-22 14:30:00	68	\N	2025-06-22 14:00:00	AVAILABLE
+647	2025-06-22 18:30:00	68	AdamAdamczyk@petify.org	2025-06-22 18:00:00	RESERVED
+648	2025-06-23 10:30:00	68	\N	2025-06-23 10:00:00	AVAILABLE
+649	2025-06-23 14:30:00	68	\N	2025-06-23 14:00:00	AVAILABLE
+650	2025-06-23 18:30:00	68	MartynBorkowski@petify.org	2025-06-23 18:00:00	RESERVED
+651	2025-06-24 10:30:00	68	\N	2025-06-24 10:00:00	AVAILABLE
+652	2025-06-24 14:30:00	68	\N	2025-06-24 14:00:00	AVAILABLE
+653	2025-06-24 18:30:00	68	\N	2025-06-24 18:00:00	AVAILABLE
+654	2025-06-25 10:30:00	68	\N	2025-06-25 10:00:00	AVAILABLE
+655	2025-06-25 14:30:00	68	\N	2025-06-25 14:00:00	AVAILABLE
+656	2025-06-25 18:30:00	68	\N	2025-06-25 18:00:00	AVAILABLE
+657	2025-06-26 10:30:00	68	HieronimZielinski@petify.org	2025-06-26 10:00:00	RESERVED
+658	2025-06-26 14:30:00	68	\N	2025-06-26 14:00:00	AVAILABLE
+659	2025-06-26 18:30:00	68	\N	2025-06-26 18:00:00	AVAILABLE
+660	2025-06-27 10:30:00	68	\N	2025-06-27 10:00:00	AVAILABLE
+661	2025-06-27 14:30:00	68	\N	2025-06-27 14:00:00	AVAILABLE
+662	2025-06-27 18:30:00	68	\N	2025-06-27 18:00:00	AVAILABLE
+663	2025-06-28 10:30:00	68	\N	2025-06-28 10:00:00	AVAILABLE
+664	2025-06-28 14:30:00	68	RaclawJasinski@petify.org	2025-06-28 14:00:00	RESERVED
+665	2025-06-28 18:30:00	68	JulitaSymanska@petify.org	2025-06-28 18:00:00	RESERVED
+666	2025-06-29 10:30:00	68	\N	2025-06-29 10:00:00	AVAILABLE
+667	2025-06-29 14:30:00	68	\N	2025-06-29 14:00:00	AVAILABLE
+668	2025-06-29 18:30:00	68	\N	2025-06-29 18:00:00	AVAILABLE
+669	2025-06-30 10:30:00	68	\N	2025-06-30 10:00:00	AVAILABLE
+670	2025-06-30 14:30:00	68	\N	2025-06-30 14:00:00	AVAILABLE
+671	2025-06-30 18:30:00	68	\N	2025-06-30 18:00:00	AVAILABLE
+672	2025-06-22 14:30:00	69	RaclawJasinski@petify.org	2025-06-22 14:00:00	RESERVED
+673	2025-06-23 10:30:00	69	\N	2025-06-23 10:00:00	AVAILABLE
+674	2025-06-23 14:30:00	69	\N	2025-06-23 14:00:00	AVAILABLE
+675	2025-06-24 10:30:00	69	\N	2025-06-24 10:00:00	AVAILABLE
+676	2025-06-24 14:30:00	69	\N	2025-06-24 14:00:00	AVAILABLE
+677	2025-06-25 10:30:00	69	\N	2025-06-25 10:00:00	AVAILABLE
+678	2025-06-25 14:30:00	69	\N	2025-06-25 14:00:00	AVAILABLE
+679	2025-06-26 10:30:00	69	ZdzislawaJasinska@petify.org	2025-06-26 10:00:00	RESERVED
+680	2025-06-26 14:30:00	69	\N	2025-06-26 14:00:00	AVAILABLE
+681	2025-06-27 10:30:00	69	\N	2025-06-27 10:00:00	AVAILABLE
+682	2025-06-27 14:30:00	69	\N	2025-06-27 14:00:00	AVAILABLE
+683	2025-06-28 10:30:00	69	\N	2025-06-28 10:00:00	AVAILABLE
+684	2025-06-28 14:30:00	69	\N	2025-06-28 14:00:00	AVAILABLE
+685	2025-06-29 10:30:00	69	\N	2025-06-29 10:00:00	AVAILABLE
+686	2025-06-29 14:30:00	69	\N	2025-06-29 14:00:00	AVAILABLE
+687	2025-06-30 10:30:00	69	\N	2025-06-30 10:00:00	AVAILABLE
+688	2025-06-30 14:30:00	69	\N	2025-06-30 14:00:00	AVAILABLE
 \.
 
 
@@ -2615,10 +2583,10 @@ COPY public.roles (role_id, authority) FROM stdin;
 --
 
 COPY public.shelters (id, address, description, image_name, is_active, latitude, longitude, name, owner_username, phone_number) FROM stdin;
-1	Marmurowa 4. 91-610 Łódź	Schronisko dla Zwierząt w Łodzi jest jednostką samorządu terytorialnego w Łodzi. Zgodnie z Ustawą o Ochronie Zwierząt zajmuje się ono ochroną zwierząt, utrzymywaniem porzuconych, zagubionych i bezdomnych psów i kotów znalezionych na terenie miasta Łodzi, poszukiwaniem właścicieli zwierząt zagubionych oraz adopcją psów i kotów. Schronisko leczy i utrzymuje zwierzęta tu przebywające w możliwie najlepszym dobrostanie zgodnie z Rozporządzeniem Ministra Rolnictwa i Rozwoju Wsi w sprawie szczegółowych wymagań weterynaryjnych dla prowadzenia schronisk dla zwierząt. Zwierzęta są u nas czipowanie i rejestrowane w bazie danych Safe Animal, są szczepione, zabezpieczane przeciw pasożytom, kastrowane. W łódzkim schronisku regularnie przeprowadzane są różne kontrole zarówno jednostek administracyjnych i weterynaryjnych. Schronisko współpracuje ze Strażą Miejską sekcją Animal Patrol a także z organizacjami pozarządowymi zajmującymi się ochroną zwierząt. W Schronisku zatrudnionych jest około 30 osób w działach: weterynaryjnym, opiekunów zwierząt, adopcyjnym, technicznym i administracyjnym, oraz aktualnie posiadamy niespełna 50. wolontariuszy pomagających w pracach przy zwierzętach. Schronisko nie prowadzi hotelu dla zwierząt i nie przyjmuje zwierząt właścicielskich.	ddf2ce7f-9b62-4940-b0d1-d72d54b0c5ee	t	19.5317806	51.7972425	Schronisko dla Zwierząt w Łodzi	schronisko.lodz@petify.org	426567842
-2	Paluch 2, 02-147 Warszawa	Schronisko na Paluchu im. Jana Lityńskiego jest jednostką budżetową m.st. Warszawy. W obecnym stanie organizacyjnym Schronisko funkcjonuje od 2001. Jesteśmy jednym z wykonawców Warszawskiego Programu Przeciwdziałania Bezdomności Zwierząt, przygotowywanym corocznie przez Biuro Ochrony Środowiska Urzędu m.st. Warszawy i akceptowanym przez Radę m.st. Warszawy.\nNasza misja: Chronimy bezdomne zwierzęta, Stwarzamy im druga szansę. Wiemy, że czują.\n\nSchronisko to nie dom docelowy dla bezdomnych zwierząt. To jedynie przystanek na ich trudnej drodze życia. Przystanek pomiędzy jednym a drugim domem. W najtrudniejszym dla nas okresie (lata 2010-2011) w Schronisku przebywało na co dzień 2400 zwierząt.\nObecnie w naszym Schronisku przebywa na co dzień ok. 470 psów i ok. 150 kotów. Miesięcznie do Schroniska trafia ok. 200 zwierząt, w tym: ok. 100 psów i ok. 80 kotów. Ilość zwierząt jest różna w zależności od pory roku.\n\nOd 2011 roku stan dzień zwierząt zmniejsza się, a największą dynamikę zmniejszenia odnotowaliśmy w 2015 i 2016 (aż o 600 zwierząt). Schronisko funkcjonuje na 3 ha powierzchni, z czego 1 ha należący do Miasta i 2ha użyczone przez P.P. „Porty Lotnicze”. Schronisko zatrudnia łącznie 63 etatowych pracowników w ramach trzech sekcji: ambulatorium, biura przyjęć i adopcji zwierząt, opieki bytowej.\nJesteśmy także jednostką, w której wiedzę pogłębiają praktykanci: z techników weterynaryjnych, Wydziału Medycyny Weterynaryjnej SGGW. Od 2014 roku stale współpracujemy z Kliniką Małych Zwierząt SGGW. W schronisku wykonywana jest także praca społecznie użyteczna.\nBudżet Schroniska na 2025 rok wynosi 23 423 260,00 zł.\nNieocenioną pomocą dla naszych podopiecznych jest również wsparcie finansowe, jakie otrzymujemy od społeczeństwa oraz dary rzeczowe.	4ec49006-9a87-4976-92e5-d8781a97b9c4	t	20.9593782	52.1562094	Schronisko Na Paluchu	schronisko.warszawa@petify.org	228460236
-3	Przyrodników 14, 80-298 Gdańsk	Do roku 2005 gdańskie schronisko dla zwierząt mieściło się przy ul. Madalińskiego. Jego stan techniczno-sanitarny wzbudzał wiele emocji, mnożyły się skargi okolicznych mieszkańców na zagrożenia sanitarno-epidemiologiczne, hałas, zapach, olbrzymie ilości grasujących gryzoni, a zwłaszcza szczurów, notorycznie uciekające przez zniszczone ogrodzenia zwierzęta. W związku z tym powstała nagląca konieczność budowy nowego schroniska w lokalizacji nie wzbudzającej protestów sąsiedztwa. Spośród kilkunastu propozycji przyjęto projekt budowy obiektu w dzielnicy Kokoszki. Zakładał on powstanie kompleksu spełniającego wszelkie wymagania nowoczesnego schroniska, przystosowanego do świadczenia opieki nie tylko nad zwierzętami towarzyszącymi (psy, koty), ale również m. in. gospodarskimi. Pożar w schronisku oruńskim (październik 2002 r.), gdzie spłonęło zaplecze weterynaryjne, magazyny, kuchnia przyspieszył prace związane z budową i przenosinami zwierząt do nowego obiektu. Wobec wyższej konieczności zabezpieczenia ich podstawowych potrzeb postanowiono jak najszybciej dokończyć budowę nowego schroniska kosztem rezygnacji z części zaplanowanej infrastruktury. Działalność placówki w nowej lokalizacji rozpoczęła się w maju 2005 roku. W związku z wątpliwościami dotyczącymi obsługi schroniska (m.in. stanu infrastruktury, dobrostanu zwierząt) przez operatora władze Miasta postanowiły włączyć Schronisko w struktury MOZW, co stało się faktem 01 marca 2006.Tym samym Schronisko zaczęło działać jako jednostka budżetowa, finansowana ze środków gminy.	4566a1cc-289e-4da3-81aa-1c6d663aecfc	t	18.4488774	54.3751671	Schronisko dla Bezdomnych Zwierząt Promyk	schronisko.gdansk@petify.org	585223780
-4	Ślazowa 2, 51-007 Wrocław	Schronisko dla Bezdomnych Zwierząt we Wrocławiu powstało w 1962 roku. Założyli je, wkładając w to wielką pracę i entuzjazm działacze Towarzystwa Opieki nad Zwierzętami we Wrocławiu.\n\nZnalezione bezdomne zwierzęta można do schroniska przywieźć przez całą dobę (ul. Ślazowa 2, Wrocław). Personel jest obecny na miejscu i zajmie się czworonogiem.\nMiędzy 8:00 a 22:00 kierowca pogotowia dla bezdomnych zwierząt może również odebrać na zgłoszenie znalezionego zwierzaka.\nUwaga! W godzinach nocnych kierowca pogotowia dla bezdomnych zwierząt wyjeżdża tylko po zwierzęta, które potrzebują natychmiastowej pomocy (ranne). Prosimy wtedy o kontakt z numerami: 71 362 56 74 lub 451 654 783	cdcce57e-13b1-412b-88f5-749558f38c6d	t	16.9949271	51.153003	Schronisko dla Bezdomnych Zwierząt we Wrocławiu	schronisko.wroclaw@petify.org	713625674
+1	Marmurowa 4. 91-610 Łódź	Schronisko dla Zwierząt w Łodzi jest jednostką samorządu terytorialnego w Łodzi. Zgodnie z Ustawą o Ochronie Zwierząt zajmuje się ono ochroną zwierząt, utrzymywaniem porzuconych, zagubionych i bezdomnych psów i kotów znalezionych na terenie miasta Łodzi, poszukiwaniem właścicieli zwierząt zagubionych oraz adopcją psów i kotów. Schronisko leczy i utrzymuje zwierzęta tu przebywające w możliwie najlepszym dobrostanie zgodnie z Rozporządzeniem Ministra Rolnictwa i Rozwoju Wsi w sprawie szczegółowych wymagań weterynaryjnych dla prowadzenia schronisk dla zwierząt. Zwierzęta są u nas czipowanie i rejestrowane w bazie danych Safe Animal, są szczepione, zabezpieczane przeciw pasożytom, kastrowane. W łódzkim schronisku regularnie przeprowadzane są różne kontrole zarówno jednostek administracyjnych i weterynaryjnych. Schronisko współpracuje ze Strażą Miejską sekcją Animal Patrol a także z organizacjami pozarządowymi zajmującymi się ochroną zwierząt. W Schronisku zatrudnionych jest około 30 osób w działach: weterynaryjnym, opiekunów zwierząt, adopcyjnym, technicznym i administracyjnym, oraz aktualnie posiadamy niespełna 50. wolontariuszy pomagających w pracach przy zwierzętach. Schronisko nie prowadzi hotelu dla zwierząt i nie przyjmuje zwierząt właścicielskich.	1f3ea77a-2abd-4b25-867b-4e1a15955e28	t	19.5317806	51.7972425	Schronisko dla Zwierząt w Łodzi	schronisko.lodz@petify.org	426567842
+2	Paluch 2, 02-147 Warszawa	Schronisko na Paluchu im. Jana Lityńskiego jest jednostką budżetową m.st. Warszawy. W obecnym stanie organizacyjnym Schronisko funkcjonuje od 2001. Jesteśmy jednym z wykonawców Warszawskiego Programu Przeciwdziałania Bezdomności Zwierząt, przygotowywanym corocznie przez Biuro Ochrony Środowiska Urzędu m.st. Warszawy i akceptowanym przez Radę m.st. Warszawy.\nNasza misja: Chronimy bezdomne zwierzęta, Stwarzamy im druga szansę. Wiemy, że czują.\n\nSchronisko to nie dom docelowy dla bezdomnych zwierząt. To jedynie przystanek na ich trudnej drodze życia. Przystanek pomiędzy jednym a drugim domem. W najtrudniejszym dla nas okresie (lata 2010-2011) w Schronisku przebywało na co dzień 2400 zwierząt.\nObecnie w naszym Schronisku przebywa na co dzień ok. 470 psów i ok. 150 kotów. Miesięcznie do Schroniska trafia ok. 200 zwierząt, w tym: ok. 100 psów i ok. 80 kotów. Ilość zwierząt jest różna w zależności od pory roku.\n\nOd 2011 roku stan dzień zwierząt zmniejsza się, a największą dynamikę zmniejszenia odnotowaliśmy w 2015 i 2016 (aż o 600 zwierząt). Schronisko funkcjonuje na 3 ha powierzchni, z czego 1 ha należący do Miasta i 2ha użyczone przez P.P. „Porty Lotnicze”. Schronisko zatrudnia łącznie 63 etatowych pracowników w ramach trzech sekcji: ambulatorium, biura przyjęć i adopcji zwierząt, opieki bytowej.\nJesteśmy także jednostką, w której wiedzę pogłębiają praktykanci: z techników weterynaryjnych, Wydziału Medycyny Weterynaryjnej SGGW. Od 2014 roku stale współpracujemy z Kliniką Małych Zwierząt SGGW. W schronisku wykonywana jest także praca społecznie użyteczna.\nBudżet Schroniska na 2025 rok wynosi 23 423 260,00 zł.\nNieocenioną pomocą dla naszych podopiecznych jest również wsparcie finansowe, jakie otrzymujemy od społeczeństwa oraz dary rzeczowe.	5a62960a-584d-4be7-831d-d20ecad838fb	t	20.9593782	52.1562094	Schronisko Na Paluchu	schronisko.warszawa@petify.org	228460236
+3	Przyrodników 14, 80-298 Gdańsk	Do roku 2005 gdańskie schronisko dla zwierząt mieściło się przy ul. Madalińskiego. Jego stan techniczno-sanitarny wzbudzał wiele emocji, mnożyły się skargi okolicznych mieszkańców na zagrożenia sanitarno-epidemiologiczne, hałas, zapach, olbrzymie ilości grasujących gryzoni, a zwłaszcza szczurów, notorycznie uciekające przez zniszczone ogrodzenia zwierzęta. W związku z tym powstała nagląca konieczność budowy nowego schroniska w lokalizacji nie wzbudzającej protestów sąsiedztwa. Spośród kilkunastu propozycji przyjęto projekt budowy obiektu w dzielnicy Kokoszki. Zakładał on powstanie kompleksu spełniającego wszelkie wymagania nowoczesnego schroniska, przystosowanego do świadczenia opieki nie tylko nad zwierzętami towarzyszącymi (psy, koty), ale również m. in. gospodarskimi. Pożar w schronisku oruńskim (październik 2002 r.), gdzie spłonęło zaplecze weterynaryjne, magazyny, kuchnia przyspieszył prace związane z budową i przenosinami zwierząt do nowego obiektu. Wobec wyższej konieczności zabezpieczenia ich podstawowych potrzeb postanowiono jak najszybciej dokończyć budowę nowego schroniska kosztem rezygnacji z części zaplanowanej infrastruktury. Działalność placówki w nowej lokalizacji rozpoczęła się w maju 2005 roku. W związku z wątpliwościami dotyczącymi obsługi schroniska (m.in. stanu infrastruktury, dobrostanu zwierząt) przez operatora władze Miasta postanowiły włączyć Schronisko w struktury MOZW, co stało się faktem 01 marca 2006.Tym samym Schronisko zaczęło działać jako jednostka budżetowa, finansowana ze środków gminy.	a31bff4b-3605-4e77-913e-2c269db623b4	t	18.4488774	54.3751671	Schronisko dla Bezdomnych Zwierząt Promyk	schronisko.gdansk@petify.org	585223780
+4	Ślazowa 2, 51-007 Wrocław	Schronisko dla Bezdomnych Zwierząt we Wrocławiu powstało w 1962 roku. Założyli je, wkładając w to wielką pracę i entuzjazm działacze Towarzystwa Opieki nad Zwierzętami we Wrocławiu.\n\nZnalezione bezdomne zwierzęta można do schroniska przywieźć przez całą dobę (ul. Ślazowa 2, Wrocław). Personel jest obecny na miejscu i zajmie się czworonogiem.\nMiędzy 8:00 a 22:00 kierowca pogotowia dla bezdomnych zwierząt może również odebrać na zgłoszenie znalezionego zwierzaka.\nUwaga! W godzinach nocnych kierowca pogotowia dla bezdomnych zwierząt wyjeżdża tylko po zwierzęta, które potrzebują natychmiastowej pomocy (ranne). Prosimy wtedy o kontakt z numerami: 71 362 56 74 lub 451 654 783	808b223e-bd1a-4670-9c68-ff71c77200c7	t	16.9949271	51.153003	Schronisko dla Bezdomnych Zwierząt we Wrocławiu	schronisko.wroclaw@petify.org	713625674
 \.
 
 
@@ -2639,7 +2607,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 11	f	\N	0	11	2
 12	f	\N	0	12	2
 13	f	\N	0	13	2
-7	t	2025-06-21 17:25:28.508117	1	7	2
+7	t	2025-06-22 12:44:38.832943	1	7	2
 14	f	\N	0	1	3
 15	f	\N	0	2	3
 16	f	\N	0	3	3
@@ -2652,7 +2620,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 24	f	\N	0	11	3
 25	f	\N	0	12	3
 26	f	\N	0	13	3
-20	t	2025-06-21 17:25:33.895299	1	7	3
+20	t	2025-06-22 12:44:39.73926	1	7	3
 27	f	\N	0	1	4
 28	f	\N	0	2	4
 29	f	\N	0	3	4
@@ -2665,7 +2633,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 37	f	\N	0	11	4
 38	f	\N	0	12	4
 39	f	\N	0	13	4
-33	t	2025-06-21 17:25:34.267649	1	7	4
+33	t	2025-06-22 12:44:40.041522	1	7	4
 40	f	\N	0	1	5
 41	f	\N	0	2	5
 42	f	\N	0	3	5
@@ -2678,7 +2646,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 50	f	\N	0	11	5
 51	f	\N	0	12	5
 52	f	\N	0	13	5
-46	t	2025-06-21 17:25:34.648913	1	7	5
+46	t	2025-06-22 12:44:40.442025	1	7	5
 53	f	\N	0	1	6
 54	f	\N	0	2	6
 55	f	\N	0	3	6
@@ -2691,7 +2659,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 63	f	\N	0	11	6
 64	f	\N	0	12	6
 65	f	\N	0	13	6
-62	t	2025-06-21 17:27:03.401445	1	10	6
+62	t	2025-06-22 12:45:56.030698	1	10	6
 66	f	\N	0	1	7
 67	f	\N	0	2	7
 68	f	\N	0	3	7
@@ -2704,7 +2672,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 76	f	\N	0	11	7
 77	f	\N	0	12	7
 78	f	\N	0	13	7
-75	t	2025-06-21 17:27:03.653586	1	10	7
+75	t	2025-06-22 12:45:56.271549	1	10	7
 79	f	\N	0	1	8
 80	f	\N	0	2	8
 81	f	\N	0	3	8
@@ -2717,7 +2685,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 89	f	\N	0	11	8
 90	f	\N	0	12	8
 91	f	\N	0	13	8
-88	t	2025-06-21 17:27:03.82578	1	10	8
+88	t	2025-06-22 12:45:56.438547	1	10	8
 92	f	\N	0	1	9
 93	f	\N	0	2	9
 94	f	\N	0	3	9
@@ -2730,7 +2698,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 102	f	\N	0	11	9
 103	f	\N	0	12	9
 104	f	\N	0	13	9
-101	t	2025-06-21 17:27:04.069999	1	10	9
+101	t	2025-06-22 12:45:56.670735	1	10	9
 105	f	\N	0	1	10
 106	f	\N	0	2	10
 107	f	\N	0	3	10
@@ -2743,7 +2711,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 115	f	\N	0	11	10
 116	f	\N	0	12	10
 117	f	\N	0	13	10
-114	t	2025-06-21 17:27:04.256525	1	10	10
+114	t	2025-06-22 12:45:56.836245	1	10	10
 118	f	\N	0	1	11
 119	f	\N	0	2	11
 120	f	\N	0	3	11
@@ -2756,7 +2724,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 128	f	\N	0	11	11
 129	f	\N	0	12	11
 130	f	\N	0	13	11
-127	t	2025-06-21 17:27:04.427468	1	10	11
+127	t	2025-06-22 12:45:56.996479	1	10	11
 131	f	\N	0	1	12
 132	f	\N	0	2	12
 133	f	\N	0	3	12
@@ -2769,7 +2737,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 141	f	\N	0	11	12
 142	f	\N	0	12	12
 143	f	\N	0	13	12
-140	t	2025-06-21 17:27:04.647515	1	10	12
+140	t	2025-06-22 12:45:57.225595	1	10	12
 144	f	\N	0	1	13
 145	f	\N	0	2	13
 146	f	\N	0	3	13
@@ -2782,7 +2750,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 154	f	\N	0	11	13
 155	f	\N	0	12	13
 156	f	\N	0	13	13
-153	t	2025-06-21 17:27:04.867431	1	10	13
+153	t	2025-06-22 12:45:57.458702	1	10	13
 157	f	\N	0	1	14
 158	f	\N	0	2	14
 159	f	\N	0	3	14
@@ -2795,7 +2763,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 167	f	\N	0	11	14
 168	f	\N	0	12	14
 169	f	\N	0	13	14
-166	t	2025-06-21 17:27:05.036129	1	10	14
+166	t	2025-06-22 12:45:57.622253	1	10	14
 170	f	\N	0	1	15
 171	f	\N	0	2	15
 172	f	\N	0	3	15
@@ -2808,7 +2776,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 180	f	\N	0	11	15
 181	f	\N	0	12	15
 182	f	\N	0	13	15
-179	t	2025-06-21 17:27:05.206004	1	10	15
+179	t	2025-06-22 12:45:57.786829	1	10	15
 183	f	\N	0	1	16
 184	f	\N	0	2	16
 185	f	\N	0	3	16
@@ -2821,7 +2789,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 193	f	\N	0	11	16
 194	f	\N	0	12	16
 195	f	\N	0	13	16
-192	t	2025-06-21 17:27:05.374293	1	10	16
+192	t	2025-06-22 12:45:58.002651	1	10	16
 196	f	\N	0	1	17
 197	f	\N	0	2	17
 198	f	\N	0	3	17
@@ -2834,7 +2802,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 206	f	\N	0	11	17
 207	f	\N	0	12	17
 208	f	\N	0	13	17
-205	t	2025-06-21 17:27:05.601224	1	10	17
+205	t	2025-06-22 12:45:58.164065	1	10	17
 209	f	\N	0	1	18
 210	f	\N	0	2	18
 211	f	\N	0	3	18
@@ -2847,7 +2815,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 219	f	\N	0	11	18
 220	f	\N	0	12	18
 221	f	\N	0	13	18
-218	t	2025-06-21 17:27:05.764068	1	10	18
+218	t	2025-06-22 12:45:58.380893	1	10	18
 222	f	\N	0	1	19
 223	f	\N	0	2	19
 224	f	\N	0	3	19
@@ -2860,7 +2828,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 232	f	\N	0	11	19
 233	f	\N	0	12	19
 234	f	\N	0	13	19
-231	t	2025-06-21 17:27:05.97579	1	10	19
+231	t	2025-06-22 12:45:58.539837	1	10	19
 235	f	\N	0	1	20
 236	f	\N	0	2	20
 237	f	\N	0	3	20
@@ -2873,7 +2841,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 245	f	\N	0	11	20
 246	f	\N	0	12	20
 247	f	\N	0	13	20
-244	t	2025-06-21 17:27:06.133214	1	10	20
+244	t	2025-06-22 12:45:58.69798	1	10	20
 248	f	\N	0	1	21
 249	f	\N	0	2	21
 250	f	\N	0	3	21
@@ -2886,7 +2854,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 258	f	\N	0	11	21
 259	f	\N	0	12	21
 260	f	\N	0	13	21
-257	t	2025-06-21 17:27:06.288017	1	10	21
+257	t	2025-06-22 12:45:58.917589	1	10	21
 261	f	\N	0	1	22
 262	f	\N	0	2	22
 263	f	\N	0	3	22
@@ -2899,7 +2867,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 271	f	\N	0	11	22
 272	f	\N	0	12	22
 273	f	\N	0	13	22
-270	t	2025-06-21 17:27:06.444659	1	10	22
+270	t	2025-06-22 12:45:59.070295	1	10	22
 274	f	\N	0	1	23
 275	f	\N	0	2	23
 276	f	\N	0	3	23
@@ -2912,7 +2880,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 284	f	\N	0	11	23
 285	f	\N	0	12	23
 286	f	\N	0	13	23
-283	t	2025-06-21 17:27:06.655635	1	10	23
+283	t	2025-06-22 12:45:59.22728	1	10	23
 287	f	\N	0	1	24
 288	f	\N	0	2	24
 289	f	\N	0	3	24
@@ -2925,7 +2893,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 297	f	\N	0	11	24
 298	f	\N	0	12	24
 299	f	\N	0	13	24
-296	t	2025-06-21 17:27:06.812281	1	10	24
+296	t	2025-06-22 12:45:59.390976	1	10	24
 300	f	\N	0	1	25
 301	f	\N	0	2	25
 302	f	\N	0	3	25
@@ -2938,7 +2906,7 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 310	f	\N	0	11	25
 311	f	\N	0	12	25
 312	f	\N	0	13	25
-309	t	2025-06-21 17:27:06.970728	1	10	25
+309	t	2025-06-22 12:45:59.554668	1	10	25
 \.
 
 
@@ -2949,54 +2917,54 @@ COPY public.user_achievements (id, completed, completion_date, current_progress,
 COPY public.user_role_junction (user_id, role_id) FROM stdin;
 1	1
 1	2
-2	2
 2	4
+2	2
 3	2
 3	4
 4	2
 4	4
-5	2
 5	4
-6	2
+5	2
 6	3
-7	2
+6	2
 7	3
-8	3
+7	2
 8	2
-9	2
+8	3
 9	3
+9	2
 10	2
 10	3
 11	3
 11	2
 12	3
 12	2
-13	3
 13	2
+13	3
 14	3
 14	2
-15	3
 15	2
-16	3
+15	3
 16	2
+16	3
 17	2
 17	3
-18	3
 18	2
-19	2
+18	3
 19	3
+19	2
 20	2
 20	3
-21	3
 21	2
-22	3
+21	3
 22	2
-23	3
+22	3
 23	2
-24	3
+23	3
 24	2
-25	2
+24	3
 25	3
+25	2
 \.
 
 
@@ -3005,31 +2973,31 @@ COPY public.user_role_junction (user_id, role_id) FROM stdin;
 --
 
 COPY public.users (user_id, active, adoption_count, auto_location_enabled, badges_count, birth_date, city, created_at, deactivation_reason, email, first_name, gender, last_name, latitude, level, likes_count, location_updated_at, longitude, password, phone_number, preferred_search_distance_km, profile_image, support_count, username, version, volunteer_status, xp_points) FROM stdin;
-1	t	0	f	0	1980-01-01	\N	2025-06-21 17:16:44.089687	\N	dclrt11v4lzzifau-admin@petify.org	Petify	MALE	Administrator	\N	10	0	\N	\N	$2a$10$bl619ryL5e8DDim2/wCp5OMseFEJGTnfkeiR43fXoSHNvD8eY3ikS	+48000000000	20	\N	0	dclrt11v4lzzifau-admin	1	NONE	1000
-2	t	0	f	1	\N	\N	2025-06-21 17:25:28.205586	\N	schronisko.lodz@petify.org	Schronisko	\N	dla Zwierząt w Łodzi	\N	1	0	\N	\N	$2a$10$el/vYRaApeAf8Bo0m6TZ1.IinbtgEaQLwZWhTZYKnszQngJvA87YS	426567842	20	16688	0	schronisko.lodz@petify.org	3	NONE	50
-17	t	0	f	1	2000-02-15	\N	2025-06-21 17:27:05.511144	\N	HieronimZielinski@petify.org	Hieronim	MALE	Zielinski	\N	1	0	\N	\N	$2a$10$h7AYMX/O9r5Lhhs1wf/IPuwYXWToOy7UYs3lxCgwhRYLWGXswcuUS	78 131 65 94	20	\N	0	HieronimZielinski@petify.org	4	ACTIVE	75
-3	t	0	f	1	\N	\N	2025-06-21 17:25:33.784361	\N	schronisko.warszawa@petify.org	Schronisko	\N	Na Paluchu	\N	1	0	\N	\N	$2a$10$LI72zSd.cqt6Gepw6OEMkO87hdRCkKdPMCt9xgTm8vzdh3P88DZYq	228460236	20	16690	0	schronisko.warszawa@petify.org	3	NONE	50
-8	t	0	f	1	1977-11-14	\N	2025-06-21 17:27:03.735025	\N	RaclawJasinski@petify.org	Racław 	MALE	Jasiński	\N	1	0	\N	\N	$2a$10$F3fGejA9f6NOAD9Qcv3qSuAJOwzxv4DC.b1g4iyh6tFZcArNsJeeu	672552069	20	\N	0	RaclawJasinski@petify.org	4	ACTIVE	75
-4	t	0	f	1	\N	\N	2025-06-21 17:25:34.101543	\N	schronisko.gdansk@petify.org	Schronisko	\N	dla Bezdomnych Zwierząt "Promyk"	\N	1	0	\N	\N	$2a$10$BE.IH/UP.4rbPBphhKzQI.Ngw.JeN2cOKRj.wH6Rcrn4R58zcD3wy	585223780	20	16692	0	schronisko.gdansk@petify.org	3	NONE	50
-12	t	0	f	1	1952-09-18	\N	2025-06-21 17:27:04.556628	\N	MartynBorkowski@petify.org	Martyn 	MALE	Borkowski	\N	1	0	\N	\N	$2a$10$TqmEPRo9KC8.umZdAqx3lOEFMr0u2q0sqcoXCston97ZDc0UDrbyy	69 877 60 84	20	\N	0	MartynBorkowski@petify.org	4	ACTIVE	75
-5	t	0	f	1	\N	\N	2025-06-21 17:25:34.537723	\N	schronisko.wroclaw@petify.org	Schronisko	\N	dla Bezdomnych Zwierząt we Wrocławiu	\N	1	0	\N	\N	$2a$10$iOsD7YaTCUPV3ahNna/eK.U8.KeDWsANmThe9XX9mktwxhGNIWaIC	713625674	20	16694	0	schronisko.wroclaw@petify.org	3	NONE	50
-9	t	0	f	1	1958-11-22	\N	2025-06-21 17:27:03.965541	\N	JaromirKrol@petify.org	Jaromir 	MALE	Król	\N	1	0	\N	\N	$2a$10$VTyijtjckBhqudKj7RkiHOYL4bRBPViDC/vQsqyS.JRUZD/nYpPAK	53 656 46 44	20	\N	0	JaromirKrol@petify.org	4	ACTIVE	75
-6	t	0	f	1	1955-06-04	\N	2025-06-21 17:27:03.294332	\N	JarekOstrowski@petify.org	Jarek	MALE	Ostrowski	\N	1	0	\N	\N	$2a$10$V1FkUaV0SWhLrfGxH9LT1e32GXqptFkrzPiRRNiIFGf29yvlsgMPa	602182055	20	\N	0	JarekOstrowski@petify.org	4	ACTIVE	75
-15	t	0	f	1	1956-07-18	\N	2025-06-21 17:27:05.111918	\N	HalinaDabrowski@petify.org	Halina 	FEMALE	Dąbrowska	\N	1	0	\N	\N	$2a$10$eqij.ekcn.nBZswDrStbD.PvK174L8ydGHTGC59Xln.hn3kYqIudm	60 451 02 09	20	\N	0	HalinaDabrowski@petify.org	4	ACTIVE	75
-22	t	0	f	1	1982-05-13	\N	2025-06-21 17:27:06.363253	\N	KlaudiaCzerwinska@petify.org	Klaudia 	FEMALE	Czerwinska	\N	1	0	\N	\N	$2a$10$OHRxmPyuxcpvhMB1uPDzoefNPlsaedYKRYc.Dc/gHYxQrvXWZIDBe	72 972 89 11	20	\N	0	KlaudiaCzerwinska@petify.org	4	ACTIVE	75
-7	t	0	f	1	1994-04-13	\N	2025-06-21 17:27:03.556441	\N	GawelWozniak@petify.org	Gaweł 	MALE	Woźniak	\N	1	0	\N	\N	$2a$10$LzOHCtgxXwycWsrJ.PMiye09dH.gza74t61bPuPCQlvMDun3FiPEC	797070902	20	\N	0	GawelWozniak@petify.org	4	ACTIVE	75
-13	t	0	f	1	1968-03-09	\N	2025-06-21 17:27:04.723138	\N	WiolettaKozlowska@petify.org	Wioletta 	FEMALE	Kozłowska	\N	1	0	\N	\N	$2a$10$yKne4jsWd990q9bRarmgW.ItjIBd9s7mChA4UE4T1XoBWhgExVyBW	69 567 40 08	20	\N	0	WiolettaKozlowska@petify.org	4	ACTIVE	75
-10	t	0	f	1	1955-02-01	\N	2025-06-21 17:27:04.156402	\N	IzoldaKaminska@petify.org	Izolda 	FEMALE	Kamińska	\N	1	0	\N	\N	$2a$10$2MrNBh5KA7fUfx8KrxJTku8Cp.4MLQtWqVaALL1RyjAZWk5I0T1Jm	88 530 39 97	20	\N	0	IzoldaKaminska@petify.org	4	ACTIVE	75
-21	t	0	f	1	1992-08-07	\N	2025-06-21 17:27:06.208245	\N	EwaWozniak@petify.org	Ewa	FEMALE	Woźniak	\N	1	0	\N	\N	$2a$10$0GgGC1jYhNNWaEQXw8m4Zu8wM3/5rgA3mYfSRH/l2n2oUYo7ZN1/e	67 569 44 47	20	\N	0	EwaWozniak@petify.org	4	ACTIVE	75
-18	t	0	f	1	1979-05-02	\N	2025-06-21 17:27:05.675232	\N	KrysiaMichalska@petify.org	Krysia 	FEMALE	Michalska	\N	1	0	\N	\N	$2a$10$n7oDvZZIZc0qbFHgeLnJ5O33xQiiLzwc3exuyPB53qpLdGjwN0/1i	79 636 73 39	20	\N	0	KrysiaMichalska@petify.org	4	ACTIVE	75
-11	t	0	f	1	1957-08-15	\N	2025-06-21 17:27:04.339361	\N	ZdzislawaJasinska@petify.org	Zdzisława 	FEMALE	Jasińska	\N	1	0	\N	\N	$2a$10$tSFdo3UjgZpBV05lAaOsAuNZZYJy2G26J8ItNe1BqfHY5P.9d7Sci	69 558 78 80	20	\N	0	ZdzislawaJasinska@petify.org	4	ACTIVE	75
-16	t	0	f	1	1990-12-12	\N	2025-06-21 17:27:05.289176	\N	AdamAdamczyk@petify.org	Adam	MALE	Adamczyk	\N	1	0	\N	\N	$2a$10$vIn.hg.guV42BExWlVJRqORXQYWX6PfV22yu/pHf2HpEMpd8BH306	51 659 46 93	20	\N	0	AdamAdamczyk@petify.org	4	ACTIVE	75
-14	t	0	f	1	1983-05-10	\N	2025-06-21 17:27:04.950018	\N	WalerianOstrowski@petify.org	Walerian 	MALE	Ostrowski	\N	1	0	\N	\N	$2a$10$Gdx7HgX3AcxaRqGATPrBNevFliaDqj8CkjMlaEAbdxZ.nhe/f.wJC	51 676 48 29	20	\N	0	WalerianOstrowski@petify.org	4	ACTIVE	75
-20	t	0	f	1	1995-10-10	\N	2025-06-21 17:27:06.051519	\N	LeokadiaKozlowska@petify.org	Leokadia	FEMALE	Kozłowska	\N	1	0	\N	\N	$2a$10$tcHTrxmxsgSk1ykbBgVqL.YT7COZcD2q7jCyoopIv0UdmCto5MsgK	78 786 55 10	20	\N	0	LeokadiaKozlowska@petify.org	4	ACTIVE	75
-19	t	0	f	1	1959-01-24	\N	2025-06-21 17:27:05.892209	\N	WielislawAdamczyk@petify.org	Wielisław 	MALE	Adamczyk	\N	1	0	\N	\N	$2a$10$Dzk5a/Huy2qUHUtbNSVcvOUYKARoI6mzlHXpMKxh3rOWS7hS2c4FK	53 448 46 79	20	\N	0	WielislawAdamczyk@petify.org	4	ACTIVE	75
-24	t	0	f	1	2001-06-02	\N	2025-06-21 17:27:06.730566	\N	GrzegorzPiotrowski@petify.org	Grzegorz 	MALE	Piotrowski	\N	1	0	\N	\N	$2a$10$bXAoxpeBCUybRmY9oMYGrur66wQCyfYz/nGHyqO2lyvrLgp7.zvfi	69 783 41 65	20	\N	0	GrzegorzPiotrowski@petify.org	4	ACTIVE	75
-25	t	0	f	1	1953-12-11	\N	2025-06-21 17:27:06.885933	\N	StanislawKaczmarek@petify.org	Stanisław 	MALE	Kaczmarek	\N	1	0	\N	\N	$2a$10$uP/ucQMRocbX34PbjKHXXuLJOtaPcD2O6wLjvcUUABfl4NvUOOcfS	88 232 41 63	20	\N	0	StanislawKaczmarek@petify.org	4	ACTIVE	75
-23	t	0	f	1	1977-09-01	\N	2025-06-21 17:27:06.518934	\N	JulitaSymanska@petify.org	Julita 	FEMALE	Symanska	\N	1	0	\N	\N	$2a$10$0ATcwPmX6qgTotXifoGb.umiCpl.Jynl18WC/Jy6Kmlkn8qDCsH.e	72 848 37 70	20	\N	0	JulitaSymanska@petify.org	4	ACTIVE	75
+1	t	0	f	0	1980-01-01	\N	2025-06-22 12:43:01.895818	\N	dclrt11v4lzzifau-admin@petify.org	Petify	MALE	Administrator	\N	10	0	\N	\N	$2a$10$4iWkEaa3P6x/652E.0DRxuBiC7TjUibOA0fPEh1/ve3Fo93n0jioS	+48000000000	20	\N	0	dclrt11v4lzzifau-admin	1	NONE	1000
+2	t	0	f	1	\N	\N	2025-06-22 12:44:38.497128	\N	schronisko.lodz@petify.org	Schronisko	\N	dla Zwierząt w Łodzi	\N	1	0	\N	\N	$2a$10$haqRbk/SkSFyJcaz36uy6.m.gvLacwoRQO66tnAzo78eYH7PG4PAe	426567842	20	16688	0	schronisko.lodz@petify.org	3	NONE	50
+17	t	0	f	1	2000-02-15	\N	2025-06-22 12:45:58.0775	\N	HieronimZielinski@petify.org	Hieronim	MALE	Zielinski	\N	1	0	\N	\N	$2a$10$P9l1zN5dRFtieAWR7d/TqeMBNeo5jwImRUvFm5trxjZKw9IXlx9uq	78 131 65 94	20	\N	0	HieronimZielinski@petify.org	4	ACTIVE	75
+3	t	0	f	1	\N	\N	2025-06-22 12:44:39.578602	\N	schronisko.warszawa@petify.org	Schronisko	\N	Na Paluchu	\N	1	0	\N	\N	$2a$10$lJWi3.ni0Wd6xAzM5EtZwOQ9dbJXrfmB1clDam5n1DH1wNRKO8zym	228460236	20	16690	0	schronisko.warszawa@petify.org	3	NONE	50
+8	t	0	f	1	1977-11-14	\N	2025-06-22 12:45:56.350919	\N	RaclawJasinski@petify.org	Racław 	MALE	Jasiński	\N	1	0	\N	\N	$2a$10$rR./ceUbnq.5umA49dUpm.GU6Rqy5uvtc3PngXeuN7Wtx6CyWoKIq	672552069	20	\N	0	RaclawJasinski@petify.org	4	ACTIVE	75
+4	t	0	f	1	\N	\N	2025-06-22 12:44:39.923961	\N	schronisko.gdansk@petify.org	Schronisko	\N	dla Bezdomnych Zwierząt "Promyk"	\N	1	0	\N	\N	$2a$10$uTdqWBd/D..4aGstLNRE7uwLXbiyB1CIb5rO7WxfhE.JJvbCE4Vcy	585223780	20	16692	0	schronisko.gdansk@petify.org	3	NONE	50
+12	t	0	f	1	1952-09-18	\N	2025-06-22 12:45:57.134242	\N	MartynBorkowski@petify.org	Martyn 	MALE	Borkowski	\N	1	0	\N	\N	$2a$10$J4Y9NxHWE.jq7cvwPNglx.gO3cmiyPGeM39mc/jqppclNZrIPUPxC	69 877 60 84	20	\N	0	MartynBorkowski@petify.org	4	ACTIVE	75
+5	t	0	f	1	\N	\N	2025-06-22 12:44:40.275337	\N	schronisko.wroclaw@petify.org	Schronisko	\N	dla Bezdomnych Zwierząt we Wrocławiu	\N	1	0	\N	\N	$2a$10$FfDkshioyASW/j12u.P2pOAWCuYaepmrivWN1GVHWjqtLZ4nAiXx.	713625674	20	16694	0	schronisko.wroclaw@petify.org	3	NONE	50
+9	t	0	f	1	1958-11-22	\N	2025-06-22 12:45:56.51809	\N	JaromirKrol@petify.org	Jaromir 	MALE	Król	\N	1	0	\N	\N	$2a$10$hL91qED8/2uFutl8qCPUSeJoTixZHq.hVexrslnCneBxJBr7aO4vK	53 656 46 44	20	\N	0	JaromirKrol@petify.org	4	ACTIVE	75
+6	t	0	f	1	1955-06-04	\N	2025-06-22 12:45:55.865522	\N	JarekOstrowski@petify.org	Jarek	MALE	Ostrowski	\N	1	0	\N	\N	$2a$10$LARti4J.L8P/3y1jPUHfjOcc8E//na4ZxrvVSTh1FjEZdraDRwBJy	602182055	20	\N	0	JarekOstrowski@petify.org	4	ACTIVE	75
+15	t	0	f	1	1956-07-18	\N	2025-06-22 12:45:57.699189	\N	HalinaDabrowski@petify.org	Halina 	FEMALE	Dąbrowska	\N	1	0	\N	\N	$2a$10$MV0hryg2ndswc7lAs6VgwOsRKwHDU.xitd38IWpsbh/85b6h4yLrq	60 451 02 09	20	\N	0	HalinaDabrowski@petify.org	4	ACTIVE	75
+22	t	0	f	1	1982-05-13	\N	2025-06-22 12:45:58.990928	\N	KlaudiaCzerwinska@petify.org	Klaudia 	FEMALE	Czerwinska	\N	1	0	\N	\N	$2a$10$tmgnfBtDYyLflfmexCpif.1UgUnrvDAaI1HPq1/LQTaP4RXkW4tFm	72 972 89 11	20	\N	0	KlaudiaCzerwinska@petify.org	4	ACTIVE	75
+7	t	0	f	1	1994-04-13	\N	2025-06-22 12:45:56.118557	\N	GawelWozniak@petify.org	Gaweł 	MALE	Woźniak	\N	1	0	\N	\N	$2a$10$gGgJp3MpuLaNCxzqnf46P.VoVDQG/MNTgD2Q3iOVragHtJdpZDAoO	797070902	20	\N	0	GawelWozniak@petify.org	4	ACTIVE	75
+13	t	0	f	1	1968-03-09	\N	2025-06-22 12:45:57.304219	\N	WiolettaKozlowska@petify.org	Wioletta 	FEMALE	Kozłowska	\N	1	0	\N	\N	$2a$10$JRTTVvZMuwxA5Mmy0Ny41uybxdi8OEfiaXOgwE9MlMXFvsUT.XYRe	69 567 40 08	20	\N	0	WiolettaKozlowska@petify.org	4	ACTIVE	75
+10	t	0	f	1	1955-02-01	\N	2025-06-22 12:45:56.748004	\N	IzoldaKaminska@petify.org	Izolda 	FEMALE	Kamińska	\N	1	0	\N	\N	$2a$10$ZhOPoH.N//3lRLoPabLUBuRVBC1xfVENXD3u9MHDDkJH8afvFcon2	88 530 39 97	20	\N	0	IzoldaKaminska@petify.org	4	ACTIVE	75
+21	t	0	f	1	1992-08-07	\N	2025-06-22 12:45:58.834927	\N	EwaWozniak@petify.org	Ewa	FEMALE	Woźniak	\N	1	0	\N	\N	$2a$10$nl72yNYUdiKJBeOfj.nOm..Hi5BA3WnfUOa80tCiYKOFFhj6724nC	67 569 44 47	20	\N	0	EwaWozniak@petify.org	4	ACTIVE	75
+18	t	0	f	1	1979-05-02	\N	2025-06-22 12:45:58.236868	\N	KrysiaMichalska@petify.org	Krysia 	FEMALE	Michalska	\N	1	0	\N	\N	$2a$10$zlX0qXUyUTtXB1ZjGQKTCeOQ8zSr1.si9.dTw.tHJwShTdx.FmVOO	79 636 73 39	20	\N	0	KrysiaMichalska@petify.org	4	ACTIVE	75
+11	t	0	f	1	1957-08-15	\N	2025-06-22 12:45:56.910403	\N	ZdzislawaJasinska@petify.org	Zdzisława 	FEMALE	Jasińska	\N	1	0	\N	\N	$2a$10$igLHM8OYdbXIq89.i2yXceuU4/HXyMi8SicUWBr6MAA0vxGKhPlAG	69 558 78 80	20	\N	0	ZdzislawaJasinska@petify.org	4	ACTIVE	75
+16	t	0	f	1	1990-12-12	\N	2025-06-22 12:45:57.86056	\N	AdamAdamczyk@petify.org	Adam	MALE	Adamczyk	\N	1	0	\N	\N	$2a$10$dKw1E4uzwcygm638HzlpseuVe10m7C.Wi7UY6yB/M1CY54l6ShfZG	51 659 46 93	20	\N	0	AdamAdamczyk@petify.org	4	ACTIVE	75
+14	t	0	f	1	1983-05-10	\N	2025-06-22 12:45:57.534802	\N	WalerianOstrowski@petify.org	Walerian 	MALE	Ostrowski	\N	1	0	\N	\N	$2a$10$gXGaN2DzbiWqfConcBVsnumTzGqAVJHmeLKdnLHX4FjAf/mxaUYxS	51 676 48 29	20	\N	0	WalerianOstrowski@petify.org	4	ACTIVE	75
+20	t	0	f	1	1995-10-10	\N	2025-06-22 12:45:58.616746	\N	LeokadiaKozlowska@petify.org	Leokadia	FEMALE	Kozłowska	\N	1	0	\N	\N	$2a$10$RrlsIT4JcTcLl1utPE.vqO.0l/QXAbjxN.WkRkUN71iCn/pN3FyT2	78 786 55 10	20	\N	0	LeokadiaKozlowska@petify.org	4	ACTIVE	75
+19	t	0	f	1	1959-01-24	\N	2025-06-22 12:45:58.456319	\N	WielislawAdamczyk@petify.org	Wielisław 	MALE	Adamczyk	\N	1	0	\N	\N	$2a$10$CDIevr.2hV1qCSgmhyT3eu2v.DbQ.beEZA5l4V8QwcM9rQMTDzL6C	53 448 46 79	20	\N	0	WielislawAdamczyk@petify.org	4	ACTIVE	75
+24	t	0	f	1	2001-06-02	\N	2025-06-22 12:45:59.305178	\N	GrzegorzPiotrowski@petify.org	Grzegorz 	MALE	Piotrowski	\N	1	0	\N	\N	$2a$10$G8eKyXzO7qgZqwsHrWUs1.nTFNLk8RqRc23tBj87bY1uSprJU2Elq	69 783 41 65	20	\N	0	GrzegorzPiotrowski@petify.org	4	ACTIVE	75
+25	t	0	f	1	1953-12-11	\N	2025-06-22 12:45:59.469628	\N	StanislawKaczmarek@petify.org	Stanisław 	MALE	Kaczmarek	\N	1	0	\N	\N	$2a$10$zh7W.xf08iy7extv8e9skOsacYX6.9s./cFIM9CAgtmn8Ap7xQG/e	88 232 41 63	20	\N	0	StanislawKaczmarek@petify.org	4	ACTIVE	75
+23	t	0	f	1	1977-09-01	\N	2025-06-22 12:45:59.145055	\N	JulitaSymanska@petify.org	Julita 	FEMALE	Symanska	\N	1	0	\N	\N	$2a$10$a7zITc0egPMIhl.EEK.lRe.yjNZdeJe8e5ZCXecHDhvbs1NkkaCh.	72 848 37 70	20	\N	0	JulitaSymanska@petify.org	4	ACTIVE	75
 \.
 
 
@@ -3038,26 +3006,26 @@ COPY public.users (user_id, active, adoption_count, auto_location_enabled, badge
 --
 
 COPY public.volunteer_applications (id, application_date, availability, experience, motivation, processed_date, rejection_reason, skills, status, user_id) FROM stdin;
-1	2025-06-21 17:27:03.391465	\N	\N	\N	2025-06-21 17:27:03.424005	\N	\N	APPROVED	6
-2	2025-06-21 17:27:03.642247	\N	\N	\N	2025-06-21 17:27:03.667941	\N	\N	APPROVED	7
-3	2025-06-21 17:27:03.816659	\N	\N	\N	2025-06-21 17:27:03.895925	\N	\N	APPROVED	8
-4	2025-06-21 17:27:04.056423	\N	\N	\N	2025-06-21 17:27:04.085926	\N	\N	APPROVED	9
-5	2025-06-21 17:27:04.245503	\N	\N	\N	2025-06-21 17:27:04.270877	\N	\N	APPROVED	10
-6	2025-06-21 17:27:04.419458	\N	\N	\N	2025-06-21 17:27:04.44022	\N	\N	APPROVED	11
-7	2025-06-21 17:27:04.638584	\N	\N	\N	2025-06-21 17:27:04.659531	\N	\N	APPROVED	12
-8	2025-06-21 17:27:04.803334	\N	\N	\N	2025-06-21 17:27:04.880598	\N	\N	APPROVED	13
-9	2025-06-21 17:27:05.027545	\N	\N	\N	2025-06-21 17:27:05.047131	\N	\N	APPROVED	14
-10	2025-06-21 17:27:05.194608	\N	\N	\N	2025-06-21 17:27:05.219482	\N	\N	APPROVED	15
-11	2025-06-21 17:27:05.364662	\N	\N	\N	2025-06-21 17:27:05.386668	\N	\N	APPROVED	16
-12	2025-06-21 17:27:05.590959	\N	\N	\N	2025-06-21 17:27:05.612079	\N	\N	APPROVED	17
-13	2025-06-21 17:27:05.752742	\N	\N	\N	2025-06-21 17:27:05.828207	\N	\N	APPROVED	18
-14	2025-06-21 17:27:05.967956	\N	\N	\N	2025-06-21 17:27:05.987775	\N	\N	APPROVED	19
-15	2025-06-21 17:27:06.126113	\N	\N	\N	2025-06-21 17:27:06.144771	\N	\N	APPROVED	20
-16	2025-06-21 17:27:06.280947	\N	\N	\N	2025-06-21 17:27:06.300038	\N	\N	APPROVED	21
-17	2025-06-21 17:27:06.436226	\N	\N	\N	2025-06-21 17:27:06.455785	\N	\N	APPROVED	22
-18	2025-06-21 17:27:06.649705	\N	\N	\N	2025-06-21 17:27:06.668873	\N	\N	APPROVED	23
-19	2025-06-21 17:27:06.805413	\N	\N	\N	2025-06-21 17:27:06.824083	\N	\N	APPROVED	24
-20	2025-06-21 17:27:06.963357	\N	\N	\N	2025-06-21 17:27:06.985552	\N	\N	APPROVED	25
+1	2025-06-22 12:45:56.02157	\N	\N	\N	2025-06-22 12:45:56.050664	\N	\N	APPROVED	6
+2	2025-06-22 12:45:56.260904	\N	\N	\N	2025-06-22 12:45:56.284247	\N	\N	APPROVED	7
+3	2025-06-22 12:45:56.429819	\N	\N	\N	2025-06-22 12:45:56.452677	\N	\N	APPROVED	8
+4	2025-06-22 12:45:56.657291	\N	\N	\N	2025-06-22 12:45:56.683126	\N	\N	APPROVED	9
+5	2025-06-22 12:45:56.827311	\N	\N	\N	2025-06-22 12:45:56.847153	\N	\N	APPROVED	10
+6	2025-06-22 12:45:56.98853	\N	\N	\N	2025-06-22 12:45:57.069049	\N	\N	APPROVED	11
+7	2025-06-22 12:45:57.214016	\N	\N	\N	2025-06-22 12:45:57.238482	\N	\N	APPROVED	12
+8	2025-06-22 12:45:57.382851	\N	\N	\N	2025-06-22 12:45:57.470652	\N	\N	APPROVED	13
+9	2025-06-22 12:45:57.612868	\N	\N	\N	2025-06-22 12:45:57.635314	\N	\N	APPROVED	14
+10	2025-06-22 12:45:57.776143	\N	\N	\N	2025-06-22 12:45:57.797809	\N	\N	APPROVED	15
+11	2025-06-22 12:45:57.934573	\N	\N	\N	2025-06-22 12:45:58.014883	\N	\N	APPROVED	16
+12	2025-06-22 12:45:58.154443	\N	\N	\N	2025-06-22 12:45:58.174344	\N	\N	APPROVED	17
+13	2025-06-22 12:45:58.312707	\N	\N	\N	2025-06-22 12:45:58.392552	\N	\N	APPROVED	18
+14	2025-06-22 12:45:58.53071	\N	\N	\N	2025-06-22 12:45:58.551395	\N	\N	APPROVED	19
+15	2025-06-22 12:45:58.690365	\N	\N	\N	2025-06-22 12:45:58.708415	\N	\N	APPROVED	20
+16	2025-06-22 12:45:58.910045	\N	\N	\N	2025-06-22 12:45:58.929071	\N	\N	APPROVED	21
+17	2025-06-22 12:45:59.061895	\N	\N	\N	2025-06-22 12:45:59.082397	\N	\N	APPROVED	22
+18	2025-06-22 12:45:59.221037	\N	\N	\N	2025-06-22 12:45:59.238895	\N	\N	APPROVED	23
+19	2025-06-22 12:45:59.383168	\N	\N	\N	2025-06-22 12:45:59.402484	\N	\N	APPROVED	24
+20	2025-06-22 12:45:59.547392	\N	\N	\N	2025-06-22 12:45:59.573075	\N	\N	APPROVED	25
 \.
 
 
@@ -3170,7 +3138,7 @@ SELECT pg_catalog.setval('public.pets_id_seq', 208, true);
 -- Name: reservation_slots_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ATflsud5jFX3
 --
 
-SELECT pg_catalog.setval('public.reservation_slots_id_seq', 720, true);
+SELECT pg_catalog.setval('public.reservation_slots_id_seq', 688, true);
 
 
 --

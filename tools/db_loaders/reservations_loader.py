@@ -50,7 +50,6 @@ for idx, pet in enumerate(response.json()["content"]):
                 "startTime": slot_start.isoformat(),
                 "endTime": slot_end.isoformat(),
             }
-            print(payload)
             response = requests.post(
                 f"{BASE_URL}/reservations/slots",
                 json=payload,

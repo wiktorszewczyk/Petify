@@ -11,11 +11,11 @@
     {
         "title": "Znaleziono czarnego kota z obrożą!",
         "shortDescription": "Czarny kot z obrożą został znaleziony w okolicach ul. Pięknej 12. Prosimy o kontakt właściciela lub osoby, które mogą znać jego właściciela.",
-        "mainImageId": 9,
+        "mainImageId": 4,
         "longDescription": null,
         "fundraisingId": null,
-        "imageIds": [10, 11],
-        "localImageIds": [8, 9, 10]
+        "imageIds": [5, 6],
+        "localImageIds": [3, 4, 5]
     },
     {
         "title": "Kefir, Elza, Anna i Denzel pilnie szukają domów!",
@@ -23,16 +23,16 @@
         "mainImageId": null,
         "longDescription": "",
         "fundraisingId": null,
-        "imageIds": [5, 6, 7, 8],
-        "localImageIds": [4, 5, 6, 7]
+        "imageIds": [7, 8, 9, 10],
+        "localImageIds": [6, 7, 8, 9]
     },
     {
         "title": "Reksio potrzebuje pilnej operacji!",
         "shortDescription": "Reksio to 5-letni pies, który potrzebuje pilnej operacji. Wesprzyj naszą zbiórkę!",
-        "mainImageId": 4,
+        "mainImageId": 11,
         "longDescription": "Fundusze ze zbiórki zostaną przeznaczone na operację Reksia, specjalistyczne leki oraz profesjonalną opeiekę pooperacyjną.",
         "fundraisingId": 1,
         "imageIds": null,
-        "localImageIds": [3]
+        "localImageIds": [10]
     }
 ]

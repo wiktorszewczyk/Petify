@@ -4,5 +4,5 @@
 # export PGPASSWORD="your_postgres_password"
 
 python3 tools/scrapers/pet_scraper.py
-. tools/db_loaders/load_all.sh  # update JWT_ADMIN and optionally BASE_URL
+. tools/db_loaders/load_all.sh
 docker run --rm --network=host -e PGUSER=$PGUSER -e PGPASSWORD=$PGPASSWORD postgres:17 pg_dump -h localhost -d petify > test_data/backup.sql
