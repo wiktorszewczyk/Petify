@@ -8,7 +8,7 @@
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-222222?style=for-the-badge&logo=GitHub%20Pages&logoColor=white)](https://wiktorszewczyk.github.io/Petify/)
 
 ## Download Android APK
-[![Android APK Download](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://apk.petify.x5z1fu.com)
+[![Android APK Download](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://raw.githubusercontent.com/wiktorszewczyk/Petify/refs/heads/main/app/mobile/petify.apk)
 
 # Setup
 
