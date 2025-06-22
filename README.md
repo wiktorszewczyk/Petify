@@ -59,7 +59,7 @@ mvn verify -f app/backend/pom.xml
 1. Make sure you have the following items installed before starting the application:
 
 - [Node.js](https://nodejs.org)
-- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm): Node Package Manager (supplied with Node.js)
+- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (should be supplied with Node.js)
 
 2. Open IDE and navigate to the cloned repository and select the "frontend" directory.
 ```sh
