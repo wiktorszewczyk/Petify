@@ -56,7 +56,8 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
         });
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          CacheManager.invalidatePattern('user_');
+          CacheManager.markStale('current_user');
+          CacheManager.markStalePattern('user_');
           print('🗑️ VolunteerApplicationView: Invalidated user cache after submitting application');
 
           showDialog(

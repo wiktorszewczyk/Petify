@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:confetti/confetti.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import '../../styles/colors.dart';
 import '../../models/pet.dart';
 import '../../models/donation.dart';
 import '../../services/donation_service.dart';
+import '../../services/pet_service.dart';
 import 'payment_view.dart';
 
 class SupportOptionsSheet extends StatefulWidget {
@@ -135,12 +137,9 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
           await Future.delayed(const Duration(milliseconds: 300));
 
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Dziękujemy za wsparcie ${widget.pet.name}!'),
-              backgroundColor: Colors.green,
-            ),
-          );
+
+          // Pokaż dialog podziękowania z opcją dodania do polubionych
+          _showThankYouDialog();
         }
       }
     } catch (e) {
@@ -524,5 +523,102 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
         textAlign: TextAlign.center,
       ),
     );
+  }
+
+  void _showThankYouDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.favorite,
+                color: Colors.red,
+                size: 60,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Dziękujemy za wsparcie!',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Twoja dobroć sprawia, że ${widget.pet.name} ma większe szanse na znalezienie domu!',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Dziękujemy za wsparcie ${widget.pet.name}!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+              child: Text(
+                'OK',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      // Po zamknięciu dialogu wywołujemy supportPet i likePet
+      _handleSupportSuccess();
+    });
+  }
+
+  Future<void> _handleSupportSuccess() async {
+    final petService = PetService();
+
+    try {
+      await petService.supportPet(widget.pet.id);
+      print('✅ Pomyślnie wsparł pet ${widget.pet.id}');
+
+      await petService.likePet(widget.pet.id);
+      print('✅ Automatycznie polubiono pet ${widget.pet.id} po wsparciu');
+
+      if (context.mounted) {
+        Navigator.of(context).pop(true);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.favorite, color: Colors.white),
+                const SizedBox(width: 8),
+                Text('${widget.pet.name} dodany do polubionych!'),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      print('❌ Błąd podczas supportPet/likePet: $e');
+    }
   }
 }

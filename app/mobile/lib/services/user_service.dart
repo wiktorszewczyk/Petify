@@ -8,6 +8,7 @@ import '../models/basic_response.dart';
 import '../models/user.dart';
 import 'api/initial_api.dart';
 import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
 class UserService with CacheableMixin {
   final _api = InitialApi().dio;
@@ -107,10 +108,11 @@ class UserService with CacheableMixin {
       final resp = await _api.put('/user', data: userData);
 
       if (resp.statusCode == 200) {
-        // Invaliduj cache użytkownika po aktualizacji
-        CacheManager.invalidate('current_user');
-        CacheManager.invalidatePattern('user_');
-        dev.log('User cache invalidated after profile update');
+        // Oznacz dane użytkownika jako nieświeże po aktualizacji
+        CacheManager.markStale('current_user');
+        CacheManager.markStalePattern('user_');
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('User cache marked as stale after profile update');
 
         return {
           'success': true,

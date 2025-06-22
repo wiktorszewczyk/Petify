@@ -43,7 +43,36 @@ class _ShelterViewState extends State<ShelterView> {
     super.initState();
     _confettiController = ConfettiController(duration: const Duration(seconds: 3));
     _scrollController.addListener(_scrollListener);
-    _loadShelterData();
+    _loadCachedFundraiserFirst();
+  }
+
+  void _loadCachedFundraiserFirst() {
+    final cacheKey = 'shelter_${widget.shelter.id}_main_fundraiser';
+    final cached = CacheManager.get<FundraiserResponse>(cacheKey);
+
+    final images = <String>[];
+    if (widget.shelter.imageUrl != null && widget.shelter.imageUrl!.isNotEmpty) {
+      images.add(widget.shelter.imageUrl!);
+    } else if (widget.shelter.imageData != null && widget.shelter.imageData!.isNotEmpty) {
+      final mimeType = widget.shelter.imageType ?? 'image/jpeg';
+      if (widget.shelter.imageData!.startsWith('data:image')) {
+        images.add(widget.shelter.imageData!);
+      } else {
+        images.add('data:$mimeType;base64,${widget.shelter.imageData}');
+      }
+    }
+
+    if (cached != null) {
+      setState(() {
+        _mainFundraiser = cached;
+        _shelterImages = images;
+        _isLoadingFundraiser = false;
+      });
+      CacheManager.markStale(cacheKey);
+      _refreshFundraiserInBackground();
+    } else {
+      _loadShelterData();
+    }
   }
 
   @override
@@ -66,13 +95,16 @@ class _ShelterViewState extends State<ShelterView> {
     }
   }
 
-  Future<void> _loadShelterData() async {
+  Future<void> _loadShelterData({bool forceRefresh = false}) async {
     setState(() {
       _isLoadingFundraiser = true;
     });
 
     try {
-      final fundraiser = await _paymentService.getShelterMainFundraiser(widget.shelter.id);
+      final fundraiser = await _paymentService.getShelterMainFundraiser(
+        widget.shelter.id,
+        forceRefresh: forceRefresh,
+      );
 
       final images = <String>[];
 
@@ -106,11 +138,28 @@ class _ShelterViewState extends State<ShelterView> {
     }
   }
 
+  void _refreshFundraiserInBackground() async {
+    try {
+      final fundraiser = await _paymentService.getShelterMainFundraiser(
+        widget.shelter.id,
+        forceRefresh: true,
+      );
+      if (mounted) {
+        setState(() {
+          _mainFundraiser = fundraiser;
+        });
+      }
+    } catch (e) {
+      print('Background fundraiser refresh failed: $e');
+    }
+  }
+
   Future<void> _refreshShelterData() async {
     setState(() {
       _isRefreshing = true;
     });
-    await _loadShelterData();
+    CacheManager.markStale('shelter_${widget.shelter.id}_main_fundraiser');
+    await _loadShelterData(forceRefresh: true);
   }
 
   Future<void> _launchUrl(String url) async {
@@ -139,9 +188,9 @@ class _ShelterViewState extends State<ShelterView> {
       );
 
       if (result == true) {
-        CacheManager.invalidatePattern('shelter_');
-        CacheManager.invalidatePattern('fundraiser_');
-        CacheManager.invalidatePattern('user_donations');
+        CacheManager.markStalePattern('shelter_');
+        CacheManager.markStalePattern('fundraiser_');
+        CacheManager.markStalePattern('user_donations');
         print('🗑️ ShelterView: Invalidated cache after fundraiser donation');
 
         _confettiController.play();
@@ -172,9 +221,9 @@ class _ShelterViewState extends State<ShelterView> {
     );
 
     if (result == true) {
-      CacheManager.invalidatePattern('shelter_');
-      CacheManager.invalidatePattern('fundraiser_');
-      CacheManager.invalidatePattern('user_donations');
+      CacheManager.markStalePattern('shelter_');
+      CacheManager.markStalePattern('fundraiser_');
+      CacheManager.markStalePattern('user_donations');
       print('🗑️ ShelterView: Invalidated cache after shelter donation');
 
       _confettiController.play();

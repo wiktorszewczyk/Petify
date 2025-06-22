@@ -10,6 +10,8 @@ import '../../services/user_service.dart';
 import 'announcements_view.dart';
 import 'events_view.dart';
 import 'my_applications_view.dart';
+import '../../services/cache/cache_manager.dart';
+import '../../models/user.dart';
 
 class CommunitySupportView extends StatefulWidget {
   const CommunitySupportView({super.key});
@@ -25,7 +27,21 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   @override
   void initState() {
     super.initState();
-    _loadUserStatus();
+    _loadCachedStatusFirst();
+  }
+
+  void _loadCachedStatusFirst() {
+    final cached = CacheManager.get<User>('current_user');
+    if (cached != null) {
+      setState(() {
+        _volunteerStatus = cached.volunteerStatus;
+        _isVolunteer = cached.volunteerStatus == 'ACTIVE';
+      });
+      CacheManager.markStale('current_user');
+      _refreshUserStatusInBackground();
+    } else {
+      _loadUserStatus();
+    }
   }
 
   Future<void> _loadUserStatus() async {
@@ -40,6 +56,20 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
         _volunteerStatus = null;
         _isVolunteer = false;
       });
+    }
+  }
+
+  void _refreshUserStatusInBackground() async {
+    try {
+      final user = await UserService().getCurrentUser();
+      if (mounted) {
+        setState(() {
+          _volunteerStatus = user.volunteerStatus;
+          _isVolunteer = user.volunteerStatus == 'ACTIVE';
+        });
+      }
+    } catch (e) {
+      print('Background user refresh failed: $e');
     }
   }
 
@@ -71,6 +101,7 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
               onPressed: () {
                 Navigator.pop(ctx);
                 Navigator.push(ctx, MaterialPageRoute(builder: (_) => const VolunteerApplicationView())).then((_) {
+                  CacheManager.markStale('current_user');
                   _loadUserStatus();
                   print('🔄 CommunitySupportView: Refreshing user status after returning from volunteer application');
                 });
@@ -254,7 +285,10 @@ class _CommunitySupportViewState extends State<CommunitySupportView> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: _loadUserStatus,
+      onRefresh: () {
+        CacheManager.markStale('current_user');
+        return _loadUserStatus();
+        },
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [

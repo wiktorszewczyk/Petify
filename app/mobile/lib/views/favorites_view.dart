@@ -51,41 +51,43 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
     await _loadFavorites();
   }
 
-  Future<void> _loadFavorites() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+  Future<void> _loadFavorites({bool showIndicator = true}) async {
+    if (showIndicator) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
 
     try {
       final pets = await _petService.getFavoritePets();
       setState(() {
         _favoritePets = pets;
-        _isLoading = false;
+        if (showIndicator) _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _errorMessage = 'Nie udało się załadować ulubionych zwierząt. Spróbuj ponownie.';
-        _isLoading = false;
-      });
+      if (showIndicator) {
+        setState(() {
+          _errorMessage = 'Nie udało się załadować ulubionych zwierząt. Spróbuj ponownie.';
+          _isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _refreshFavoritesInBackground() async {
     try {
-      final newFavorites = await _petService.getFavoritePets();
-
-      if (_favoritePets == null ||
-          newFavorites.length != _favoritePets!.length ||
-          _favoritesChanged(newFavorites)) {
-        setState(() {
-          _favoritePets = newFavorites;
-        });
-        print('🔄 FavoritesView: Zaktualizowano dane w tle');
-      }
+      CacheManager.markStale('favorites_pets');
+      await _loadFavorites(showIndicator: false);
+      print('🔄 FavoritesView: Zaktualizowano dane w tle');
     } catch (e) {
       print('Background refresh failed: $e');
     }
+  }
+
+  Future<void> _refreshFavorites() async {
+    CacheManager.markStale('favorites_pets');
+    await _loadFavorites();
   }
 
   bool _favoritesChanged(List<Pet> newFavorites) {
@@ -107,8 +109,8 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
           _favoritePets!.removeWhere((element) => element.id == pet.id);
         });
 
-        CacheManager.invalidatePattern('favorites_pets');
-        print('🗑️ FavoritesView: Invalidated favorites cache after removing pet ${pet.id}');
+        CacheManager.markStale('favorites_pets');
+        print('🗑️ FavoritesView: Marked favorites cache stale after removing pet ${pet.id}');
 
         if (!mounted) return;
 
@@ -123,8 +125,8 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                   setState(() {
                     _favoritePets!.add(pet);
                   });
-                  CacheManager.invalidatePattern('favorites_pets');
-                  print('🗑️ FavoritesView: Invalidated favorites cache after re-adding pet ${pet.id}');
+                  CacheManager.markStale('favorites_pets');
+                  print('🗑️ FavoritesView: Marked favorites cache stale after re-adding pet ${pet.id}');
                 }
               },
             ),
@@ -196,7 +198,7 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                   : _favoritePets!.isEmpty
                   ? _buildEmptyState()
                   : RefreshIndicator(
-                onRefresh: _loadFavorites,
+                onRefresh: _refreshFavorites,
                 color: AppColors.primaryColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

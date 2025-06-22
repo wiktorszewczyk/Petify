@@ -180,10 +180,10 @@ class _PaymentViewState extends State<PaymentView> {
 
         switch (result.status) {
           case WebPaymentStatus.success:
-            CacheManager.invalidatePattern('donation_');
-            CacheManager.invalidatePattern('fundraiser_');
-            CacheManager.invalidatePattern('user_');
-            CacheManager.invalidatePattern('achievements_');
+            CacheManager.markStalePattern('donation_');
+            CacheManager.markStalePattern('fundraiser_');
+            CacheManager.markStalePattern('user_');
+            CacheManager.markStalePattern('achievements_');
             print('🗑️ PaymentView: Invalidated cache after successful WebView payment');
 
             _confettiController.play();
@@ -253,10 +253,10 @@ class _PaymentViewState extends State<PaymentView> {
           timer.cancel();
           setState(() => _isProcessingPayment = false);
 
-          CacheManager.invalidatePattern('donation_');
-          CacheManager.invalidatePattern('fundraiser_');
-          CacheManager.invalidatePattern('user_');
-          CacheManager.invalidatePattern('achievements_');
+          CacheManager.markStalePattern('donation_');
+          CacheManager.markStalePattern('fundraiser_');
+          CacheManager.markStalePattern('user_');
+          CacheManager.markStalePattern('achievements_');
           print('🗑️ PaymentView: Invalidated cache after successful polling payment');
 
           _confettiController.play();
@@ -288,10 +288,10 @@ class _PaymentViewState extends State<PaymentView> {
             timer.cancel();
             setState(() => _isProcessingPayment = false);
 
-            CacheManager.invalidatePattern('donation_');
-            CacheManager.invalidatePattern('fundraiser_');
-            CacheManager.invalidatePattern('user_');
-            CacheManager.invalidatePattern('achievements_');
+            CacheManager.markStalePattern('donation_');
+            CacheManager.markStalePattern('fundraiser_');
+            CacheManager.markStalePattern('user_');
+            CacheManager.markStalePattern('achievements_');
             print('🗑️ PaymentView: Invalidated cache after SUCCEEDED payment status');
 
             _confettiController.play();

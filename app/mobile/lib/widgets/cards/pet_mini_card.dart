@@ -22,6 +22,13 @@ class PetMiniCard extends StatelessWidget {
     return 'lat';
   }
 
+  String _formatDisplayAge(int age) {
+    if (age == 0) {
+      return '<1 rok';
+    }
+    return '$age ${_formatAge(age)}';
+  }
+
   Widget _buildPetImage() {
     final imageUrl = pet.imageUrlSafe;
 
@@ -157,20 +164,20 @@ class PetMiniCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${pet.age} ${_formatAge(pet.age)}',
-                        style: TextStyle(
-                            fontSize: 12, color: Colors.grey[600]),
+                        _formatDisplayAge(pet.age),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],
                   ),
                   const SizedBox(height: 1),
-                  Text(
-                    pet.breed ?? 'Nieznana rasa',
-                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 1),
+                  if ((pet.breed ?? '').isNotEmpty)
+                    Text(
+                      pet.breed!,
+                      style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  if ((pet.breed ?? '').isNotEmpty) const SizedBox(height: 1),
                   if (pet.distance != null)
                     Row(
                       children: [

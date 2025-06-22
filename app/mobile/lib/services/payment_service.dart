@@ -3,8 +3,10 @@ import 'package:dio/dio.dart';
 import '../models/donation.dart';
 import '../models/basic_response.dart';
 import 'api/initial_api.dart';
+import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
-class PaymentService {
+class PaymentService with CacheableMixin {
   final _api = InitialApi().dio;
   static PaymentService? _instance;
 
@@ -102,7 +104,14 @@ class PaymentService {
       final response = await _api.get('/donations/payment-status/$donationId');
 
       if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        return DonationWithPaymentStatusResponse.fromJson(response.data);
+        final result = DonationWithPaymentStatusResponse.fromJson(response.data);
+        if (result.isCompleted) {
+          CacheManager.markStalePattern('user_donations');
+          CacheManager.markStalePattern('shelter_');
+          CacheManager.markStalePattern('fundraiser_');
+          CacheScheduler.forceRefreshCriticalData();
+        }
+        return result;
       }
 
       throw Exception('Nieprawidłowa odpowiedź serwera');
@@ -116,6 +125,12 @@ class PaymentService {
   Future<BasicResponse> cancelDonation(int donationId) async {
     try {
       final response = await _api.put('/donations/$donationId/cancel');
+      if (response.statusCode == 200) {
+        CacheManager.markStalePattern('user_donations');
+        CacheManager.markStalePattern('shelter_');
+        CacheManager.markStalePattern('fundraiser_');
+        CacheScheduler.forceRefreshCriticalData();
+      }
       return BasicResponse(response.statusCode ?? 0, response.data);
     } on DioException catch (e) {
       dev.log('Błąd podczas anulowania donacji: ${e.message}');
@@ -164,74 +179,90 @@ class PaymentService {
   }
 
   /// Pobiera historię donacji użytkownika
-  Future<List<DonationResponse>> getUserDonations() async {
-    try {
-      final response = await _api.get('/donations/my');
+  Future<List<DonationResponse>> getUserDonations({bool forceRefresh = false}) async {
+    const cacheKey = 'user_donations';
 
-      if (response.statusCode == 200 && response.data is List) {
-        return (response.data as List)
-            .map((json) => DonationResponse.fromJson(json))
-            .toList();
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _api.get('/donations/my');
+
+        if (response.statusCode == 200 && response.data is List) {
+          return (response.data as List)
+              .map((json) => DonationResponse.fromJson(json))
+              .toList();
+        }
+
+        throw Exception('Nieprawidłowa odpowiedź serwera');
+      } on DioException catch (e) {
+        dev.log('Błąd podczas pobierania historii donacji: ${e.message}');
+        throw Exception('Nie udało się pobrać historii donacji: ${e.message}');
       }
-
-      throw Exception('Nieprawidłowa odpowiedź serwera');
-    } on DioException catch (e) {
-      dev.log('Błąd podczas pobierania historii donacji: ${e.message}');
-      throw Exception('Nie udało się pobrać historii donacji: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 10), forceRefresh: forceRefresh);
   }
 
   /// Pobiera główną zbiórkę schroniska
-  Future<FundraiserResponse?> getShelterMainFundraiser(int shelterId) async {
-    try {
-      final response = await _api.get('/fundraisers/shelter/$shelterId/main');
+  Future<FundraiserResponse?> getShelterMainFundraiser(int shelterId, {bool forceRefresh = false}) async {
+    final cacheKey = 'shelter_${shelterId}_main_fundraiser';
 
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        return FundraiserResponse.fromJson(response.data);
-      }
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _api.get('/fundraisers/shelter/$shelterId/main');
 
-      return null; // Schronisko nie ma głównej zbiórki
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
+        if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+          return FundraiserResponse.fromJson(response.data);
+        }
+
         return null; // Schronisko nie ma głównej zbiórki
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 404) {
+          return null; // Schronisko nie ma głównej zbiórki
+        }
+        dev.log('Błąd podczas pobierania głównej zbiórki: ${e.message}');
+        throw Exception('Nie udało się pobrać zbiórki: ${e.message}');
       }
-      dev.log('Błąd podczas pobierania głównej zbiórki: ${e.message}');
-      throw Exception('Nie udało się pobrać zbiórki: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 15), forceRefresh: forceRefresh);
   }
 
   /// Pobiera wszystkie zbiórki schroniska
-  Future<List<FundraiserResponse>> getShelterFundraisers(int shelterId) async {
-    try {
-      final response = await _api.get('/fundraisers/shelter/$shelterId');
+  Future<List<FundraiserResponse>> getShelterFundraisers(int shelterId, {bool forceRefresh = false}) async {
+    final cacheKey = 'shelter_${shelterId}_fundraisers';
 
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        final content = response.data['content'] as List? ?? [];
-        return content.map((json) => FundraiserResponse.fromJson(json)).toList();
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _api.get('/fundraisers/shelter/$shelterId');
+
+        if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+          final content = response.data['content'] as List? ?? [];
+          return content.map((json) => FundraiserResponse.fromJson(json)).toList();
+        }
+
+        return [];
+      } on DioException catch (e) {
+        dev.log('Błąd podczas pobierania zbiórek schroniska: ${e.message}');
+        throw Exception('Nie udało się pobrać zbiórek: ${e.message}');
       }
-
-      return [];
-    } on DioException catch (e) {
-      dev.log('Błąd podczas pobierania zbiórek schroniska: ${e.message}');
-      throw Exception('Nie udało się pobrać zbiórek: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 15), forceRefresh: forceRefresh);
   }
 
-  Future<FundraiserResponse?> getFundraiser(int fundraiserId) async {
-    try {
-      final response = await _api.get('/fundraisers/$fundraiserId');
+  Future<FundraiserResponse?> getFundraiser(int fundraiserId, {bool forceRefresh = false}) async {
+    final cacheKey = 'fundraiser_$fundraiserId';
 
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        return FundraiserResponse.fromJson(response.data);
-      }
+    return cachedFetch(cacheKey, () async {
+      try {
+        final response = await _api.get('/fundraisers/$fundraiserId');
 
-      return null;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
+        if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+          return FundraiserResponse.fromJson(response.data);
+        }
+
         return null;
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 404) {
+          return null;
+        }
+        dev.log('Błąd podczas pobierania zbiórki: ${e.message}');
+        throw Exception('Nie udało się pobrać zbiórki: ${e.message}');
       }
-      dev.log('Błąd podczas pobierania zbiórki: ${e.message}');
-      throw Exception('Nie udało się pobrać zbiórki: ${e.message}');
-    }
+    }, ttl: Duration(minutes: 15), forceRefresh: forceRefresh);
   }
 }

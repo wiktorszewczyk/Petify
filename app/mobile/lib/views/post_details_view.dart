@@ -62,22 +62,47 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     if (widget.post.imageIds == null || widget.post.imageIds!.isEmpty) {
       return;
     }
+    final cacheKey = 'images_batch_${widget.post.imageIds!.join('_')}';
+    final cached = CacheManager.get<List<ImageResponse>>(cacheKey);
 
-    setState(() {
-      _isLoadingImages = true;
-    });
+    if (cached != null && cached.isNotEmpty) {
+      setState(() {
+        _additionalImages = cached;
+        _isLoadingImages = false;
+      });
 
+      CacheManager.markStale(cacheKey);
+      _refreshImagesInBackground();
+    } else {
+      setState(() {
+        _isLoadingImages = true;
+      });
+
+      try {
+        final images = await _imageService.getImagesByIds(widget.post.imageIds!);
+        setState(() {
+          _additionalImages = images;
+          _isLoadingImages = false;
+        });
+      } catch (e) {
+        setState(() {
+          _isLoadingImages = false;
+        });
+        print('❌ PostDetailsView: Błąd podczas ładowania obrazów: $e');
+      }
+    }
+  }
+
+  Future<void> _refreshImagesInBackground() async {
     try {
       final images = await _imageService.getImagesByIds(widget.post.imageIds!);
-      setState(() {
-        _additionalImages = images;
-        _isLoadingImages = false;
-      });
+      if (mounted) {
+        setState(() {
+          _additionalImages = images;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoadingImages = false;
-      });
-      print('❌ PostDetailsView: Błąd podczas ładowania obrazów: $e');
+      print('Background images refresh failed: $e');
     }
   }
 
@@ -85,22 +110,46 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     if (widget.post.shelterId == null) {
       return;
     }
+    final cacheKey = 'shelter_${widget.post.shelterId}';
+    final cached = CacheManager.get<Shelter>(cacheKey);
 
-    setState(() {
-      _isLoadingShelter = true;
-    });
+    if (cached != null) {
+      setState(() {
+        _shelter = cached;
+        _isLoadingShelter = false;
+      });
+      CacheManager.markStale(cacheKey);
+      _refreshShelterInBackground();
+    } else {
+      setState(() {
+        _isLoadingShelter = true;
+      });
 
+      try {
+        final shelter = await _shelterService.getShelterById(widget.post.shelterId!);
+        setState(() {
+          _shelter = shelter;
+          _isLoadingShelter = false;
+        });
+      } catch (e) {
+        setState(() {
+          _isLoadingShelter = false;
+        });
+        print('❌ PostDetailsView: Błąd podczas ładowania danych schroniska: $e');
+      }
+    }
+  }
+
+  Future<void> _refreshShelterInBackground() async {
     try {
       final shelter = await _shelterService.getShelterById(widget.post.shelterId!);
-      setState(() {
-        _shelter = shelter;
-        _isLoadingShelter = false;
-      });
+      if (mounted) {
+        setState(() {
+          _shelter = shelter;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoadingShelter = false;
-      });
-      print('❌ PostDetailsView: Błąd podczas ładowania danych schroniska: $e');
+      print('Background shelter refresh failed: $e');
     }
   }
 
@@ -108,22 +157,46 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     if (widget.post.fundraisingId == null) {
       return;
     }
+    final cacheKey = 'fundraiser_${widget.post.fundraisingId}';
+    final cached = CacheManager.get<FundraiserResponse>(cacheKey);
 
-    setState(() {
-      _isLoadingFundraiser = true;
-    });
+    if (cached != null) {
+      setState(() {
+        _fundraiser = cached;
+        _isLoadingFundraiser = false;
+      });
+      CacheManager.markStale(cacheKey);
+      _refreshFundraiserInBackground();
+    } else {
+      setState(() {
+        _isLoadingFundraiser = true;
+      });
 
+      try {
+        final fundraiser = await _paymentService.getFundraiser(widget.post.fundraisingId!);
+        setState(() {
+          _fundraiser = fundraiser;
+          _isLoadingFundraiser = false;
+        });
+      } catch (e) {
+        setState(() {
+          _isLoadingFundraiser = false;
+        });
+        print('❌ PostDetailsView: Błąd podczas ładowania danych zbiórki: $e');
+      }
+    }
+  }
+
+  Future<void> _refreshFundraiserInBackground() async {
     try {
       final fundraiser = await _paymentService.getFundraiser(widget.post.fundraisingId!);
-      setState(() {
-        _fundraiser = fundraiser;
-        _isLoadingFundraiser = false;
-      });
+      if (mounted) {
+        setState(() {
+          _fundraiser = fundraiser;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoadingFundraiser = false;
-      });
-      print('❌ PostDetailsView: Błąd podczas ładowania danych zbiórki: $e');
+      print('Background fundraiser refresh failed: $e');
     }
   }
 
@@ -165,10 +238,10 @@ class _PostDetailsViewState extends State<PostDetailsView> {
 
     if (result == true && mounted) {
       // Invalidate cache po donacji
-      CacheManager.invalidatePattern('shelter_');
-      CacheManager.invalidatePattern('fundraiser_');
-      CacheManager.invalidatePattern('user_donations');
-      CacheManager.invalidatePattern('posts_');
+      CacheManager.markStalePattern('shelter_');
+      CacheManager.markStalePattern('fundraiser_');
+      CacheManager.markStalePattern('user_donations');
+      CacheManager.markStalePattern('posts_');
       print('🗑️ PostDetailsView: Invalidated cache after fundraiser donation');
 
       // Uruchom konfetti przy sukcesie!

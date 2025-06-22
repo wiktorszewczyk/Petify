@@ -84,7 +84,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   Future<void> _loadCachedDataFirst() async {
-    await _loadLikedPetsFromBackend();
+    final cachedFavorites = CacheManager.get<List<Pet>>('favorites_pets');
+    if (cachedFavorites != null) {
+      _likedPetIds.addAll(cachedFavorites.map((p) => p.id));
+    }
 
     final cachedFilters = CacheManager.get<FilterPreferences>('filter_preferences');
 
@@ -108,16 +111,18 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           print('🚀 HomeView: Załadowano ${_pets.length} zwierząt z cache (po filtrowaniu ${_likedPetIds.length} polubionych)');
 
           _refreshDataInBackground();
+          _loadLikedPetsFromBackend().then((_) => _refreshDataInBackground());
           return;
         } else {
           print('⚠️ HomeView: Cache zawierał tylko polubione zwierzęta, czyszczenie cache...');
-          CacheManager.invalidatePattern('pets_');
+          CacheManager.markStalePattern('pets_');
         }
       }
     }
 
     print('⚠️ HomeView: Brak używalnego cache, ładowanie standardowe...');
     await _loadFiltersAndPets();
+    _loadLikedPetsFromBackend().then((_) => _refreshDataInBackground());
   }
 
   String _generatePetsCacheKey(FilterPreferences filterPrefs) {
@@ -156,7 +161,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
       await Future.delayed(Duration(milliseconds: 200));
 
-      final newPets = await petService.getPetsWithDefaultFilters();
+      final newPets = await petService.getPetsWithDefaultFilters(forceRefresh: true);
 
       final filteredNewPets = newPets.where((pet) => !_likedPetIds.contains(pet.id)).toList();
 
@@ -194,7 +199,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   Future<void> _loadLikedPetsFromBackend() async {
     try {
       final petService = PetService();
-      final likedPets = await petService.getFavoritePets();
+      final likedPets = await petService.getFavoritePets(forceRefresh: true);
 
       _likedPetIds.clear();
       _likedPetIds.addAll(likedPets.map((pet) => pet.id));
@@ -226,7 +231,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       final filteredPets = petsData.where((pet) => !_likedPetIds.contains(pet.id)).toList();
       print('🔍 HomeView: Po filtrowaniu polubionych: ${filteredPets.length} z ${petsData.length} (polubione: ${_likedPetIds.length})');
 
-      // Shuffluj listę zwierząt dla losowej kolejności
       filteredPets.shuffle();
       print('🔀 HomeView: Pomieszano kolejność zwierząt');
 
@@ -259,7 +263,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   bool _onCardSwiped(int previousIndex, int? currentIndex, CardSwiperDirection direction) {
     if (!mounted || _isSwiping) return false;
 
-    // Dodaj haptic feedback
     HapticFeedback.lightImpact();
 
     setState(() {
@@ -274,11 +277,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       print('💖 HomeView: Polubiono pet ${swipedPet.id} "${swipedPet.name}", currentIndex: $_currentIndex');
     } else {
       HapticFeedback.selectionClick();
-      _currentIndex = (_currentIndex + 1).clamp(0, _pets.length - 1);
+      _skipPet(swipedPet);
       print('❌ HomeView: Pominął pet ${swipedPet.id} "${swipedPet.name}", currentIndex: $_currentIndex');
     }
 
-    // Jeśli zostaje mało kart, załaduj więcej
     if (_pets.length - previousIndex <= 3) {
       print('🔍 HomeView: Mało kart (${_pets.length - previousIndex}), ładowanie więcej...');
       _loadMorePets();
@@ -296,35 +298,27 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   void _likePet(Pet pet) {
-    // NATYCHMIAST dodaj do lokalnej listy
     _likedPetIds.add(pet.id);
 
-    // Znajdź indeks polubiowanego zwierzęcia
     final petIndex = _pets.indexWhere((p) => p.id == pet.id);
 
     setState(() {
-      // Natychmiast usuń polubione zwierzę z listy
       _pets.removeWhere((p) => p.id == pet.id);
 
-      // Po usunięciu zwierzęcia, zostajemy na tym samym indeksie (automatycznie pokazuje się następne)
-      // Tylko sprawdź czy nie wyszliśmy poza zakres
       if (_currentIndex >= _pets.length && _pets.isNotEmpty) {
         _currentIndex = _pets.length - 1;
       } else if (_pets.isEmpty) {
         _currentIndex = 0;
       }
 
-      // Regeneruj CardSwiper z nową listą
       _cardSwiperKey++;
     });
 
-    // Usuń ze wszystkich cache'ów związanych ze zwierzętami
-    CacheManager.invalidatePattern('pets_');
-    CacheManager.invalidatePattern('favorites_pets');
+    CacheManager.markStalePattern('pets_');
+    CacheManager.markStale('favorites_pets');
 
     print('💖 HomeView: Natychmiast usunięto pet ${pet.id} z pozycji $petIndex (pozostało: ${_pets.length} zwierząt, currentIndex: $_currentIndex)');
 
-    // Sprawdź czy potrzeba załadować więcej zwierząt
     if (_pets.length - _currentIndex <= 1) {
       print('🔍 HomeView: Mało zwierząt po polubieniu (${_pets.length - _currentIndex}), ładowanie więcej...');
       _loadMorePets();
@@ -333,11 +327,36 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     _likePetInBackground(pet);
   }
 
+  void _skipPet(Pet pet) {
+    final petIndex = _pets.indexWhere((p) => p.id == pet.id);
+
+    setState(() {
+      _pets.removeWhere((p) => p.id == pet.id);
+
+      if (_currentIndex >= _pets.length && _pets.isNotEmpty) {
+        _currentIndex = _pets.length - 1;
+      } else if (_pets.isEmpty) {
+        _currentIndex = 0;
+      }
+
+      _cardSwiperKey++;
+    });
+
+    print('⏩ HomeView: Pominięto pet ${pet.id} z pozycji $petIndex (pozostało: ${_pets.length} zwierząt, currentIndex: $_currentIndex)');
+
+    if (_pets.length - _currentIndex <= 1) {
+      print('🔍 HomeView: Mało zwierząt po pominięciu (${_pets.length - _currentIndex}), ładowanie więcej...');
+      _loadMorePets();
+    }
+
+    _dislikePetInBackground(pet);
+  }
+
   void _loadMorePets() async {
     try {
       print('🔍 HomeView: Ładowanie więcej zwierząt... (aktualnie ${_pets.length} zwierząt, polubione: ${_likedPetIds.length})');
       final petService = PetService();
-      final newPets = await petService.getPetsWithDefaultFilters();
+      final newPets = await petService.getPetsWithDefaultFilters(forceRefresh: true);
 
       print('🔍 HomeView: Backend zwrócił ${newPets.length} zwierząt');
 
@@ -350,7 +369,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       print('🔍 HomeView: Po filtrowaniu: ${availablePets.length} dostępnych zwierząt (odfiltrowano ${newPets.length - availablePets.length})');
 
       if (availablePets.isNotEmpty) {
-        // Shuffluj nowe zwierzęta przed dodaniem
         availablePets.shuffle();
         print('🔀 HomeView: Pomieszano kolejność nowych zwierząt');
 
@@ -377,7 +395,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
         print('✅ HomeView: Pomyślnie polubiono pet ${pet.id} w backendzie');
 
-        // Po udanym polubienia, odśwież listę polubionych z backendu
         await _loadLikedPetsFromBackend();
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -388,17 +405,14 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ),
         );
       } else {
-        // Jeśli backend zwrócił błąd, usuń z lokalnej listy
         print('❌ HomeView: Backend odrzucił polubienie pet ${pet.id} (status: ${response.statusCode}), przywracanie stanu');
         _likedPetIds.remove(pet.id);
         throw Exception('Nie udało się polubić zwierzaka (${response.statusCode})');
       }
     } catch (e) {
       print('❌ HomeView: Błąd polubienia pet ${pet.id}: $e');
-      // W przypadku błędu, cofnij lokalną zmianę
       setState(() {
         _likedPetIds.remove(pet.id);
-        // Przywróć zwierzę do listy na aktualnej pozycji
         _pets.insert(_currentIndex, pet);
       });
 
@@ -413,30 +427,49 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     }
   }
 
+  void _dislikePetInBackground(Pet pet) async {
+    try {
+      final petService = PetService();
+      final response = await petService.dislikePet(pet.id);
+
+      if (mounted && response.statusCode == 200) {
+        print('✅ HomeView: Pomyślnie pominięto pet ${pet.id} w backendzie');
+      } else {
+        print('❌ HomeView: Backend odrzucił pominięcie pet ${pet.id} (status: ${response.statusCode})');
+      }
+    } catch (e) {
+      print('❌ HomeView: Błąd pomijania pet ${pet.id}: $e');
+    }
+  }
+
   void _onActionButtonPressed(CardSwiperDirection direction) {
     if (_isLoading || _pets.isEmpty || _isSwiping || _currentIndex >= _pets.length) return;
 
-    // Dodaj haptic feedback dla przycisków
     if (direction == CardSwiperDirection.right) {
-      HapticFeedback.heavyImpact(); // Dla polubienia
+      HapticFeedback.heavyImpact();
     } else {
-      HapticFeedback.selectionClick(); // Dla pominięcia
+      HapticFeedback.selectionClick();
     }
 
     _cardController.swipe(direction);
   }
 
-  void _showSupportOptions() {
+  void _showSupportOptions() async {
     if (_isLoading || _pets.isEmpty || _currentIndex >= _pets.length) return;
 
     final currentPet = _pets[_currentIndex];
 
-    showModalBottomSheet(
+    final result = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => SupportOptionsSheet(pet: currentPet),
     );
+
+    if (result == true && mounted) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      _onActionButtonPressed(CardSwiperDirection.right);
+    }
   }
 
   void _showDiscoverySettings() async {
@@ -450,8 +483,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     if (result != null) {
       print('🔧 Discovery settings changed, invalidating cache and reloading pets');
 
-      CacheManager.invalidatePattern('pets_');
-      CacheManager.invalidatePattern('filter_preferences');
+      CacheManager.markStalePattern('pets_');
+      CacheManager.markStalePattern('filter_preferences');
 
       _likedPetIds.clear();
       print('🗑️ HomeView: Wyczyszczono lokalną listę polubionych przy zmianie filtrów');
@@ -484,8 +517,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     });
 
     try {
-      CacheManager.invalidatePattern('pets_');
-      CacheManager.invalidatePattern('favorites_pets');
+      CacheManager.markStalePattern('pets_');
+      CacheManager.markStale('favorites_pets');
 
       print('🔄 HomeView: Odświeżanie wszystkich danych...');
 
@@ -532,7 +565,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        toolbarHeight: 60, // Zmniejszona wysokość AppBar
+        toolbarHeight: 60,
         title: Row(
           children: [
             SvgPicture.asset(
@@ -777,7 +810,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       );
     }
 
-    // WAŻNE: Sprawdź czy mamy zwierzęta do wyświetlenia przed CardSwiper
     if (_pets.isEmpty || _currentIndex >= _pets.length) {
       return RefreshIndicator(
         onRefresh: _refreshAllData,
@@ -858,7 +890,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       );
     }
 
-    // Dodatkowe sprawdzenie dla bezpieczeństwa
     if (_pets.isEmpty) {
       return RefreshIndicator(
         onRefresh: _refreshAllData,
@@ -937,7 +968,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       );
     }
 
-    // Zapewnij prawidłowy _currentIndex przed utworzeniem CardSwiper
     if (_currentIndex >= _pets.length) {
       _currentIndex = _pets.length - 1;
     }
@@ -974,7 +1004,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           key: ValueKey('pet_${_pets[index].id}'),
                         ),
 
-                        // Wskazania swipe - POLUB (prawo)
                         if (horizontalOffsetPercentage > 0.1)
                           Positioned(
                             top: 40,
@@ -1014,7 +1043,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                             ),
                           ),
 
-                        // Wskazania swipe - POMIŃ (lewo)
                         if (horizontalOffsetPercentage < -0.1)
                           Positioned(
                             top: 40,

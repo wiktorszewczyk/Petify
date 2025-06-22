@@ -520,7 +520,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                               ),
                               maxLines: 1,
                               minFontSize: 18,
-                              overflow: TextOverflow.ellipsis,
+                              overflow: TextOverflow.visible,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -642,7 +642,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'O mnie:',

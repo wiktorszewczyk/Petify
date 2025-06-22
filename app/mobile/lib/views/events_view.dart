@@ -13,6 +13,7 @@ import '../services/payment_service.dart';
 import '../styles/colors.dart';
 import "event_details_view.dart";
 import '../services/shelter_service.dart';
+import '../services/cache/cache_manager.dart';
 
 class EventsView extends StatefulWidget {
   const EventsView({super.key});
@@ -22,7 +23,7 @@ class EventsView extends StatefulWidget {
 }
 
 class _EventsViewState extends State<EventsView> {
-  bool _isLoading = false;
+  bool _isLoading = true;
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
   Map<int, FundraiserResponse?> _eventFundraisers = {};
@@ -34,7 +35,36 @@ class _EventsViewState extends State<EventsView> {
   @override
   void initState() {
     super.initState();
-    _loadEvents();
+    _loadCachedEventsFirst();
+  }
+
+  Future<void> _loadCachedEventsFirst() async {
+    final cached = CacheManager.get<List<Event>>('incoming_events_60');
+    if (cached != null && cached.isNotEmpty) {
+      setState(() {
+        _events = cached;
+        _filterEvents();
+        _isLoading = false;
+      });
+      _refreshEventsInBackground();
+    } else {
+      await _loadEvents();
+    }
+  }
+
+  Future<void> _refreshEventsInBackground() async {
+    try {
+      await _loadEvents(showIndicator: false);
+    } catch (e) {
+      print('Background events refresh failed: $e');
+    }
+  }
+
+  Future<void> _refreshEvents() async {
+    CacheManager.markStalePattern('incoming_events_');
+    CacheManager.markStalePattern('event_');
+    CacheManager.markStalePattern('event_participants_');
+    await _loadEvents();
   }
 
   @override
@@ -67,10 +97,12 @@ class _EventsViewState extends State<EventsView> {
     return _getEndOfDay(DateTime(date.year, date.month + 1, 0));
   }
 
-  Future<void> _loadEvents() async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _loadEvents({bool showIndicator = true}) async {
+    if (showIndicator) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
       final feedService = FeedService();
@@ -113,12 +145,14 @@ class _EventsViewState extends State<EventsView> {
         _events = enriched;
         _eventFundraisers = fundraisers;
         _filterEvents();
-        _isLoading = false;
+        if (showIndicator) _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (showIndicator) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Nie udało się pobrać wydarzeń: $e')),
@@ -210,7 +244,7 @@ class _EventsViewState extends State<EventsView> {
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: RefreshIndicator(
-        onRefresh: _loadEvents,
+        onRefresh: _refreshEvents,
         color: AppColors.primaryColor,
         child: Column(
           children: [

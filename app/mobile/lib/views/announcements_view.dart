@@ -7,6 +7,7 @@ import '../services/feed_service.dart';
 import '../services/payment_service.dart';
 import '../styles/colors.dart';
 import 'post_details_view.dart';
+import '../services/cache/cache_manager.dart';
 
 class AnnouncementsView extends StatefulWidget {
   const AnnouncementsView({super.key});
@@ -24,10 +25,50 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
   bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
 
+  Future<void> _loadCachedPostsFirst() async {
+    final cached = CacheManager.get<List<ShelterPost>>('recent_posts_30');
+    if (cached != null && cached.isNotEmpty) {
+      final fundraisers = <int, FundraiserResponse?>{};
+      for (final post in cached) {
+        if (post.fundraisingId != null) {
+          final fr = CacheManager.get<FundraiserResponse>('fundraiser_${post.fundraisingId}');
+          if (fr != null) fundraisers[post.fundraisingId!] = fr;
+        }
+      }
+
+      setState(() {
+        _posts = cached;
+        _filteredPosts = cached;
+        _postFundraisers = fundraisers;
+        _isLoading = false;
+      });
+
+      CacheManager.markStalePattern('recent_posts_');
+      CacheManager.markStalePattern('fundraiser_');
+      _refreshPostsInBackground();
+    } else {
+      await _loadPosts();
+    }
+  }
+
+  Future<void> _refreshPostsInBackground() async {
+    try {
+      await _loadPosts(showIndicator: false);
+    } catch (e) {
+      print('Background posts refresh failed: $e');
+    }
+  }
+
+  Future<void> _refreshPosts() async {
+    CacheManager.markStalePattern('recent_posts_');
+    CacheManager.markStalePattern('fundraiser_');
+    await _loadPosts();
+  }
+
   @override
   void initState() {
     super.initState();
-    _loadPosts();
+    _loadCachedPostsFirst();
   }
 
   @override
@@ -36,10 +77,12 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
     super.dispose();
   }
 
-  Future<void> _loadPosts() async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _loadPosts({bool showIndicator = true}) async {
+    if (showIndicator) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
       final posts = await _feedService.getRecentPosts(30);
@@ -60,12 +103,14 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
         _posts = posts;
         _filteredPosts = posts;
         _postFundraisers = fundraisers;
-        _isLoading = false;
+        if (showIndicator) _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (showIndicator) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -115,7 +160,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: RefreshIndicator(
-        onRefresh: _loadPosts,
+        onRefresh: _refreshPosts,
         color: AppColors.primaryColor,
         child: Column(
           children: [

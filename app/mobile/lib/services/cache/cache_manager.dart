@@ -5,14 +5,19 @@ class CacheEntry<T> {
   final T data;
   final DateTime createdAt;
   final DateTime expiresAt;
+  bool manuallyStale;
 
-  CacheEntry(this.data, Duration ttl)
-      : createdAt = DateTime.now(),
+  CacheEntry(
+      this.data,
+      Duration ttl, {
+        this.manuallyStale = false,
+      })  : createdAt = DateTime.now(),
         expiresAt = DateTime.now().add(ttl);
 
   bool get isExpired => DateTime.now().isAfter(expiresAt);
 
-  bool get isStale => DateTime.now().isAfter(createdAt.add(Duration(minutes: 5)));
+  bool get isStale =>
+      manuallyStale || DateTime.now().isAfter(createdAt.add(Duration(minutes: 5)));
 
   Duration get timeToLive => expiresAt.difference(DateTime.now());
 }
@@ -63,6 +68,26 @@ class CacheManager {
   static bool isStale(String key) {
     final entry = _cache[key];
     return entry?.isStale == true;
+  }
+
+  /// Oznacza konkretny klucz jako przeterminowany, ale zachowuje dane
+  static void markStale(String key) {
+    final entry = _cache[key];
+    if (entry != null) {
+      entry.manuallyStale = true;
+      dev.log('Cache MARK_STALE: $key');
+    }
+  }
+
+  /// Oznacza wszystkie klucze pasujące do wzorca jako przeterminowane
+  static void markStalePattern(String pattern) {
+    final keys = _cache.keys.where((k) => k.contains(pattern)).toList();
+    for (final key in keys) {
+      _cache[key]?.manuallyStale = true;
+    }
+    if (keys.isNotEmpty) {
+      dev.log('Cache MARK_STALE_PATTERN: $pattern (marked ${keys.length} entries)');
+    }
   }
 
   /// Usuwa konkretny klucz z cache'a

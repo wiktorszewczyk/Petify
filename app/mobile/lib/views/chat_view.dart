@@ -303,9 +303,7 @@ class _ChatViewState extends State<ChatView> {
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(24.0),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.7,
-          child: Column(
+        child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (_conversation != null) ...[
@@ -399,7 +397,6 @@ class _ChatViewState extends State<ChatView> {
             ],
           ),
         ),
-      ),
     );
   }
 
@@ -441,9 +438,7 @@ class _ChatViewState extends State<ChatView> {
       color: AppColors.primaryColor,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.7,
-          child: Center(
+        child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -479,7 +474,6 @@ class _ChatViewState extends State<ChatView> {
             ),
           ),
         ),
-      ),
     );
   }
 

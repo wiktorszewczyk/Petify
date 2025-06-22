@@ -117,9 +117,9 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     try {
       await _feedService.joinEvent(int.parse(widget.event.id));
 
-      CacheManager.invalidatePattern('events_');
-      CacheManager.invalidatePattern('feed_');
-      CacheManager.invalidatePattern('user_');
+      CacheManager.markStalePattern('events_');
+      CacheManager.markStalePattern('feed_');
+      CacheManager.markStalePattern('user_');
       print('🗑️ EventDetailsView: Invalidated cache after joining event ${widget.event.id}');
 
       if (mounted) {

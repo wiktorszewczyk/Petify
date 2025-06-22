@@ -11,6 +11,7 @@ import '../models/pet.dart';
 import '../styles/colors.dart';
 import '../services/pet_service.dart';
 import '../services/message_service.dart';
+import '../services/cache/cache_manager.dart';
 import 'chat_view.dart';
 
 class TraitItem {
@@ -43,7 +44,17 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     super.initState();
     _petService = PetService();
     _messageService = MessageService();
-    if (widget.pet.distance == null) {
+    _loadCachedPetFirst();
+  }
+
+  void _loadCachedPetFirst() {
+    final cacheKey = 'pet_detail_${widget.pet.id}';
+    final cached = CacheManager.get<Pet>(cacheKey);
+    if (cached != null) {
+      _refreshedPet = cached;
+      CacheManager.markStale(cacheKey);
+      _refreshPetDetailsInBackground();
+    } else if (widget.pet.distance == null) {
       _loadPetDetails();
     }
   }
@@ -58,6 +69,20 @@ class _PetDetailsViewState extends State<PetDetailsView> {
       }
     } catch (e) {
       print('Failed to refresh pet details: $e');
+    }
+  }
+
+  void _refreshPetDetailsInBackground() async {
+    try {
+      CacheManager.invalidate('pet_detail_${widget.pet.id}');
+      final pet = await _petService.getPetById(widget.pet.id);
+      if (mounted) {
+        setState(() {
+          _refreshedPet = pet;
+        });
+      }
+    } catch (e) {
+      print('Background pet refresh failed: $e');
     }
   }
 

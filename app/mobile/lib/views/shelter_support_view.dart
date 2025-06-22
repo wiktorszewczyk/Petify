@@ -40,8 +40,8 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
     });
 
     try {
-      CacheManager.invalidatePattern('shelter_');
-      CacheManager.invalidatePattern('fundraiser_');
+      CacheManager.markStalePattern('shelter_');
+      CacheManager.markStalePattern('fundraiser_');
       print('🔄 ShelterSupportView: Refreshing shelters and fundraisers data...');
 
       final shelters = await _shelterService.getShelters();

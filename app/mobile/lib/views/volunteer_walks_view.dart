@@ -35,8 +35,33 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadAvailableSlots();
-    _loadMyReservations();
+    _loadCachedDataFirst();
+  }
+
+  Future<void> _loadCachedDataFirst() async {
+    final cachedAvailable = CacheManager.get<List<ReservationSlot>>('available_slots');
+    if (cachedAvailable != null) {
+      setState(() {
+        _availableSlots = cachedAvailable;
+        _isLoadingAvailable = false;
+      });
+      CacheManager.markStale('available_slots');
+      _refreshAvailableSlotsInBackground();
+    } else {
+      _loadAvailableSlots();
+    }
+
+    final cachedMy = CacheManager.get<List<ReservationSlot>>('my_reservations');
+    if (cachedMy != null) {
+      setState(() {
+        _myReservations = cachedMy;
+        _isLoadingMy = false;
+      });
+      CacheManager.markStale('my_reservations');
+      _refreshMyReservationsInBackground();
+    } else {
+      _loadMyReservations();
+    }
   }
 
   @override
@@ -46,6 +71,7 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
   }
 
   Future<void> _loadAvailableSlots() async {
+    CacheManager.markStale('available_slots');
     setState(() {
       _isLoadingAvailable = true;
     });
@@ -81,7 +107,22 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
     }
   }
 
+  void _refreshAvailableSlotsInBackground() async {
+    try {
+      final slots = await _reservationService.getAvailableSlots();
+      await _fetchPetDetailsForSlots(slots);
+      if (mounted) {
+        setState(() {
+          _availableSlots = slots;
+        });
+      }
+    } catch (e) {
+      print('Background available slots refresh failed: $e');
+    }
+  }
+
   Future<void> _loadMyReservations() async {
+    CacheManager.markStale('my_reservations');
     setState(() {
       _isLoadingMy = true;
     });
@@ -117,14 +158,28 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
     }
   }
 
+  void _refreshMyReservationsInBackground() async {
+    try {
+      final slots = await _reservationService.getMyReservations();
+      await _fetchPetDetailsForSlots(slots);
+      if (mounted) {
+        setState(() {
+          _myReservations = slots;
+        });
+      }
+    } catch (e) {
+      print('Background my reservations refresh failed: $e');
+    }
+  }
+
   Future<void> _reserveSlot(ReservationSlot slot) async {
     final response = await _reservationService.reserveSlot(slot.id);
 
     if (mounted) {
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        CacheManager.invalidatePattern('reservation_');
-        CacheManager.invalidatePattern('user_');
-        print('🗑️ VolunteerWalksView: Invalidated cache after reserving slot ${slot.id}');
+        CacheManager.markStalePattern('reservation_');
+        CacheManager.markStalePattern('user_');
+        print('🗑️ VolunteerWalksView: Marked cache stale after reserving slot ${slot.id}');
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -132,8 +187,8 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
             backgroundColor: Colors.green,
           ),
         );
-        _loadAvailableSlots();
-        _loadMyReservations();
+        _refreshAvailableSlotsInBackground();
+        _refreshMyReservationsInBackground();
       } else {
         String errorMessage = 'Nie udało się zarezerwować terminu';
         if (response.data is Map<String, dynamic>) {
@@ -186,8 +241,8 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
 
       if (mounted) {
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          CacheManager.invalidatePattern('reservation_');
-          CacheManager.invalidatePattern('user_');
+          CacheManager.markStalePattern('reservation_');
+          CacheManager.markStalePattern('user_');
           print('🗑️ VolunteerWalksView: Invalidated cache after canceling slot ${slot.id}');
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -196,8 +251,8 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
               backgroundColor: Colors.orange,
             ),
           );
-          _loadAvailableSlots();
-          _loadMyReservations();
+          _refreshAvailableSlotsInBackground();
+          _refreshMyReservationsInBackground();
         } else {
           String errorMessage = 'Nie udało się anulować rezerwacji';
           if (response.data is Map<String, dynamic>) {

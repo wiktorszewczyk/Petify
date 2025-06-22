@@ -269,7 +269,7 @@ class MessageService with CacheableMixin {
     const cacheKey = 'conversations_list';
 
     if (forceRefresh) {
-      CacheManager.invalidate(cacheKey);
+      CacheManager.markStale(cacheKey);
       clearCache();
     }
 
@@ -484,7 +484,7 @@ class MessageService with CacheableMixin {
         }
       }
 
-      CacheManager.invalidate('conversations_list');
+      CacheManager.markStale('conversations_list');
 
       final cacheKey = 'messages_$conversationId';
       final currentMessages = _conversationMessages[conversationId] ?? [];
@@ -575,7 +575,7 @@ class MessageService with CacheableMixin {
 
         _conversationMessages[conversationId] = [];
 
-        CacheManager.invalidate('conversations_list');
+        CacheManager.markStale('conversations_list');
 
         final messagesCacheKey = 'messages_$conversationId';
         CacheManager.set(messagesCacheKey, <MessageModel>[], ttl: Duration(minutes: 10));

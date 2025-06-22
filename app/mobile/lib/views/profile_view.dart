@@ -46,7 +46,7 @@ class _ProfileViewState extends State<ProfileView>
       }
     });
     WidgetsBinding.instance.addObserver(this);
-    _loadUserProfile();
+    _loadCachedProfileFirst();
   }
 
   @override
@@ -65,25 +65,60 @@ class _ProfileViewState extends State<ProfileView>
           CacheManager.get<User>('user_data') == null;
       if (needsRefresh && mounted) {
         print('📱 ProfileView: App resumed, refreshing user data');
-        _loadUserProfile();
+        _loadUserProfile(showIndicator: false);
       }
     }
   }
 
-  Future<void> _loadUserProfile() async {
-    setState(() {
-      _isLoading = true;
-      _isError = false;
-    });
+  Future<void> _loadCachedProfileFirst() async {
+    final cachedUser = CacheManager.get<User>('current_user');
+    final cachedAchievements =
+    CacheManager.get<List<Achievement>>('user_achievements');
+
+    if (cachedUser != null) {
+      setState(() {
+        _user = cachedUser;
+        _recentAchievements = (cachedAchievements ?? [])
+            .where((a) => a.isUnlocked)
+            .toList()
+          ..sort((a, b) => b.dateAchieved!.compareTo(a.dateAchieved!));
+        if (_recentAchievements.length > 3) {
+          _recentAchievements = _recentAchievements.take(3).toList();
+        }
+        _isLoading = false;
+        _isError = false;
+      });
+
+      _refreshProfileInBackground();
+    } else {
+      await _loadUserProfile();
+    }
+  }
+
+  Future<void> _refreshProfileInBackground() async {
+    try {
+      await _loadUserProfile(showIndicator: false);
+    } catch (e) {
+      print('Background profile refresh failed: $e');
+    }
+  }
+
+  Future<void> _loadUserProfile({bool showIndicator = true}) async {
+    if (showIndicator) {
+      setState(() {
+        _isLoading = true;
+        _isError = false;
+      });
+    }
 
     try {
-      CacheManager.invalidatePattern('user_');
-      CacheManager.invalidatePattern('current_user');
-      CacheManager.invalidatePattern('achievements_');
-      CacheManager.invalidatePattern('favorites');
-      CacheManager.invalidatePattern('supported');
+      CacheManager.markStalePattern('user_');
+      CacheManager.markStalePattern('current_user');
+      CacheManager.markStalePattern('achievements_');
+      CacheManager.markStalePattern('favorites');
+      CacheManager.markStalePattern('supported');
 
-      print('🔄 ProfileView: Odświeżanie danych profilu i invalidacja cache...');
+      print('🔄 ProfileView: Odświeżanie danych profilu i oznaczanie cache jako nieświeże...');
 
       final userData = await UserService().getCurrentUser();
       final allAchievements =
@@ -95,23 +130,24 @@ class _ProfileViewState extends State<ProfileView>
         _recentAchievements = allAchievements
             .where((a) => a.isUnlocked)
             .toList()
-          ..sort((a, b) =>
-              b.dateAchieved!.compareTo(a.dateAchieved!));
+          ..sort((a, b) => b.dateAchieved!.compareTo(a.dateAchieved!));
         _recentAchievements = _recentAchievements.take(3).toList();
-        _isLoading = false;
+        if (showIndicator) _isLoading = false;
       });
 
       print('✅ ProfileView: Profil odświeżony pomyślnie');
     } catch (e) {
       print('❌ ProfileView: Błąd podczas odświeżania profilu: $e');
       if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _isError = true;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Nie udało się załadować profilu: $e')),
-      );
+      if (showIndicator) {
+        setState(() {
+          _isLoading = false;
+          _isError = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Nie udało się załadować profilu: $e')),
+        );
+      }
     }
   }
 
