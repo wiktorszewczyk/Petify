@@ -1,0 +1,298 @@
+x-common-variables: &common-variables
+  SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+  SPRING_DATASOURCE_USERNAME: ${DB_USER}
+  SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+
+  AUTH_SERVICE_PORT: 9000
+  AUTH_SERVICE_HOST: auth-server
+  CONFIG_SERVER_PORT: 8888
+  CONFIG_SERVER_HOST: config-server
+  EUREKA_PORT: 8761
+  EUREKA_HOST: discovery
+
+services:
+  # External services
+  
+  ### ---------------- ###
+  #   AZURE DEPLOYMENT   #
+  ### ---------------- ###
+  postgres:
+    container_name: petify-postgres-connection
+    image: bitnami/postgresql:17
+    environment:
+      PGUSER: ${DB_USER}
+      PGPASSWORD: ${DB_PASSWORD}
+    volumes:
+    - ./backup.sql:/backup.sql:ro
+    entrypoint:
+      [
+        "bash", "-c",
+        "psql -h ${DB_HOST} -d postgres -c 'DROP DATABASE IF EXISTS \"${DB_NAME}\";' && \
+         psql -h ${DB_HOST} -d postgres -c 'CREATE DATABASE \"${DB_NAME}\";' && \
+         psql -h ${DB_HOST} -d ${DB_NAME} -f /backup.sql && \
+         sleep infinity"
+      ]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h ${DB_HOST} -p ${DB_PORT}"]
+      timeout: 5s
+      interval: 10s
+      retries: 10
+    mem_limit: 128m
+
+  ### ----------------- ###
+  #   LOCAL DEVELOPMENT   #
+  ### ----------------- ###
+  # postgres:
+  #   container_name: petify-postgres
+  #   image: postgres:17
+  #   environment:
+  #     POSTGRES_DB: ${DB_NAME}
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #   - ../test_data/backup.sql:/docker-entrypoint-initdb.d/backup.sql:ro
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -h ${DB_HOST} -p 5432"]
+  #     timeout: 5s
+  #     interval: 10s
+  #     retries: 10
+  #   mem_limit: 128m
+
+  rabbitmq:
+    container_name: petify-rabbitmq
+    image: rabbitmq:4.1.1-management
+    expose:
+      - 5672
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      timeout: 5s
+      interval: 10s
+      retries: 10
+    mem_limit: 1g
+
+  # Petify services
+  config-server:
+    container_name: petify-config-server
+    image: ${ACR_LOGIN_SERVER}/petify-config-server:latest
+    pull_policy: always
+    expose:
+      - 8888
+    environment:
+      <<: *common-variables
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      timeout: 5s
+      interval: 10s
+      retries: 10
+    mem_limit: 1g
+
+  discovery:
+    container_name: petify-discovery
+    image: ${ACR_LOGIN_SERVER}/petify-discovery:latest
+    pull_policy: always
+    expose:
+      - 8761
+    environment:
+      <<: *common-variables
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      timeout: 5s
+      interval: 15s
+      retries: 20
+    mem_limit: 1g
+
+  auth-server:
+    container_name: petify-auth-server
+    image: ${ACR_LOGIN_SERVER}/petify-auth-server:latest
+    pull_policy: always
+    expose:
+      - 9000
+    environment:
+      <<: *common-variables
+      PETIFY_ADMIN_USERNAME: ${PETIFY_ADMIN_USERNAME}
+      PETIFY_ADMIN_EMAIL: ${PETIFY_ADMIN_EMAIL}
+      PETIFY_ADMIN_PASSWORD: ${PETIFY_ADMIN_PASSWORD}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+    depends_on:
+      discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
+      timeout: 5s
+      interval: 15s
+      retries: 20
+    mem_limit: 1g
+
+  chat:
+    container_name: petify-chat
+    image: ${ACR_LOGIN_SERVER}/petify-chat:latest
+    pull_policy: always
+    expose:
+      - 8050
+    environment:
+      <<: *common-variables
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8050/actuator/health"]
+      timeout: 5s
+      interval: 15s
+      retries: 20
+    mem_limit: 1g
+
+  feed:
+    container_name: petify-feed
+    image: ${ACR_LOGIN_SERVER}/petify-feed:latest
+    pull_policy: always
+    expose:
+      - 8030
+    environment:
+      <<: *common-variables
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+    depends_on:
+      discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8030/actuator/health"]
+      timeout: 5s
+      interval: 15s
+      retries: 20
+    mem_limit: 1g
+
+  funding:
+    container_name: petify-funding
+    image: ${ACR_LOGIN_SERVER}/petify-funding:latest
+    pull_policy: always
+    expose:
+      - 8020
+    environment:
+      <<: *common-variables
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      PAYU_CLIENT_ID: ${PAYU_CLIENT_ID}
+      PAYU_CLIENT_SECRET: ${PAYU_CLIENT_SECRET}
+      PAYU_POS_ID: ${PAYU_POS_ID}
+      PAYU_MD5_KEY: ${PAYU_MD5_KEY}
+      PAYU_API_URL: ${PAYU_API_URL}
+      WEBHOOK_BASE_URL: ${PAYU_WEBHOOK_BASE_URL}
+    depends_on:
+      discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8020/actuator/health"]
+      timeout: 5s
+      interval: 15s
+      retries: 20
+    mem_limit: 1g
+
+  image:
+    container_name: petify-image
+    image: ${ACR_LOGIN_SERVER}/petify-image:latest
+    pull_policy: always
+    expose:
+      - 8060
+    environment:
+      <<: *common-variables
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+    depends_on:
+      discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8060/actuator/health"]
+      timeout: 5s
+      interval: 15s
+      retries: 20
+    mem_limit: 1g
+
+  reservations:
+    container_name: petify-reservations
+    image: ${ACR_LOGIN_SERVER}/petify-reservations:latest
+    pull_policy: always
+    expose:
+      - 8011
+    environment:
+      <<: *common-variables
+    depends_on:
+      discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/actuator/health"]
+      timeout: 5s
+      interval: 15s
+      retries: 20
+    mem_limit: 1g
+
+  shelter:
+    container_name: petify-shelter
+    image: ${ACR_LOGIN_SERVER}/petify-shelter:latest
+    pull_policy: always
+    expose:
+      - 8010
+    environment:
+      <<: *common-variables
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+    depends_on:
+      discovery:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8010/actuator/health"]
+      timeout: 5s
+      interval: 15s
+      retries: 20
+    mem_limit: 1g
+
+  gateway:
+    container_name: petify-gateway
+    image: ${ACR_LOGIN_SERVER}/petify-gateway:latest
+    pull_policy: always
+    ports:
+      - 8222:8222
+    environment:
+      <<: *common-variables
+    depends_on:
+      discovery:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+      chat:
+        condition: service_healthy
+      feed:
+        condition: service_healthy
+      funding:
+        condition: service_healthy
+      image:
+        condition: service_healthy
+      reservations:
+        condition: service_healthy
+      shelter:
+        condition: service_healthy
+    mem_limit: 1g

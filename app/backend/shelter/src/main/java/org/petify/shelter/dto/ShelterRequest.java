@@ -16,10 +16,11 @@ import java.io.Serializable;
 public record ShelterRequest(
         @NotNull(message = "Shelter name cannot be null!")
         @NotBlank(message = "Shelter name cannot be blank!")
-        @Length(message = "Shelter name has to be between 3 and 25 character long!", min = 3, max = 25)
+        @Length(message = "Shelter name has to be between 3 and 255 characters long!", min = 3, max = 255)
         String name,
 
-        @NotNull @Length(message = "Description maximum size is 150 characters!", max = 150)
+        @NotNull(message = "Shelter description cannot be null!")
+        @NotBlank(message = "Shelter description cannot be blank!")
         String description,
 
         @NotNull(message = "Shelter address cannot be null!")

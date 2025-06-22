@@ -58,4 +58,11 @@ public class PetSpecification {
     public static Specification<Pet> idGreaterThan(Long id) {
         return (root, query, cb) -> cb.greaterThan(root.get("id"), id);
     }
+
+    public static Specification<Pet> randomOrder() {
+        return (root, query, cb) -> {
+            query.orderBy(cb.asc(cb.function("RANDOM", Double.class)));
+            return cb.conjunction();
+        };
+    }
 }
