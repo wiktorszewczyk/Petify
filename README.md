@@ -1,5 +1,3 @@
-![Logo](./docs/logo/logo.png)
-
 # Petify
 
 ## CI Status
