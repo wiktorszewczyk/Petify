@@ -316,7 +316,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                       children: const [
                         Icon(Icons.message_outlined, size: 22),
                         SizedBox(height: 4),
-                        Text('Kontakt', style: TextStyle(fontSize: 12)),
+                        Text('Skontaktuj się', style: TextStyle(fontSize: 12)),
                       ],
                     ),
                   ),

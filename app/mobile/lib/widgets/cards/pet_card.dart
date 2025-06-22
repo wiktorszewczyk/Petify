@@ -49,7 +49,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     for (int i = 0; i < allImages.length; i++) {
       final imagePath = allImages[i];
 
-      // Sprawdz globalny cache najpierw
       if (_globalImageCache.containsKey(imagePath)) {
         _imageCache[imagePath] = _globalImageCache[imagePath]!;
         if (i == 0) {
@@ -63,9 +62,8 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
       final imageProvider = _getImageProvider(imagePath);
       if (imageProvider != null) {
         _imageCache[imagePath] = imageProvider;
-        _globalImageCache[imagePath] = imageProvider; // Dodaj do globalnego cache
+        _globalImageCache[imagePath] = imageProvider;
 
-        // Preload pierwsze 2 obrazy dla lepszej wydajności
         if (i < 2) {
           imageProvider.resolve(const ImageConfiguration()).addListener(
             ImageStreamListener((info, _) {
@@ -101,20 +99,20 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _goToNextPhoto() {
     if (_currentPhotoIndex < widget.pet.galleryImages.length) {
-      HapticFeedback.selectionClick(); // Dodaj haptic feedback
+      HapticFeedback.selectionClick();
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.elasticOut, // Bardziej sprężysta animacja
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
       );
     }
   }
 
   void _goToPreviousPhoto() {
     if (_currentPhotoIndex > 0) {
-      HapticFeedback.selectionClick(); // Dodaj haptic feedback
+      HapticFeedback.selectionClick();
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.elasticOut, // Bardziej sprężysta animacja
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
       );
     }
   }
@@ -124,7 +122,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
-    // Używaj CachedNetworkImage dla lepszej wydajności
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return CachedNetworkImage(
         imageUrl: path,
@@ -374,11 +371,10 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Używamy RepaintBoundary, żeby zapobiec niepotrzebnemu odświeżaniu
                 RepaintBoundary(
                   child: PageView.builder(
                     controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
                     onPageChanged: (index) {
                       setState(() {
                         _currentPhotoIndex = index;
@@ -390,7 +386,10 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                       return Hero(
                         tag: index == 0 ? 'pet_${widget.pet.id}' : 'pet_${widget.pet.id}_$index',
-                        child: _getImageWidget(imagePath),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          child: _getImageWidget(imagePath),
+                        ),
                       );
                     },
                   ),
