@@ -22,7 +22,7 @@ Service run order:
 4. Gateway
 
 ```sh
-# for each service in seperate terminal
+# For each service in seperate terminal
 cd app/backend/<service_name>
 mvn spring-boot:run
 ```
@@ -71,7 +71,7 @@ cd app/frontend
 npm install
 ```
 
-5. (Optional) Set up environment variables by creating a new file named `.env` in the "frontend" directory  and add the following content:
+4. (Optional) Set up environment variables by creating a new file named `.env` in the "frontend" directory  and add the following content:
 
 ```env
 VITE_API_BASE_URL=http://localhost:8222
