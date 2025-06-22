@@ -490,8 +490,8 @@ class _PetDetailsViewState extends State<PetDetailsView> {
             ? () {
           HapticFeedback.selectionClick(); // Dodaj haptic feedback
           left
-              ? _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.elasticOut)
-              : _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.elasticOut);
+              ? _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut)
+              : _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
         }
             : null,
         child: Container(

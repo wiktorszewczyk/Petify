@@ -768,7 +768,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Włącz lokalizację w telefonie jeśli filtruje po lokalizacji swojej',
+                              'Włącz lokalizację w telefonie, jeśli chcesz filtrować po swoim położeniu.',
                               style: GoogleFonts.poppins(
                                 fontSize: 13,
                                 color: Colors.orange[700],
@@ -853,23 +853,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.orange.withOpacity(0.3)),
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.location_off, color: Colors.orange[700], size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'Włącz lokalizację w telefonie jeśli filtruje po lokalizacji swojej',
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                color: Colors.orange[700],
-                                fontWeight: FontWeight.w500,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                   const SizedBox(height: 16),
@@ -932,23 +915,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         color: Colors.orange.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.orange.withOpacity(0.3)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.location_off, color: Colors.orange[700], size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'Włącz lokalizację w telefonie jeśli filtruje po lokalizacji swojej',
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                color: Colors.orange[700],
-                                fontWeight: FontWeight.w500,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ],

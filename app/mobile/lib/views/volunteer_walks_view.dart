@@ -41,6 +41,7 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
   Future<void> _loadCachedDataFirst() async {
     final cachedAvailable = CacheManager.get<List<ReservationSlot>>('available_slots');
     if (cachedAvailable != null) {
+      print('💾 VolunteerWalks: Found cached available slots: ${cachedAvailable.length}');
       setState(() {
         _availableSlots = cachedAvailable;
         _isLoadingAvailable = false;
@@ -48,11 +49,13 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
       CacheManager.markStale('available_slots');
       _refreshAvailableSlotsInBackground();
     } else {
+      print('🆙 VolunteerWalks: No cached available slots, loading fresh data');
       _loadAvailableSlots();
     }
 
     final cachedMy = CacheManager.get<List<ReservationSlot>>('my_reservations');
     if (cachedMy != null) {
+      print('💾 VolunteerWalks: Found cached my reservations: ${cachedMy.length}');
       setState(() {
         _myReservations = cachedMy;
         _isLoadingMy = false;
@@ -60,6 +63,7 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
       CacheManager.markStale('my_reservations');
       _refreshMyReservationsInBackground();
     } else {
+      print('🆙 VolunteerWalks: No cached my reservations, loading fresh data');
       _loadMyReservations();
     }
   }
@@ -160,26 +164,83 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
 
   void _refreshMyReservationsInBackground() async {
     try {
+      print('🔄 VolunteerWalks: Background refresh of my reservations...');
       final slots = await _reservationService.getMyReservations();
       await _fetchPetDetailsForSlots(slots);
       if (mounted) {
         setState(() {
           _myReservations = slots;
         });
+        print('✅ VolunteerWalks: Background refresh completed, now have ${slots.length} my reservations');
       }
     } catch (e) {
-      print('Background my reservations refresh failed: $e');
+      print('❌ VolunteerWalks: Background my reservations refresh failed: $e');
+    }
+  }
+
+  /// Force refresh both tabs immediately after reservation changes
+  Future<void> _forceRefreshBothTabs() async {
+    try {
+      print('🔄 VolunteerWalks: Starting force refresh of both tabs...');
+
+      // Completely clear cache to force fresh API calls
+      CacheManager.invalidate('available_slots');
+      CacheManager.invalidate('my_reservations');
+      CacheManager.invalidatePattern('reservation_');
+
+      // Set loading states
+      if (mounted) {
+        setState(() {
+          _isLoadingAvailable = true;
+          _isLoadingMy = true;
+        });
+      }
+
+      // Fetch both in parallel with fresh data - use forceRefresh to bypass cache
+      final futures = await Future.wait([
+        _reservationService.cachedFetch('available_slots_fresh', () => _reservationService.getAvailableSlots(), forceRefresh: true),
+        _reservationService.cachedFetch('my_reservations_fresh', () => _reservationService.getMyReservations(), forceRefresh: true),
+      ]);
+
+      final availableSlots = futures[0] as List<ReservationSlot>;
+      final myReservations = futures[1] as List<ReservationSlot>;
+
+      print('📊 VolunteerWalks: Fetched ${availableSlots.length} available, ${myReservations.length} my reservations');
+
+      // Batch fetch pet details for both lists combined
+      final allSlots = [...availableSlots, ...myReservations];
+      await _fetchPetDetailsForSlots(allSlots);
+
+      if (mounted) {
+        setState(() {
+          _availableSlots = availableSlots;
+          _myReservations = myReservations;
+          _isLoadingAvailable = false;
+          _isLoadingMy = false;
+        });
+        print('✅ VolunteerWalks: UI updated with fresh data');
+      }
+
+      print('✅ VolunteerWalks: Force refresh completed successfully');
+    } catch (e) {
+      print('❌ VolunteerWalks: Force refresh failed: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingAvailable = false;
+          _isLoadingMy = false;
+        });
+      }
     }
   }
 
   Future<void> _reserveSlot(ReservationSlot slot) async {
+    print('🔄 VolunteerWalks: Starting reservation for slot ${slot.id}');
+
     final response = await _reservationService.reserveSlot(slot.id);
 
     if (mounted) {
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        CacheManager.markStalePattern('reservation_');
-        CacheManager.markStalePattern('user_');
-        print('🗑️ VolunteerWalksView: Marked cache stale after reserving slot ${slot.id}');
+        print('✅ VolunteerWalks: Slot ${slot.id} reserved successfully');
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -187,8 +248,17 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
             backgroundColor: Colors.green,
           ),
         );
-        _refreshAvailableSlotsInBackground();
-        _refreshMyReservationsInBackground();
+
+        // Switch to "My Reservations" tab first
+        _tabController.animateTo(1);
+
+        // Wait a moment for tab animation, then force refresh
+        await Future.delayed(const Duration(milliseconds: 200));
+
+        // Force immediate refresh of both tabs
+        await _forceRefreshBothTabs();
+
+        print('✅ VolunteerWalks: Reservation process completed');
       } else {
         String errorMessage = 'Nie udało się zarezerwować terminu';
         if (response.data is Map<String, dynamic>) {
@@ -197,6 +267,7 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
             errorMessage = errorData['error'].toString();
           }
         }
+        print('❌ VolunteerWalks: Reservation failed: $errorMessage');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
@@ -237,13 +308,13 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
     );
 
     if (confirmed == true) {
+      print('🔄 VolunteerWalks: Starting cancellation for slot ${slot.id}');
+
       final response = await _reservationService.cancelReservation(slot.id);
 
       if (mounted) {
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          CacheManager.markStalePattern('reservation_');
-          CacheManager.markStalePattern('user_');
-          print('🗑️ VolunteerWalksView: Invalidated cache after canceling slot ${slot.id}');
+          print('✅ VolunteerWalks: Slot ${slot.id} cancelled successfully');
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -251,8 +322,11 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
               backgroundColor: Colors.orange,
             ),
           );
-          _refreshAvailableSlotsInBackground();
-          _refreshMyReservationsInBackground();
+
+          // Force immediate refresh of both tabs
+          await _forceRefreshBothTabs();
+
+          print('✅ VolunteerWalks: Cancellation process completed');
         } else {
           String errorMessage = 'Nie udało się anulować rezerwacji';
           if (response.data is Map<String, dynamic>) {
@@ -261,6 +335,7 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
               errorMessage = errorData['error'].toString();
             }
           }
+          print('❌ VolunteerWalks: Cancellation failed: $errorMessage');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(errorMessage),
@@ -273,16 +348,30 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
   }
 
   Future<void> _fetchPetDetailsForSlots(List<ReservationSlot> slots) async {
-    final idsToFetch = slots
-        .map((s) => s.petId)
-        .where((id) => !_petDetailsCache.containsKey(id))
-        .toSet();
+    final allIds = slots.map((s) => s.petId).toList();
+    final idsToFetch = allIds.where((id) => !_petDetailsCache.containsKey(id)).toList();
 
-    for (final id in idsToFetch) {
-      try {
-        final pet = await _petService.getPetById(id);
-        _petDetailsCache[id] = pet;
-      } catch (e) {
+    if (idsToFetch.isEmpty) {
+      return;
+    }
+
+    try {
+      print('🔍 VolunteerWalks: Batch fetching ${idsToFetch.length} pet details...');
+      final petsMap = await _petService.getPetsByIds(idsToFetch);
+      _petDetailsCache.addAll(petsMap);
+      print('✅ VolunteerWalks: Successfully cached ${petsMap.length} pet details');
+    } catch (e) {
+      print('❌ VolunteerWalks: Batch fetch failed: $e');
+      // Fallback to individual fetching only for critical UI cases
+      if (idsToFetch.length <= 10) {
+        for (final id in idsToFetch.take(5)) { // Limit to prevent overload
+          try {
+            final pet = await _petService.getPetById(id);
+            _petDetailsCache[id] = pet;
+          } catch (e) {
+            print('❌ Individual fetch failed for pet $id: $e');
+          }
+        }
       }
     }
   }
@@ -343,10 +432,31 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
 
   Widget _buildAvailableSlotsTab() {
     return RefreshIndicator(
-      onRefresh: _loadAvailableSlots,
+      onRefresh: () async {
+        await _forceRefreshBothTabs();
+      },
       child: Column(
         children: [
           _buildViewToggle(),
+          if (_availableSlots.length > 100)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, size: 16, color: Colors.blue[600]),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Znaleziono ${_availableSlots.length} terminów. Widok może ładować się dłużej.',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: Colors.blue[600],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Expanded(
             child: _isLoadingAvailable
                 ? const Center(child: CircularProgressIndicator())
@@ -367,10 +477,30 @@ class _VolunteerWalksViewState extends State<VolunteerWalksView>
 
   Widget _buildMyReservationsTab() {
     return RefreshIndicator(
-      onRefresh: _loadMyReservations,
+      onRefresh: () async {
+        await _forceRefreshBothTabs();
+      },
       child: Column(
         children: [
           _buildViewToggle(),
+          if (_myReservations.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  Icon(Icons.check_circle, size: 16, color: Colors.green[600]),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Masz ${_myReservations.length} aktywn${_myReservations.length == 1 ? 'ą' : 'ych'} rezerwacj${_myReservations.length == 1 ? 'ę' : 'i'}',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.green[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Expanded(
             child: _isLoadingMy
                 ? const Center(child: CircularProgressIndicator())
