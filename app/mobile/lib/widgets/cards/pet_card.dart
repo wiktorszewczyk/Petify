@@ -507,54 +507,83 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: AutoSizeText(
-                              widget.pet.name,
-                              style: GoogleFonts.poppins(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              maxLines: 1,
-                              minFontSize: 18,
-                              overflow: TextOverflow.visible,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _formatDisplayAge(widget.pet.age),
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (widget.pet.isVaccinated)
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.check_circle_outline, color: Colors.white, size: 16),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Zaszczepiony',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final ageText = _formatDisplayAge(widget.pet.age);
+                          final ageWidth = _calculateTextWidth(
+                            ageText,
+                            GoogleFonts.poppins(fontSize: 18, color: Colors.white),
+                          );
+                          final nameWidth = _calculateTextWidth(
+                            widget.pet.name,
+                            GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+                          );
+
+                          final vaccinatedBadgeWidth = widget.pet.isVaccinated ? 110.0 : 0.0;
+                          final spacerWidth = widget.pet.isVaccinated ? 8.0 : 0.0;
+                          final nameAgeSpacing = 8.0;
+
+                          final totalNeeded = nameWidth + ageWidth + nameAgeSpacing + spacerWidth + vaccinatedBadgeWidth;
+                          final showAge = totalNeeded <= constraints.maxWidth;
+
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        widget.pet.name,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.visible,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    if (showAge) ...[
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        ageText,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ),
-                            ),
-                        ],
+                              if (widget.pet.isVaccinated) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withOpacity(0.8),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.check_circle_outline, color: Colors.white, size: 16),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Zaszczepiony',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 4),
                       Row(
@@ -726,6 +755,16 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
       return '<1 rok';
     }
     return '${age} ${_formatAge(age)}';
+  }
+
+  double _calculateTextWidth(String text, TextStyle style) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    return textPainter.size.width;
   }
 
   Future<void> _contactShelter() async {
