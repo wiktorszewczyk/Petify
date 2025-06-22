@@ -1,12 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:confetti/confetti.dart';
 import '../models/shelter.dart';
 import '../models/donation.dart';
 import '../services/payment_service.dart';
 import '../services/shelter_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../views/payment_view.dart';
 import '../styles/colors.dart';
 
@@ -31,18 +36,50 @@ class _ShelterViewState extends State<ShelterView> {
   bool _isLoadingFundraiser = true;
   bool _isRefreshing = false;
   List<String> _shelterImages = [];
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
     _scrollController.addListener(_scrollListener);
-    _loadShelterData();
+    _loadCachedFundraiserFirst();
+  }
+
+  void _loadCachedFundraiserFirst() {
+    final cacheKey = 'shelter_${widget.shelter.id}_main_fundraiser';
+    final cached = CacheManager.get<FundraiserResponse>(cacheKey);
+
+    final images = <String>[];
+    if (widget.shelter.imageUrl != null && widget.shelter.imageUrl!.isNotEmpty) {
+      images.add(widget.shelter.imageUrl!);
+    } else if (widget.shelter.imageData != null && widget.shelter.imageData!.isNotEmpty) {
+      final mimeType = widget.shelter.imageType ?? 'image/jpeg';
+      if (widget.shelter.imageData!.startsWith('data:image')) {
+        images.add(widget.shelter.imageData!);
+      } else {
+        images.add('data:$mimeType;base64,${widget.shelter.imageData}');
+      }
+    }
+
+    if (cached != null) {
+      setState(() {
+        _mainFundraiser = cached;
+        _shelterImages = images;
+        _isLoadingFundraiser = false;
+      });
+      CacheManager.markStale(cacheKey);
+      _refreshFundraiserInBackground();
+    } else {
+      _loadShelterData();
+    }
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -58,13 +95,16 @@ class _ShelterViewState extends State<ShelterView> {
     }
   }
 
-  Future<void> _loadShelterData() async {
+  Future<void> _loadShelterData({bool forceRefresh = false}) async {
     setState(() {
       _isLoadingFundraiser = true;
     });
 
     try {
-      final fundraiser = await _paymentService.getShelterMainFundraiser(widget.shelter.id);
+      final fundraiser = await _paymentService.getShelterMainFundraiser(
+        widget.shelter.id,
+        forceRefresh: forceRefresh,
+      );
 
       final images = <String>[];
 
@@ -98,11 +138,28 @@ class _ShelterViewState extends State<ShelterView> {
     }
   }
 
+  void _refreshFundraiserInBackground() async {
+    try {
+      final fundraiser = await _paymentService.getShelterMainFundraiser(
+        widget.shelter.id,
+        forceRefresh: true,
+      );
+      if (mounted) {
+        setState(() {
+          _mainFundraiser = fundraiser;
+        });
+      }
+    } catch (e) {
+      print('Background fundraiser refresh failed: $e');
+    }
+  }
+
   Future<void> _refreshShelterData() async {
     setState(() {
       _isRefreshing = true;
     });
-    await _loadShelterData();
+    CacheManager.markStale('shelter_${widget.shelter.id}_main_fundraiser');
+    await _loadShelterData(forceRefresh: true);
   }
 
   Future<void> _launchUrl(String url) async {
@@ -131,6 +188,13 @@ class _ShelterViewState extends State<ShelterView> {
       );
 
       if (result == true) {
+        CacheManager.markStalePattern('shelter_');
+        CacheManager.markStalePattern('fundraiser_');
+        CacheManager.markStalePattern('user_donations');
+        print('🗑️ ShelterView: Invalidated cache after fundraiser donation');
+
+        _confettiController.play();
+
         await _refreshShelterData();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -157,6 +221,13 @@ class _ShelterViewState extends State<ShelterView> {
     );
 
     if (result == true) {
+      CacheManager.markStalePattern('shelter_');
+      CacheManager.markStalePattern('fundraiser_');
+      CacheManager.markStalePattern('user_donations');
+      print('🗑️ ShelterView: Invalidated cache after shelter donation');
+
+      _confettiController.play();
+
       await _refreshShelterData();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -361,7 +432,10 @@ class _ShelterViewState extends State<ShelterView> {
                 child: Row(
                   children: [
                     ElevatedButton(
-                      onPressed: _shareShelter,
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        _shareShelter();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -389,7 +463,10 @@ class _ShelterViewState extends State<ShelterView> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _donateToShelter,
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          _donateToShelter();
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
                           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -417,6 +494,25 @@ class _ShelterViewState extends State<ShelterView> {
                   ],
                 ),
               ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirection: 1.5708,
+              emissionFrequency: 0.05,
+              numberOfParticles: 30,
+              gravity: 0.1,
+              shouldLoop: false,
+              colors: const [
+                Colors.green,
+                Colors.blue,
+                Colors.orange,
+                Colors.purple,
+                Colors.red,
+                Colors.yellow,
+              ],
             ),
           ),
         ],
@@ -521,23 +617,22 @@ class _ShelterViewState extends State<ShelterView> {
       if (imageUrl.startsWith('http')) {
         return GestureDetector(
           onTap: _shelterImages.length > 1 ? _showImageGallery : null,
-          child: Image.network(
-            imageUrl,
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
             fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                color: Colors.grey[300],
+            placeholder: (context, url) => Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                color: Colors.white,
                 child: Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                        : null,
-                  ),
+                  child: Icon(Icons.home_work, size: 50, color: Colors.grey[400]),
                 ),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+              ),
+            ),
+            errorWidget: (context, url, error) => _buildPlaceholderImage(),
+            fadeInDuration: const Duration(milliseconds: 300),
+            fadeOutDuration: const Duration(milliseconds: 100),
           ),
         );
       }
@@ -817,7 +912,10 @@ class _ShelterViewState extends State<ShelterView> {
               ),
               if (_mainFundraiser!.canAcceptDonations)
                 GestureDetector(
-                  onTap: _donateToFundraiser,
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    _donateToFundraiser();
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
@@ -917,7 +1015,10 @@ class _ShelterViewState extends State<ShelterView> {
             if (widget.shelter.phoneNumber != null) ...[
               Expanded(
                 child: InkWell(
-                  onTap: () => _launchUrl('tel:${widget.shelter.phoneNumber}'),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _launchUrl('tel:${widget.shelter.phoneNumber}');
+                  },
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -947,7 +1048,10 @@ class _ShelterViewState extends State<ShelterView> {
             if (widget.shelter.email != null) ...[
               Expanded(
                 child: InkWell(
-                  onTap: () => _launchUrl('mailto:${widget.shelter.email}'),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _launchUrl('mailto:${widget.shelter.email}');
+                  },
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -977,7 +1081,10 @@ class _ShelterViewState extends State<ShelterView> {
             if (widget.shelter.address != null)
               Expanded(
                 child: InkWell(
-                  onTap: () => _launchUrl('https://maps.google.com/?q=${widget.shelter.address}'),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _launchUrl('https://maps.google.com/?q=${widget.shelter.address}');
+                  },
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -1007,5 +1114,4 @@ class _ShelterViewState extends State<ShelterView> {
       ],
     );
   }
-
 }

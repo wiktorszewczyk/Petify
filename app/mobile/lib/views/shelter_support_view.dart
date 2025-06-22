@@ -9,6 +9,7 @@ import '../models/shelter.dart';
 import '../models/donation.dart';
 import '../services/shelter_service.dart';
 import '../services/payment_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../styles/colors.dart';
 
 class ShelterSupportView extends StatefulWidget {
@@ -39,6 +40,10 @@ class _ShelterSupportViewState extends State<ShelterSupportView> {
     });
 
     try {
+      CacheManager.markStalePattern('shelter_');
+      CacheManager.markStalePattern('fundraiser_');
+      print('🔄 ShelterSupportView: Refreshing shelters and fundraisers data...');
+
       final shelters = await _shelterService.getShelters();
       final fundraisers = <int, FundraiserResponse?>{};
 

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../models/user.dart';
 import '../../styles/colors.dart';
 import '../../services/user_service.dart';
+import '../../utils/image_utils.dart';
 
 class ProfileHeader extends StatelessWidget {
   final User user;
@@ -38,9 +39,10 @@ class ProfileHeader extends StatelessWidget {
                     border: Border.all(color: AppColors.primaryColor, width: 2),
                     image: DecorationImage(
                       image: image != null
-                          ? (image.startsWith('http') || image.startsWith('data:'))
-                          ? NetworkImage(image)
-                          : AssetImage('assets/images/default_avatar.jpg') as ImageProvider
+                          ? getImageProvider(
+                        image,
+                        placeholder: const AssetImage('assets/images/default_avatar.jpg'),
+                      )
                           : const AssetImage('assets/images/default_avatar.jpg'),
                       fit: BoxFit.cover,
                     ),

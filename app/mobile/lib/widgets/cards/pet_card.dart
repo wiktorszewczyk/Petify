@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import '../../models/pet.dart';
 import '../../styles/colors.dart';
 import '../../views/chat_view.dart';
@@ -29,6 +32,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   // Cache dla obrazów - zapobiega mruganiu
   final Map<String, ImageProvider> _imageCache = {};
+  static final Map<String, ImageProvider> _globalImageCache = {};
   bool _isImageLoaded = false;
 
   @override
@@ -42,16 +46,28 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _preloadImages() {
     final allImages = _getAllImages();
-    for (final imagePath in allImages) {
+    for (int i = 0; i < allImages.length; i++) {
+      final imagePath = allImages[i];
+
+      if (_globalImageCache.containsKey(imagePath)) {
+        _imageCache[imagePath] = _globalImageCache[imagePath]!;
+        if (i == 0) {
+          setState(() {
+            _isImageLoaded = true;
+          });
+        }
+        continue;
+      }
+
       final imageProvider = _getImageProvider(imagePath);
       if (imageProvider != null) {
         _imageCache[imagePath] = imageProvider;
+        _globalImageCache[imagePath] = imageProvider;
 
-        // Preload tylko pierwszy obraz
-        if (imagePath == allImages.first) {
+        if (i < 2) {
           imageProvider.resolve(const ImageConfiguration()).addListener(
             ImageStreamListener((info, _) {
-              if (mounted) {
+              if (mounted && i == 0) {
                 setState(() {
                   _isImageLoaded = true;
                 });
@@ -83,6 +99,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _goToNextPhoto() {
     if (_currentPhotoIndex < widget.pet.galleryImages.length) {
+      HapticFeedback.selectionClick();
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -92,6 +109,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _goToPreviousPhoto() {
     if (_currentPhotoIndex > 0) {
+      HapticFeedback.selectionClick();
       _pageController.previousPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -104,49 +122,23 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
-    final cachedProvider = _imageCache[path];
-
-    if (cachedProvider != null) {
-      return Image(
-        image: cachedProvider,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildErrorImage();
-        },
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          // Zapobiega mruganiu podczas ładowania
-          if (wasSynchronouslyLoaded || frame != null) {
-            return child;
-          }
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
-            ),
-          );
-        },
-      );
-    }
-
-    // Fallback dla obrazów nie w cache
     if (path.startsWith('http://') || path.startsWith('https://')) {
-      return Image.network(
-        path,
+      return CachedNetworkImage(
+        imageUrl: path,
         fit: fit,
-        errorBuilder: (context, error, stackTrace) => _buildErrorImage(),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            color: Colors.white,
+            child: Center(
+              child: Icon(Icons.pets, size: 50, color: Colors.grey[400]),
             ),
-          );
-        },
+          ),
+        ),
+        errorWidget: (context, url, error) => _buildErrorImage(),
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 100),
       );
     }
 
@@ -379,11 +371,10 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Używamy RepaintBoundary, żeby zapobiec niepotrzebnemu odświeżaniu
                 RepaintBoundary(
                   child: PageView.builder(
                     controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
                     onPageChanged: (index) {
                       setState(() {
                         _currentPhotoIndex = index;
@@ -395,7 +386,10 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                       return Hero(
                         tag: index == 0 ? 'pet_${widget.pet.id}' : 'pet_${widget.pet.id}_$index',
-                        child: _getImageWidget(imagePath),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          child: _getImageWidget(imagePath),
+                        ),
                       );
                     },
                   ),
@@ -515,17 +509,22 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            widget.pet.name,
-                            style: GoogleFonts.poppins(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          Flexible(
+                            child: AutoSizeText(
+                              widget.pet.name,
+                              style: GoogleFonts.poppins(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              maxLines: 1,
+                              minFontSize: 18,
+                              overflow: TextOverflow.visible,
                             ),
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '${widget.pet.age} ${_formatAge(widget.pet.age)}',
+                            _formatDisplayAge(widget.pet.age),
                             style: GoogleFonts.poppins(
                               fontSize: 18,
                               color: Colors.white,
@@ -642,7 +641,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'O mnie:',
@@ -651,21 +650,14 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     fontWeight: FontWeight.bold,
                     color: AppColors.textColor,
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
+                  physics: const NeverScrollableScrollPhysics(), // Wyłączamy scrollowanie
                   child: Row(
-                    children: [
-                      _buildTraitChip(widget.pet.breed ?? widget.pet.typeDisplayName, Icons.pets),
-                      _buildTraitChip(widget.pet.genderDisplayName,
-                          widget.pet.gender == 'male' ? Icons.male : Icons.female),
-                      _buildTraitChip(widget.pet.sizeDisplayName, Icons.height),
-                      if (widget.pet.isChildFriendly)
-                        _buildTraitChip('Przyjazny dzieciom', Icons.child_care),
-                      if (widget.pet.isNeutered)
-                        _buildTraitChip('Sterylizowany', Icons.healing),
-                    ],
+                    children: _buildPriorityTraits(),
                   ),
                 ),
               ],
@@ -674,6 +666,24 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildPriorityTraits() {
+    final traits = <Widget>[];
+
+    // Priorytet 1: Rasa (jeśli dostępna i nie jest null/pusta), w przeciwnym razie wielkość
+    if (widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) {
+      traits.add(_buildTraitChip(widget.pet.breed!, Icons.pets));
+    } else {
+      // Jeśli brak rasy, pokaż wielkość
+      traits.add(_buildTraitChip(widget.pet.sizeDisplayName, Icons.height));
+    }
+
+    // Priorytet 2: Płeć
+    traits.add(_buildTraitChip(widget.pet.genderDisplayName,
+        widget.pet.gender == 'male' ? Icons.male : Icons.female));
+
+    return traits;
   }
 
   Widget _buildTraitChip(String label, IconData icon) {
@@ -709,6 +719,13 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     } else {
       return 'lat';
     }
+  }
+
+  String _formatDisplayAge(int age) {
+    if (age == 0) {
+      return '<1 rok';
+    }
+    return '${age} ${_formatAge(age)}';
   }
 
   Future<void> _contactShelter() async {
@@ -801,7 +818,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                             ),
                           ),
                           Text(
-                            '${widget.pet.breed}, ${widget.pet.age} ${_formatAge(widget.pet.age)}',
+                            '${(widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) ? widget.pet.breed! : widget.pet.sizeDisplayName}, ${_formatDisplayAge(widget.pet.age)}',
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
@@ -824,6 +841,8 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                 _buildDetailSection('Schronisko', widget.pet.shelterName),
 
                 _buildDetailSection('Adres schroniska', widget.pet.shelterAddress),
+
+                _buildPetTraitsSection(),
 
                 const SizedBox(height: 20),
 
@@ -870,6 +889,94 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildPetTraitsSection() {
+    final traits = <Map<String, dynamic>>[];
+
+    // Priorytet 1: Szczepienia i sterylizacja (z kolorami)
+    if (widget.pet.isVaccinated) {
+      traits.add({'value': 'Zaszczepiony', 'icon': Icons.medical_services, 'color': Colors.green});
+    }
+
+    if (widget.pet.isNeutered) {
+      traits.add({'value': 'Sterylizowany', 'icon': Icons.healing, 'color': Colors.blue});
+    }
+
+    // Reszta traitów (bez labelów, z domyślnym kolorem)
+    if (widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) {
+      traits.add({'value': widget.pet.breed!, 'icon': Icons.pets});
+    }
+
+    traits.add({'value': widget.pet.genderDisplayName, 'icon': widget.pet.gender == 'male' ? Icons.male : Icons.female});
+    traits.add({'value': widget.pet.sizeDisplayName, 'icon': Icons.height});
+    traits.add({'value': _formatDisplayAge(widget.pet.age), 'icon': Icons.cake});
+
+    if (widget.pet.isChildFriendly) {
+      traits.add({'value': 'Przyjazny dzieciom', 'icon': Icons.child_care});
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Cechy zwierzaka',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Column(
+          children: traits.map((trait) =>
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: _buildInfoTraitChip(trait),
+              ),
+          ).toList(),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+
+  Widget _buildInfoTraitChip(Map<String, dynamic> trait) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 44),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: (trait['color'] as Color? ?? AppColors.primaryColor).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: (trait['color'] as Color? ?? AppColors.primaryColor).withOpacity(0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            trait['icon'] as IconData,
+            color: trait['color'] as Color? ?? AppColors.primaryColor,
+            size: 18,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              trait['value'] as String,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: trait['color'] as Color? ?? AppColors.primaryColor,
+                height: 1.3,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }

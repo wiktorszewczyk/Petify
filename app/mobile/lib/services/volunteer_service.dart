@@ -4,6 +4,7 @@ import '../models/basic_response.dart';
 import '../services/token_repository.dart';
 import 'api/initial_api.dart';
 import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
 class VolunteerService with CacheableMixin {
   final _api = InitialApi().dio;
@@ -20,8 +21,9 @@ class VolunteerService with CacheableMixin {
       );
 
       if (resp.statusCode == 200) {
-        CacheManager.invalidate('current_user');
-        CacheManager.invalidatePattern('user_');
+        CacheManager.markStale('current_user');
+        CacheManager.markStalePattern('user_');
+        CacheScheduler.forceRefreshCriticalData();
       }
 
       return BasicResponse(resp.statusCode ?? 0, resp.data);

@@ -137,29 +137,49 @@ class _MessagesViewState extends State<MessagesView> with AutomaticKeepAliveClie
                 valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
               ))
                   : _errorMessage != null
-                  ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      _errorMessage!,
-                      style: const TextStyle(color: Colors.red),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _loadConversations,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        foregroundColor: Colors.black,
+                  ? RefreshIndicator(
+                onRefresh: _loadConversations,
+                color: AppColors.primaryColor,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _errorMessage!,
+                            style: const TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: _loadConversations,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              foregroundColor: Colors.black,
+                            ),
+                            child: const Text('Spróbuj ponownie'),
+                          ),
+                        ],
                       ),
-                      child: const Text('Spróbuj ponownie'),
                     ),
-                  ],
+                  ),
                 ),
               )
                   : _conversations!.isEmpty
-                  ? _buildEmptyState()
+                  ? RefreshIndicator(
+                onRefresh: _loadConversations,
+                color: AppColors.primaryColor,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: _buildEmptyState(),
+                  ),
+                ),
+              )
                   : RefreshIndicator(
                 onRefresh: _loadConversations,
                 color: AppColors.primaryColor,

@@ -5,6 +5,7 @@ import '../models/level_info.dart';
 import 'api/initial_api.dart';
 import 'token_repository.dart';
 import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
 class AchievementService with CacheableMixin {
   final _api = InitialApi().dio;
@@ -62,9 +63,10 @@ class AchievementService with CacheableMixin {
 
       if (resp.statusCode == 200 && resp.data is Map<String, dynamic>) {
         // Invaliduj cache osiągnięć po aktualizacji postępu
-        CacheManager.invalidatePattern('user_achievements');
-        CacheManager.invalidatePattern('user_level');
-        CacheManager.invalidate('current_user'); // Poziom może się zmienić
+        CacheManager.markStalePattern('user_achievements');
+        CacheManager.markStalePattern('user_level');
+        CacheManager.markStale('current_user'); // Poziom może się zmienić
+        CacheScheduler.forceRefreshCriticalData();
 
         return Achievement.fromJson(resp.data as Map<String, dynamic>);
       }

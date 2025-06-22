@@ -1,13 +1,27 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/views/support_options_sheet.dart';
 import 'package:mobile/views/adoption_form_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../models/pet.dart';
 import '../styles/colors.dart';
 import '../services/pet_service.dart';
 import '../services/message_service.dart';
+import '../services/cache/cache_manager.dart';
 import 'chat_view.dart';
+
+class TraitItem {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color? color;
+
+  TraitItem(this.label, this.value, this.icon, {this.color});
+}
 
 class PetDetailsView extends StatefulWidget {
   final Pet pet;
@@ -30,7 +44,17 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     super.initState();
     _petService = PetService();
     _messageService = MessageService();
-    if (widget.pet.distance == null) {
+    _loadCachedPetFirst();
+  }
+
+  void _loadCachedPetFirst() {
+    final cacheKey = 'pet_detail_${widget.pet.id}';
+    final cached = CacheManager.get<Pet>(cacheKey);
+    if (cached != null) {
+      _refreshedPet = cached;
+      CacheManager.markStale(cacheKey);
+      _refreshPetDetailsInBackground();
+    } else if (widget.pet.distance == null) {
       _loadPetDetails();
     }
   }
@@ -48,6 +72,20 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     }
   }
 
+  void _refreshPetDetailsInBackground() async {
+    try {
+      CacheManager.invalidate('pet_detail_${widget.pet.id}');
+      final pet = await _petService.getPetById(widget.pet.id);
+      if (mounted) {
+        setState(() {
+          _refreshedPet = pet;
+        });
+      }
+    } catch (e) {
+      print('Background pet refresh failed: $e');
+    }
+  }
+
   Pet get currentPet => _refreshedPet ?? widget.pet;
 
   List<String> get _allImages {
@@ -56,25 +94,17 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
   Widget _buildImage(String path, {BoxFit fit = BoxFit.cover}) {
     if (path.startsWith('http://') || path.startsWith('https://')) {
-      return Image.network(
-        path,
+      return CachedNetworkImage(
+        imageUrl: path,
         fit: fit,
-        errorBuilder: (_, __, ___) => _buildErrorImage(),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: Colors.grey[200],
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes!
-                    : null,
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
-            ),
-          );
-        },
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(color: Colors.white),
+        ),
+        errorWidget: (context, url, error) => _buildErrorImage(),
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 100),
       );
     }
 
@@ -187,7 +217,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                             borderRadius: BorderRadius.circular(12)
                         ),
                         child: Text(
-                            '${currentPet.age} ${_y(currentPet.age)}',
+                            _formatDisplayAge(currentPet.age),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primaryColor
@@ -218,14 +248,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                     style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
 
-                  if (_traits.isNotEmpty) ...[
+                  if (_allTraits.isNotEmpty) ...[
                     const SizedBox(height: 24),
-                    _section('Cechy'),
-                    Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _traits.map(_chip).toList(growable: false)
-                    ),
+                    _section('Cechy zwierzaka'),
+                    _buildTraitsGrid(),
                   ],
 
                   const SizedBox(height: 24),
@@ -275,7 +301,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _contactShelter,
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      _contactShelter();
+                    },
                     style: _btnStyle(
                       Colors.white,
                       Colors.black87,
@@ -287,7 +316,7 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                       children: const [
                         Icon(Icons.message_outlined, size: 22),
                         SizedBox(height: 4),
-                        Text('Kontakt', style: TextStyle(fontSize: 12)),
+                        Text('Skontaktuj się', style: TextStyle(fontSize: 12)),
                       ],
                     ),
                   ),
@@ -297,7 +326,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
                 Expanded(
                   flex: 2,
                   child: ElevatedButton(
-                    onPressed: _openAdoptionForm,
+                    onPressed: () {
+                      HapticFeedback.heavyImpact();
+                      _openAdoptionForm();
+                    },
                     style: _btnStyle(
                       AppColors.primaryColor,
                       Colors.white,
@@ -320,12 +352,15 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => SupportOptionsSheet(pet: currentPet),
-                    ),
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => SupportOptionsSheet(pet: currentPet),
+                      );
+                    },
                     style: _btnStyle(
                       Colors.white,
                       Colors.blue,
@@ -453,9 +488,10 @@ class _PetDetailsViewState extends State<PetDetailsView> {
       child: GestureDetector(
         onTap: enabled
             ? () {
+          HapticFeedback.selectionClick(); // Dodaj haptic feedback
           left
-              ? _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut)
-              : _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+              ? _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.elasticOut)
+              : _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.elasticOut);
         }
             : null,
         child: Container(
@@ -488,6 +524,13 @@ class _PetDetailsViewState extends State<PetDetailsView> {
 
   String _y(int n) => n == 1 ? 'rok' : (n >= 2 && n <= 4 ? 'lata' : 'lat');
 
+  String _formatDisplayAge(int age) {
+    if (age == 0) {
+      return '<1 rok';
+    }
+    return '${age} ${_y(age)}';
+  }
+
   List<String> get _traits {
     final t = <String>[
       currentPet.genderDisplayName,
@@ -497,6 +540,97 @@ class _PetDetailsViewState extends State<PetDetailsView> {
     if (currentPet.isNeutered) t.add('Sterylizowany');
     if (currentPet.isChildFriendly) t.add('Przyjazny dzieciom');
     return t;
+  }
+
+  List<TraitItem> get _allTraits {
+    final traits = <TraitItem>[];
+
+    // Priorytet 1: Szczepienia i sterylizacja (z kolorami)
+    if (currentPet.isVaccinated) {
+      traits.add(TraitItem('', 'Zaszczepiony', Icons.medical_services, color: Colors.green));
+    }
+
+    if (currentPet.isNeutered) {
+      traits.add(TraitItem('', 'Sterylizowany', Icons.healing, color: Colors.blue));
+    }
+
+    // Reszta traitów (bez labelów, z domyślnym kolorem)
+    if (currentPet.breed?.isNotEmpty == true && currentPet.breed != null) {
+      traits.add(TraitItem('', currentPet.breed!, Icons.pets));
+    }
+
+    traits.add(TraitItem('', currentPet.genderDisplayName, currentPet.gender == 'male' ? Icons.male : Icons.female));
+    traits.add(TraitItem('', currentPet.sizeDisplayName, Icons.height));
+    traits.add(TraitItem('', _formatDisplayAge(currentPet.age), Icons.cake));
+
+    if (currentPet.isChildFriendly) {
+      traits.add(TraitItem('', 'Przyjazny dzieciom', Icons.child_care));
+    }
+
+    return traits;
+  }
+
+  Widget _buildTraitsGrid() {
+    final traits = _allTraits;
+    return AnimationLimiter(
+      child: Column(
+        children: traits.asMap().entries.map((entry) {
+          final index = entry.key;
+          final trait = entry.value;
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 375),
+            child: SlideAnimation(
+              verticalOffset: 50.0,
+              child: FadeInAnimation(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: _buildTraitChip(trait),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildTraitChip(TraitItem trait) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 44),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: (trait.color ?? AppColors.primaryColor).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: (trait.color ?? AppColors.primaryColor).withOpacity(0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            trait.icon,
+            color: trait.color ?? AppColors.primaryColor,
+            size: 18,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              trait.value,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: trait.color ?? AppColors.primaryColor,
+                height: 1.3,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _contactShelter() async {

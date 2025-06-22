@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import '../models/donation.dart';
 import 'api/initial_api.dart';
 import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
 class DonationService with CacheableMixin {
   final _api = InitialApi().dio;
@@ -61,6 +62,12 @@ class DonationService with CacheableMixin {
 
       if (donationIntentResponse.statusCode == 200) {
         final donationData = donationIntentResponse.data['donation'];
+        // Oznacz cache jako nieświeży po dodaniu donacji materialnej
+        CacheManager.markStalePattern('user_donations');
+        CacheManager.markStalePattern('shelter_');
+        CacheManager.markStalePattern('fundraiser_');
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('🗑️ DonationService: Marked cache as stale after adding material donation');
         return Donation.fromBackendJson(donationData);
       }
 
@@ -102,6 +109,12 @@ class DonationService with CacheableMixin {
 
       if (donationIntentResponse.statusCode == 200) {
         final donationData = donationIntentResponse.data['donation'];
+        // Invalidate cache po dodaniu donacji pieniężnej
+        CacheManager.markStalePattern('user_donations');
+        CacheManager.markStalePattern('shelter_');
+        CacheManager.markStalePattern('fundraiser_');
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('🗑️ DonationService: Marked cache as stale after adding monetary donation');
         return Donation.fromBackendJson(donationData);
       }
 
@@ -198,6 +211,13 @@ class DonationService with CacheableMixin {
       final response = await _api.get('/donations/payment-status/$donationId');
 
       if (response.statusCode == 200) {
+        final paymentStatus = response.data['status'];
+        if (paymentStatus == 'COMPLETED' || paymentStatus == 'SUCCESS') {
+          CacheManager.invalidatePattern('user_donations');
+          CacheManager.invalidatePattern('shelter_');
+          CacheManager.invalidatePattern('fundraiser_');
+          dev.log('🗑️ DonationService: Invalidated cache after successful payment');
+        }
         return response.data;
       }
 

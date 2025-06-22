@@ -4,6 +4,7 @@ import '../models/adoption.dart';
 import 'api/initial_api.dart';
 import 'pet_service.dart';
 import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
 class ApplicationService with CacheableMixin {
   final _api = InitialApi().dio;
@@ -50,9 +51,14 @@ class ApplicationService with CacheableMixin {
       final response = await _api.patch('/adoptions/$adoptionId/cancel');
 
       if (response.statusCode == 200) {
-        CacheManager.invalidatePattern('my_adoption_applications');
-        CacheManager.invalidate('adoption_details_$adoptionId');
-        CacheManager.invalidatePattern('my_adoptions');
+        CacheManager.markStalePattern('my_adoption_applications');
+        CacheManager.markStale('adoption_details_$adoptionId');
+        CacheManager.markStalePattern('my_adoptions');
+        CacheManager.markStalePattern('current_user'); // Odśwież w tle
+        CacheManager.markStalePattern('user_');
+        CacheManager.markStalePattern('achievements_'); // Osiągnięcia mogą się zmienić
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('✅ CANCELLED ADOPTION APPLICATION $adoptionId - Marked user and adoption cache as stale');
       } else {
         throw Exception('Nieprawidłowa odpowiedź serwera');
       }

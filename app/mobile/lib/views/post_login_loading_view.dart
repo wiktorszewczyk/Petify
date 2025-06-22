@@ -60,7 +60,8 @@ class _PostLoginLoadingViewState extends State<PostLoginLoadingView>
 
     await _preloader.preloadEssentialData();
 
-    await Future.delayed(Duration(milliseconds: 800));
+    // Skrócone delay dla lepszej responsywności
+    await Future.delayed(Duration(milliseconds: 300));
 
     _goToHome();
   }

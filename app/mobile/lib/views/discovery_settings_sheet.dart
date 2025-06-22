@@ -48,8 +48,8 @@ class _DiscoverySettingsSheetState extends State<DiscoverySettingsSheet> {
   Future<void> _saveAndClose([FilterPreferences? customPrefs]) async {
     final prefsToSave = customPrefs ?? _preferences;
 
-    CacheManager.invalidatePattern('pets_');
-    CacheManager.invalidatePattern('filter_preferences');
+    CacheManager.markStalePattern('pets_');
+    CacheManager.markStalePattern('filter_preferences');
     print('🗑️ DiscoverySettings: Cache invalidated due to filter changes');
 
     await FilterPreferencesService().saveFilterPreferences(prefsToSave);

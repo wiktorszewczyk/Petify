@@ -4,6 +4,7 @@ import '../models/basic_response.dart';
 import '../models/reservation_slot.dart';
 import 'api/initial_api.dart';
 import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
 class ReservationService with CacheableMixin {
   final _api = InitialApi().dio;
@@ -100,9 +101,14 @@ class ReservationService with CacheableMixin {
       final response = await _api.patch('/reservations/slots/$slotId/reserve');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        CacheManager.invalidatePattern('available_slots');
-        CacheManager.invalidatePattern('my_reservations');
-        CacheManager.invalidatePattern('pet_slots');
+        CacheManager.markStalePattern('available_slots');
+        CacheManager.markStalePattern('my_reservations');
+        CacheManager.markStalePattern('pet_slots');
+        CacheManager.markStalePattern('current_user'); // Odśwież statystyki w tle
+        CacheManager.markStalePattern('user_');
+        CacheManager.markStalePattern('achievements_'); // Osiągnięcia mogą się zmienić po aktywności wolontariackiej
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('✅ RESERVED SLOT $slotId - Marked reservation and user cache as stale');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -136,9 +142,14 @@ class ReservationService with CacheableMixin {
       final response = await _api.patch('/reservations/slots/$slotId/cancel');
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        CacheManager.invalidatePattern('available_slots');
-        CacheManager.invalidatePattern('my_reservations');
-        CacheManager.invalidatePattern('pet_slots');
+        CacheManager.markStalePattern('available_slots');
+        CacheManager.markStalePattern('my_reservations');
+        CacheManager.markStalePattern('pet_slots');
+        CacheManager.markStalePattern('current_user'); // Odśwież statystyki w tle
+        CacheManager.markStalePattern('user_');
+        CacheManager.markStalePattern('achievements_'); // Osiągnięcia mogą się zmienić po anulowaniu aktywności
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('✅ CANCELLED RESERVATION $slotId - Marked reservation and user cache as stale');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);

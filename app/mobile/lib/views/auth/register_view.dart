@@ -172,7 +172,19 @@ class _RegisterViewState extends State<RegisterView> {
       initialDate: DateTime(2000),
       firstDate: DateTime(1950),
       lastDate: DateTime.now().subtract(const Duration(days: 365 * 13)), // Min 13 years old
-      locale: const Locale('pl', 'PL'),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppColors.primaryColor,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() => _selectedBirthDate = picked);
@@ -290,7 +302,7 @@ class _RegisterViewState extends State<RegisterView> {
                     Text(
                       _selectedBirthDate == null
                           ? 'Data urodzenia'
-                          : '${_selectedBirthDate!.day}.${_selectedBirthDate!.month}.${_selectedBirthDate!.year}',
+                          : '${_selectedBirthDate!.day.toString().padLeft(2, '0')}.${_selectedBirthDate!.month.toString().padLeft(2, '0')}.${_selectedBirthDate!.year}',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         color: _selectedBirthDate == null ? Colors.grey : AppColors.textColor,

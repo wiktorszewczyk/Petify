@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../models/event.dart';
 import '../models/donation.dart';
 import '../services/feed_service.dart';
@@ -9,6 +13,7 @@ import '../services/payment_service.dart';
 import '../styles/colors.dart';
 import "event_details_view.dart";
 import '../services/shelter_service.dart';
+import '../services/cache/cache_manager.dart';
 
 class EventsView extends StatefulWidget {
   const EventsView({super.key});
@@ -18,7 +23,7 @@ class EventsView extends StatefulWidget {
 }
 
 class _EventsViewState extends State<EventsView> {
-  bool _isLoading = false;
+  bool _isLoading = true;
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
   Map<int, FundraiserResponse?> _eventFundraisers = {};
@@ -30,7 +35,36 @@ class _EventsViewState extends State<EventsView> {
   @override
   void initState() {
     super.initState();
-    _loadEvents();
+    _loadCachedEventsFirst();
+  }
+
+  Future<void> _loadCachedEventsFirst() async {
+    final cached = CacheManager.get<List<Event>>('incoming_events_60');
+    if (cached != null && cached.isNotEmpty) {
+      setState(() {
+        _events = cached;
+        _filterEvents();
+        _isLoading = false;
+      });
+      _refreshEventsInBackground();
+    } else {
+      await _loadEvents();
+    }
+  }
+
+  Future<void> _refreshEventsInBackground() async {
+    try {
+      await _loadEvents(showIndicator: false);
+    } catch (e) {
+      print('Background events refresh failed: $e');
+    }
+  }
+
+  Future<void> _refreshEvents() async {
+    CacheManager.markStalePattern('incoming_events_');
+    CacheManager.markStalePattern('event_');
+    CacheManager.markStalePattern('event_participants_');
+    await _loadEvents();
   }
 
   @override
@@ -63,10 +97,12 @@ class _EventsViewState extends State<EventsView> {
     return _getEndOfDay(DateTime(date.year, date.month + 1, 0));
   }
 
-  Future<void> _loadEvents() async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _loadEvents({bool showIndicator = true}) async {
+    if (showIndicator) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
       final feedService = FeedService();
@@ -109,12 +145,14 @@ class _EventsViewState extends State<EventsView> {
         _events = enriched;
         _eventFundraisers = fundraisers;
         _filterEvents();
-        _isLoading = false;
+        if (showIndicator) _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (showIndicator) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Nie udało się pobrać wydarzeń: $e')),
@@ -206,7 +244,7 @@ class _EventsViewState extends State<EventsView> {
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: RefreshIndicator(
-        onRefresh: _loadEvents,
+        onRefresh: _refreshEvents,
         color: AppColors.primaryColor,
         child: Column(
           children: [
@@ -313,22 +351,54 @@ class _EventsViewState extends State<EventsView> {
   }
 
   Widget _buildLoadingIndicator() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Ładowanie wydarzeń...',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: Colors.grey[600],
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: 4,
+        itemBuilder: (context, index) {
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-          ),
-        ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 200,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(height: 20, width: double.infinity, color: Colors.white),
+                      const SizedBox(height: 8),
+                      Container(height: 16, width: 200, color: Colors.white),
+                      const SizedBox(height: 8),
+                      Container(height: 14, width: 150, color: Colors.white),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Container(height: 14, width: 100, color: Colors.white),
+                          const SizedBox(width: 16),
+                          Container(height: 14, width: 80, color: Colors.white),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -431,7 +501,10 @@ class _EventsViewState extends State<EventsView> {
         borderRadius: BorderRadius.circular(16),
       ),
       child: InkWell(
-        onTap: () => _showEventDetails(event),
+        onTap: () {
+          HapticFeedback.lightImpact();
+          _showEventDetails(event);
+        },
         borderRadius: BorderRadius.circular(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -442,30 +515,27 @@ class _EventsViewState extends State<EventsView> {
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
-                    child: Image.network(
-                      event.imageUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: event.imageUrl,
                       fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          color: Colors.grey[300],
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          color: Colors.white,
                           child: Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                                  : null,
-                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-                            ),
+                            child: Icon(Icons.event, size: 40, color: Colors.grey[400]),
                           ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) => Container(
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
                         color: Colors.grey[300],
                         child: Center(
                           child: Icon(Icons.image_not_supported, color: Colors.grey[400]),
                         ),
                       ),
+                      fadeInDuration: const Duration(milliseconds: 300),
+                      fadeOutDuration: const Duration(milliseconds: 100),
                     ),
                   ),
                 ),
@@ -489,6 +559,7 @@ class _EventsViewState extends State<EventsView> {
                       ),
                     ),
                   ),
+                // Pokaż badge tylko jeśli wydarzenie wymaga rejestracji
                 if (event.requiresRegistration)
                   Positioned(
                     top: 12,
@@ -496,11 +567,11 @@ class _EventsViewState extends State<EventsView> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: (event.capacity != null && event.capacity! > 0) ? Colors.orange : Colors.green,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Rejestracja',
+                        (event.capacity != null && event.capacity! > 0) ? 'Rejestracja' : 'Udział',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

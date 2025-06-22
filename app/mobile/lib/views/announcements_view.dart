@@ -7,6 +7,7 @@ import '../services/feed_service.dart';
 import '../services/payment_service.dart';
 import '../styles/colors.dart';
 import 'post_details_view.dart';
+import '../services/cache/cache_manager.dart';
 
 class AnnouncementsView extends StatefulWidget {
   const AnnouncementsView({super.key});
@@ -24,10 +25,50 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
   bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
 
+  Future<void> _loadCachedPostsFirst() async {
+    final cached = CacheManager.get<List<ShelterPost>>('recent_posts_30');
+    if (cached != null && cached.isNotEmpty) {
+      final fundraisers = <int, FundraiserResponse?>{};
+      for (final post in cached) {
+        if (post.fundraisingId != null) {
+          final fr = CacheManager.get<FundraiserResponse>('fundraiser_${post.fundraisingId}');
+          if (fr != null) fundraisers[post.fundraisingId!] = fr;
+        }
+      }
+
+      setState(() {
+        _posts = cached;
+        _filteredPosts = cached;
+        _postFundraisers = fundraisers;
+        _isLoading = false;
+      });
+
+      CacheManager.markStalePattern('recent_posts_');
+      CacheManager.markStalePattern('fundraiser_');
+      _refreshPostsInBackground();
+    } else {
+      await _loadPosts();
+    }
+  }
+
+  Future<void> _refreshPostsInBackground() async {
+    try {
+      await _loadPosts(showIndicator: false);
+    } catch (e) {
+      print('Background posts refresh failed: $e');
+    }
+  }
+
+  Future<void> _refreshPosts() async {
+    CacheManager.markStalePattern('recent_posts_');
+    CacheManager.markStalePattern('fundraiser_');
+    await _loadPosts();
+  }
+
   @override
   void initState() {
     super.initState();
-    _loadPosts();
+    _loadCachedPostsFirst();
   }
 
   @override
@@ -36,10 +77,12 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
     super.dispose();
   }
 
-  Future<void> _loadPosts() async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _loadPosts({bool showIndicator = true}) async {
+    if (showIndicator) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
       final posts = await _feedService.getRecentPosts(30);
@@ -60,12 +103,14 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
         _posts = posts;
         _filteredPosts = posts;
         _postFundraisers = fundraisers;
-        _isLoading = false;
+        if (showIndicator) _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (showIndicator) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -115,7 +160,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: RefreshIndicator(
-        onRefresh: _loadPosts,
+        onRefresh: _refreshPosts,
         color: AppColors.primaryColor,
         child: Column(
           children: [
@@ -179,32 +224,38 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
 
   Widget _buildPostsList() {
     if (_filteredPosts.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.announcement_outlined, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            Text(
-              'Brak ogłoszeń',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[600],
-              ),
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.announcement_outlined, size: 64, color: Colors.grey[400]),
+                const SizedBox(height: 16),
+                Text(
+                  'Brak ogłoszeń',
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _searchController.text.isNotEmpty
+                      ? 'Zmień wyszukiwanie, aby zobaczyć więcej ogłoszeń'
+                      : 'Obecnie nie ma żadnych ogłoszeń',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: Colors.grey[500],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              _searchController.text.isNotEmpty
-                  ? 'Zmień wyszukiwanie, aby zobaczyć więcej ogłoszeń'
-                  : 'Obecnie nie ma żadnych ogłoszeń',
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: Colors.grey[500],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+          ),
         ),
       );
     }
@@ -221,6 +272,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
 
   Widget _buildPostCard(ShelterPost post) {
     final fundraiser = post.fundraisingId != null ? _postFundraisers[post.fundraisingId!] : null;
+    final hasMainImage = post.mainImageId != null;
 
     return Card(
       elevation: 2,
@@ -234,37 +286,39 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.network(
-                  post.imageUrl,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
+            // Pokaż główne zdjęcie tylko jeśli mainImageId istnieje
+            if (hasMainImage)
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(
+                    post.imageUrl,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey[300],
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                                : null,
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+                          ),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],
                       child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                              : null,
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-                        ),
+                        child: Icon(Icons.image_not_supported, color: Colors.grey[400]),
                       ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[300],
-                    child: Center(
-                      child: Icon(Icons.image_not_supported, color: Colors.grey[400]),
                     ),
                   ),
                 ),
               ),
-            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(

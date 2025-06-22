@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../styles/colors.dart';
 import '../services/volunteer_service.dart';
+import '../services/cache/cache_manager.dart';
 
 class VolunteerApplicationView extends StatefulWidget {
   const VolunteerApplicationView({super.key});
@@ -55,6 +56,10 @@ class _VolunteerApplicationViewState extends State<VolunteerApplicationView> {
         });
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
+          CacheManager.markStale('current_user');
+          CacheManager.markStalePattern('user_');
+          print('🗑️ VolunteerApplicationView: Invalidated user cache after submitting application');
+
           showDialog(
             context: context,
             barrierDismissible: false,

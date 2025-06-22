@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../models/pet.dart';
 import '../widgets/cards/pet_mini_card.dart';
 import '../styles/colors.dart';
@@ -30,7 +32,6 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
   }
 
   Future<void> _loadFavoritesFromCache() async {
-    // Spróbuj załadować z cache najpierw
     final cachedFavorites = CacheManager.get<List<Pet>>('favorites_pets');
 
     if (cachedFavorites != null && cachedFavorites.isNotEmpty) {
@@ -42,52 +43,51 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
 
       print('🚀 FavoritesView: Załadowano ${cachedFavorites.length} ulubionych z cache!');
 
-      // W tle sprawdź czy nie ma nowszych danych
       _refreshFavoritesInBackground();
       return;
     }
 
-    // Fallback - brak cache, załaduj standardowo
     print('⚠️ FavoritesView: Brak cache, ładowanie standardowe...');
     await _loadFavorites();
   }
 
-  Future<void> _loadFavorites() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+  Future<void> _loadFavorites({bool showIndicator = true}) async {
+    if (showIndicator) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
 
     try {
       final pets = await _petService.getFavoritePets();
       setState(() {
         _favoritePets = pets;
-        _isLoading = false;
+        if (showIndicator) _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _errorMessage = 'Nie udało się załadować ulubionych zwierząt. Spróbuj ponownie.';
-        _isLoading = false;
-      });
+      if (showIndicator) {
+        setState(() {
+          _errorMessage = 'Nie udało się załadować ulubionych zwierząt. Spróbuj ponownie.';
+          _isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _refreshFavoritesInBackground() async {
     try {
-      final newFavorites = await _petService.getFavoritePets();
-
-      // Sprawdź czy są różnice
-      if (_favoritePets == null ||
-          newFavorites.length != _favoritePets!.length ||
-          _favoritesChanged(newFavorites)) {
-        setState(() {
-          _favoritePets = newFavorites;
-        });
-        print('🔄 FavoritesView: Zaktualizowano dane w tle');
-      }
+      CacheManager.markStale('favorites_pets');
+      await _loadFavorites(showIndicator: false);
+      print('🔄 FavoritesView: Zaktualizowano dane w tle');
     } catch (e) {
       print('Background refresh failed: $e');
     }
+  }
+
+  Future<void> _refreshFavorites() async {
+    CacheManager.markStale('favorites_pets');
+    await _loadFavorites();
   }
 
   bool _favoritesChanged(List<Pet> newFavorites) {
@@ -109,6 +109,9 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
           _favoritePets!.removeWhere((element) => element.id == pet.id);
         });
 
+        CacheManager.markStale('favorites_pets');
+        print('🗑️ FavoritesView: Marked favorites cache stale after removing pet ${pet.id}');
+
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -122,6 +125,8 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                   setState(() {
                     _favoritePets!.add(pet);
                   });
+                  CacheManager.markStale('favorites_pets');
+                  print('🗑️ FavoritesView: Marked favorites cache stale after re-adding pet ${pet.id}');
                 }
               },
             ),
@@ -167,9 +172,7 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
             ),
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ))
+                  ? _buildSkeletonGrid()
                   : _errorMessage != null
                   ? Center(
                 child: Column(
@@ -195,46 +198,57 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
                   : _favoritePets!.isEmpty
                   ? _buildEmptyState()
                   : RefreshIndicator(
-                onRefresh: _loadFavorites,
+                onRefresh: _refreshFavorites,
                 color: AppColors.primaryColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.75,
-                    ),
-                    itemCount: _favoritePets!.length,
-                    itemBuilder: (context, index) {
-                      final pet = _favoritePets![index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PetDetailsView(pet: pet),
-                            ),
-                          );
-                        },
-                        onLongPress: () {
-                          _showRemoveDialog(pet);
-                        },
-                        child: PetMiniCard(
-                          pet: pet,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PetDetailsView(pet: pet),
+                  child: AnimationLimiter(
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.75,
+                      ),
+                      itemCount: _favoritePets!.length,
+                      itemBuilder: (context, index) {
+                        final pet = _favoritePets![index];
+                        return AnimationConfiguration.staggeredGrid(
+                          position: index,
+                          duration: const Duration(milliseconds: 375),
+                          columnCount: 2,
+                          child: ScaleAnimation(
+                            child: FadeInAnimation(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PetDetailsView(pet: pet),
+                                    ),
+                                  );
+                                },
+                                onLongPress: () {
+                                  _showRemoveDialog(pet);
+                                },
+                                child: PetMiniCard(
+                                  pet: pet,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PetDetailsView(pet: pet),
+                                      ),
+                                    );
+                                  },
+                                  onRemove: () => _removeFavorite(pet),
+                                ),
                               ),
-                            );
-                          },
-                          onRemove: () => _removeFavorite(pet),
-                        ),
-                      );
-                    },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -308,6 +322,68 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSkeletonGrid() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.75,
+          ),
+          itemCount: 6,
+          itemBuilder: (context, index) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 12,
+                            width: double.infinity,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(height: 4),
+                          Container(
+                            height: 10,
+                            width: 60,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -11,6 +11,7 @@ import '../services/location_service.dart';
 import '../services/shelter_service.dart';
 import 'api/initial_api.dart';
 import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
 class PetService with CacheableMixin {
   final _api = InitialApi().dio;
@@ -40,9 +41,9 @@ class PetService with CacheableMixin {
   }
 
   /// Pobiera zwierzęta z domyślnymi filtrami
-  Future<List<Pet>> getPetsWithDefaultFilters() async {
+  Future<List<Pet>> getPetsWithDefaultFilters({int? limit, bool forceRefresh = false}) async {
     final filterPrefs = await FilterPreferencesService().getFilterPreferences();
-    final cacheKey = generateCacheKey('pets_default', {
+    final params = {
       'vaccinated': filterPrefs.onlyVaccinated,
       'urgent': filterPrefs.onlyUrgent,
       'sterilized': filterPrefs.onlySterilized,
@@ -53,7 +54,10 @@ class PetService with CacheableMixin {
       'maxDistance': filterPrefs.maxDistance,
       'useCurrentLocation': filterPrefs.useCurrentLocation,
       'selectedCity': filterPrefs.selectedCity,
-    });
+      if (limit != null) 'limit': limit,
+    };
+
+    final cacheKey = generateCacheKey('pets_default', params);
 
     return cachedFetch(cacheKey, () async {
       final locationService = LocationService();
@@ -86,8 +90,9 @@ class PetService with CacheableMixin {
         userLat: userLat,
         userLng: userLng,
         radiusKm: filterPrefs.maxDistance,
+        limit: limit,
       );
-    }, ttl: Duration(minutes: 3));
+    }, forceRefresh: forceRefresh);
   }
 
   String? _mapAnimalTypesToBackend(Set<String> types) {
@@ -153,8 +158,10 @@ class PetService with CacheableMixin {
     if (minAge != null) queryParams['minAge'] = minAge;
     if (maxAge != null) queryParams['maxAge'] = maxAge;
     if (type != null) queryParams['type'] = type;
-    if (userLat != null) queryParams['userLat'] = userLat;
-    if (userLng != null) queryParams['userLng'] = userLng;
+    // TYMCZASOWO: Swap latitude/longitude parameters to fix distance calculation
+    // Based on user report that distances show 4548km to Polish shelters
+    if (userLat != null) queryParams['userLng'] = userLat; // Send latitude as longitude
+    if (userLng != null) queryParams['userLat'] = userLng; // Send longitude as latitude
     if (radiusKm != null) queryParams['radiusKm'] = radiusKm;
     if (cursor != null) queryParams['cursor'] = cursor;
     if (limit != null) queryParams['limit'] = limit;
@@ -164,6 +171,9 @@ class PetService with CacheableMixin {
     return cachedFetch(cacheKey, () async {
       try {
         dev.log('Making request to /pets/filter with params: $queryParams');
+        if (userLat != null && userLng != null) {
+          dev.log('⚠️ COORDINATE SWAP: Original userLat=$userLat, userLng=$userLng → Sent as userLat=$userLng, userLng=$userLat');
+        }
         final response = await _api.get('/pets/filter', queryParameters: queryParams);
         dev.log('Response status: ${response.statusCode}');
 
@@ -224,7 +234,7 @@ class PetService with CacheableMixin {
   }
 
   /// Pobiera zwierzęta na podstawie zapisanych filtrów użytkownika
-  Future<List<Pet>> getPetsWithCustomFilters(FilterPreferences filterPrefs) async {
+  Future<List<Pet>> getPetsWithCustomFilters(FilterPreferences filterPrefs, {bool forceRefresh = false}) async {
     final cacheKey = generateCacheKey('pets_custom', {
       'vaccinated': filterPrefs.onlyVaccinated,
       'urgent': filterPrefs.onlyUrgent,
@@ -270,7 +280,7 @@ class PetService with CacheableMixin {
         userLng: userLng,
         radiusKm: filterPrefs.maxDistance,
       );
-    }, ttl: Duration(minutes: 3));
+    }, ttl: Duration(minutes: 3), forceRefresh: forceRefresh);
   }
 
   Future<Pet> getPetById(int petId) async {
@@ -300,7 +310,7 @@ class PetService with CacheableMixin {
 
                 if (position != null && shelter.latitude != null && shelter.longitude != null) {
                   calculatedDistance = _calculateDistance(
-                      position.latitude, position.longitude,
+                      position.longitude, position.latitude,
                       shelter.latitude!, shelter.longitude!
                   );
                   dev.log('getPetById - Calculated distance for pet ${pet.name}: ${calculatedDistance?.toStringAsFixed(1)} km');
@@ -356,10 +366,14 @@ class PetService with CacheableMixin {
       final response = await _api.post('/pets/$petId/like');
 
       if (response.statusCode == 200) {
-        CacheManager.invalidatePattern('favorites');
-        CacheManager.invalidatePattern('supported');
-        CacheManager.invalidatePattern('pets_'); // Invaliduj wszystkie cache zwierząt!
-        dev.log('✅ LIKED PET $petId - Invalidated all pets cache. Next fetch will get fresh data from API.');
+        CacheManager.markStalePattern('favorites');
+        CacheManager.markStalePattern('supported');
+        CacheManager.markStalePattern('pets_'); // Oznacz wszystkie cache zwierząt jako nieświeże
+        CacheManager.markStalePattern('current_user'); // Oznacz użytkownika jako nieświeżego żeby odświeżyć statystyki
+        CacheManager.markStalePattern('user_');
+        CacheManager.markStalePattern('achievements_'); // Osiągnięcia mogą się zmienić po polubieniu
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('✅ LIKED PET $petId - Invalidated all pets cache and user data. Next fetch will get fresh data from API.');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -374,10 +388,14 @@ class PetService with CacheableMixin {
       final response = await _api.post('/pets/$petId/dislike');
 
       if (response.statusCode == 200) {
-        CacheManager.invalidatePattern('favorites');
-        CacheManager.invalidatePattern('supported');
-        CacheManager.invalidatePattern('pets_');
-        dev.log('Invalidated pets and favorites cache after unliking pet $petId');
+        CacheManager.markStalePattern('favorites');
+        CacheManager.markStalePattern('supported');
+        CacheManager.markStalePattern('pets_');
+        CacheManager.markStalePattern('current_user'); // Oznacz użytkownika jako nieświeżego żeby odświeżyć statystyki
+        CacheManager.markStalePattern('user_');
+        CacheManager.markStalePattern('achievements_'); // Osiągnięcia mogą się zmienić po cofnięciu polubienia
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('Marked pets, favorites and user cache as stale after unliking pet $petId');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -387,13 +405,33 @@ class PetService with CacheableMixin {
     }
   }
 
+  Future<BasicResponse> dislikePet(int petId) async {
+    try {
+      final response = await _api.post('/pets/$petId/dislike');
+
+      if (response.statusCode == 200) {
+        CacheManager.markStalePattern('pets_');
+        CacheManager.markStalePattern('current_user');
+        CacheManager.markStalePattern('user_');
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('✅ DISLIKED PET $petId - Invalidated pets cache. Pet will be removed from list.');
+      }
+
+      return BasicResponse(response.statusCode ?? 0, response.data);
+    } on DioException catch (e) {
+      dev.log('Błąd podczas pomijania zwierzęcia: ${e.message}');
+      return BasicResponse(e.response?.statusCode ?? 0, {'error': e.message});
+    }
+  }
+
   Future<BasicResponse> supportPet(int petId) async {
     try {
       final response = await _api.post('/pets/$petId/support');
 
       if (response.statusCode == 200) {
-        CacheManager.invalidatePattern('supported');
-        dev.log('Invalidated supported pets cache after supporting pet $petId');
+        CacheManager.markStalePattern('supported');
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('Marked supported pets cache as stale after supporting pet $petId');
       }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
@@ -403,7 +441,7 @@ class PetService with CacheableMixin {
     }
   }
 
-  Future<List<Pet>> getFavoritePets() async {
+  Future<List<Pet>> getFavoritePets({bool forceRefresh = false}) async {
     const cacheKey = 'favorites_pets';
 
     return cachedFetch(cacheKey, () async {
@@ -419,8 +457,8 @@ class PetService with CacheableMixin {
           try {
             final position = await LocationService().getCurrentLocation().timeout(Duration(seconds: 2));
             if (position != null) {
-              userLat = position.latitude;
-              userLng = position.longitude;
+              userLat = position.longitude;
+              userLng = position.latitude;
               dev.log('getFavoritePets - User position: lat=$userLat, lng=$userLng');
             }
           } catch (e) {
@@ -490,7 +528,7 @@ class PetService with CacheableMixin {
         dev.log('Błąd podczas pobierania polubionych zwierząt: ${e.message}');
         throw Exception('Nie udało się pobrać polubionych zwierząt: ${e.message}');
       }
-    }, ttl: Duration(minutes: 5));
+    }, ttl: Duration(minutes: 5), forceRefresh: forceRefresh);
   }
 
   Future<List<Pet>> getSupportedPets() async {
@@ -614,6 +652,17 @@ class PetService with CacheableMixin {
         'hasOtherPets': hasOtherPets,
         'description': description,
       });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Oznacz cache jako nieświeży po pomyślnym złożeniu wniosku adopcyjnego
+        CacheManager.markStalePattern('current_user');
+        CacheManager.markStalePattern('user_');
+        CacheManager.markStalePattern('my_adoption_applications');
+        CacheManager.markStalePattern('my_adoptions');
+        CacheManager.markStalePattern('achievements_');
+        CacheScheduler.forceRefreshCriticalData();
+        dev.log('✅ CREATED ADOPTION FORM for pet $petId - Marked user and adoption cache as stale');
+      }
 
       return BasicResponse(response.statusCode ?? 0, response.data);
     } on DioException catch (e) {

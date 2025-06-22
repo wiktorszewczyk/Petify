@@ -5,6 +5,7 @@ import 'dart:io';
 import '../models/user.dart';
 import '../services/user_service.dart';
 import '../styles/colors.dart ';
+import '../utils/image_utils.dart';
 
 class EditProfileView extends StatefulWidget {
   final User user;
@@ -24,10 +25,11 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   String? _profileImage;
   bool _isImageLoading = false;
-  late final bool _canEditFirstName;
-  late final bool _canEditLastName;
-  late final bool _canEditBirthDate;
-  late final bool _canEditGender;
+  // Wszystkie pola można edytować
+  final bool _canEditFirstName = true;
+  final bool _canEditLastName = true;
+  final bool _canEditBirthDate = true;
+  final bool _canEditGender = true;
 
   bool _isLoading = false;
   String? _selectedGender;
@@ -46,10 +48,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     _phoneController.text = widget.user.phoneNumber ?? '';
     _selectedGender = widget.user.gender;
     _selectedBirthDate = widget.user.birthDate;
-    _canEditFirstName = widget.user.firstName == null;
-    _canEditLastName = widget.user.lastName == null;
-    _canEditBirthDate = widget.user.birthDate == null;
-    _canEditGender = widget.user.gender == null;
+    // Wszystkie pola można edytować - usuwamy ograniczenia
     if (widget.user.hasProfileImage) {
       _loadProfileImage();
     }
@@ -122,6 +121,21 @@ class _EditProfileViewState extends State<EditProfileView> {
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
+    // Sprawdź wymagane pola: imię, data urodzenia, email lub telefon
+    if (_firstNameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Imię jest wymagane')),
+      );
+      return;
+    }
+
+    if (_selectedBirthDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Data urodzenia jest wymagana')),
+      );
+      return;
+    }
+
     if (_emailController.text.trim().isEmpty &&
         _phoneController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -139,18 +153,19 @@ class _EditProfileViewState extends State<EditProfileView> {
 
       final updateData = <String, dynamic>{};
 
-      if (_canEditFirstName) {
-        updateData['firstName'] = _firstNameController.text.trim();
-      }
-      if (_canEditLastName) {
+      // Wszystkie pola można edytować
+      updateData['firstName'] = _firstNameController.text.trim();
+
+      if (_lastNameController.text.trim().isNotEmpty) {
         updateData['lastName'] = _lastNameController.text.trim();
       }
-      if (_canEditGender && _selectedGender != null) {
+
+      if (_selectedGender != null) {
         updateData['gender'] = _selectedGender;
       }
-      if (_canEditBirthDate && _selectedBirthDate != null) {
-        updateData['birthDate'] =
-        _selectedBirthDate!.toIso8601String().split('T')[0];
+
+      if (_selectedBirthDate != null) {
+        updateData['birthDate'] = _selectedBirthDate!.toIso8601String().split('T')[0];
       }
 
       if (_emailController.text.trim().isNotEmpty) {
@@ -250,9 +265,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                       radius: 50,
                       backgroundColor: AppColors.primaryColor.withOpacity(0.1),
                       backgroundImage: _profileImage != null
-                          ? (_profileImage!.startsWith('http') || _profileImage!.startsWith('data:'))
-                          ? NetworkImage(_profileImage!) as ImageProvider
-                          : FileImage(File(_profileImage!))
+                          ? getImageProvider(
+                        _profileImage!,
+                        placeholder: const AssetImage('assets/images/default_avatar.jpg'),
+                      )
                           : null,
                       child: _profileImage == null
                           ? Icon(
@@ -296,8 +312,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 label: 'Imię',
                 icon: Icons.person_outline,
                 enabled: _canEditFirstName,
-                validator: _canEditFirstName
-                    ? (value) {
+                validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Imię jest wymagane';
                   }
@@ -305,27 +320,22 @@ class _EditProfileViewState extends State<EditProfileView> {
                     return 'Imię musi mieć co najmniej 2 znaki';
                   }
                   return null;
-                }
-                    : null,
+                },
               ),
               const SizedBox(height: 16),
 
               _buildTextField(
                 controller: _lastNameController,
-                label: 'Nazwisko',
+                label: 'Nazwisko (opcjonalne)',
                 icon: Icons.person_outline,
                 enabled: _canEditLastName,
-                validator: _canEditLastName
-                    ? (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nazwisko jest wymagane';
-                  }
-                  if (value.trim().length < 2) {
+                validator: (value) {
+                  // Nazwisko jest opcjonalne
+                  if (value != null && value.trim().isNotEmpty && value.trim().length < 2) {
                     return 'Nazwisko musi mieć co najmniej 2 znaki';
                   }
                   return null;
-                }
-                    : null,
+                },
               ),
               const SizedBox(height: 16),
 
@@ -345,7 +355,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\$').hasMatch(value)) {
+                    if (!RegExp(r"^[\w.+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$").hasMatch(value)) {
                       return 'Podaj prawidłowy adres email';
                     }
                   }
@@ -488,7 +498,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   const SizedBox(height: 2),
                   Text(
                     _selectedBirthDate != null
-                        ? '${_selectedBirthDate!.day}/${_selectedBirthDate!.month}/${_selectedBirthDate!.year}'
+                        ? '${_selectedBirthDate!.day.toString().padLeft(2, '0')}.${_selectedBirthDate!.month.toString().padLeft(2, '0')}.${_selectedBirthDate!.year}'
                         : 'Wybierz datę urodzenia',
                     style: GoogleFonts.poppins(
                       fontSize: 16,
@@ -508,19 +518,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   Widget _buildGenderField() {
-    if (!_canEditGender && _selectedGender != null) {
-      final genderLabel = _selectedGender == 'MALE'
-          ? 'Mężczyzna'
-          : _selectedGender == 'FEMALE'
-          ? 'Kobieta'
-          : 'Inne';
-      return _buildTextField(
-        controller: TextEditingController(text: genderLabel),
-        label: 'Płeć',
-        icon: Icons.person_outline,
-        enabled: false,
-      );
-    }
+    // Zawsze pozwalamy na edycję płci
 
     return Container(
       padding: const EdgeInsets.all(16),
