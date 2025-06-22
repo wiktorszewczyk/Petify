@@ -72,7 +72,7 @@ public class Pet {
     @Column(name = "is_archived")
     private boolean archived = false;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)

@@ -255,6 +255,15 @@
           height: 20px;
         }
 
+        .delete-button {
+          background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3) !important;
+        }
+
+        .delete-button:hover {
+          box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4) !important;
+        }
+
         .loading-message {
           text-align: center;
           padding: 40px;

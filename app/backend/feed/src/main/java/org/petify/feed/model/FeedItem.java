@@ -44,7 +44,7 @@ public abstract class FeedItem {
     @Column(name = "main_image_id")
     private Long mainImageId;
 
-    @Column(name = "long_description")
+    @Column(name = "long_description", columnDefinition = "TEXT")
     private String longDescription;
 
     @Column(name = "fundraising_id")
