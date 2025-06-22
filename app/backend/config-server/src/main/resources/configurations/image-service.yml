@@ -1,11 +1,12 @@
 server:
   port: 8060
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5433/petify
-    username: admin
-    password: admin
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5433}/${PGDATABASE:petify}
+    username: ${PGUSER:admin}
+    password: ${PGPASSWORD:admin}
     hikari:
       auto-commit: false
   jpa:
@@ -20,4 +21,18 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9000/.well-known/jwks.json
+          jwk-set-uri: http://${AUTH_SERVICE_HOST:localhost}:${AUTH_SERVICE_PORT:9000}/.well-known/jwks.json
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.uuid}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
