@@ -10,8 +10,6 @@ x-common-variables: &common-variables
   EUREKA_PORT: 8761
   EUREKA_HOST: discovery
 
-  GATEWAY_URL: http://gateway:8222
-
 services:
   # External services
   
@@ -195,7 +193,7 @@ services:
       PAYU_POS_ID: ${PAYU_POS_ID}
       PAYU_MD5_KEY: ${PAYU_MD5_KEY}
       PAYU_API_URL: ${PAYU_API_URL}
-      WEBHOOK_BASE_URL: http://gateway:8222
+      WEBHOOK_BASE_URL: ${PAYU_WEBHOOK_BASE_URL}
     depends_on:
       discovery:
         condition: service_healthy
