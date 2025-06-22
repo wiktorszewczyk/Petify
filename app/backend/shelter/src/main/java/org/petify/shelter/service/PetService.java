@@ -83,7 +83,7 @@ public class PetService {
         Specification<Pet> spec = buildPetSpecification(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
                 type, favoritePetIds, cursor);
 
-        Pageable pageable = PageRequest.of(0, limit, Sort.by("id").ascending());
+        Pageable pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.by("RANDOM()")));
         Page<Pet> page = petRepository.findAll(spec, pageable);
 
         List<PetResponseWithImages> results = filterAndMapPets(page.getContent(), userLat, userLng, radiusKm);

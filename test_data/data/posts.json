@@ -1,23 +1,5 @@
 [
     {
-        "title": "Reksio potrzebuje pilnej operacji!",
-        "shortDescription": "Reksio to 5-letni pies, który potrzebuje pilnej operacji. Wesprzyj naszą zbiórkę!",
-        "mainImageId": 4,
-        "longDescription": "Fundusze ze zbiórki zostaną przeznaczone na operację Reksia, specjalistyczne leki oraz profesjonalną opeiekę pooperacyjną.",
-        "fundraisingId": 1,
-        "imageIds": null,
-        "localImageIds": [3]
-    },
-    {
-        "title": "Kefir, Elza, Anna i Denzel pilnie szukają domów!",
-        "shortDescription": "Więcej informacji o zwierzętach znajdziesz na stronie schroniska.",
-        "mainImageId": null,
-        "longDescription": "",
-        "fundraisingId": null,
-        "imageIds": [5, 6, 7, 8],
-        "localImageIds": [4, 5, 6, 7]
-    },
-    {
         "title": "Podziękowania",
         "shortDescription": "Podziękowania dla darczyńców i wolontariuszy od Zarządcy Schroniska.",
         "mainImageId": null,
@@ -34,5 +16,23 @@
         "fundraisingId": null,
         "imageIds": [10, 11],
         "localImageIds": [8, 9, 10]
+    },
+    {
+        "title": "Kefir, Elza, Anna i Denzel pilnie szukają domów!",
+        "shortDescription": "Więcej informacji o zwierzętach znajdziesz na stronie schroniska.",
+        "mainImageId": null,
+        "longDescription": "",
+        "fundraisingId": null,
+        "imageIds": [5, 6, 7, 8],
+        "localImageIds": [4, 5, 6, 7]
+    },
+    {
+        "title": "Reksio potrzebuje pilnej operacji!",
+        "shortDescription": "Reksio to 5-letni pies, który potrzebuje pilnej operacji. Wesprzyj naszą zbiórkę!",
+        "mainImageId": 4,
+        "longDescription": "Fundusze ze zbiórki zostaną przeznaczone na operację Reksia, specjalistyczne leki oraz profesjonalną opeiekę pooperacyjną.",
+        "fundraisingId": 1,
+        "imageIds": null,
+        "localImageIds": [3]
     }
 ]
