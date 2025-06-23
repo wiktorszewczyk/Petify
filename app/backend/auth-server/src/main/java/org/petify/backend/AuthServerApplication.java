@@ -60,10 +60,9 @@ public class AuthServerApplication {
                 adminRoles.add(userRole);
 
                 ApplicationUser admin = new ApplicationUser();
-                admin.setUsername(adminProperties.username());
-                admin.setPassword(passwordEncoder.encode(adminProperties.password()));
-                admin.setEmail(adminProperties.email());
-
+                admin.setUsername("admin");
+                admin.setPassword(passwordEncoder.encode("admin"));
+                admin.setEmail("admin@petify.org");
                 admin.setFirstName("Petify");
                 admin.setLastName("Administrator");
                 admin.setBirthDate(LocalDate.of(1980, 1, 1));
