@@ -52,7 +52,7 @@ public class PaymentConfiguration {
         public static class Analytics {
             private boolean enabled = true;
             private int retentionDays = 365;
-            private String aggregationSchedule = "0 0 1 * * ?"; // 1 AM daily
+            private String aggregationSchedule = "0 0 1 * * ?";
         }
     }
 }

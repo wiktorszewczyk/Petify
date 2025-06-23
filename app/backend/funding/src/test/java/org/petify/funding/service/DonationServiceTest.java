@@ -111,7 +111,7 @@ class DonationServiceTest {
                 .thenAnswer(inv -> {
                     var donation = (org.petify.funding.model.Donation) inv.getArgument(0);
                     donation.setId(11L);
-                    donation.setDonationType(DonationType.MONEY); // mimic JPA @PrePersist
+                    donation.setDonationType(DonationType.MONEY);
                     return donation;
                 });
 

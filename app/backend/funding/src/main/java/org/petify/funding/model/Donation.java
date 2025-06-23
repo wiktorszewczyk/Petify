@@ -178,10 +178,6 @@ public abstract class Donation {
         return status == DonationStatus.FAILED;
     }
 
-    public boolean isRefunded() {
-        return status == DonationStatus.REFUNDED;
-    }
-
     public boolean hasPendingPayments() {
         if (payments == null) {
             return false;
@@ -254,9 +250,5 @@ public abstract class Donation {
 
     public boolean isDonorUsernameEmail() {
         return donorUsername != null && donorUsername.contains("@");
-    }
-
-    public boolean isDonorUsernamePhone() {
-        return donorUsername != null && donorUsername.matches("^\\+?[0-9]{9,15}$");
     }
 }

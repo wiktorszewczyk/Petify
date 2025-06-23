@@ -112,9 +112,6 @@ public class Payment {
         calculateFeeAndNetAmount();
     }
 
-    /**
-     * Oblicza opłaty i kwotę netto na podstawie providera
-     */
     private void calculateFeeAndNetAmount() {
         if (amount != null && provider != null && currency != null) {
             feeAmount = calculateProviderFee();
@@ -122,9 +119,6 @@ public class Payment {
         }
     }
 
-    /**
-     * Oblicza opłatę w zależności od providera
-     */
     private BigDecimal calculateProviderFee() {
         if (amount == null) {
             return BigDecimal.ZERO;
@@ -146,36 +140,7 @@ public class Payment {
         };
     }
 
-    public boolean isActive() {
-        return status == PaymentStatus.PENDING || status == PaymentStatus.PROCESSING;
-    }
-
-    public boolean isSuccessful() {
-        return status == PaymentStatus.SUCCEEDED;
-    }
-
     public boolean isFailed() {
         return status == PaymentStatus.FAILED || status == PaymentStatus.CANCELLED;
-    }
-
-    public boolean canBeCancelled() {
-        return status == PaymentStatus.PENDING || status == PaymentStatus.PROCESSING;
-    }
-
-    public boolean canBeRefunded() {
-        return status == PaymentStatus.SUCCEEDED;
-    }
-
-    public boolean isExpired() {
-        return expiresAt != null && Instant.now().isAfter(expiresAt);
-    }
-
-    public BigDecimal getAmountInPln() {
-        if (currency == Currency.PLN) {
-            return amount;
-        }
-        // Tymczasowo zwracamy oryginalną kwotę
-        // W przyszłości można dodać przeliczanie po kursie
-        return amount;
     }
 }
