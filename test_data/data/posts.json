@@ -1,0 +1,38 @@
+[
+    {
+        "title": "Podziękowania",
+        "shortDescription": "Podziękowania dla darczyńców i wolontariuszy od Zarządcy Schroniska.",
+        "mainImageId": null,
+        "longDescription": "Chcielibyśmy serdecznie podziękować wszystkim darczyńcom, którzy wsparli nasze schronisko w ostatnim czasie.\nDzięki Wam możemy zapewnić lepsze warunki naszym podopiecznym.\nPonadto chcielibyśmy wyróżnić naszych niezastąpionych wolontariuszy, którzy swoją ciężką pracą przyczyniają się do poprawy życia zwierząt w naszym schronisku.",
+        "fundraisingId": null,
+        "imageIds": null,
+        "localImageIds": []
+    },
+    {
+        "title": "Znaleziono czarnego kota z obrożą!",
+        "shortDescription": "Czarny kot z obrożą został znaleziony w okolicach ul. Pięknej 12. Prosimy o kontakt właściciela lub osoby, które mogą znać jego właściciela.",
+        "mainImageId": 4,
+        "longDescription": null,
+        "fundraisingId": null,
+        "imageIds": [5, 6],
+        "localImageIds": [3, 4, 5]
+    },
+    {
+        "title": "Kefir, Elza, Anna i Denzel pilnie szukają domów!",
+        "shortDescription": "Więcej informacji o zwierzętach znajdziesz na stronie schroniska.",
+        "mainImageId": null,
+        "longDescription": "",
+        "fundraisingId": null,
+        "imageIds": [7, 8, 9, 10],
+        "localImageIds": [6, 7, 8, 9]
+    },
+    {
+        "title": "Reksio potrzebuje pilnej operacji!",
+        "shortDescription": "Reksio to 5-letni pies, który potrzebuje pilnej operacji. Wesprzyj naszą zbiórkę!",
+        "mainImageId": 11,
+        "longDescription": "Fundusze ze zbiórki zostaną przeznaczone na operację Reksia, specjalistyczne leki oraz profesjonalną opeiekę pooperacyjną.",
+        "fundraisingId": 1,
+        "imageIds": null,
+        "localImageIds": [10]
+    }
+]

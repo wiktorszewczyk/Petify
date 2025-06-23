@@ -1,10 +1,13 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mobile/views/edit_profile_view.dart';
+import 'package:mobile/views/volunteer_application_view.dart';
+import 'package:shimmer/shimmer.dart';
 import '../models/user.dart';
 import '../models/achievement.dart';
 import '../services/user_service.dart';
 import '../services/achievement_service.dart';
+import '../services/cache/cache_manager.dart';
 import '../styles/colors.dart';
 
 import '../widgets/profile/profile_header.dart';
@@ -12,14 +15,8 @@ import '../widgets/profile/achievement_progress.dart';
 import '../widgets/profile/quick_stats.dart';
 import '../widgets/profile/achievements.dart';
 import '../widgets/profile/active_achievements.dart';
-import '../widgets/profile/activity_tab.dart';
-import '../widgets/profile/supported_pets_tab.dart';
-import '../widgets/profile/donations_tab.dart';
-import '../widgets/profile/notifications_sheet.dart';
-import '../widgets/profile/volutneer_status_card.dart';
+import '../widgets/profile/volunteer_status_card.dart';
 import 'auth/welcome_view.dart';
-
-// import 'edit_profile_view.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -28,10 +25,11 @@ class ProfileView extends StatefulWidget {
   State<ProfileView> createState() => _ProfileViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStateMixin {
+class _ProfileViewState extends State<ProfileView>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late TabController _tabController;
   User? _user;
-  List<Achievement> _achievements = [];
+  List<Achievement> _recentAchievements = [];
   bool _isLoading = true;
   bool _isError = false;
   late final ScrollController _scrollCtrl = ScrollController();
@@ -41,51 +39,111 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-
     _scrollCtrl.addListener(() {
       final shouldShow = _scrollCtrl.offset > 300;
       if (shouldShow != _showToTop) {
         setState(() => _showToTop = shouldShow);
       }
     });
-
-    _loadUserProfile();
+    WidgetsBinding.instance.addObserver(this);
+    _loadCachedProfileFirst();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollCtrl.dispose();
     _tabController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadUserProfile() async {
-    setState(() {
-      _isLoading = true;
-      _isError = false;
-    });
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      final needsRefresh = CacheManager.isStale('user_data') ||
+          CacheManager.get<User>('user_data') == null;
+      if (needsRefresh && mounted) {
+        print('📱 ProfileView: App resumed, refreshing user data');
+        _loadUserProfile(showIndicator: false);
+      }
+    }
+  }
+
+  Future<void> _loadCachedProfileFirst() async {
+    final cachedUser = CacheManager.get<User>('current_user');
+    final cachedAchievements =
+    CacheManager.get<List<Achievement>>('user_achievements');
+
+    if (cachedUser != null) {
+      setState(() {
+        _user = cachedUser;
+        _recentAchievements = (cachedAchievements ?? [])
+            .where((a) => a.isUnlocked)
+            .toList()
+          ..sort((a, b) => b.dateAchieved!.compareTo(a.dateAchieved!));
+        if (_recentAchievements.length > 3) {
+          _recentAchievements = _recentAchievements.take(3).toList();
+        }
+        _isLoading = false;
+        _isError = false;
+      });
+
+      _refreshProfileInBackground();
+    } else {
+      await _loadUserProfile();
+    }
+  }
+
+  Future<void> _refreshProfileInBackground() async {
+    try {
+      await _loadUserProfile(showIndicator: false);
+    } catch (e) {
+      print('Background profile refresh failed: $e');
+    }
+  }
+
+  Future<void> _loadUserProfile({bool showIndicator = true}) async {
+    if (showIndicator) {
+      setState(() {
+        _isLoading = true;
+        _isError = false;
+      });
+    }
 
     try {
-      final userService = UserService();
-      final achievementService = AchievementService();
+      CacheManager.markStalePattern('user_');
+      CacheManager.markStalePattern('current_user');
+      CacheManager.markStalePattern('achievements_');
+      CacheManager.markStalePattern('favorites');
+      CacheManager.markStalePattern('supported');
 
-      final userData = await userService.getCurrentUser();
-      final achievements = await achievementService.getUserAchievements();
+      print('🔄 ProfileView: Odświeżanie danych profilu i oznaczanie cache jako nieświeże...');
 
-      if (mounted) {
-        setState(() {
-          _user = userData;
-          _achievements = achievements.take(3).toList();
-          _isLoading = false;
-        });
-      }
+      final userData = await UserService().getCurrentUser();
+      final allAchievements =
+      await AchievementService().getUserAchievements();
+
+      if (!mounted) return;
+      setState(() {
+        _user = userData;
+        _recentAchievements = allAchievements
+            .where((a) => a.isUnlocked)
+            .toList()
+          ..sort((a, b) => b.dateAchieved!.compareTo(a.dateAchieved!));
+        _recentAchievements = _recentAchievements.take(3).toList();
+        if (showIndicator) _isLoading = false;
+      });
+
+      print('✅ ProfileView: Profil odświeżony pomyślnie');
     } catch (e) {
-      if (mounted) {
+      print('❌ ProfileView: Błąd podczas odświeżania profilu: $e');
+      if (!mounted) return;
+      if (showIndicator) {
         setState(() {
           _isLoading = false;
           _isError = true;
         });
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Nie udało się załadować profilu: $e')),
         );
@@ -94,21 +152,79 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
   }
 
   void _handleVolunteerSignup() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Wkrótce dostępne: Formularz zapisu dla wolontariuszy')),
-    );
-    // W przyszłości można tutaj dodać nawigację do formularza
-    // Navigator.push(context, MaterialPageRoute(builder: (context) => VolunteerSignupForm()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const VolunteerApplicationView(),
+      ),
+    ).then((_) {
+      _loadUserProfile();
+    });
   }
 
   Future<void> _onLogout() async {
     await UserService().logout();
-
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const WelcomeView()),
           (route) => false,
     );
+  }
+
+  Future<void> _navigateToEditProfile() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfileView(user: _user!),
+      ),
+    );
+
+    if (result == true) {
+      _loadUserProfile();
+    }
+  }
+
+  Future<void> _confirmDeactivate() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Dezaktywacja konta'),
+        content: const Text('Czy na pewno chcesz dezaktywować swoje konto?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Anuluj'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Tak'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      final resp = await UserService().deactivateAccount();
+      if (!mounted) return;
+      if (resp.statusCode == 200) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const WelcomeView()),
+              (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Błąd: ${resp.data}')),
+        );
+      }
+    }
+  }
+
+  bool _isVolunteer() {
+    return _user?.volunteerStatus == 'ACTIVE';
+  }
+
+  bool _shouldShowVolunteerApplicationButton() {
+    return _user?.volunteerStatus == null || _user?.volunteerStatus == 'NONE';
   }
 
   @override
@@ -138,24 +254,72 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
   }
 
   Widget _buildLoadingView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(
-            color: AppColors.primaryColor,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Wczytywanie profilu...',
-            style: TextStyle(
-              color: Colors.grey[700],
-              fontSize: 16,
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  const CircleAvatar(radius: 40, backgroundColor: Colors.white),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(height: 20, width: double.infinity, color: Colors.white),
+                        const SizedBox(height: 8),
+                        Container(height: 16, width: 200, color: Colors.white),
+                        const SizedBox(height: 8),
+                        Container(height: 14, width: 120, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              height: 140,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...List.generate(2, (index) => Container(
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            )),
+          ],
+        ),
       ),
-    ).animate().fade(duration: 300.ms);
+    );
   }
 
   Widget _buildErrorView() {
@@ -163,26 +327,17 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            color: Colors.red[400],
-            size: 60,
-          ),
+          Icon(Icons.error_outline, color: Colors.red[400], size: 60),
           const SizedBox(height: 16),
           const Text(
             'Nie udało się załadować profilu',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
             'Sprawdź połączenie z internetem i spróbuj ponownie',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey,
-            ),
+            style: TextStyle(color: Colors.grey),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
@@ -190,13 +345,10 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+                  borderRadius: BorderRadius.circular(12)),
             ),
             child: const Text('Spróbuj ponownie'),
           ),
@@ -206,35 +358,135 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
   }
 
   Widget _buildProfileContent() {
-    if (_user == null) {
-      return _buildLoadingView();
-    }
+    final user = _user!;
+    return RefreshIndicator(
+      onRefresh: _loadUserProfile,
+      color: AppColors.primaryColor,
+      child: CustomScrollView(
+        controller: _scrollCtrl,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          _buildAppBar(),
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ProfileHeader(user: user),
 
-    return CustomScrollView(
-      controller: _scrollCtrl,
-      slivers: [
-        _buildAppBar(),
-        SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+                VolunteerStatusCard(
+                  user: user,
+                  onVolunteerSignup: _handleVolunteerSignup,
+                ),
+
+                if (_shouldShowVolunteerApplicationButton())
+                  _buildVolunteerApplicationCard(),
+
+                AchievementProgress(
+                  level: user.level,
+                  xpPoints: user.xpPoints,
+                  xpToNextLevel: user.xpToNextLevel,
+                ),
+                QuickStats(user: user),
+                Achievements(achievements: _recentAchievements),
+                ActiveAchievements(user: user),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: TextButton(
+                    onPressed: _confirmDeactivate,
+                    child: Text(
+                      'Dezaktywuj konto',
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVolunteerApplicationCard() {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.blue.shade400,
+            Colors.blue.shade600,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              ProfileHeader(user: _user!),
-              VolunteerStatusCard(
-                user: _user!,
-                onVolunteerSignup: _handleVolunteerSignup,
+              Icon(
+                Icons.volunteer_activism,
+                color: Colors.white,
+                size: 32,
               ),
-              AchievementProgress(user: _user!),
-              QuickStats(user: _user!),
-              Achievements(
-                achievements: _achievements,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Zostań wolontariuszem',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              ActiveAchievements(),
-              _buildTabBar(),
             ],
           ),
-        ),
-        _buildTabContent(),
-      ],
+          const SizedBox(height: 12),
+          Text(
+            'Pomóż zwierzętom w schroniskach poprzez spacery i opiekę. Złóż wniosek o zostanie wolontariuszem!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _handleVolunteerSignup,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.blue.shade600,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Złóż wniosek',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 300.ms).slideY(
+      begin: 0.2,
+      end: 0,
+      duration: 300.ms,
     );
   }
 
@@ -250,21 +502,13 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
         title: const Text(
           'Twój profil',
           style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
       actions: [
         IconButton(
           icon: const Icon(Icons.edit, color: Colors.black),
-          onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const EditProfileView()),
-            // );
-          },
+          onPressed: _navigateToEditProfile,
           tooltip: 'Edytuj profil',
         ),
         IconButton(
@@ -274,59 +518,6 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
         ),
         const SizedBox(width: 8),
       ],
-    );
-  }
-
-  Widget _buildTabBar() {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade300,
-            width: 1,
-          ),
-        ),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        labelColor: AppColors.primaryColor,
-        unselectedLabelColor: Colors.grey,
-        indicatorColor: AppColors.primaryColor,
-        indicatorWeight: 3,
-        labelStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-        tabs: const [
-          Tab(text: 'Aktywność'),
-          Tab(text: 'Wsparcia'),
-          Tab(text: 'Wpłaty'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTabContent() {
-    if (_user == null) return const SliverToBoxAdapter(child: SizedBox.shrink());
-
-    final maxHeight = math.max(
-      320.0,
-      MediaQuery.of(context).size.height * .66,
-    );
-
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        height: maxHeight,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            ActivityTab(user: _user!),
-            SupportedPetsTab(user: _user!),
-            DonationsTab(user: _user!),
-          ],
-        ),
-      ),
     );
   }
 }

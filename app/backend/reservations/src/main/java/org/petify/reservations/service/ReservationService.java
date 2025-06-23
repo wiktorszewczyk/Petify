@@ -84,6 +84,8 @@ public class ReservationService {
         ReservationSlot slot = repo.findById(slotId)
                 .orElseThrow(() -> new SlotNotFoundException("Slot with ID " + slotId + " not found"));
 
+        validatePetNotArchived(slot.getPetId());
+
         if (slot.getStatus() != ReservationStatus.AVAILABLE) {
             throw new SlotNotAvailableException("Slot is not available for reservation");
         }
@@ -98,6 +100,14 @@ public class ReservationService {
     public List<SlotResponse> getAllSlots() {
         return repo.findAll()
                 .stream()
+                .filter(slot -> {
+                    try {
+                        return !petClient.isPetArchived(slot.getPetId());
+                    } catch (Exception e) {
+                        log.warn("Could not check archive status for pet {}. Including slot.", slot.getPetId());
+                        return true;
+                    }
+                })
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -106,6 +116,14 @@ public class ReservationService {
         return repo.findAll()
                 .stream()
                 .filter(slot -> slot.getStatus() == ReservationStatus.AVAILABLE)
+                .filter(slot -> {
+                    try {
+                        return !petClient.isPetArchived(slot.getPetId());
+                    } catch (Exception e) {
+                        log.warn("Could not check archive status for pet {}. Including slot.", slot.getPetId());
+                        return true;
+                    }
+                })
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -146,6 +164,15 @@ public class ReservationService {
 
     public List<SlotResponse> getSlotsByPetId(Long petId) {
         validatePetId(petId);
+
+        try {
+            boolean isArchived = petClient.isPetArchived(petId);
+            if (isArchived) {
+                return List.of();
+            }
+        } catch (Exception e) {
+            log.warn("Could not check archive status for pet {}. Returning slots anyway.", petId);
+        }
 
         return repo.findByPetId(petId)
                 .stream()

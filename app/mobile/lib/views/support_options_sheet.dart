@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:confetti/confetti.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import '../../styles/colors.dart';
-import '../../models/pet_model.dart';
+import '../../models/pet.dart';
 import '../../models/donation.dart';
 import '../../services/donation_service.dart';
+import '../../services/pet_service.dart';
+import 'payment_view.dart';
 
 class SupportOptionsSheet extends StatefulWidget {
-  final PetModel pet;
+  final Pet pet;
 
   const SupportOptionsSheet({
     Key? key,
     required this.pet,
   }) : super(key: key);
 
-  static Future<void> show(BuildContext context, PetModel pet) {
+  static Future<void> show(BuildContext context, Pet pet) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -33,11 +37,19 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
   MaterialDonationItem? _selectedItem;
   int _quantity = 1;
   bool _isLoading = true;
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
     _loadItems();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadItems() async {
@@ -68,7 +80,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
   void _selectItem(MaterialDonationItem item) {
     setState(() {
       _selectedItem = item;
-      _quantity = 1; // Reset ilości przy zmianie przedmiotu
+      _quantity = 1;
     });
   }
 
@@ -94,34 +106,41 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
       return;
     }
 
-    // Tutaj będzie później nawigacja do ekranu płatności
-    // Na razie tylko symulacja
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final donation = await _donationService.addMaterialDonation(
-        shelterName: widget.pet.shelterName,
-        petId: widget.pet.id,
-        item: _selectedItem!,
-        quantity: _quantity,
-        message: 'Wsparcie dla ${widget.pet.name}',
+      final result = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentView(
+            shelterId: widget.pet.shelterId,
+            petId: widget.pet.id,
+            materialItem: _selectedItem!,
+            quantity: _quantity,
+            title: 'Wspieraj: ${widget.pet.name}',
+            description: 'Zakup przedmiotu dla zwierzaka',
+            initialAmount: _selectedItem!.price * _quantity,
+          ),
+        ),
       );
 
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
+        if (result == true) {
+          // Uruchom konfetti przy sukcesie!
+          _confettiController.play();
+          // Odczekaj chwilę żeby konfetti było widoczne przed zamknięciem
+          await Future.delayed(const Duration(milliseconds: 300));
 
-        // Pokazujemy potwierdzenie i zamykamy sheet
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Dziękujemy za wsparcie ${widget.pet.name}!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.of(context).pop();
+          Navigator.of(context).pop();
+
+          // Pokaż dialog podziękowania z opcją dodania do polubionych
+          _showThankYouDialog();
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -137,48 +156,71 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHeader(),
-          if (_isLoading)
-            const Padding(
-              padding: EdgeInsets.all(32.0),
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-              ),
-            )
-          else
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildPetDetails(),
-                    _buildItemsList(),
-                    if (_selectedItem != null) _buildQuantitySelector(),
-                    _buildActionButtons(),
-                    _buildDisclaimerText(),
-                    SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 16),
-                  ],
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.85,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHeader(),
+              if (_isLoading)
+                const Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+                  ),
+                )
+              else
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildPetDetails(),
+                        _buildItemsList(),
+                        if (_selectedItem != null) _buildQuantitySelector(),
+                        _buildActionButtons(),
+                        _buildDisclaimerText(),
+                        SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 16),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-        ],
-      ),
-    ).animate().slideY(
-      begin: 1,
-      end: 0,
-      duration: 400.ms,
-      curve: Curves.easeOutQuart,
+            ],
+          ),
+        ).animate().slideY(
+          begin: 1,
+          end: 0,
+          duration: 400.ms,
+          curve: Curves.easeOutQuart,
+        ),
+        // Konfetti overlay - pozycjonowane względem kontenera
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            shouldLoop: false,
+            colors: const [
+              Colors.green,
+              Colors.blue,
+              Colors.orange,
+              Colors.purple,
+              Colors.red,
+              Colors.yellow,
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -236,7 +278,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: _getImageProvider(widget.pet.imageUrl),
+                image: _getImageProvider(widget.pet.imageUrlSafe),
                 fit: BoxFit.cover,
               ),
               border: Border.all(color: AppColors.primaryColor, width: 2),
@@ -255,7 +297,7 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
                   ),
                 ),
                 Text(
-                  widget.pet.shelterName,
+                  widget.pet.shelterName.toString(),
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.grey[600],
@@ -481,5 +523,102 @@ class _SupportOptionsSheetState extends State<SupportOptionsSheet> {
         textAlign: TextAlign.center,
       ),
     );
+  }
+
+  void _showThankYouDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.favorite,
+                color: Colors.red,
+                size: 60,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Dziękujemy za wsparcie!',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Twoja dobroć sprawia, że ${widget.pet.name} ma większe szanse na znalezienie domu!',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Dziękujemy za wsparcie ${widget.pet.name}!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+              child: Text(
+                'OK',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      // Po zamknięciu dialogu wywołujemy supportPet i likePet
+      _handleSupportSuccess();
+    });
+  }
+
+  Future<void> _handleSupportSuccess() async {
+    final petService = PetService();
+
+    try {
+      await petService.supportPet(widget.pet.id);
+      print('✅ Pomyślnie wsparł pet ${widget.pet.id}');
+
+      await petService.likePet(widget.pet.id);
+      print('✅ Automatycznie polubiono pet ${widget.pet.id} po wsparciu');
+
+      if (context.mounted) {
+        Navigator.of(context).pop(true);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.favorite, color: Colors.white),
+                const SizedBox(width: 8),
+                Text('${widget.pet.name} dodany do polubionych!'),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      print('❌ Błąd podczas supportPet/likePet: $e');
+    }
   }
 }

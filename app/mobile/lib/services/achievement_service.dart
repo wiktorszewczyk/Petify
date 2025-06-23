@@ -1,147 +1,78 @@
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../models/achievement.dart';
+import '../models/basic_response.dart';
+import '../models/level_info.dart';
+import 'api/initial_api.dart';
+import 'token_repository.dart';
+import 'cache/cache_manager.dart';
+import 'cache/cache_scheduler.dart';
 
-class AchievementService {
-  // Symulacja pobierania osiągnięć z API/bazy danych
+class AchievementService with CacheableMixin {
+  final _api = InitialApi().dio;
+  static AchievementService? _instance;
+  factory AchievementService() => _instance ??= AchievementService._();
+  AchievementService._();
+
+  /// Pobiera listę wszystkich osiągnięć użytkownika
   Future<List<Achievement>> getUserAchievements() async {
-    // Symulacja czasu ładowania z serwera
-    await Future.delayed(const Duration(milliseconds: 800));
+    const cacheKey = 'user_achievements';
 
-    return [
-      Achievement(
-        id: 'achievement_1',
-        title: 'Pierwszy wpis',
-        description: 'Utworzyłeś swój pierwszy wpis na platformie!',
-        icon: Icons.article_outlined,
-        dateAchieved: DateTime.now().subtract(const Duration(days: 2)),
-        experiencePoints: 50,
-        iconColor: Colors.blue,
-        backgroundColor: Colors.blue.shade100,
-        category: 'Podstawowe',
-      ),
-      Achievement(
-        id: 'achievement_2',
-        title: 'Pomocna dłoń',
-        description: 'Wspierasz swoje pierwsze schronisko!',
-        icon: Icons.volunteer_activism,
-        dateAchieved: DateTime.now().subtract(const Duration(days: 5)),
-        experiencePoints: 100,
-        iconColor: Colors.green,
-        backgroundColor: Colors.green.shade100,
-        category: 'Wsparcie',
-      ),
-      Achievement(
-        id: 'achievement_3',
-        title: 'Szczodry darczyńca',
-        description: 'Przekazałeś swoją pierwszą darowiznę!',
-        icon: Icons.monetization_on,
-        dateAchieved: DateTime.now().subtract(const Duration(days: 10)),
-        experiencePoints: 150,
-        iconColor: Colors.amber,
-        backgroundColor: Colors.amber.shade100,
-        category: 'Darowizny',
-      ),
-      Achievement.locked(
-        id: 'achievement_4',
-        title: 'Społeczna aktywność',
-        description: 'Skontaktuj się z 5 różnymi schroniskami',
-        icon: Icons.people_outlined,
-        experiencePoints: 200,
-        iconColor: Colors.purple,
-        backgroundColor: Colors.purple.shade100,
-        category: 'Społeczność',
-        progressCurrent: 2,
-        progressTotal: 5,
-      ),
-      Achievement.locked(
-        id: 'achievement_5',
-        title: 'Regularny darczyńca',
-        description: 'Dokonaj wpłat przez 3 kolejne miesiące',
-        icon: Icons.calendar_month,
-        experiencePoints: 300,
-        iconColor: Colors.orange,
-        backgroundColor: Colors.orange.shade100,
-        category: 'Darowizny',
-        progressCurrent: 1,
-        progressTotal: 3,
-      ),
-    ];
+    return cachedFetch(cacheKey, () async {
+      try {
+        final resp = await _api.get('/user/achievements/');
+        if (resp.statusCode == 200 && resp.data is List) {
+          return (resp.data as List)
+              .cast<Map<String, dynamic>>()
+              .map((j) => Achievement.fromJson(j))
+              .toList();
+        }
+        throw Exception('Nieoczekiwana odpowiedź serwera');
+      } on DioException catch (e) {
+        throw Exception('Błąd podczas pobierania osiągnięć: ${e.message}');
+      }
+    }, ttl: Duration(minutes: 10));
   }
 
-  // Pobranie osiągnięć według kategorii
-  Future<List<Achievement>> getAchievementsByCategory(String category) async {
-    final allAchievements = await getUserAchievements();
-    return allAchievements.where((a) => a.category == category).toList();
+  /// Pobiera informacje o poziomie, punktach XP i statystykach
+  Future<LevelInfo> getUserLevelInfo() async {
+    const cacheKey = 'user_level_info';
+
+    return cachedFetch(cacheKey, () async {
+      try {
+        final resp = await _api.get('/user/achievements/level');
+        if (resp.statusCode == 200 && resp.data is Map<String, dynamic>) {
+          return LevelInfo.fromJson(resp.data as Map<String, dynamic>);
+        }
+        throw Exception('Nieoczekiwana odpowiedź serwera');
+      } on DioException catch (e) {
+        throw Exception('Błąd podczas pobierania informacji o poziomie: ${e.message}');
+      }
+    }, ttl: Duration(minutes: 15)); // Dłuższy TTL dla poziomu
   }
 
-  // Pobranie najnowszych osiągnięć
-  Future<List<Achievement>> getRecentAchievements({int limit = 3}) async {
-    final allAchievements = await getUserAchievements();
-
-    // Sortowanie po dacie zdobycia - tylko odblokowane osiągnięcia
-    final unlockedAchievements = allAchievements
-        .where((a) => a.isUnlocked)
-        .toList()
-      ..sort((a, b) => b.dateAchieved.compareTo(a.dateAchieved));
-
-    return unlockedAchievements.take(limit).toList();
-  }
-
-  // Odblokowanie nowego osiągnięcia
-  Future<Achievement> unlockAchievement(String achievementId) async {
-    final allAchievements = await getUserAchievements();
-    final achievement = allAchievements.firstWhere((a) => a.id == achievementId);
-
-    // W przypadku prawdziwej implementacji, tutaj byłoby wywołanie API
-    // w celu odblokowania osiągnięcia na serwerze
-
-    return achievement.copyWith(
-      isUnlocked: true,
-      dateAchieved: DateTime.now(),
-    );
-  }
-
-  // Aktualizacja postępu osiągnięcia
-  Future<Achievement> updateAchievementProgress(
-      String achievementId,
-      int currentProgress
-      ) async {
-    final allAchievements = await getUserAchievements();
-    final achievement = allAchievements.firstWhere((a) => a.id == achievementId);
-
-    final updatedAchievement = achievement.copyWith(
-      progressCurrent: currentProgress,
-    );
-
-    // Sprawdzenie czy osiągnięcie powinno zostać odblokowane
-    if (updatedAchievement.progressTotal != null &&
-        currentProgress >= updatedAchievement.progressTotal!) {
-      return updatedAchievement.copyWith(
-        isUnlocked: true,
-        dateAchieved: DateTime.now(),
+  /// Zgłasza przyrost postępu dla danego osiągnięcia
+  Future<Achievement> trackAchievementProgress({
+    required int achievementId,
+    required int progressIncrement,
+  }) async {
+    try {
+      final resp = await _api.post(
+        '/user/achievements/$achievementId/progress',
+        queryParameters: {'progress': progressIncrement},
       );
+
+      if (resp.statusCode == 200 && resp.data is Map<String, dynamic>) {
+        // Invaliduj cache osiągnięć po aktualizacji postępu
+        CacheManager.markStalePattern('user_achievements');
+        CacheManager.markStalePattern('user_level');
+        CacheManager.markStale('current_user'); // Poziom może się zmienić
+        CacheScheduler.forceRefreshCriticalData();
+
+        return Achievement.fromJson(resp.data as Map<String, dynamic>);
+      }
+      throw Exception('Nieoczekiwana odpowiedź serwera');
+    } on DioException catch (e) {
+      throw Exception('Błąd podczas aktualizacji postępu: ${e.message}');
     }
-
-    return updatedAchievement;
-  }
-
-  // Pobranie wszystkich kategorii osiągnięć
-  Future<List<String>> getAchievementCategories() async {
-    final achievements = await getUserAchievements();
-    final categories = achievements
-        .map((a) => a.category)
-        .whereType<String>()
-        .toSet()
-        .toList();
-
-    return categories;
-  }
-
-  // Pobranie sumy doświadczenia ze wszystkich odblokowanych osiągnięć
-  Future<int> getTotalExperiencePoints() async {
-    final achievements = await getUserAchievements();
-    return achievements
-        .where((a) => a.isUnlocked)
-        .fold<int>(0, (sum, a) => sum + a.experiencePoints);
   }
 }

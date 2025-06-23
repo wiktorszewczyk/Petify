@@ -20,7 +20,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -69,13 +68,6 @@ public class PetService {
                 .map(petMapper::toDtoWithImages);
     }
 
-    public List<PetResponseWithImages> getPets() {
-        return petRepository.findAll()
-                .stream()
-                .map(petMapper::toDtoWithImages)
-                .collect(Collectors.toList());
-    }
-
     @Transactional(readOnly = true)
     public SwipeResponse getFilteredPetsWithCursor(Boolean vaccinated, Boolean urgent, Boolean sterilized,
                                                    Boolean kidFriendly, Integer minAge, Integer maxAge,
@@ -90,7 +82,7 @@ public class PetService {
         Specification<Pet> spec = buildPetSpecification(vaccinated, urgent, sterilized, kidFriendly, minAge, maxAge,
                 type, favoritePetIds, cursor);
 
-        Pageable pageable = PageRequest.of(0, limit, Sort.by("id").ascending());
+        Pageable pageable = PageRequest.of(0, limit);
         Page<Pet> page = petRepository.findAll(spec, pageable);
 
         List<PetResponseWithImages> results = filterAndMapPets(page.getContent(), userLat, userLng, radiusKm);
@@ -111,7 +103,8 @@ public class PetService {
                 .and(PetSpecification.hasType(type))
                 .and(PetSpecification.isNotArchived())
                 .and(PetSpecification.hasActiveShelter())
-                .and(PetSpecification.notInFavorites(favoritePetIds));
+                .and(PetSpecification.notInFavorites(favoritePetIds))
+                .and(PetSpecification.randomOrder());
 
         if (cursor != null) {
             spec = spec.and((root, query, cb) -> cb.greaterThan(root.get("id"), cursor));

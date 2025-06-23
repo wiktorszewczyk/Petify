@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +19,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"petId", "userName"})
 @ToString
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"pet_id", "userName"}))
@@ -56,4 +54,7 @@ public class ChatRoom {
 
     @Column(name = "shelter_last_read_at")
     private LocalDateTime shelterLastReadAt;
+
+    @Column(name = "last_message_timestamp")
+    private LocalDateTime lastMessageTimestamp;
 }

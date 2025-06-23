@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../models/pet_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import '../../models/pet.dart';
 import '../../styles/colors.dart';
 import '../../views/chat_view.dart';
 import '../../services/message_service.dart';
@@ -9,7 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PetCard extends StatefulWidget {
-  final PetModel pet;
+  final Pet pet;
 
   const PetCard({
     super.key,
@@ -25,7 +30,10 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   final PageController _pageController = PageController();
   final MessageService _messageService = MessageService();
 
-  final Map<String, bool> _loadedImages = {};
+  // Cache dla obrazów - zapobiega mruganiu
+  final Map<String, ImageProvider> _imageCache = {};
+  static final Map<String, ImageProvider> _globalImageCache = {};
+  bool _isImageLoaded = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -38,38 +46,30 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _preloadImages() {
     final allImages = _getAllImages();
-    for (final imagePath in allImages) {
-      if (!_loadedImages.containsKey(imagePath)) {
-        if (_isNetworkImage(imagePath)) {
-          final imageProvider = NetworkImage(imagePath);
+    for (int i = 0; i < allImages.length; i++) {
+      final imagePath = allImages[i];
+
+      if (_globalImageCache.containsKey(imagePath)) {
+        _imageCache[imagePath] = _globalImageCache[imagePath]!;
+        if (i == 0) {
+          setState(() {
+            _isImageLoaded = true;
+          });
+        }
+        continue;
+      }
+
+      final imageProvider = _getImageProvider(imagePath);
+      if (imageProvider != null) {
+        _imageCache[imagePath] = imageProvider;
+        _globalImageCache[imagePath] = imageProvider;
+
+        if (i < 2) {
           imageProvider.resolve(const ImageConfiguration()).addListener(
             ImageStreamListener((info, _) {
-              if (mounted) {
+              if (mounted && i == 0) {
                 setState(() {
-                  _loadedImages[imagePath] = true;
-                });
-              }
-            }, onError: (exception, stackTrace) {
-              if (mounted) {
-                setState(() {
-                  _loadedImages[imagePath] = false;
-                });
-              }
-            }),
-          );
-        } else {
-          final imageProvider = AssetImage(imagePath);
-          imageProvider.resolve(const ImageConfiguration()).addListener(
-            ImageStreamListener((info, _) {
-              if (mounted) {
-                setState(() {
-                  _loadedImages[imagePath] = true;
-                });
-              }
-            }, onError: (exception, stackTrace) {
-              if (mounted) {
-                setState(() {
-                  _loadedImages[imagePath] = false;
+                  _isImageLoaded = true;
                 });
               }
             }),
@@ -77,6 +77,18 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
         }
       }
     }
+  }
+
+  ImageProvider? _getImageProvider(String path) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return NetworkImage(path);
+    }
+
+    if (path.startsWith('assets/')) {
+      return AssetImage(path);
+    }
+
+    return null;
   }
 
   @override
@@ -87,6 +99,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _goToNextPhoto() {
     if (_currentPhotoIndex < widget.pet.galleryImages.length) {
+      HapticFeedback.selectionClick();
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -96,6 +109,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
   void _goToPreviousPhoto() {
     if (_currentPhotoIndex > 0) {
+      HapticFeedback.selectionClick();
       _pageController.previousPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -104,79 +118,52 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   }
 
   List<String> _getAllImages() {
-    return [widget.pet.imageUrl, ...widget.pet.galleryImages];
-  }
-
-  bool _isNetworkImage(String path) {
-    return path.startsWith('http://') || path.startsWith('https://');
+    return [widget.pet.imageUrlSafe, ...widget.pet.galleryImages];
   }
 
   Widget _getImageWidget(String path, {BoxFit fit = BoxFit.cover}) {
-    final isNetwork = _isNetworkImage(path);
-    final isLoaded = _loadedImages[path] ?? false;
-
-    Widget imageWidget;
-
-    if (isNetwork) {
-      imageWidget = Image.network(
-        path,
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return CachedNetworkImage(
+        imageUrl: path,
         fit: fit,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[300],
-            child: const Center(
-              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            color: Colors.white,
+            child: Center(
+              child: Icon(Icons.pets, size: 50, color: Colors.grey[400]),
             ),
-          );
-        },
-        loadingBuilder: (context, child, loadingProgress) {
-          if (isLoaded || loadingProgress == null) return child;
-
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
-            ),
-          );
-        },
-        cacheWidth: MediaQuery.of(context).size.width.round(),
-      );
-    } else {
-      imageWidget = Image.asset(
-        path,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[300],
-            child: const Center(
-              child: Icon(Icons.error_outline, size: 50, color: Colors.grey),
-            ),
-          );
-        },
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded || frame != null) {
-            return child;
-          }
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
-              ),
-            ),
-          );
-        },
+          ),
+        ),
+        errorWidget: (context, url, error) => _buildErrorImage(),
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 100),
       );
     }
 
-    return imageWidget;
+    if (path.startsWith('assets/')) {
+      return Image.asset(
+        path,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => _buildErrorImage(),
+      );
+    }
+
+    return _buildErrorImage();
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      color: Colors.grey[300],
+      child: Center(
+        child: Icon(Icons.pets, size: 50, color: Colors.grey[600]),
+      ),
+    );
   }
 
   void _shareProfile() {
-    /// TODO: Generować odpowiedni link do profilu zwierzaka, który można udostepnić
-    final placeholderLink = "https://petadopt.example.com/demo/${widget.pet.id}";
+    final petLink = "https://petify.com/pet/${widget.pet.id}";
 
     showModalBottomSheet(
       context: context,
@@ -215,7 +202,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               color: Colors.blue,
               title: 'Skopiuj link',
               onTap: () {
-                Clipboard.setData(ClipboardData(text: placeholderLink));
+                Clipboard.setData(ClipboardData(text: petLink));
                 Navigator.pop(context);
                 _showShareConfirmation(context, 'Link skopiowany do schowka');
               },
@@ -227,7 +214,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               color: Color(0xFF1877F2),
               title: 'Facebook',
               onTap: () {
-                _shareToSocialMedia('facebook', placeholderLink);
+                _shareToSocialMedia('facebook', petLink);
                 Navigator.pop(context);
               },
             ),
@@ -238,7 +225,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               color: Color(0xFFE1306C),
               title: 'Instagram',
               onTap: () {
-                _shareToSocialMedia('instagram', placeholderLink);
+                _shareToSocialMedia('instagram', petLink);
                 Navigator.pop(context);
               },
             ),
@@ -249,7 +236,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               color: Color(0xFF25D366),
               title: 'WhatsApp',
               onTap: () {
-                _shareToSocialMedia('whatsapp', placeholderLink);
+                _shareToSocialMedia('whatsapp', petLink);
                 Navigator.pop(context);
               },
             ),
@@ -261,8 +248,8 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
               title: 'Inne',
               onTap: () {
                 Share.share(
-                  'Poznaj ${widget.pet.name}! ${widget.pet.gender == 'male' ? 'Czeka' : 'Czeka'} '
-                      'na adopcję w ${widget.pet.shelterName}. ${placeholderLink}',
+                  'Poznaj ${widget.pet.name}! Czeka '
+                      'na adopcję w ${widget.pet.shelterName}. ${petLink}',
                   subject: 'Zwierzak do adopcji: ${widget.pet.name}',
                 );
                 Navigator.pop(context);
@@ -338,7 +325,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     final text = 'Poznaj ${widget.pet.name}! ${widget.pet.gender == 'male' ? 'Czeka' : 'Czeka'} '
         'na adopcję w ${widget.pet.shelterName}. $link';
 
-    /// TODO: Użyć realne API do udostępniania dla każdej platformy
     switch (platform) {
       case 'facebook':
         Share.share('$text #adopcjazwierząt');
@@ -361,7 +347,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
 
-    final allImages = _getAllImages();
+    final allImages = [widget.pet.imageUrlSafe, ...widget.pet.galleryImages];
 
     return Container(
       width: double.infinity,
@@ -385,28 +371,31 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Karuzela zdjęć z wyłączonym przewijaniem przy przeciąganiu
-                PageView.builder(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(), // To wyłącza przewijanie przez użytkownika
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentPhotoIndex = index;
-                    });
-                  },
-                  itemCount: allImages.length,
-                  itemBuilder: (context, index) {
-                    final imagePath = allImages[index];
+                RepaintBoundary(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    physics: const ClampingScrollPhysics(),
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPhotoIndex = index;
+                      });
+                    },
+                    itemCount: allImages.length,
+                    itemBuilder: (context, index) {
+                      final imagePath = allImages[index];
 
-                    return Hero(
-                      tag: index == 0 ? 'pet_${widget.pet.id}' : 'pet_${widget.pet.id}_$index',
-                      child: _getImageWidget(imagePath),
-                    );
-                  },
+                      return Hero(
+                        tag: index == 0 ? 'pet_${widget.pet.id}' : 'pet_${widget.pet.id}_$index',
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          child: _getImageWidget(imagePath),
+                        ),
+                      );
+                    },
+                  ),
                 ),
 
                 if (allImages.length > 1) ...[
-                  // Przycisk do przewijania w lewo - na całej lewej stronie zdjęcia
                   Positioned.fill(
                     child: Align(
                       alignment: Alignment.centerLeft,
@@ -437,7 +426,6 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     ),
                   ),
 
-                  // Przycisk do przewijania w prawo - na całej prawej stronie zdjęcia
                   Positioned.fill(
                     child: Align(
                       alignment: Alignment.centerRight,
@@ -519,49 +507,83 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Text(
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final ageText = _formatDisplayAge(widget.pet.age);
+                          final ageWidth = _calculateTextWidth(
+                            ageText,
+                            GoogleFonts.poppins(fontSize: 18, color: Colors.white),
+                          );
+                          final nameWidth = _calculateTextWidth(
                             widget.pet.name,
-                            style: GoogleFonts.poppins(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${widget.pet.age} ${_formatAge(widget.pet.age)}',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (widget.pet.isVaccinated)
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.check_circle_outline, color: Colors.white, size: 16),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Zaszczepiony',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
+                            GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+                          );
+
+                          final vaccinatedBadgeWidth = widget.pet.isVaccinated ? 110.0 : 0.0;
+                          final spacerWidth = widget.pet.isVaccinated ? 8.0 : 0.0;
+                          final nameAgeSpacing = 8.0;
+
+                          final totalNeeded = nameWidth + ageWidth + nameAgeSpacing + spacerWidth + vaccinatedBadgeWidth;
+                          final showAge = totalNeeded <= constraints.maxWidth;
+
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        widget.pet.name,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.visible,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    if (showAge) ...[
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        ageText,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ),
-                            ),
-                        ],
+                              if (widget.pet.isVaccinated) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withOpacity(0.8),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.check_circle_outline, color: Colors.white, size: 16),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Zaszczepiony',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 4),
                       Row(
@@ -573,7 +595,9 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Odległość: ${widget.pet.distance} km',
+                            widget.pet.distance != null
+                                ? widget.pet.formattedDistance
+                                : 'Lokalizacja nieznana',
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
@@ -646,7 +670,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'O mnie:',
@@ -655,21 +679,14 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                     fontWeight: FontWeight.bold,
                     color: AppColors.textColor,
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
+                  physics: const NeverScrollableScrollPhysics(), // Wyłączamy scrollowanie
                   child: Row(
-                    children: [
-                      _buildTraitChip(widget.pet.breed, Icons.pets),
-                      _buildTraitChip(widget.pet.gender == 'male' ? 'Samiec' : 'Samica',
-                          widget.pet.gender == 'male' ? Icons.male : Icons.female),
-                      _buildTraitChip(_getSizeText(widget.pet.size), Icons.height),
-                      if (widget.pet.isChildFriendly)
-                        _buildTraitChip('Przyjazny dzieciom', Icons.child_care),
-                      if (widget.pet.isNeutered)
-                        _buildTraitChip('Sterylizowany', Icons.healing),
-                    ],
+                    children: _buildPriorityTraits(),
                   ),
                 ),
               ],
@@ -678,6 +695,24 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildPriorityTraits() {
+    final traits = <Widget>[];
+
+    // Priorytet 1: Rasa (jeśli dostępna i nie jest null/pusta), w przeciwnym razie wielkość
+    if (widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) {
+      traits.add(_buildTraitChip(widget.pet.breed!, Icons.pets));
+    } else {
+      // Jeśli brak rasy, pokaż wielkość
+      traits.add(_buildTraitChip(widget.pet.sizeDisplayName, Icons.height));
+    }
+
+    // Priorytet 2: Płeć
+    traits.add(_buildTraitChip(widget.pet.genderDisplayName,
+        widget.pet.gender == 'male' ? Icons.male : Icons.female));
+
+    return traits;
   }
 
   Widget _buildTraitChip(String label, IconData icon) {
@@ -715,26 +750,28 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  String _getSizeText(String size) {
-    switch (size.toLowerCase()) {
-      case 'small':
-        return 'Mały';
-      case 'medium':
-        return 'Średni';
-      case 'large':
-        return 'Duży';
-      case 'xlarge':
-        return 'Bardzo duży';
-      default:
-        return size;
+  String _formatDisplayAge(int age) {
+    if (age == 0) {
+      return '<1 rok';
     }
+    return '${age} ${_formatAge(age)}';
+  }
+
+  double _calculateTextWidth(String text, TextStyle style) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    return textPainter.size.width;
   }
 
   Future<void> _contactShelter() async {
     try {
       final conversations = await _messageService.getConversations();
       final existingConversation = conversations
-          .where((conv) => conv.petId == widget.pet.id)
+          .where((conv) => conv.petId == widget.pet.id.toString())
           .toList();
 
       String conversationId;
@@ -744,11 +781,11 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
         conversationId = existingConversation.first.id;
       } else {
         conversationId = await _messageService.createConversation(
-          petId: widget.pet.id,
+          petId: widget.pet.id.toString(),
           petName: widget.pet.name,
-          shelterId: widget.pet.shelterId,
+          shelterId: widget.pet.shelterId.toString(),
           shelterName: widget.pet.shelterName ?? 'Schronisko',
-          petImageUrl: widget.pet.imageUrl,
+          petImageUrl: widget.pet.imageUrlSafe,
         );
         isNewConversation = true;
       }
@@ -803,35 +840,32 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
-                          image: _isNetworkImage(widget.pet.imageUrl)
-                              ? NetworkImage(widget.pet.imageUrl) as ImageProvider
-                              : AssetImage(widget.pet.imageUrl),
-                          fit: BoxFit.cover,
-                        ),
                       ),
+                      clipBehavior: Clip.hardEdge,
+                      child: _getImageWidget(widget.pet.imageUrlSafe, fit: BoxFit.cover),
                     ),
                     const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.pet.name,
-                          style: GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.pet.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(
-                          '${widget.pet.breed}, ${widget.pet.age} ${_formatAge(widget.pet.age)}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
+                          Text(
+                            '${(widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) ? widget.pet.breed! : widget.pet.sizeDisplayName}, ${_formatDisplayAge(widget.pet.age)}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
@@ -845,12 +879,15 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                 _buildDetailSection('Schronisko', widget.pet.shelterName),
 
-                _buildDetailSection('Adres', widget.pet.shelterAddress),
+                _buildDetailSection('Adres schroniska', widget.pet.shelterAddress),
+
+                _buildPetTraitsSection(),
 
                 const SizedBox(height: 20),
 
                 ElevatedButton(
                   onPressed: () {
+                    Navigator.pop(context);
                     _contactShelter();
                   },
                   style: ElevatedButton.styleFrom(
@@ -874,6 +911,7 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
 
                 OutlinedButton.icon(
                   onPressed: () {
+                    Navigator.pop(context);
                     _shareProfile();
                   },
                   icon: const Icon(Icons.share),
@@ -894,7 +932,99 @@ class _PetCardState extends State<PetCard> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Widget _buildDetailSection(String title, String content) {
+  Widget _buildPetTraitsSection() {
+    final traits = <Map<String, dynamic>>[];
+
+    // Priorytet 1: Szczepienia i sterylizacja (z kolorami)
+    if (widget.pet.isVaccinated) {
+      traits.add({'value': 'Zaszczepiony', 'icon': Icons.medical_services, 'color': Colors.green});
+    }
+
+    if (widget.pet.isNeutered) {
+      traits.add({'value': 'Sterylizowany', 'icon': Icons.healing, 'color': Colors.blue});
+    }
+
+    // Reszta traitów (bez labelów, z domyślnym kolorem)
+    if (widget.pet.breed?.isNotEmpty == true && widget.pet.breed != null) {
+      traits.add({'value': widget.pet.breed!, 'icon': Icons.pets});
+    }
+
+    traits.add({'value': widget.pet.genderDisplayName, 'icon': widget.pet.gender == 'male' ? Icons.male : Icons.female});
+    traits.add({'value': widget.pet.sizeDisplayName, 'icon': Icons.height});
+    traits.add({'value': _formatDisplayAge(widget.pet.age), 'icon': Icons.cake});
+
+    if (widget.pet.isChildFriendly) {
+      traits.add({'value': 'Przyjazny dzieciom', 'icon': Icons.child_care});
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Cechy zwierzaka',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Column(
+          children: traits.map((trait) =>
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: _buildInfoTraitChip(trait),
+              ),
+          ).toList(),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+
+  Widget _buildInfoTraitChip(Map<String, dynamic> trait) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 44),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: (trait['color'] as Color? ?? AppColors.primaryColor).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: (trait['color'] as Color? ?? AppColors.primaryColor).withOpacity(0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            trait['icon'] as IconData,
+            color: trait['color'] as Color? ?? AppColors.primaryColor,
+            size: 18,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              trait['value'] as String,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: trait['color'] as Color? ?? AppColors.primaryColor,
+                height: 1.3,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailSection(String? title, String? content) {
+    if (title == null || title.isEmpty || content == null || content.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

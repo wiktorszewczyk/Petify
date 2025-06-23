@@ -8,10 +8,28 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "archive",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/archive-4.0.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "args",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/args-2.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "async",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.12.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "auto_size_text",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/auto_size_text-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "boolean_selector",
@@ -20,8 +38,38 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "cached_network_image",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image-3.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "cached_network_image_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image_platform_interface-4.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "cached_network_image_web",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image_web-1.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "characters",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/characters-1.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "checked_yaml",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/checked_yaml-2.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "cli_util",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/cli_util-0.4.2",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -36,6 +84,12 @@
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.19.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "confetti",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/confetti-0.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
     },
     {
       "name": "cross_file",
@@ -54,6 +108,18 @@
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_icons-1.0.8",
       "packageUri": "lib/",
       "languageVersion": "3.1"
+    },
+    {
+      "name": "device_info_plus",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/device_info_plus-11.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "device_info_plus_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/device_info_plus_platform_interface-7.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "dio",
@@ -86,6 +152,30 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "file_selector_linux",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_linux-0.9.3+2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "file_selector_macos",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_macos-0.9.4+3",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "file_selector_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_platform_interface-2.6.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "file_selector_windows",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_windows-0.9.3+4",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "fixnum",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/fixnum-1.1.1",
       "packageUri": "lib/",
@@ -104,6 +194,24 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "flutter_cache_manager",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_cache_manager-3.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "flutter_card_swiper",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_card_swiper-7.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "flutter_launcher_icons",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_launcher_icons-0.14.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "flutter_lints",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-5.0.0",
       "packageUri": "lib/",
@@ -116,10 +224,34 @@
       "languageVersion": "3.7"
     },
     {
+      "name": "flutter_plugin_android_lifecycle",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.28",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
       "name": "flutter_shaders",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_shaders-0.1.3",
       "packageUri": "lib/",
       "languageVersion": "2.19"
+    },
+    {
+      "name": "flutter_staggered_animations",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_staggered_animations-1.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "flutter_stripe",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_stripe-11.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "flutter_svg",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_svg-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
     },
     {
       "name": "flutter_test",
@@ -134,14 +266,116 @@
       "languageVersion": "3.7"
     },
     {
+      "name": "freezed_annotation",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/freezed_annotation-2.4.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "geocoding",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "geocoding_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_android-4.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "geocoding_ios",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_ios-3.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "geocoding_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_platform_interface-3.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "geolocator",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator-14.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_android-5.0.1+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_apple",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_apple-2.3.13",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_platform_interface-4.2.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_web",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_web-4.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_windows",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_windows-0.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "google_fonts",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-6.2.1",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
+      "name": "google_identity_services_web",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.3+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-6.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "google_sign_in_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-6.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "google_sign_in_ios",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_ios-5.9.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_platform_interface-2.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in_web",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.4+4",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "http",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.3.0",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -152,8 +386,68 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "image",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image-4.5.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "image_picker",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker-1.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "image_picker_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_android-0.8.12+23",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "image_picker_for_web",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_for_web-3.0.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "image_picker_ios",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_ios-0.8.12+2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "image_picker_linux",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_linux-0.2.1+2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "image_picker_macos",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_macos-0.2.1+2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "image_picker_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_platform_interface-2.10.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "image_picker_windows",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_windows-0.2.1+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
       "name": "intl",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.19.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "json_annotation",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -206,10 +500,34 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "octo_image",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/octo_image-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "package_info_plus",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/package_info_plus-8.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "package_info_plus_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/package_info_plus_platform_interface-3.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "path",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "path_parsing",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/path_parsing-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "path_provider",
@@ -248,10 +566,76 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "pay",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/pay-3.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "pay_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/pay_android-3.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "pay_ios",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/pay_ios-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "pay_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/pay_platform_interface-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "percent_indicator",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/percent_indicator-4.2.5",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "permission_handler",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler-12.0.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "permission_handler_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_android-13.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "permission_handler_apple",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_apple-9.4.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "permission_handler_html",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_html-0.1.3+5",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "permission_handler_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_platform_interface-4.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "permission_handler_windows",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_windows-0.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "petitparser",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/petitparser-6.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
     },
     {
       "name": "platform",
@@ -264,6 +648,18 @@
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "posix",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/posix-6.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "rxdart",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/rxdart-0.28.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "share_plus",
@@ -320,6 +716,12 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "shimmer",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/shimmer-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///C:/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -338,10 +740,46 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "sqflite",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/sqflite-2.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "sqflite_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/sqflite_android-2.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "sqflite_common",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/sqflite_common-2.5.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "sqflite_darwin",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/sqflite_darwin-2.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "sqflite_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/sqflite_platform_interface-2.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "stack_trace",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/stack_trace-1.12.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "stomp_dart_client",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/stomp_dart_client-2.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "stream_channel",
@@ -354,6 +792,30 @@
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/string_scanner-1.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.1"
+    },
+    {
+      "name": "stripe_android",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/stripe_android-11.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "stripe_ios",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/stripe_ios-11.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "stripe_platform_interface",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/stripe_platform_interface-11.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "synchronized",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/synchronized-3.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
     },
     {
       "name": "term_glyph",
@@ -428,6 +890,24 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "vector_graphics",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics-1.1.18",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "vector_graphics_codec",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_codec-1.1.13",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "vector_graphics_compiler",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.17",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.1.4",
       "packageUri": "lib/",
@@ -446,26 +926,38 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "web_socket",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/web_socket-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "web_socket_channel",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/web_socket_channel-3.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "webview_flutter",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter-4.12.0",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter-4.13.0",
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "webview_flutter_android",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-4.6.0",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-4.7.0",
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "webview_flutter_platform_interface",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_platform_interface-2.13.0",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_platform_interface-2.13.1",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.6"
     },
     {
       "name": "webview_flutter_wkwebview",
-      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.21.0",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.22.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -476,10 +968,28 @@
       "languageVersion": "3.7"
     },
     {
+      "name": "win32_registry",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/win32_registry-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
       "name": "xdg_directories",
       "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/xdg_directories-1.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.3"
+    },
+    {
+      "name": "xml",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/xml-6.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "yaml",
+      "rootUri": "file:///C:/Users/piotr/AppData/Local/Pub/Cache/hosted/pub.dev/yaml-3.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
     },
     {
       "name": "mobile",
@@ -488,7 +998,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-05-18T21:33:48.141279Z",
+  "generated": "2025-06-22T12:45:06.960165Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///C:/flutter",

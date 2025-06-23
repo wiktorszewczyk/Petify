@@ -1,0 +1,552 @@
+.reservations-page .nav-pills .nav-link {
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    border: 2px solid transparent;
+    color: #495057;
+    background-color: #e9ecef;
+}
+
+.reservations-page .nav-pills {
+    gap: 0.75rem;
+}
+
+.reservations-page .nav-pills .nav-link.active {
+    background-color: var(--logo-color) !important;
+    color: #333 !important;
+    box-shadow: 0 4px 12px rgba(255, 191, 0, 0.3);
+    border-color: var(--logo-color);
+}
+
+.reservations-page .nav-pills .nav-link:not(.active):hover {
+    color: #333;
+    border-color: var(--logo-color);
+    background-color: rgba(255, 191, 0, 0.1);
+}
+
+.rbc-calendar {
+    min-height: 75vh;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Kolory statusów - poprawione */
+.rbc-event {
+    border-radius: 6px;
+    border: 1px solid transparent;
+    padding: 4px 8px;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* Zarezerwowane - pomarańczowe */
+.rbc-event.status-reserved {
+    background-color: #ff6b35;
+    border-color: #e55a2b;
+    color: #ffffff;
+}
+
+/* Dostępne/wolne - niebieskie */
+.rbc-event.status-available {
+    background-color: #2196f3;
+    border-color: #1976d2;
+    color: #ffffff;
+}
+
+/* Anulowane - szare */
+.rbc-event.status-cancelled {
+    background-color: #9e9e9e;
+    border-color: #757575;
+    color: #ffffff;
+    opacity: 0.8;
+}
+
+.rbc-event.status-reserved:hover {
+    background-color: #d7bc58 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.rbc-event-content {
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+.batch-create-view {
+    padding: 1rem;
+}
+
+.reservation-config-section {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.reservation-config-section h5 {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+    color: #343a40;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+.reservation-config-section h5 svg {
+    width: 24px;
+    height: 24px;
+    margin-right: 0.5rem;
+}
+
+.pet-search-section {
+    margin-top: 1rem;
+}
+
+.pet-search-input,
+.reservation-config-section .pet-search-input,
+.calendar-view-header .pet-search-input,
+.searchable-pet-select .pet-search-input {
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+    border-radius: 8px !important;
+    border: 2px solid #e9ecef !important;
+    transition: all 0.2s ease !important;
+    width: 100% !important;
+    background-color: #fff !important;
+    box-shadow: none !important;
+}
+
+.reservation-config-section .pet-search-input {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.pet-search-input:focus,
+.reservation-config-section .pet-search-input:focus,
+.calendar-view-header .pet-search-input:focus,
+.searchable-pet-select .pet-search-input:focus {
+    border-color: var(--logo-color) !important;
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.2) !important;
+    outline: none !important;
+    background-color: #fffbf0 !important;
+}
+
+.reservation-config-section .row {
+    display: flex;
+    gap: 1rem;
+}
+
+.reservation-config-section .row > div {
+    flex: 1;
+}
+
+.reservation-config-section input[type="date"] {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    -webkit-appearance: none;
+    position: relative;
+}
+
+.reservation-config-section
+    input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.reservation-config-section input[type="date"]:hover {
+    border-color: var(--logo-color);
+    background-color: #fffbf0;
+}
+
+.reservation-config-section input[type="date"]:focus {
+    border-color: var(--logo-color);
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.2);
+    outline: none;
+}
+
+/* Okna czasowe */
+.time-window-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.time-window-row .time-separator {
+    text-align: center;
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
+/* Select time */
+.time-select {
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem;
+    font-weight: 400 !important;
+    border: 2px solid #e9ecef !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.time-select:hover {
+    border-color: var(--logo-color) !important;
+    background-color: #fffbf0 !important;
+}
+
+.time-select:focus {
+    border-color: var(--logo-color) !important;
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.2) !important;
+    outline: none !important;
+    background-color: #fffbf0 !important;
+}
+
+.time-select option {
+    font-size: 1rem;
+    background-color: #fffbf0;
+    color: #333;
+}
+
+/* Kontener na przyciski */
+.time-window-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Przycisk usuwania */
+.btn-remove-window {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+    background-color: #fff;
+    border: 2px solid #dc3545 !important;
+    color: #dc3545;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    user-select: none;
+    line-height: 1.5;
+}
+
+.btn-remove-window:hover {
+    background-color: #dc3545;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    border-color: #dc3545 !important;
+}
+
+.btn-remove-window:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-remove-window:disabled:hover {
+    background-color: #fff;
+    color: #dc3545;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Przycisk "Dodaj pole" */
+.btn-add-window {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+    background-color: #fff;
+    border: 2px solid #28a745 !important;
+    color: #28a745;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    user-select: none;
+    line-height: 1.5;
+}
+
+.btn-add-window:hover {
+    background-color: #28a745;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    border-color: #28a745 !important;
+}
+
+/* Dodaj godziny */
+.reservations-page .form-actions .btn-primary {
+    background-color: var(--logo-color) !important;
+    color: #333 !important;
+    box-shadow: 0 4px 12px rgba(255, 191, 0, 0.3);
+    border-color: var(--logo-color);
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.reservations-page .form-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 191, 0, 0.4);
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.clickable-input-label {
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.pet-list-scrollable {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    background-color: #fff;
+}
+
+/* Scrollbar styling dla listy zwierząt */
+.pet-list-scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pet-list-scrollable::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.pet-list-scrollable::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.pet-list-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.calendar-view-header {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+}
+
+.calendar-placeholder {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.calendar-container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.calendar-container select.form-select {
+    font-family: "Nunito", "Segoe UI", sans-serif;
+    font-weight: 500;
+}
+
+.user-list-column {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.user-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    transition: all 0.2s ease-in-out;
+    border: 1px solid #e9ecef;
+    cursor: pointer;
+    margin-bottom: 0.75rem;
+}
+
+.user-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.user-card.active {
+    border-left: 4px solid var(--logo-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    background-color: #fffbf0;
+}
+
+.user-card h5 {
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 0.25rem;
+}
+
+.user-reservation-count {
+    background-color: var(--logo-color);
+    color: #333;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+.reservations-details-panel {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.reservations-details-panel .list-group-item {
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    border: 1px solid #e9ecef;
+    padding: 1rem;
+    transition: background-color 0.2s;
+}
+
+.reservations-details-panel .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.slot-info .pet-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #343a40;
+}
+
+.slot-info .time-range {
+    color: #2196f3;
+    font-size: 1rem;
+}
+
+.action-btn {
+    min-width: 100px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+}
+
+.searchable-pet-select {
+    position: relative;
+}
+
+.searchable-pet-select .form-control,
+.searchable-pet-select .pet-search-input {
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+    border-radius: 8px !important;
+    border: 2px solid #e9ecef !important;
+    transition: all 0.2s ease !important;
+    background-color: #fff !important;
+    box-shadow: none !important;
+}
+
+.searchable-pet-select .form-control:focus,
+.searchable-pet-select .pet-search-input:focus {
+    border-color: var(--logo-color) !important;
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.2) !important;
+    background-color: #fffbf0 !important;
+    outline: none !important;
+}
+
+.searchable-pet-select .dropdown-menu {
+    max-height: 250px;
+    overflow-y: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    padding: 0.5rem;
+    border: 1px solid #e9ecef;
+    margin-top: 0.25rem;
+}
+
+.searchable-pet-select .dropdown-item {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.searchable-pet-select .dropdown-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(4px);
+}
+
+.searchable-pet-select .dropdown-item:active {
+    background-color: var(--logo-color);
+    color: #333;
+}
+
+/* Lepszy focus state - tylko dla rezerwacji */
+.reservations-page .form-control:focus,
+.reservations-page .pet-search-input:focus {
+    border-color: var(--logo-color) !important;
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.2) !important;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .reservation-config-section .row {
+        flex-direction: column;
+    }
+
+    .time-window-row {
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-rows: auto;
+    }
+
+    .time-window-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .time-window-actions button {
+        width: 100%;
+    }
+
+    .user-list-column {
+        max-height: 40vh;
+        margin-bottom: 1.5rem;
+    }
+}

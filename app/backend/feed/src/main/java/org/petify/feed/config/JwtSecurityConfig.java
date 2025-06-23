@@ -23,7 +23,9 @@ public class JwtSecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs",
-                                "/v3/api-docs/**").permitAll()
+                                "/v3/api-docs/**",
+                                "/actuator/health"
+                        ).permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
