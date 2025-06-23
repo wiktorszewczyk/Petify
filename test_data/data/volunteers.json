@@ -9,7 +9,7 @@
         "password": "EiYeefi6"
     },
     {
-        "firstName": "Gaweł ",
+        "firstName": "Gaweł",
         "lastName": "Woźniak",
         "birthDate": "1994-04-13",
         "gender": "MALE",
@@ -18,7 +18,7 @@
         "password": "oiquah0W"
     },
     {
-        "firstName": "Racław ",
+        "firstName": "Racław",
         "lastName": "Jasiński",
         "birthDate": "1977-11-14",
         "gender": "MALE",
@@ -27,65 +27,65 @@
         "password": "muv2Gaesh"
     },
     {
-        "firstName": "Jaromir ",
+        "firstName": "Jaromir",
         "lastName": "Król",
         "birthDate": "1958-11-22",
         "gender": "MALE",
-        "phoneNumber": "53 656 46 44",
+        "phoneNumber": "536564644",
         "email": "JaromirKrol@petify.org",
         "password": "JaromirKrol"
     },
     {
-        "firstName": "Izolda ",
+        "firstName": "Izolda",
         "lastName": "Kamińska",
         "birthDate": "1955-02-01",
         "gender": "FEMALE",
-        "phoneNumber": "88 530 39 97",
+        "phoneNumber": "885303997",
         "email": "IzoldaKaminska@petify.org",
         "password": "Fars1955"
     },
     {
-        "firstName": "Zdzisława ",
+        "firstName": "Zdzisława",
         "lastName": "Jasińska",
         "birthDate": "1957-08-15",
         "gender": "FEMALE",
-        "phoneNumber": "69 558 78 80",
+        "phoneNumber": "695587880",
         "email": "ZdzislawaJasinska@petify.org",
         "password": "Vord1957"
     },
     {
-        "firstName": "Martyn ",
+        "firstName": "Martyn",
         "lastName": "Borkowski",
         "birthDate": "1952-09-18",
         "gender": "MALE",
-        "phoneNumber": "69 877 60 84",
+        "phoneNumber": "698776084",
         "email": "MartynBorkowski@petify.org",
         "password": "Ar3ohngui"
     },
     {
-        "firstName": "Wioletta ",
+        "firstName": "Wioletta",
         "lastName": "Kozłowska",
         "birthDate": "1968-03-09",
         "gender": "FEMALE",
-        "phoneNumber": "69 567 40 08",
+        "phoneNumber": "695674008",
         "email": "WiolettaKozlowska@petify.org",
         "password": "Boo4ainoo"
     },
     {
-        "firstName": "Walerian ",
+        "firstName": "Walerian",
         "lastName": "Ostrowski",
         "birthDate": "1983-05-10",
         "gender": "MALE",
-        "phoneNumber": "51 676 48 29",
+        "phoneNumber": "516764829",
         "email": "WalerianOstrowski@petify.org",
         "password": "aiYool6oong"
     },
     {
-        "firstName": "Halina ",
+        "firstName": "Halina",
         "lastName": "Dąbrowska",
         "birthDate": "1956-07-18",
         "gender": "FEMALE",
-        "phoneNumber": "60 451 02 09",
+        "phoneNumber": "604510209",
         "email": "HalinaDabrowski@petify.org",
         "password": "johquooX5ie"
     },
@@ -94,7 +94,7 @@
         "lastName": "Adamczyk",
         "birthDate": "1990-12-12",
         "gender": "MALE",
-        "phoneNumber": "51 659 46 93",
+        "phoneNumber": "516594693",
         "email": "AdamAdamczyk@petify.org",
         "password": "eeX1pheewu"
     },
@@ -103,25 +103,25 @@
         "lastName": "Zielinski",
         "birthDate": "2000-02-15",
         "gender": "MALE",
-        "phoneNumber": "78 131 65 94",
+        "phoneNumber": "781316594",
         "email": "HieronimZielinski@petify.org",
         "password": "tohXaiKai1"
     },
     {
-        "firstName": "Krysia ",
+        "firstName": "Krysia",
         "lastName": "Michalska",
         "birthDate": "1979-05-02",
         "gender": "FEMALE",
-        "phoneNumber": "79 636 73 39",
+        "phoneNumber": "796367339",
         "email": "KrysiaMichalska@petify.org",
         "password": "eengai2Mai"
     },
     {
-        "firstName": "Wielisław ",
+        "firstName": "Wielisław",
         "lastName": "Adamczyk",
         "birthDate": "1959-01-24",
         "gender": "MALE",
-        "phoneNumber": "53 448 46 79",
+        "phoneNumber": "534484679",
         "email": "WielislawAdamczyk@petify.org",
         "password": "Shaeheitahh3"
     },
@@ -130,7 +130,7 @@
         "lastName": "Kozłowska",
         "birthDate": "1995-10-10",
         "gender": "FEMALE",
-        "phoneNumber": "78 786 55 10",
+        "phoneNumber": "787865510",
         "email": "LeokadiaKozlowska@petify.org",
         "password": "AiQu8jaiNai"
     },
@@ -139,43 +139,43 @@
         "lastName": "Woźniak",
         "birthDate": "1992-08-07",
         "gender": "FEMALE",
-        "phoneNumber": "67 569 44 47",
+        "phoneNumber": "675694447",
         "email": "EwaWozniak@petify.org",
         "password": "coaRiemox1th"
     },
     {
-        "firstName": "Klaudia ",
+        "firstName": "Klaudia",
         "lastName": "Czerwinska",
         "birthDate": "1982-05-13",
         "gender": "FEMALE",
-        "phoneNumber": "72 972 89 11",
+        "phoneNumber": "729728911",
         "email": "KlaudiaCzerwinska@petify.org",
         "password": "AhNgae3aePh"
     },
     {
-        "firstName": "Julita ",
+        "firstName": "Julita",
         "lastName": "Symanska",
         "birthDate": "1977-09-01",
         "gender": "FEMALE",
-        "phoneNumber": "72 848 37 70",
+        "phoneNumber": "728483770",
         "email": "JulitaSymanska@petify.org",
         "password": "Diel9gah7"
     },
     {
-        "firstName": "Grzegorz ",
+        "firstName": "Grzegorz",
         "lastName": "Piotrowski",
         "birthDate": "2001-06-02",
         "gender": "MALE",
-        "phoneNumber": "69 783 41 65",
+        "phoneNumber": "697834165",
         "email": "GrzegorzPiotrowski@petify.org",
         "password": "Paipahch3"
     },
     {
-        "firstName": "Stanisław ",
+        "firstName": "Stanisław",
         "lastName": "Kaczmarek",
         "birthDate": "1953-12-11",
         "gender": "MALE",
-        "phoneNumber": "88 232 41 63",
+        "phoneNumber": "882324163",
         "email": "StanislawKaczmarek@petify.org",
         "password": "nep9AhyohC"
     }
