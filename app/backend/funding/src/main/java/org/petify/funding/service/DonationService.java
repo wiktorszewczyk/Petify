@@ -70,7 +70,6 @@ public class DonationService {
         donation.setStatus(DonationStatus.PENDING);
         Donation saved = donationRepository.save(donation);
 
-        // ZWIĘKSZ PROGRES PO UTWORZENIU DOTACJI
         trackDonationAchievement(saved);
 
         log.info("Draft donation created successfully with ID: {}", saved.getId());

@@ -281,7 +281,7 @@ public class PaymentService {
         return switch (provider) {
             case PAYU -> PaymentUiConfig.builder()
                     .provider(PaymentProvider.PAYU)
-                    .hasNativeSDK(false) // Use web checkout for better compatibility
+                    .hasNativeSDK(false)
                     .sdkConfiguration(String.format("""
                         {
                             "merchantPosId": "300746",
@@ -293,7 +293,7 @@ public class PaymentService {
 
             case STRIPE -> PaymentUiConfig.builder()
                     .provider(PaymentProvider.STRIPE)
-                    .hasNativeSDK(false) // Use web checkout for better compatibility
+                    .hasNativeSDK(false)
                     .sdkConfiguration(String.format("""
                         {
                             "publishableKey": "pk_test_...",

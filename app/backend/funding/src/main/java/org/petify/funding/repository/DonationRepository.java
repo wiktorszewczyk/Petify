@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.List;
 
 @Repository
 public interface DonationRepository extends JpaRepository<Donation, Long> {
@@ -58,47 +57,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
                     + "  AND d.status = 'COMPLETED'"
     )
     BigDecimal averageAmountByShelterId(@Param("shelterId") Long shelterId);
-
-    // Statystyki globalne
-    @Query(
-            "SELECT COUNT(d) "
-                    + "FROM Donation d "
-                    + "WHERE d.status = 'COMPLETED' "
-                    + "  AND d.createdAt >= :startDate "
-                    + "  AND d.createdAt <= :endDate"
-    )
-    Long countCompletedBetweenDates(@Param("startDate") Instant startDate,
-                                    @Param("endDate") Instant endDate);
-
-    @Query(
-            "SELECT COALESCE(SUM(d.amount), 0) "
-                    + "FROM Donation d "
-                    + "WHERE d.status = 'COMPLETED' "
-                    + "  AND d.createdAt >= :startDate "
-                    + "  AND d.createdAt <= :endDate"
-    )
-    BigDecimal sumAmountBetweenDates(@Param("startDate") Instant startDate,
-                                     @Param("endDate") Instant endDate);
-
-    @Query(
-            "SELECT d.donorUsername, COUNT(d), "
-                    + "COALESCE(SUM(d.amount), 0) "
-                    + "FROM Donation d "
-                    + "WHERE d.status = 'COMPLETED' "
-                    + "GROUP BY d.donorUsername "
-                    + "ORDER BY SUM(d.amount) DESC"
-    )
-    List<Object[]> findTopDonorsByAmount(Pageable pageable);
-
-    @Query(
-            "SELECT d.shelterId, COUNT(d), "
-                    + "COALESCE(SUM(d.amount), 0) "
-                    + "FROM Donation d "
-                    + "WHERE d.status = 'COMPLETED' "
-                    + "GROUP BY d.shelterId "
-                    + "ORDER BY SUM(d.amount) DESC"
-    )
-    List<Object[]> findTopSheltersByDonationAmount(Pageable pageable);
 
     Page<Donation> findByFundraiserId(Long fundraiserId, Pageable pageable);
 

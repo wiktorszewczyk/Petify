@@ -34,9 +34,6 @@ public class PaymentAnalyticsService {
     private final PaymentAnalyticsRepository analyticsRepository;
     private final PaymentRepository paymentRepository;
 
-    /**
-     * Zwraca analizę płatności w określonym zakresie dat
-     */
     public List<PaymentAnalyticsResponse> getAnalytics(LocalDate startDate, LocalDate endDate, String provider) {
         List<PaymentAnalytics> analytics;
 
@@ -52,14 +49,10 @@ public class PaymentAnalyticsService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Zwraca podsumowanie statystyk płatności za ostatnie N dni
-     */
     public Map<String, Object> getPaymentStatsSummary(int days) {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusDays(days);
 
-        // POPRAWKA: Konwertujemy LocalDateTime na Instant
         Instant startInstant = startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
         Instant endInstant = endDate.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
 
@@ -77,7 +70,6 @@ public class PaymentAnalyticsService {
             stats.put("successRate", calculateSuccessRate((Long) row[1], (Long) row[0]));
         }
 
-        // Poprawka dla providerStats
         Map<String, Object> providerStats = new HashMap<>();
         for (PaymentProvider provider : PaymentProvider.values()) {
             List<Object[]> providerData = paymentRepository.getPaymentStatisticsByProvider(
@@ -95,7 +87,6 @@ public class PaymentAnalyticsService {
         }
         stats.put("providerBreakdown", providerStats);
 
-        // Poprawka dla dailyTrends
         List<Map<String, Object>> dailyTrends = new ArrayList<>();
         for (int i = days - 1; i >= 0; i--) {
             LocalDate date = endDate.minusDays(i);
@@ -122,7 +113,6 @@ public class PaymentAnalyticsService {
         }
         stats.put("dailyTrends", dailyTrends);
 
-        // Poprawka dla pozostałych statystyk
         Map<String, Object> currencyStats = paymentRepository.getPaymentStatsByCurrency(startInstant, endInstant);
         stats.put("currencyBreakdown", currencyStats);
 
@@ -132,10 +122,7 @@ public class PaymentAnalyticsService {
         return stats;
     }
 
-    /**
-     * Generuje codzienną analizę płatności dla każdego dostawcy płatności
-     */
-    @Scheduled(cron = "0 0 1 * * ?") // 1 AM daily
+    @Scheduled(cron = "0 0 1 * * ?")
     @Transactional
     public void generateDailyAnalytics() {
         LocalDate yesterday = LocalDate.now().minusDays(1);

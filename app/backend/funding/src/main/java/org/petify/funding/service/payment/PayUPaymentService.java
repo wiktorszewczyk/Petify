@@ -375,7 +375,6 @@ public class PayUPaymentService implements PaymentProviderService {
 
         configurePaymentMethods(orderRequest, request);
 
-        // PayU wymaga continueUrl - użyj podanego URL lub fallback
         String continueUrl = request.getReturnUrl();
         if (continueUrl == null || continueUrl.trim().isEmpty()) {
             continueUrl = webhookBaseUrl + "/payment/success";

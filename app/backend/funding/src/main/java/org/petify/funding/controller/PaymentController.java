@@ -39,9 +39,6 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentAnalyticsService analyticsService;
 
-    /**
-     * Pobiera status płatności
-     */
     @GetMapping("/{paymentId}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<PaymentResponse> getPayment(@PathVariable Long paymentId) {
@@ -49,9 +46,6 @@ public class PaymentController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Historia płatności użytkownika
-     */
     @GetMapping("/my-history")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Page<PaymentResponse>> getMyPaymentHistory(
@@ -64,9 +58,6 @@ public class PaymentController {
         return ResponseEntity.ok(payments);
     }
 
-    /**
-     * Oblicza opłaty za płatność przed utworzeniem
-     */
     @PostMapping("/calculate-fee")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<PaymentFeeCalculation> calculatePaymentFee(
@@ -80,9 +71,6 @@ public class PaymentController {
         return ResponseEntity.ok(calculation);
     }
 
-    /**
-     * Pobiera obsługiwane metody płatności dla providera
-     */
     @GetMapping("/methods/{provider}")
     public ResponseEntity<List<String>> getPaymentMethods(@PathVariable String provider) {
         try {
@@ -96,9 +84,6 @@ public class PaymentController {
         }
     }
 
-    /**
-     * Webhook Stripe
-     */
     @PostMapping("/webhook/stripe")
     public ResponseEntity<Void> handleStripeWebhook(
             @RequestBody String payload,
@@ -113,9 +98,6 @@ public class PaymentController {
         }
     }
 
-    /**
-     * Webhook PayU
-     */
     @PostMapping("/webhook/payu")
     public ResponseEntity<Void> handlePayUWebhook(
             @RequestBody String payload,
@@ -130,10 +112,6 @@ public class PaymentController {
         }
     }
 
-
-    /**
-     * Pobiera płatności dla konkretnej dotacji (admin)
-     */
     @GetMapping("/donation/{donationId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<PaymentResponse>> getDonationPayments(@PathVariable Long donationId) {
@@ -141,9 +119,6 @@ public class PaymentController {
         return ResponseEntity.ok(payments);
     }
 
-    /**
-     * Zwraca płatność (tylko admin)
-     */
     @PostMapping("/{paymentId}/refund")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<PaymentResponse> refundPayment(
@@ -154,9 +129,6 @@ public class PaymentController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Sprawdza status providerów płatności (admin)
-     */
     @GetMapping("/providers/health")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Map<String, Object>> getPaymentProvidersHealth() {
@@ -164,9 +136,6 @@ public class PaymentController {
         return ResponseEntity.ok(health);
     }
 
-    /**
-     * Pobiera analityki płatności (admin)
-     */
     @GetMapping("/analytics")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<PaymentAnalyticsResponse>> getPaymentAnalytics(
@@ -178,9 +147,6 @@ public class PaymentController {
         return ResponseEntity.ok(analytics);
     }
 
-    /**
-     * Pobiera podsumowanie statystyk płatności (admin)
-     */
     @GetMapping("/stats")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Map<String, Object>> getPaymentStats(

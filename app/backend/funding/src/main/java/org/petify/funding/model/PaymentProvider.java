@@ -13,13 +13,4 @@ public enum PaymentProvider {
     public String getValue() {
         return value;
     }
-
-    public static PaymentProvider fromString(String provider) {
-        for (PaymentProvider p : values()) {
-            if (p.value.equalsIgnoreCase(provider)) {
-                return p;
-            }
-        }
-        throw new IllegalArgumentException("Unknown payment provider: " + provider);
-    }
 }

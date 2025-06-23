@@ -60,7 +60,7 @@ public class DonationRequest {
                         .message(message)
                         .anonymous(anonymous)
                         .amount(amount)
-                        .currency(Currency.PLN) // Na razie tylko PLN
+                        .currency(Currency.PLN)
                         .build();
                 if (fundraiserId != null) {
                     donation.setFundraiser(Fundraiser.builder().id(fundraiserId).build());
@@ -78,7 +78,7 @@ public class DonationRequest {
                         .itemName(itemName)
                         .unitPrice(unitPrice)
                         .quantity(quantity)
-                        .currency(Currency.PLN) // Na razie tylko PLN
+                        .currency(Currency.PLN)
                         .build();
                 if (fundraiserId != null) {
                     donation.setFundraiser(Fundraiser.builder().id(fundraiserId).build());

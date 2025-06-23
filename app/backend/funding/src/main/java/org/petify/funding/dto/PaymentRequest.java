@@ -19,7 +19,6 @@ public class PaymentRequest {
     @NotNull(message = "Donation ID is required")
     private Long donationId;
 
-    // Jeśli null, system wybierze najlepszego providera
     private PaymentProvider preferredProvider;
 
     private PaymentMethod preferredMethod;
@@ -27,9 +26,7 @@ public class PaymentRequest {
     private String returnUrl;
     private String cancelUrl;
 
-    // Dla BLIK payments
     private String blikCode;
 
-    // Dla bank transfers
     private String bankCode;
 }
